@@ -1,0 +1,2888 @@
+<!DOCTYPE html>
+<!-- saved from url=(0067)http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>New patron card batch › Batches › Patron card creator › Tools › Koha</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="006b752c6d1686475cc0a819e5507eff808e708c,38e298de42bf9c563a35469b901f3efb1aeb2dad,1793390830">
+<meta name="generator" content="Koha 26.05.05">
+<script nonce="">
+    window.__CSP_NONCE__ = "";
+</script>
+
+    
+
+
+<link rel="shortcut icon" href="https://i.postimg.cc/rs5nhP5c/cone-Castro-Alves.png" type="image/x-icon">
+
+
+    <link href="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/jquery-ui-1.13.2.min_26.0505000.css" type="text/css" rel="stylesheet">
+
+<link rel="stylesheet" type="text/css" href="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/fontawesome.min_26.0505000.css">
+<link href="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/brands.min_26.0505000.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/solid.min_26.0505000.css">
+<link type="text/css" rel="stylesheet" href="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/datatables.min_26.0505000.css">
+<link rel="stylesheet" type="text/css" href="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/print_26.0505000.css" media="print">
+
+
+
+    
+
+
+    <link type="text/css" rel="stylesheet" href="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/staff-global_26.0505000.css">
+
+
+<!-- local colors -->
+
+
+<script nonce="" type="module">
+    import { APIClient } from "/intranet-tmpl/prog/js/fetch/api-client.js";
+    window.APIClient = APIClient;
+</script>
+<script nonce="">
+    var Koha = {};
+    
+        var CAN_user_parameters_manage_column_config = 1;
+    
+</script>
+
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/Gettext_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/i18n_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/stores_26.0505000.js.download"></script>
+
+
+
+
+
+
+
+
+
+</head>
+
+<body id="pcard_edit-batch" class="tools pcard">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand navbar-dark bg-dark" aria-label="Main">
+    <div class="container-fluid">
+        <a id="logo" class="navbar-brand" href="http://localhost:8080/cgi-bin/koha/mainpage.pl"><img src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/picto-koha.svg" alt="Koha"></a>
+
+        <div class="collapse navbar-collapse" id="header">
+            <ul id="toplevelmenu" class="navbar-nav me-auto">
+                
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:8080/cgi-bin/koha/circ/circulation-home.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-exchange" title="Circulation"></i></span> <span class="nav-link-text">Circulation</span></a></li>
+                
+                
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:8080/cgi-bin/koha/members/members-home.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-id-card" title="Patrons"></i></span> <span class="nav-link-text">Patrons</span></a></li>
+                
+                <li class="nav-item" id="catalog-search-link">
+                    <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-search" title="Search"></i></span> <span class="nav-link-text">Search</span></a>
+                </li>
+                
+                    <li class="nav-item dropdown" id="catalog-search-dropdown">
+                        <a href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl">Advanced search</a></li>
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/itemsearch.pl">Item search</a></li>
+                        </ul>
+                    </li>
+                
+                
+                <li class="nav-item dropdown">
+                    <a href="http://localhost:8080/cgi-bin/koha/mainpage.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="nav-link-icon"><i class="fa fa-fw fa-bars" title="More"></i></span> <span class="nav-link-text">More</span></a>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/virtualshelves/shelves.pl">Lists</a></li>
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/cataloguing/cataloging-home.pl">Cataloging</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/acqui/acqui-home.pl">Acquisitions</a></li>
+                        
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/authorities/authorities-home.pl">Authorities</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/serials/serials-home.pl">Serials</a></li>
+                        
+                        
+                        
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/reports/reports-home.pl">Reports</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/suggestion/suggestion.pl">Suggestions</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/tools-home.pl">Tools</a></li>
+                        
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/admin/admin-home.pl">Administration</a></li>
+                        
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/about.pl">About Koha</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+
+            <ul id="user-menu" class="nav navbar-nav">
+                
+                    <li class="nav-item dropdown" id="logged-in-dropdown">
+                        <a id="logged-in-menu" href="http://localhost:8080/cgi-bin/koha/mainpage.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="logged-in-info-brief">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            <span id="logged-in-info-full">
+                                
+                                <span class="loggedinusername is_superlibrarian" data-loggedinusername="Bibliotecário" data-is-superlibrarian="is_superlibrarian">Bibliotecário</span>
+                                <span class="loggedincategorycode content_hidden" data-loggedincategorycode="B">B</span>
+                                
+                                    <strong>
+                                        <span class="logged-in-branch-name" data-logged-in-branch-name="Castro Alves">Castro Alves</span>
+                                        <span class="logged-in-branch-code content_hidden" data-logged-in-branch-code="MAIN">MAIN</span>
+                                    </strong>
+                                
+                                
+                                
+                            </span>
+                            <b class="caret"></b>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" role="menu" aria-labelledby="logged-in-menu">
+                            <li class="loggedin-menu-label">
+                                Logged in as:<br>
+                                <span class="loggedinusername">Bibliotecário</span>
+                            </li>
+                            <li class="loggedin-menu-label">
+                                
+                                    Location: <br>
+                                    <span class="logged-in-branch-name">Castro Alves</span>
+                                    <span class="logged-in-branch-code content_hidden">MAIN</span>
+                                
+                            </li>
+
+                            
+
+                            
+
+                            
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <div id="set_library_controls">
+                                        <div>
+                                            <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/circ/set-library.pl">
+                                                
+                                                    
+                                                        Set library
+                                                    
+                                                
+                                            </a>
+                                        </div>
+                                        
+                                            <div>
+                                                <a id="branch_select_cog" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" role="button" aria-label="Toggle panel for login settings" aria-expanded="false">
+                                                    <i class="fa fa-cog" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        
+                                    </div>
+                                </li>
+
+                                <li id="setlibrary_panel" style="display:none"></li>
+                            
+                            
+
+                            
+                                <li class="nav-item toplinks-myaccount">
+                                    <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/members/moremember.pl?borrowernumber=1">My account</a>
+                                </li>
+                                <li class="nav-item toplinks-mycheckouts">
+                                    <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/circ/circulation.pl?borrowernumber=1">My checkouts</a>
+                                </li>
+                            
+
+                            
+                            <li class="nav-item">
+                                <a id="logout" class="toplinks dropdown-item" href="http://localhost:8080/cgi-bin/koha/mainpage.pl?logout.x=1">Log out</a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                        <li class="nav-item dropdown" id="debug-controls-dropdown">
+                            <a id="debug-controls-menu" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Debug controls">
+                                <i id="debug-icon" class="fa fa-bug"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" role="menu" aria-labelledby="debug-controls-menu">
+                                <li>
+                                    <a id="toggleUserCSS" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#"> <i class="fa fa-fw fa-brands fa-css3"></i> <span class="toggle-text">Disable custom CSS</span> </a>
+                                </li>
+                                <li>
+                                    <a id="toggleUserJS" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#"> <i class="fa fa-fw fa-brands fa-square-js"></i> <span class="toggle-text">Disable custom JS</span> </a>
+                                </li>
+                                <li>
+                                    <a id="toggleStylesheets" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#"> <i class="fa fa-fw fa-file-code"></i> <span class="toggle-text">Disable custom stylesheets</span> </a>
+                                </li>
+                            </ul>
+                        </li>
+                    
+                    
+
+                
+            </ul>
+        </div>
+    </div>
+
+    
+</nav>
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- cat-search.inc -->
+
+    
+        <div id="header_search" class="toptabs"> 
+    
+    <div class="tab-content"> 
+        
+            
+    <!-- patron-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="circ_search_panel" role="tabpanel" aria-labelledby="circ_search-tab" tabindex="0"> 
+        <form action="http://localhost:8080/cgi-bin/koha/circ/circulation.pl" id="patronsearch" method="get">
+            <div class="form-title">
+                <label class="control-label" for="findborrower"><span class="control-text">Check out</span> <i class="fa fa-fw fa-upload" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input autocomplete="off" id="findborrower" name="findborrower" class="head-searchbox form-control ui-autocomplete-input" type="text" placeholder="Enter patron card number or partial name" size="40">
+
+                
+            </div>
+
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /patron-search-box.inc -->
+
+
+            
+    <!-- checkin-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="checkin_search_panel" role="tabpanel" aria-labelledby="checkin_search-tab" tabindex="0"> 
+        <form method="post" action="http://localhost:8080/cgi-bin/koha/circ/returns.pl" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="006b752c6d1686475cc0a819e5507eff808e708c,38e298de42bf9c563a35469b901f3efb1aeb2dad,1793390830">
+
+            <div class="form-title">
+                <label class="control-label" for="ret_barcode"><span class="control-text">Check in</span> <i class="fa fa-fw fa-download" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input name="barcode" id="ret_barcode" class="head-searchbox form-control" accesskey="r" type="text" placeholder="Scan a barcode to check in" size="40">
+                <input type="hidden" name="op" value="cud-checkin">
+            </div>
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /checkin-search-box.inc -->
+
+
+            
+    <!-- renew-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="renew_search_panel" role="tabpanel" aria-labelledby="renew_search-tab" tabindex="0"> 
+        <form method="post" action="http://localhost:8080/cgi-bin/koha/circ/renew.pl" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="006b752c6d1686475cc0a819e5507eff808e708c,38e298de42bf9c563a35469b901f3efb1aeb2dad,1793390830">
+
+
+            <div class="form-title">
+                <label class="control-label" for="ren_barcode"><span class="control-text">Renew</span> <i class="fa fa-fw fa-retweet" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input name="barcode" id="ren_barcode" class="head-searchbox form-control" accesskey="r" type="text" placeholder="Scan a barcode to renew" size="40">
+            </div>
+            <input type="hidden" name="op" value="cud-renew">
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /renew-search-box.inc -->
+
+
+        
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- catalogue-search-box.inc -->
+
+    
+        <div class="tab-pane show active" id="catalog_search_panel" role="tabpanel" aria-labelledby="catalog_search-tab" tabindex="0"> 
+    <form action="http://localhost:8080/cgi-bin/koha/catalogue/search.pl" method="get" id="cat-search-block">
+        <div class="form-title">
+            <label class="control-label" for="search-form"><span class="control-text">Search catalog</span> <i class="fa fa-fw fa-search" aria-hidden="true"></i></label>
+        </div>
+
+        <div class="form-content">
+            
+                <input type="text" name="q" id="search-form" size="20" value="" title="Enter the terms you wish to search for." class="query form-text head-searchbox form-control" placeholder="Enter search keywords">
+            
+
+            
+        </div>
+        <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+
+        <div class="form-extra-content">
+            
+
+            
+        </div>
+    </form>
+ </div>
+    
+
+<!-- /catalogue-search-box.inc -->
+
+        
+     </div>
+
+
+    
+    <ul class="nav nav-tabs" role="tablist">
+        
+        
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#circ_search_panel" id="circ_search-tab" data-tabname="circ_search" aria-controls="circ_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#circ_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-upload" aria-hidden="true"></i> <span class="tab-title">Check out</span>
+            
+                </a>
+            
+        
+    </li>
+
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#checkin_search_panel" id="checkin_search-tab" data-tabname="checkin_search" aria-controls="checkin_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#checkin_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-download" aria-hidden="true"></i> <span class="tab-title">Check in</span>
+            
+                </a>
+            
+        
+    </li>
+
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#renew_search_panel" id="renew_search-tab" data-tabname="renew_search" aria-controls="renew_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#renew_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-retweet" aria-hidden="true"></i> <span class="tab-title">Renew</span>
+            
+                </a>
+            
+        
+    </li>
+
+        
+        
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link active" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#catalog_search_panel" id="catalog_search-tab" data-tabname="catalog_search" aria-controls="catalog_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#catalog_search_panel" aria-selected="true">
+                    
+                <i class="fa fa-fw fa-search" aria-hidden="true"></i> <span class="tab-title">Search catalog</span>
+            
+                </a>
+            
+        
+    </li>
+
+        
+    
+    </ul>
+
+ </div>
+    
+
+<!-- /cat-search.inc -->
+
+
+
+
+
+<div id="sub-header">
+    
+    
+    <nav id="breadcrumbs" aria-label="Breadcrumb">
+        <ol class="breadcrumb">
+            
+            
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/mainpage.pl" title="Home"><span class="visually-hidden-focusable">Home</span></a> </li>
+        
+    
+
+            
+        
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/tools/tools-home.pl">Tools</a> </li>
+        
+    
+
+        
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/patroncards/home.pl">Patron card creator</a> </li>
+        
+    
+
+        
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/patroncards/manage.pl?card_element=batch">Batches</a> </li>
+        
+    
+
+        
+    
+        
+            <li class="breadcrumb-item active" aria-current="page">
+                <a aria-disabled="true" tabindex="-1"> <span>New patron card batch</span> </a>
+            </li>
+        
+    
+
+    
+        </ol>
+    </nav>
+
+
+    <nav id="shortcut" class="shortcut" aria-label="Quick shortcuts">
+    
+
+    <div>
+        <a class="" href="http://localhost:8080/cgi-bin/koha/help.pl" id="helper"><i class="fa-solid fa-circle-question"></i> <span>Help</span></a>
+    </div>
+</nav>
+
+</div>
+
+
+
+
+<div class="main container-fluid">
+    <div class="row">
+        
+            
+        
+        
+            <div class="col-md-10 order-sm-1 order-md-2">
+                <main>
+                    <div id="messages">
+    
+
+    <div id="transient_result"></div>
+</div>
+
+                    
+
+    <div id="toolbar" class="btn-toolbar">
+    <div class="btn-group">
+        <button class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i> New</button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new">Card batch</a></li>
+            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/image-manage.pl">Image</a></li>
+            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-layout.pl?op=new">Layout</a></li>
+            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-template.pl?op=new">Card template</a></li>
+            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-profile.pl?op=new">Printer profile</a></li>
+        </ul>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-pencil" aria-hidden="true"></i> Manage</button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/manage.pl?card_element=batch">Card batches</a></li>
+            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/image-manage.pl">Images</a></li>
+            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/manage.pl?card_element=layout">Layouts</a></li>
+            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/manage.pl?card_element=template">Card templates</a></li>
+            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/patroncards/manage.pl?card_element=profile">Printer profiles</a></li>
+        </ul>
+    </div>
+</div>
+
+
+    <h1>
+            <span>New patron card batch</span>
+        
+    </h1>
+
+    
+
+    
+
+
+
+
+
+
+
+
+    <div id="manage-patroncard-batches">
+        <form name="add_by_bor_num" action="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl" method="post">
+            <input type="hidden" name="csrf_token" value="006b752c6d1686475cc0a819e5507eff808e708c,38e298de42bf9c563a35469b901f3efb1aeb2dad,1793390830">
+
+            <div>
+                <fieldset class="rows" style="border-bottom: 0px; border: 0px;">
+                    <ol><li>
+                            <input type="hidden" name="op" value="cud-add">
+                            <input type="hidden" name="batch_id" value="0">
+                            <label for="description">Batch description: </label>
+                            <input type="text" id="description" name="description" value="" style="display: none;"> <span id="change-status"></span> </li><li>
+                            <label for="bor_num_list">Add by borrowernumber(s): <br>
+                                <span class="hint">One borrowernumber per line.</span>
+                            </label>
+                            <textarea rows="5" id="bor_num_list" name="bor_num_list" tabindex="1" class="focus"></textarea></li></ol>
+                </fieldset>
+            </div>
+        </form>
+        <div id="batch-manage" class="action">
+            <a class="btn btn-default" id="additems" href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#patron_search_modal" data-bs-toggle="modal"><i class="fa fa-plus"></i> Add patron(s)</a>
+            
+        </div>
+        
+            <fieldset class="rows" style="border-bottom: 0px; border: 0px;">
+                <ol><li>
+                        <div class="alert alert-info">
+                            <h4>There are no patrons in this batch yet</h4>
+                            <p>Add patrons by borrowernumber using the text area above or leave empty to add via patron search.</p>
+                        </div>
+                    </li></ol>
+            </fieldset>
+        
+    </div>
+
+                </main>
+            </div>
+            <div class="col-md-2 order-sm-2 order-md-1">
+                <aside>
+                    
+                        
+                            
+
+
+
+<div id="tools-menu" class="sidebar_menu">
+    <ul>
+        <li><a href="http://localhost:8080/cgi-bin/koha/tools/tools-home.pl">Tools home</a></li>
+    </ul>
+    
+        <h5>Patrons and circulation</h5>
+        <ul>
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/patron_lists/lists.pl">Patron lists</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/clubs/clubs.pl">Patron clubs</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/reviews/reviewswaiting.pl">Comments</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl">Import patrons</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/letter.pl">Notices and slips</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/overduerules.pl">Overdue notice/status triggers</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/patroncards/home.pl" class="current">Patron card creator</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/cleanborrowers.pl">Batch patron deletion and anonymization</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/modborrowers.pl">Batch patron modification</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/batch_extend_due_dates.pl">Batch extend due dates</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/batch_modify_holds.pl">Batch modify holds</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tags/review.pl">Tags</a></li>
+            
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/rotating_collections/rotatingCollections.pl">Rotating collections</a></li>
+            
+        </ul>
+    
+
+    
+        <h5>Additional tools</h5>
+        <ul>
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/holidays.pl">Calendar</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/csv-profiles.pl">CSV profiles</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl">Log viewer</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/additional-contents.pl?category=news">News</a></li>
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/additional-contents.pl?category=html_customizations">HTML customizations</a></li>
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/additional-contents.pl?category=pages">Pages</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/scheduler.pl">Task scheduler</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/quotes.pl">Quote editor</a></li>
+            
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/upload.pl">Uploads</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/access_files.pl">Access files</a></li>
+            
+            
+        </ul>
+    
+    
+</div>
+<!-- /.sidebar_menu -->
+
+                        
+                    
+                </aside>
+            </div>
+        
+    </div>
+</div>
+
+<script nonce="" type="importmap">
+    { "imports": { "vue": "/intranet-tmpl/prog/js/vue/dist/islands.esm_26.0505000.js" } }
+</script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/islands.esm_26.0505000.js.download" type="module">
+</script>
+<script nonce="" type="module">
+    import { hydrate } from "/intranet-tmpl/prog/js/vue/dist/islands.esm_26.0505000.js";
+    hydrate();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+        <div id="changelanguage" class="navbar navbar-expand navbar-light bg-light">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav_lang_menu" aria-controls="nav_lang_menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nav_lang_menu">
+                    <ul id="i18nMenu" class="navbar-nav me-auto">
+                        
+                            
+                                
+                                    
+                                        
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/changelanguage.pl?language=pt-BR">
+                                                    
+                                                        Português
+                                                    
+                                                </a>
+                                            </li>
+                                        
+                                    
+                                
+                            
+                        
+                            
+                                
+                                    
+                                        
+                                            <li class="nav-item">
+                                                <a class="nav-link active currentlanguage" aria-current="page" aria-disabled="true" tabindex="-1">
+                                                    
+                                                        English
+                                                    
+                                                </a>
+                                            </li>
+                                        
+                                    
+                                
+                            
+                        
+                    </ul>
+                    <!-- /#i18nMenu -->
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#changelanguage -->
+    
+
+
+<span id="audio-alert"></span>
+
+<!-- Cookie consent -->
+
+<!-- CookieConsentedJS code that may run -->
+
+
+
+    
+
+
+
+
+
+
+    <script nonce="">
+        if (self === top) {
+            var antiClickjack = document.getElementById("antiClickjack");
+            antiClickjack.parentNode.removeChild(antiClickjack);
+        } else {
+            top.location = self.location;
+        }
+    </script>
+
+
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/jquery-3.6.0.min_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/jquery-migrate-3.3.2.min_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/jquery-ui-1.13.2.min_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/shortcut_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/js.cookie-2.2.1.min_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/jquery.highlight-5_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/bootstrap.bundle.min_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/jquery.validate.min_26.0505000.js.download"></script>
+<!-- koha core js -->
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/patron-format_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/staff-global_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/form-submit_26.0505000.js.download" type="module"></script>
+
+
+
+
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/dayjs.min_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/utc_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/timezone_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/customParseFormat_26.0505000.js.download"></script>
+<script nonce="">
+    dayjs.extend(window.dayjs_plugin_utc);
+    dayjs.extend(window.dayjs_plugin_timezone);
+    dayjs.extend(window.dayjs_plugin_customParseFormat);
+</script>
+<!-- js-date-format.inc -->
+<script nonce="">
+    (function() {
+        var def_date_format = 'metric';
+        var def_time_format = '24hr';
+        var def_tz = 'America/Sao_Paulo';
+
+        var get_date_pattern = function(format) {
+            var date_pattern = 'YYYY-MM-DD';
+            if(format == 'us') date_pattern = 'MM/DD/YYYY';
+            if(format == 'metric') date_pattern = 'DD/MM/YYYY';
+            if(format == 'dmydot') date_pattern = 'DD.MM.YYYY';
+            return date_pattern;
+        };
+
+        var get_time_pattern = function(format) {
+            var time_pattern = 'HH:mm';
+            if(format == '12hr') time_pattern = 'hh:mm a';
+            return time_pattern;
+        };
+
+        /**
+         * A JS equivalent of the KohaDates TT Plugin. Passed an rfc3339 formatted date string,
+         * or JS Date, the function will return a date string formatted as per the koha instance config.
+         * @param {String|Date} value                   rfc3339 formatted date string or a JS Date object.
+         * @param {Object} [options]                    Optional set of switches for changing date handling
+         * @property {String} [options.tz]              String representing the timezone of the passed date
+         * @property {Boolean} [options.no_tz_adjust]   Enable/Disable timezone adjustment
+         * @property {String} [options.dateformat]
+         * @property {Boolean} [options.withtime]       Enable/Disable appearance of time in returned string
+         * @property {String} [options.timeformat]
+         * @property {Boolean} [options.as_due_date]    Enable/Disable due date output format
+         * @returns {String}                            A date string formatted as per the koha instance configuration.
+         */
+        window.$date = function(value, options) {
+            if(!value) return '';
+            let tz = (options&&options.tz)||def_tz;
+            let no_tz_adjust = (options&&options.no_tz_adjust)||false;
+            var m = dayjs(value);
+            if ( !no_tz_adjust && ! value.match(/^\d{4}-\d{2}-\d{2}$/ ) ) {
+                m = m.tz(tz);
+            }
+
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            var withtime = (options&&options.withtime)||false;
+
+            if(dateformat=='rfc3339' && withtime) return m.format();
+
+            var timeformat = (options&&options.timeformat)||def_time_format;
+            var date_pattern = get_date_pattern(dateformat);
+            let as_due_date = (options&&options.as_due_date);
+            if (as_due_date) {
+                withtime = !( m.hour() == 23 && m.minute() == 59 );
+            }
+            var time_pattern = !withtime?'':' '+get_time_pattern(timeformat);
+
+            return m.format(date_pattern+time_pattern);
+        }
+
+        window.$datetime = function(value, options) {
+            options = options||{};
+            options.withtime = true;
+            return $date(value, options);
+        };
+
+        window.$time = function(value, options) {
+            if(!value) return '';
+            var tz = (options&&options.tz)||def_tz;
+            var m = dayjs(value);
+            if(tz) m = m.tz(tz);
+
+            var dateformat = (options&&options.dateformat);
+            var timeformat = (dateformat=='rfc3339'&&'24hr')||(options&&options.timeformat)||def_time_format;
+
+            return m.format(get_time_pattern(timeformat)+(dateformat=='rfc3339'?':ss'+(!m.isUTC()?'Z':''):''))+(dateformat=='rfc3339' && m.isUTC()?'Z':'');
+        }
+
+        window.$date_to_rfc3339 = function(value, options) {
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            let m = dayjs(value, get_date_pattern(dateformat), true);
+            return m.format("YYYY-MM-DD");
+        }
+
+        /**
+        * A JS equivalent of the KohaTimes TT Plugin. Passed a time in HH:MM:SS or HH:MM format
+        * the function will return a time string formatted as per the koha instance config.
+        */
+
+        window.$kohatime = function(value) {
+            if(!value) return 'invalid time';
+            var intime = value.split(':');
+            var hours = intime[0];
+            var minutes = intime[1];
+
+            if ( hours < 0 || hours > 23 || minutes < 0 || minutes > 59 ) { return 'invalid time'; }
+
+            if ( def_time_format == '12hr') {
+                var ampm = ( hours >= 12 ) ? 'pm' : 'am';
+                hours = ( hours == 0 ) ? "12" : hours;
+                hours = ( hours > 12 ) ? ( hours - 12 ) : hours;
+
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0') + " " + ampm;
+            } else {
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0');
+            }
+        }
+
+        /**
+         * Returns the configured Koha server timezone.
+         * Useful for components that need to display dates/times in library timezone.
+         */
+        window.$timezone = function() {
+            return def_tz;
+        }
+
+        /**
+         * Converts a dayjs object to a Date for timeline/calendar display.
+         * Creates a Date that displays these exact values regardless of browser timezone.
+         * (Strips timezone info so JS interprets the values as browser-local time)
+         *
+         * Use this when you need to display a specific date/time from a known timezone
+         * (e.g., library timezone) and want it to appear the same for all users.
+         *
+         * @param {dayjs.Dayjs} dayjsObj - A dayjs object (typically converted to a specific timezone)
+         * @returns {Date} A Date object that will display the dayjs values in the browser
+         */
+        window.$toDisplayDate = function(dayjsObj) {
+            return new Date(dayjsObj.format('YYYY-MM-DDTHH:mm:ss'));
+        }
+
+    })();
+</script>
+<!-- / js-date-format.inc -->
+
+
+
+<!-- js-patron-get-age.inc -->
+
+<script nonce="">
+    (function() {
+
+        const tz = 'America/Sao_Paulo';
+        window.$get_age = function(dob, options) {
+            if(!dob) return '';
+
+            let today = new Date();
+            dob = new Date(dob);
+            if ( tz ) {
+                let today_tz = new Date(today.toLocaleString('en-US', {timeZone: tz}));
+                let diff = today.getTime() - today_tz.getTime();
+                today = new Date(today.getTime() - diff);
+
+                let dob_tz = new Date(dob.toLocaleString('en-US', {timeZone: tz}));
+                diff = dob.getTime() - dob_tz.getTime();
+                dob = new Date(dob.getTime() - diff);
+            }
+            let age = today.getFullYear() - dob.getFullYear();
+            let m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+    })();
+</script>
+<!-- / js-patron-get-age.inc -->
+
+<!-- js-patron-format-address.inc -->
+
+
+
+<script nonce="">
+    (function() {
+
+        const roadtypes = [];
+        let roadtypes_map = roadtypes.reduce((map, r) => {
+            map[r.authorised_value] = r.lib;
+            return map;
+        }, {});
+
+        function member_display_address_style_us(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(data.address) + ' ' + escape_str(roadtype_desc);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.city);
+                if ( data.state ) {
+                    if ( data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.state);
+                }
+                if ( data.postal_code ) {
+                    address += " " + escape_str(data.postal_code);
+                }
+                if ( data.country ) {
+                    if ( data.postal_code || data.state || data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.country)
+                }
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_de(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : ' ';
+                    address += escape_str(data.address) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.street_number);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_fr(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.address);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        window.$format_address = function(data, options) {
+            let line_break = options && options.no_line_break ? ' ' : '<br/>';
+            let include_li = options && options.include_li;return member_display_address_style_us(data, line_break, include_li);}
+
+    })();
+</script>
+<!-- / js-patron-format-address.inc -->
+
+
+
+
+<!-- validator-strings.inc -->
+<script nonce="">
+    $(document).ready(function () {
+        jQuery.extend(jQuery.validator.messages, {
+            required: _("This field is required."),
+            remote: _("Please fix this field."),
+            email: _("Please enter a valid email address."),
+            url: _("Please enter a valid URL."),
+            date: _("Please enter a valid date."),
+            dateISO: _("Please enter a valid date (ISO)."),
+            number: _("Please enter a valid number."),
+            digits: _("Please enter only digits."),
+            equalTo: _("Please enter the same value again."),
+            number: _("Please add amount in valid format: 0.00"),
+            maxlength: $.validator.format(_("Please enter no more than {0} characters.")),
+            minlength: $.validator.format(_("Please enter at least {0} characters.")),
+            rangelength: $.validator.format(_("Please enter a value between {0} and {1} characters long.")),
+            range: $.validator.format(_("Please enter a value between {0} and {1}.")),
+            max: $.validator.format(_("Please enter a value less than or equal to {0}.")),
+            min: $.validator.format(_("Please enter a value greater than or equal to {0}.")),
+            phone: $.validator.format(_("Please enter a valid phone number.")),
+        });
+    });
+</script>
+<!-- / validator-strings.inc -->
+
+
+    <!-- js_includes.inc: IntranetUserJS -->
+    <script nonce="">
+        /* koha-easy-installer ai-assistant begin */
+var KEI_AI_V = "1.5.130";
+$(document).ready(function () {
+    // koha.nexus AI assistant (Library tools > AI assistant on the staff home page).
+    if (!$("#main_intranet-main").length || $("#kei-ai").length) return;
+    var box = $("<div id=\"kei-ai\"></div>"), news = $("#area-news");
+    if (news.length) news.replaceWith(box);
+    else {
+        var col = $("#area-quote").parent();
+        if (!col.length) col = $("#container-main .row").first().children("div").first();
+        if (!col.length) return;
+        col.prepend(box);
+    }
+    var url = "/cgi-bin/koha/tools/ai_assistant.pl?v=" + encodeURIComponent(KEI_AI_V) + "&op=";
+    $("<link rel=\"stylesheet\">").attr("href", url + "css").appendTo("head");
+    $.ajax({ url: url + "js", dataType: "script", cache: true });
+});
+/* koha-easy-installer ai-assistant end */
+    </script>
+    <!-- / js_includes.inc: IntranetUserJS -->
+
+
+<!-- js_includes.inc -->
+
+    <script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/basket_26.0505000.js.download"></script>
+
+
+
+
+
+<script nonce="">
+    var defaultPatronSearchFields = "firstname|preferred_name|middle_name|surname|othernames|cardnumber|userid";
+    var defaultPatronSearchMethod = "contains";
+    var extendedPatronAttributes = "1";
+    var loggedInLibrary = 'MAIN';
+    var singleBranchMode = '1';
+    var showPatronFirstnameIfDifferentThanPreferredname = 0;
+</script>
+
+    <script nonce="">
+        // PatronAutoComplete
+        var loggedInClass = "";
+        $(document).ready(function(){
+            
+                if ( $("#findborrower").length ) {
+                    patron_autocomplete($("#findborrower"), { 'link-to': 'circ' });
+                }
+                if ( $("#findborrower_main").length ) {
+                    patron_autocomplete($("#findborrower_main"), { 'link-to': 'circ' });
+                }
+            
+            if ( $("#searchmember").length ) {
+                patron_autocomplete($("#searchmember"), { 'link-to': 'patron' });
+            }
+        });
+    </script>
+
+
+
+
+
+    <script nonce="">
+        (function () {
+            function getURLParams() {
+                const params = new URLSearchParams(window.location.search);
+                return params;
+            }
+
+            function toggleURLParams(paramsToToggle) {
+                const url = new URL(window.location.href);
+                const params = url.searchParams;
+
+                // Check if all params are currently set
+                const allSet = paramsToToggle.every(param => params.get(param) === "yes");
+
+                if (allSet) {
+                    // Remove all params
+                    paramsToToggle.forEach(param => params.delete(param));
+                } else {
+                    // Add all params
+                    paramsToToggle.forEach(param => params.set(param, "yes"));
+                }
+
+                window.location.href = url.toString();
+            }
+
+            function updateButtonText() {
+                const params = getURLParams();
+
+                // User CSS button
+                const cssDisabled = params.get("DISABLE_SYSPREF_IntranetUserCSS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserCSS") === "yes";
+                const cssToggle = document.getElementById("toggleUserCSS");
+                if (cssToggle) {
+                    const cssText = cssToggle.querySelector(".toggle-text");
+                    if (cssText) cssText.textContent = cssDisabled ? _("Enable custom CSS") : _("Disable custom CSS");
+                }
+
+                // User JS button
+                const jsDisabled = params.get("DISABLE_SYSPREF_IntranetUserJS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserJS") === "yes";
+                const jsToggle = document.getElementById("toggleUserJS");
+                if (jsToggle) {
+                    const jsText = jsToggle.querySelector(".toggle-text");
+                    if (jsText) jsText.textContent = jsDisabled ? _("Enable custom JS") : _("Disable custom JS");
+                }
+
+                // Stylesheets button
+                const stylesheetsDisabled =
+                    params.get("DISABLE_SYSPREF_OpacAdditionalStylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_opaclayoutstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetcolorstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetstylesheet") === "yes";
+                const stylesheetsToggle = document.getElementById("toggleStylesheets");
+                if (stylesheetsToggle) {
+                    const stylesheetsText = stylesheetsToggle.querySelector(".toggle-text");
+                    if (stylesheetsText) stylesheetsText.textContent = stylesheetsDisabled ? _("Enable custom stylesheets") : _("Disable custom stylesheets");
+                }
+
+                // Update icon color based on whether any toggles are active
+                const anyDisabled = cssDisabled || jsDisabled || stylesheetsDisabled;
+                const debugIcon = document.getElementById("debug-icon");
+                if (debugIcon) {
+                    if (anyDisabled) {
+                        debugIcon.style.color = "#ffc107"; // Warning/amber color
+                    } else {
+                        debugIcon.style.color = ""; // Default color
+                    }
+                }
+            }
+
+            // Update button text on page load
+            updateButtonText();
+
+            // User CSS toggle
+            const cssToggle = document.getElementById("toggleUserCSS");
+            if (cssToggle) {
+                cssToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserCSS", "DISABLE_SYSPREF_OPACUserCSS"]);
+                });
+            }
+
+            // User JS toggle
+            const jsToggle = document.getElementById("toggleUserJS");
+            if (jsToggle) {
+                jsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserJS", "DISABLE_SYSPREF_OPACUserJS"]);
+                });
+            }
+
+            // Stylesheets toggle
+            const stylesheetsToggle = document.getElementById("toggleStylesheets");
+            if (stylesheetsToggle) {
+                stylesheetsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_OpacAdditionalStylesheet", "DISABLE_SYSPREF_opaclayoutstylesheet", "DISABLE_SYSPREF_intranetcolorstylesheet", "DISABLE_SYSPREF_intranetstylesheet"]);
+                });
+            }
+        })();
+    </script>
+
+<!-- / js_includes.inc -->
+
+    
+    
+
+
+
+<!-- format-price.inc -->
+<script nonce="">
+    
+    
+        var default_value = {
+            thousands_sep: ',',
+            decimal_point: '.',
+            decimal_digits: 2
+        };
+
+    
+    Number.prototype.format_price = function( value, params ) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+            var re = '\\d(?=(\\d{' + 3 + '})+' + '\\D' + ')', value = this.toFixed(decimal_digits);
+            return value.replace('.', decimal_point).replace(new RegExp(re, 'g'), '$&' + thousands_sep);
+    }
+    String.prototype.unformat_price = function (params) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+        let value = this.valueOf();
+        value = value.replace(thousands_sep, '').replace(decimal_point, '.').replace(new RegExp('[^\\d.]', 'g'), '');
+        return Number(value).toFixed(decimal_digits);
+    }
+</script>
+<!-- / format-price.inc -->
+
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/datatables.min_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/datatables_26.0505000.js.download"></script>
+
+    <script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/tools-menu_26.0505000.js.download"></script>
+    <script nonce="">
+        const batch_id = "0";
+        Koha.addPrefs({
+            PatronsPerPage: "20",
+        });
+        const has_entries = 0;
+    </script>
+    <script nonce="">
+        function DeleteConfirm() {
+            var msg = _("Are you sure you want to delete batch %s?").format(batch_id);
+            var answer = confirm(msg);
+            if (answer) {
+                $('#batch_form input[name="op"]').val("cud-delete");
+                $("#batch_form").append(`<input type="hidden" name="element_id" value="${batch_id}" />`);
+                $("#batch_form").append('<input type="hidden" name="card_element" value="batch" />');
+                $("#batch_form").submit();
+            } else {
+                return; // abort delete
+            }
+        }
+        function Remove() {
+            items = new Array();
+
+            if (document.items.action.length > 0) {
+                for (var i = 0; i < document.items.action.length; i++) {
+                    if (document.items.action[i].checked) {
+                        items.push(document.items.action[i].value);
+                    }
+                }
+                getstr = items.join("&");
+                var msg = _("Are you sure you want to remove the selected patron(s) from this batch?");
+            } else if (document.items.action.checked) {
+                alert(_("Deletion of patron from a batch with only one patron will delete the batch.") + "\n\n" + _("If this is what you want, select the 'Delete batch' option from the toolbar"));
+                return; // no deletion for single item batch
+            } else {
+                alert(_("Please select at least one patron to delete."));
+                return; // no item selected
+            }
+            var answer = confirm(msg);
+            if (answer) {
+                $('#patron_form input[name="op"]').val("cud-remove");
+                $('#patron_form input[name="batch_id"]').val(batch_id);
+                $('#patron_form input[name="label_id"]').remove();
+                items.forEach(item_id => {
+                    $("#patron_form").append('<input type="hidden" name="label_id" value="' + item_id + '" />');
+                });
+                $("#patron_form").submit();
+            } else {
+                return; // abort delete
+            }
+        }
+        function Add() {
+            var bor_nums = document.getElementById("bor_num_list");
+            if (bor_nums.value == "") {
+                return true;
+            }
+
+            document.forms["add_by_bor_num"].submit();
+            return false;
+        }
+
+        function add_user(borrowernumber) {
+            var list = $("#bor_num_list").val();
+            if (list.indexOf(borrowernumber) == -1) {
+                $("#bor_num_list").val(list + borrowernumber + "\r\n");
+            } else {
+                return -1;
+            }
+        }
+
+        function DeDuplicate() {
+            $('#patron_form input[name="op"]').val("cud-dedup");
+            $('#patron_form input[name="batch_id"]').val(batch_id);
+            $("#patron_form").submit();
+        }
+
+        function Xport(mode) {
+            if (mode == "label") {
+                patroncards = new Array();
+                if (document.items.action.length > 0) {
+                    for (var i = 0; i < document.items.action.length; i++) {
+                        if (document.items.action[i].checked) {
+                            patroncards.push("label_id=" + document.items.action[i].value);
+                        }
+                    }
+                    if (patroncards.length < 1) {
+                        alert(_("Please select at least one card to export."));
+                        return; // no batch selected
+                    }
+                    getstr = patroncards.join("&");
+                } else if (document.items.action.checked) {
+                    getstr = document.items.action.value;
+                } else {
+                    alert(_("Please select at least one card to export."));
+                    return; // no batch selected
+                }
+                location.href = `/cgi-bin/koha/patroncards/print.pl?batch_id=${batch_id}&${getstr}`;
+            } else if (mode == "batch") {
+                location.href = `/cgi-bin/koha/patroncards/print.pl?batch_id=${batch_id}`;
+            } else {
+                // some pass-through error trapping just in case...
+            }
+        }
+        function selected_layout() {
+            if (document.items.action.length) {
+                for (i = 0; i < document.items.action.length; i++) {
+                    if (document.items.action[i].checked == true) {
+                        return document.items.action[i].value;
+                    }
+                }
+            } else {
+                if (document.items.action.checked) {
+                    return document.items.action.value;
+                }
+            }
+            alert(_("Please select at least one item."));
+            return -1;
+        }
+
+        $(document).ready(function () {
+            // Prepare DataTables settings
+            var aLengthMenu = [10, 20, 50, 100, -1];
+            var aLengthMenuLabel = [10, 20, 50, 100, _("All")];
+            for (var i = 0; i < aLengthMenu.length; i++) {
+                if (aLengthMenu[i] == Koha.prefs.PatronsPerPage) {
+                    break;
+                }
+                if (aLengthMenu[i] > Koha.prefs.PatronsPerPage || aLengthMenu[i] == -1) {
+                    aLengthMenu.splice(i, 0, Koha.prefs.PatronsPerPage);
+                    aLengthMenuLabel.splice(i, 0, Koha.prefs.PatronsPerPage);
+                    break;
+                }
+            }
+
+            if (has_entries) {
+                $("#description").show();
+            } else {
+                $("#description").hide();
+            }
+            $("#batcht").kohaTable({
+                dom: '<"dt-info"i><"top pager"<"table_entries"lp><"table_controls"f>>tr<"bottom pager"ip>',
+                order: [[0, "asc"]],
+                pagingType: "full",
+                lengthMenu: [aLengthMenu, aLengthMenuLabel],
+                pageLength: Koha.prefs.PatronsPerPage,
+                autoWidth: false,
+            });
+            $("#additems").click(function () {
+                return Add();
+            });
+            $("#removeitems").click(function () {
+                Remove();
+                return false;
+            });
+            $("#deletebatch").click(function () {
+                DeleteConfirm();
+                return false;
+            });
+            $("#deduplicate").click(function () {
+                DeDuplicate();
+                return false;
+            });
+            $("#exportitems").click(function () {
+                Xport("label");
+                return false;
+            });
+            $("#exportbatch").click(function () {
+                Xport("batch");
+                return false;
+            });
+            $(".delete").on("click", function () {
+                if (confirmDelete(_("Are you sure you want to delete this patron from the card batch?"))) {
+                    $('#patron_form input[name="op"]').val("cud-remove");
+                    $('#patron_form input[name="batch_id"]').val($(this).data("batch-id"));
+                    $('#patron_form input[name="label_id"]').val($(this).data("label-id"));
+                    $("#patron_form").submit();
+                }
+            });
+            $(".export").on("click", function (e) {
+                e.preventDefault();
+                var export_label_id = $(this).data("label-id");
+                var export_batch_id = $(this).data("batch-id");
+                location.href = "/cgi-bin/koha/patroncards/print.pl?batch_id=" + export_batch_id + "&label_id=" + export_label_id;
+            });
+
+            $("#savedesc").click(function (event) {
+                event.preventDefault(); // prevent form submission
+                var newdescription = $('input[name="description"]').val();
+                var save_batch_id = $(this).data("batch_id");
+                var ajaxData = {
+                    newdescription: newdescription,
+                    batch_id: save_batch_id,
+                    op: "cud-set_permission",
+                    csrf_token: $('meta[name="csrf-token"]').attr("content"),
+                };
+
+                $.ajax({
+                    url: "/cgi-bin/koha/svc/creator_batches",
+                    type: "POST",
+                    dataType: "json",
+                    data: ajaxData,
+                })
+
+                    .done(function (data) {
+                        if (data.status == "success") {
+                            $("input[name='description']").text(data.newdesc);
+                            $("#change-status").text(_("Saved"));
+                        } else {
+                            $("#change-status").text(_("Unable to save description"));
+                        }
+                    })
+                    .fail(function () {
+                        $("#change-status").text(_("Unable to save description"));
+                    });
+            });
+        });
+    </script>
+    
+
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/select2.min_26.0505000.js.download"></script>
+<link href="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/select2.min_26.0505000.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/select2_26.0505000.css">
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/select2_26.0505000.js.download"></script>
+
+    
+    
+    
+        
+    
+    
+        
+    
+
+    
+
+    <div id="patron_search_modal" class="modal modal-full patron_search_modal" tabindex="-1" role="dialog" aria-labelledby="patronSearchLabel" aria-hidden="true" data-backdrop="">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="patronSearchLabel">Add patrons</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    
+    
+    <aside>
+        <form method="get" class="patron_search_form">
+            <fieldset class="brief">
+                <h3>Search for patron</h3>
+                <ol>
+                    <li>
+                        <label>Search:</label>
+                        <input type="text" id="search_patron_filter" class="search_patron_filter focus" value="">
+                    </li>
+
+                    
+                        
+                            <li>
+                                <label>Library:</label>
+                                <select class="branchcode_filter">
+                                    
+                                    
+                                    
+                                        
+                                            <option value="MAIN">Castro Alves</option>
+                                        
+                                    
+                                </select>
+                            </li>
+                        
+                    
+                        
+                            <li>
+                                <label>Category:</label>
+                                <select class="categorycode_filter">
+                                    <option value="">Any</option>
+                                    
+                                        
+                                            <option value="B">Bibliotecário</option>
+                                        
+                                    
+                                        
+                                            <option value="COM">Leitor</option>
+                                        
+                                    
+                                </select>
+                            </li>
+                        
+                    
+                        
+                            <li>
+                                <label>Sort 1:</label>
+                                
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+        <input type="text" name="sort1_filter" size="20" value="" class="">
+    
+
+
+                            </li>
+                        
+                    
+                        
+                            <li>
+                                <label>Sort 2:</label>
+                                
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+        <input type="text" name="sort2_filter" size="20" value="" class="">
+    
+
+
+                            </li>
+                        
+                    
+                </ol>
+            </fieldset>
+            <fieldset class="action">
+                <input type="submit" class="btn btn-primary search_patron_filter_btn" value="Search">
+                <input type="button" value="Clear" class="btn btn-default clear_search">
+            </fieldset>
+        </form>
+    </aside>
+
+
+                    <div id="patron_search_modal_searchresults" class="search_results_block">
+                        <!-- FIXME removed style from #searchresults, is that bad? -->
+                        
+                            <div class="searchheader fh-fixedHeader" style="display:none;">
+                                <div>
+                                    <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="btn btn-link select_all"><i class="fa fa-check"></i> Select all</a>
+                                    |
+                                    <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="btn btn-link clear_all"><i class="fa fa-remove"></i> Clear all</a>
+                                    <button class="add-selected btn btn-sm btn-default" type="submit">Add selected patrons</button>
+                                </div>
+                            </div>
+                        
+                        
+
+    
+
+    
+
+    <div class="browse">
+        Browse by last name: 
+        
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">A</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">B</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">C</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">D</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">E</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">F</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">G</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">H</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">I</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">J</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">K</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">L</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">M</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">N</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">O</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">P</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">Q</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">R</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">S</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">T</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">U</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">V</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">W</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">X</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">Y</a>
+        
+            <a href="http://localhost:8080/cgi-bin/koha/patroncards/edit-batch.pl?op=new#" class="filterByLetter">Z</a>
+        
+    </div>
+
+    <h3 style="display: none;" class="search_description" data-prefix="Patrons found for: %s"></h3>
+
+    <div id="memberresultst_search_results" style="display:none;">
+        <div class="info alert alert-info" style="display: none; margin: 1em 0;"></div>
+        <div class="error alert alert-warning" style="display: none; margin: 1em 0"></div>
+
+        <input type="hidden" class="firstletter_filter" value="">
+        
+        <div id="memberresultst_wrapper" class="dt-container dt-empty-footer"><div id="" class="dt-info"><div class="dt-info" aria-live="polite" id="memberresultst_info" role="status">Showing 1 to 1 of 1 entries</div></div><div id="" class="top pager"><div id="" class="table_entries"><div class="dt-length"><label for="dt-length-0">Show <select aria-controls="memberresultst" class="dt-input" id="dt-length-0"><option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option><option value="-1">All</option></select> entries</label></div><div class="dt-paging paging_full_numbers"><nav aria-label="pagination"><button class="dt-paging-button disabled first" role="link" type="button" aria-controls="memberresultst" aria-disabled="true" aria-label="First" data-dt-idx="first" tabindex="-1">First</button><button class="dt-paging-button disabled previous" role="link" type="button" aria-controls="memberresultst" aria-disabled="true" aria-label="Previous" data-dt-idx="previous" tabindex="-1">Previous</button><button class="dt-paging-button current" role="link" type="button" aria-controls="memberresultst" aria-current="page" data-dt-idx="0">1</button><button class="dt-paging-button disabled next" role="link" type="button" aria-controls="memberresultst" aria-disabled="true" aria-label="Next" data-dt-idx="next" tabindex="-1">Next</button><button class="dt-paging-button disabled last" role="link" type="button" aria-controls="memberresultst" aria-disabled="true" aria-label="Last" data-dt-idx="last" tabindex="-1">Last</button></nav></div></div><div id="" class="table_controls"><div class="dt-search"><label for="dt-search-0">Search:</label><input type="search" class="dt-input" id="dt-search-0" placeholder="" aria-controls="memberresultst"></div><div class="dt-buttons"> <button class="dt-button disabled dt_button_clear_filter" aria-controls="memberresultst" type="button" tabindex="0" title="Clear filter"><span><i class="fa fa-lg fa-remove"></i> <span class="dt-button-text">Clear filter</span></span></button> <button class="dt-button buttons-collection export_controls" aria-controls="memberresultst" type="button" tabindex="0" title="Export or print" aria-haspopup="dialog" aria-expanded="false"><span><i class="fa fa-lg fa-download"></i> <span class="dt-button-text">Export</span></span><span class="dt-button-down-arrow">▼</span></button> </div></div></div><div id="memberresultst_processing" class="dt-processing" role="status" style="display: none;">Processing...<div><div></div><div></div><div></div><div></div></div></div><table id="memberresultst" class="dataTable" aria-describedby="memberresultst_info"><colgroup><col data-dt-column="0"><col data-dt-column="1"><col data-dt-column="2"><col data-dt-column="3"><col data-dt-column="4"><col data-dt-column="5"><col data-dt-column="6"><col data-dt-column="7"></colgroup>
+            <thead>
+                <tr><th class="no-export dt-orderable-none" data-dt-column="0" rowspan="1" colspan="1"><div class="dt-column-header"><span class="dt-column-title"></span><span class="dt-column-order"></span></div></th><th data-dt-column="1" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc"><div class="dt-column-header"><span class="dt-column-title">Card</span><span class="dt-column-order" role="button" aria-label="Card: Activate to sort" tabindex="0"></span></div></th><th data-dt-column="2" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc dt-ordering-asc" aria-sort="ascending"><div class="dt-column-header"><span class="dt-column-title">Name</span><span class="dt-column-order" role="button" aria-label="Name: Activate to invert sorting" tabindex="0"></span></div></th><th data-dt-column="3" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc"><div class="dt-column-header"><span class="dt-column-title">Category</span><span class="dt-column-order" role="button" aria-label="Category: Activate to sort" tabindex="0"></span></div></th><th data-dt-column="4" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc"><div class="dt-column-header"><span class="dt-column-title">Library</span><span class="dt-column-order" role="button" aria-label="Library: Activate to sort" tabindex="0"></span></div></th><th data-dt-column="5" rowspan="1" colspan="1" class="dt-type-date dt-orderable-asc dt-orderable-desc"><div class="dt-column-header"><span class="dt-column-title">Expires on</span><span class="dt-column-order" role="button" aria-label="Expires on: Activate to sort" tabindex="0"></span></div></th><th data-dt-column="6" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc"><div class="dt-column-header"><span class="dt-column-title">Notes</span><span class="dt-column-order" role="button" aria-label="Notes: Activate to sort" tabindex="0"></span></div></th><th class="no-export dt-orderable-none" data-dt-column="7" rowspan="1" colspan="1"><div class="dt-column-header"><span class="dt-column-title">&nbsp;</span><span class="dt-column-order"></span></div></th></tr>
+            <tr><th class="no-export dt-orderable-none" data-dt-column="0" rowspan="1" colspan="1"></th><th data-dt-column="1" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc"><input type="text" placeholder="Card search" style="width: 100%"></th><th data-dt-column="2" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc dt-ordering-asc" aria-sort="ascending"><input type="text" placeholder="Name search" style="width: 100%"></th><th data-dt-column="3" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc"><select class="dt-select-filter"><option value=""></option><option value="^b$">Bibliotecário</option><option value="^com$">Leitor</option></select></th><th data-dt-column="4" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc"><select class="dt-select-filter"><option value=""></option><option value="^MAIN$">Castro Alves</option></select></th><th data-dt-column="5" rowspan="1" colspan="1" class="dt-type-date dt-orderable-asc dt-orderable-desc"><input type="text" placeholder="Expires on search" style="width: 100%"></th><th data-dt-column="6" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc"><input type="text" placeholder="Notes search" style="width: 100%"></th><th class="no-export dt-orderable-none" data-dt-column="7" rowspan="1" colspan="1"></th></tr></thead>
+            <tbody><tr><td colspan="8" class="dt-empty">Loading...</td></tr></tbody>
+        <tfoot></tfoot></table><div id="" class="bottom pager"><div class="dt-info">Showing 1 to 1 of 1 entries</div><div class="dt-paging paging_full_numbers"><nav aria-label="pagination"><button class="dt-paging-button disabled first" role="link" type="button" aria-controls="memberresultst" aria-disabled="true" aria-label="First" data-dt-idx="first" tabindex="-1">First</button><button class="dt-paging-button disabled previous" role="link" type="button" aria-controls="memberresultst" aria-disabled="true" aria-label="Previous" data-dt-idx="previous" tabindex="-1">Previous</button><button class="dt-paging-button current" role="link" type="button" aria-controls="memberresultst" aria-current="page" data-dt-idx="0">1</button><button class="dt-paging-button disabled next" role="link" type="button" aria-controls="memberresultst" aria-disabled="true" aria-label="Next" data-dt-idx="next" tabindex="-1">Next</button><button class="dt-paging-button disabled last" role="link" type="button" aria-controls="memberresultst" aria-disabled="true" aria-label="Last" data-dt-idx="last" tabindex="-1">Last</button></nav></div></div></div>
+    </div>
+
+    <!-- Patron preview modal -->
+    <div class="modal" id="patronPreview" tabindex="-1" role="dialog" aria-labelledby="patronPreviewLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="loading"> <img src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/spinner-small.gif" alt=""> Loading </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default cancel" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="patron_preview_modal" class="basicModal"></div>
+    <script nonce="">
+        $(document).ready(function() {
+            let parent_block = $("#patron_search_modal_searchresults");
+            parent_block.find(".select_all").on("click",function(e){
+                e.preventDefault();
+                parent_block.find(".selection").prop("checked", true).change();
+            });
+            parent_block.find(".clear_all").on("click",function(e){
+                e.preventDefault();
+                parent_block.find(".selection").prop("checked", false).change();
+            });
+            parent_block.find(".searchheader").hide();
+            parent_block.find(".clear_search").on("click",function(e){$("#searchheader").hide();});
+
+            parent_block.find('.add-selected').on('click', function(e) {
+                e.preventDefault();
+                var counter = 0;
+                parent_block.find('tr:has(.selection:checked) .add_user').each(function(){
+                    var borrowernumber = $(this).data('borrowernumber');
+                    var firstname = $(this).data('firstname');
+                    var surname = $(this).data('surname');
+                    add_user( borrowernumber, firstname + ' ' + surname );
+                    counter++;
+                });
+                parent_block.find('.info').html(_("%s Patrons added.").format(counter)).show();
+            });
+        });
+    </script>
+
+    
+
+    
+    <script nonce="">
+        var categories = [{"self_renewal_information_message":null,"overduenoticerequired":0,"enrolmentfee":null,"dateofbirthrequired":null,"self_renewal_failure_message":null,"description":"Bibliotecário","require_strong_password":null,"checkprevcheckout":"inherit","hidelostitems":0,"noissueschargeguarantees":null,"exclude_from_local_holds_priority":null,"default_privacy":"default","reset_password":null,"can_be_guarantee":0,"can_place_ill_in_opac":1,"min_password_length":null,"noissuescharge":null,"self_renewal_availability_start":null,"noissueschargeguarantorswithguarantees":null,"self_renewal_if_expired":0,"enrolmentperiod":999,"categorycode":"B","force_password_reset_when_set_by_staff":null,"self_renewal_enabled":0,"BlockExpiredPatronOpacActions":"follow_syspref_BlockExpiredPatronOpacActions","self_renewal_fines_block":null,"password_expiry_days":null,"enrolmentperioddate":null,"enforce_expiry_notice":0,"change_password":null,"category_type":"S","upperagelimit":null},{"checkprevcheckout":"inherit","hidelostitems":0,"noissueschargeguarantees":0,"can_be_guarantee":0,"reset_password":null,"min_password_length":6,"can_place_ill_in_opac":1,"exclude_from_local_holds_priority":0,"default_privacy":"default","description":"Leitor","overduenoticerequired":1,"self_renewal_information_message":null,"enrolmentfee":"0.000000","dateofbirthrequired":null,"self_renewal_failure_message":null,"require_strong_password":0,"self_renewal_fines_block":null,"enrolmentperioddate":null,"password_expiry_days":null,"self_renewal_if_expired":0,"BlockExpiredPatronOpacActions":"","self_renewal_enabled":0,"force_password_reset_when_set_by_staff":1,"categorycode":"COM","enrolmentperiod":999,"category_type":"A","change_password":null,"upperagelimit":null,"enforce_expiry_notice":0,"self_renewal_availability_start":null,"noissuescharge":0,"noissueschargeguarantorswithguarantees":0}].map(e => {
+            e['_id'] = e.categorycode.toLowerCase();
+            e['_str'] = e.description;
+            return e;
+        });
+        var categories_map = categories.reduce((map, e) => {
+            map[e._id] = e;
+            return map;
+        }, {});
+        var libraries = [{"branchemail":"bibliotecamunicipalpalotina@gmail.com","branchstate":"Paraná","branchzip":"85950-000","branchnotes":null,"branchcode":"MAIN","branchphone":"+554436491214","branchaddress1":"Rua Ipiranga, 720, Centro.","branchip":null,"branchcountry":"Brasil","public":1,"issuing":null,"branchaddress3":null,"branchname":"Castro Alves","marcorgcode":null,"geolocation":null,"pickup_location":1,"branchurl":null,"opacusercss":null,"opacuserjs":null,"branchfax":null,"branchreplyto":null,"selected":1,"branchaddress2":null,"branchreturnpath":null,"branchcity":"Palotina","branchillemail":null}].map(e => {
+            e['_id'] = e.branchcode;
+            e['_str'] = e.branchname;
+            return e;
+        });
+        var libraries_map = libraries.reduce((map, e) => {
+            map[e._id] = e;
+            return map;
+        }, {});
+
+
+        var av_bsort1= [].map( e => {
+            e['_id'] = e.authorised_value;
+            e['_str'] = e.lib;
+            return e;
+        });
+        var av_bsort1_map = av_bsort1.reduce((map, e) => {
+            map[e._id] = e;
+            return map;
+        }, {});
+        var av_bsort2= [].map( e => {
+            e['_id'] = e.authorised_value;
+            e['_str'] = e.lib;
+            return e;
+        });
+        var av_bsort2_map = av_bsort2.reduce((map, e) => {
+            map[e._id] = e;
+            return map;
+        }, {});
+
+        var filters_options = {
+            libraries,
+            categories,
+            av_bsort1,
+            av_bsort2,
+        };
+
+        var empty_table_settings = ''
+
+        
+            
+            
+            var extended_attribute_types = [];
+        
+
+        $(document).on("shown.bs.modal", function(){
+            $('select[name="sort1_filter"]').select2({allowClear:true,dropdownParent:$('#patron_search_modal')});
+            $('select[name="sort2_filter"]').select2({allowClear:true,dropdownParent:$('#patron_search_modal')});
+        }).on("hidden.bs.modal", function(){
+            ["sort1_filter", "sort2_filter"].forEach(function(item){
+                if( $('select[name=' +  item + ']').data("select2") ){
+                    $('select[name=' +  item + ']').select2("destroy");
+                }
+            });
+        });
+    </script>
+    
+
+
+
+<!-- format-price.inc -->
+<script nonce="">
+    
+    
+        var default_value = {
+            thousands_sep: ',',
+            decimal_point: '.',
+            decimal_digits: 2
+        };
+
+    
+    Number.prototype.format_price = function( value, params ) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+            var re = '\\d(?=(\\d{' + 3 + '})+' + '\\D' + ')', value = this.toFixed(decimal_digits);
+            return value.replace('.', decimal_point).replace(new RegExp(re, 'g'), '$&' + thousands_sep);
+    }
+    String.prototype.unformat_price = function (params) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+        let value = this.valueOf();
+        value = value.replace(thousands_sep, '').replace(decimal_point, '.').replace(new RegExp('[^\\d.]', 'g'), '');
+        return Number(value).toFixed(decimal_digits);
+    }
+</script>
+<!-- / format-price.inc -->
+
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/datatables.min_26.0505000.js.download"></script>
+<script src="./New patron card batch › Batches › Patron card creator › Tools › Koha_files/datatables_26.0505000.js.download"></script>
+
+    
+
+<!-- js-patron-get-age.inc -->
+
+<script nonce="">
+    (function() {
+
+        const tz = 'America/Sao_Paulo';
+        window.$get_age = function(dob, options) {
+            if(!dob) return '';
+
+            let today = new Date();
+            dob = new Date(dob);
+            if ( tz ) {
+                let today_tz = new Date(today.toLocaleString('en-US', {timeZone: tz}));
+                let diff = today.getTime() - today_tz.getTime();
+                today = new Date(today.getTime() - diff);
+
+                let dob_tz = new Date(dob.toLocaleString('en-US', {timeZone: tz}));
+                diff = dob.getTime() - dob_tz.getTime();
+                dob = new Date(dob.getTime() - diff);
+            }
+            let age = today.getFullYear() - dob.getFullYear();
+            let m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+    })();
+</script>
+<!-- / js-patron-get-age.inc -->
+
+    <!-- js-patron-format-address.inc -->
+
+
+
+<script nonce="">
+    (function() {
+
+        const roadtypes = [];
+        let roadtypes_map = roadtypes.reduce((map, r) => {
+            map[r.authorised_value] = r.lib;
+            return map;
+        }, {});
+
+        function member_display_address_style_us(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(data.address) + ' ' + escape_str(roadtype_desc);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.city);
+                if ( data.state ) {
+                    if ( data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.state);
+                }
+                if ( data.postal_code ) {
+                    address += " " + escape_str(data.postal_code);
+                }
+                if ( data.country ) {
+                    if ( data.postal_code || data.state || data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.country)
+                }
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_de(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : ' ';
+                    address += escape_str(data.address) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.street_number);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_fr(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.address);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        window.$format_address = function(data, options) {
+            let line_break = options && options.no_line_break ? ' ' : '<br/>';
+            let include_li = options && options.include_li;return member_display_address_style_us(data, line_break, include_li);}
+
+    })();
+</script>
+<!-- / js-patron-format-address.inc -->
+
+    <script nonce="">
+        {
+
+            function get_patron_search_form(){
+                let parent_block = $("#patron_search_modal_searchresults");
+                let patron_search_form = parent_block.parent().find(".patron_search_form");
+                if ( !patron_search_form.length ) patron_search_form = $(".patron_search_form");
+                return patron_search_form;
+            }
+            let first_draw = 0;
+            let patrons_table;
+            let singleBranchMode = '1';
+            let logged_in_library_id = "MAIN";
+            let defer_loading = Number( '' || 1 );
+            
+
+            
+                let patron_search_url = '/api/v1/patrons';
+            
+
+            $(document).ready(function(){
+
+                let parent_block = $("#patron_search_modal_searchresults");
+                let patron_search_form = get_patron_search_form();
+
+                parent_block.find(".info").hide();
+                parent_block.find(".error").hide();
+
+                // Build the aLengthMenu
+                let aLengthMenu = [
+                    ...new Set([20, 10, 20, 50, 100, -1])
+                ];
+                aLengthMenu.sort(function( a, b ){
+                    // Put "All" at the end
+                    if ( a == -1 ) {
+                        return 1;
+                    } else if ( b == -1 ) {
+                        return -1;
+                    }
+                    return parseInt(a) < parseInt(b) ? -1 : 1;}
+                );
+                let aLengthMenuLabel = [];
+                $(aLengthMenu).each(function(){
+                    if ( this == -1 ) {
+                        // Label for -1 is "All"
+                        aLengthMenuLabel.push(_("All"));
+                    } else {
+                        aLengthMenuLabel.push(this);
+                    }
+                });
+
+                let additional_filters = {
+                    surname: function(){
+                        let start_with = parent_block.find(".firstletter_filter").val()
+                        if (!start_with) return "";
+                        return { "like": start_with + "%" }
+                    },
+                    "-and": function(){
+                        let filters = [];
+
+                        let search_type = patron_search_form.find(".searchtype_filter").val();
+                        let search_fields = patron_search_form.find(".searchfieldstype_filter").val() || "standard";
+                        let pattern = patron_search_form.find(".search_patron_filter").val();
+
+                        filters = buildPatronSearchQuery(
+                            pattern,
+                            {
+                                search_type: search_type,
+                                search_fields: search_fields,
+                                ...(typeof extended_attribute_types != 'undefined' && {extended_attribute_types: extended_attribute_types})
+                            }
+                        );
+
+                        let f_sort1 = patron_search_form.find("select[name='sort1_filter']").val();
+                        if ( f_sort1 ) {
+                            filters.push({
+                                "me.sort1": f_sort1
+                            });
+                        }
+                        let f_sort2 = patron_search_form.find("select[name='sort2_filter']").val();
+                        if ( f_sort2 ) {
+                            filters.push({
+                                "me.sort2": f_sort2
+                            });
+                        }
+
+                        return filters;
+                    }
+                };
+                let external_filter_nodes = {};
+                
+                    external_filter_nodes = {
+                        search_patron_filter: '.search_patron_filter',
+                        firstletter_filter: '.firstletter_filter',
+                        searchtype_filter: '.searchtype_filter',
+                        searchfieldstype_filter: '.searchfieldstype_filter',
+                        categorycode_filter: '.categorycode_filter',
+                        branchcode_filter: '.branchcode_filter'
+                    };
+                
+
+                let additional_search_descriptions = {};
+                
+
+                
+                    
+                
+                
+                
+                let table_node = $("#memberresultst");
+                patrons_table = table_node.kohaTable({
+                    ajax: {
+                        url: patron_search_url,
+                        dataSrc: function ( json ) {
+                            
+                            return json.data;
+                        }
+                    },
+                    
+                    drawCallback: function( settings ) {
+                        var api = this.api();
+                        var data = api.data();
+                        if ( data.length == 0 ) return;
+
+                        
+                        
+                        $.each($(this).find("tbody tr"), function(index, tr) {
+                            $(tr).find("a.patron_name").addClass("patron_preview");
+                        });
+                        
+                        
+                    },
+                    
+                    deferLoading: defer_loading,
+                    columns: [
+                        
+                            
+                            
+                                {
+                                    data: "patron_id",
+                                    searchable: false,
+                                    orderable: false,
+                                    render: function( data, type, row, meta ) {
+                                        return "<label for='check" + data + "' class='content_hidden'>" + _("Select patron") + "</label><input type='checkbox' class='check" + data + " selection' name='borrowernumber' value='" + data + "' />";
+                                    }
+                                }
+                                
+                            ,
+                        
+                            
+                            
+                                {
+                                    data: "cardnumber",
+                                    searchable: true,
+                                    orderable: true,
+                                    render: function( data, type, row, meta ) {
+                                        let patron_id = encodeURIComponent(row.patron_id);
+                                        
+                                            return "<a href=\"/cgi-bin/koha/circ/circulation.pl?borrowernumber=" + patron_id + "\" title=\"Check out\" class=\"patron_name\" data-borrowernumber=\"" + patron_id + "\" style=\"white-space:nowrap\">" + escape_str(data) + "</a>";
+                                        
+                                    }
+
+                                }
+                                
+                            ,
+                        
+                            
+                                
+                            
+                            
+                                {
+                                    data: "me.surname:me.preferred_name:me.firstname:me.middle_name:me.othernames",
+                                    searchable: true,
+                                    orderable: true,
+                                    render: function( data, type, row, meta ) {
+                                        let patron_id = encodeURIComponent(row.patron_id);
+                                        
+                                        return "<a href=\"/cgi-bin/koha/members/moremember.pl?borrowernumber=" + patron_id + "\" class=\"patron_name\" data-borrowernumber=\"" + patron_id + "\" style=\"white-space:nowrap\">" + $patron_to_html(row, { invert_name: 1 }) + "</a>";
+                                        
+                                    }
+                                }
+                                
+                            ,
+                        
+                            
+                            
+                                {
+                                    name: "category",
+                                    data: "category_id",
+                                    dataFilter: "categories",
+                                    searchable: true,
+                                    orderable: true,
+                                    render: function( data, type, row, meta ) {
+                                        return escape_str(categories_map[data.toLowerCase()].description);
+                                    }
+                                }
+                                
+                            ,
+                        
+                            
+                            
+                                {
+                                    name: "library",
+                                    data: "library.name:me.library_id",
+                                    dataFilter: "libraries",
+                                    searchable: true,
+                                    orderable: true,
+                                    render: function( data, type, row, meta ) {
+                                        if( !singleBranchMode && row.library.library_id == logged_in_library_id ) {
+                                            return "<span class=\"currentlibrary\">" + escape_str(row.library.name) + "</span>";
+                                        } else {
+                                            return escape_str(row.library.name);
+                                        }
+                                    }
+                                }
+                                
+                            ,
+                        
+                            
+                            
+                                {
+                                    data: "expiry_date",
+                                    type:  "date",
+                                    searchable: true,
+                                    orderable: true,
+                                    render: function( data, type, row, meta ) {
+                                        return "<span class=\"dateexpiry" + (new Date(data) < new Date() ? ' expired' : '') + "\">" + (data ? escape_str($date(data)) : '') + "</span>";
+                                    }
+                                }
+                                
+                            ,
+                        
+                            
+                            
+                                {
+                                    data: "staff_notes",
+                                    searchable: true,
+                                    orderable: true,
+                                    
+                                }
+                                
+                            ,
+                        
+                            
+                            
+                                {
+                                    data: function( row, type, val, meta ) {
+
+                                        let patron_id = encodeURIComponent(row.patron_id);
+                                        let action_node = "";
+                                        
+                                        
+                                            action_node += '<a href="#" class="btn btn-default btn-xs add_user" data-borrowernumber="' + patron_id + '">' + _("Add") + '</a>';
+                                        
+                                        
+
+                                        let patron_str = JSON.stringify(row);
+                                        let input_node = $('<input type="hidden" name="borrower_data'+ patron_id + '"/>');
+                                        $(input_node).val(patron_str);
+                                        action_node += $(input_node).prop('outerHTML');
+
+                                        return action_node;
+                                    },
+                                    searchable: false,
+                                    orderable: false
+                                }
+                            
+                            
+                        
+                    ],
+                    embed: ["extended_attributes","library"],
+                    order: [[ 2, "asc" ]],
+                    autoWidth: false,
+                    lengthMenu: [aLengthMenu, aLengthMenuLabel],
+                    pagingType: 'full_numbers',
+                    pageLength: 20,
+                    
+                    fixedHeader: false,
+                }, typeof table_settings !== 'undefined' && !empty_table_settings ? table_settings : null, 1, additional_filters, filters_options, external_filter_nodes, parent_block.find(".search_description"), additional_search_descriptions );
+
+                patron_search_form.on('submit', filter);
+                patron_search_form.on('submit', update_search_type);
+                patron_search_form.on('submit', function(){
+                    parent_block.find(".searchheader").show();
+                    // Disable the search button until results are returned and displayed
+                    patron_search_form.find(".search_patron_filter_btn").prop({disabled: true});
+                });
+
+
+                $(".filterByLetter").on("click",function(e){
+                    e.preventDefault();
+                    filterByFirstLetterSurname($(this).text(), true);
+                });
+                patrons_table.on("click",".add_user",function(e){
+                    e.preventDefault();
+                    var borrowernumber = $(this).data("borrowernumber");
+                    var borrower_data = JSON.parse(patrons_table.find("input[name='borrower_data"+borrowernumber+"']").val());
+                    modal_add_user( borrowernumber, $patron_to_html( borrower_data, { display_cardnumber: false, url: false } ) );
+                });
+                patrons_table.on("click",".select_user",function(e){
+                    e.preventDefault();
+                    var borrowernumber = $(this).data("borrowernumber");
+                    var borrower_data = JSON.parse(patrons_table.find("input[name='borrower_data"+borrowernumber+"']").val());
+                    modal_select_user( borrowernumber, borrower_data );
+                    $(this).closest(".modal").modal('hide');
+                });
+
+                patrons_table.on("click",".patron_preview", function( e ){
+                    e.preventDefault();
+                    var borrowernumber = $(this).data("borrowernumber");
+                    var page = "/cgi-bin/koha/members/moremember.pl?print=brief&borrowernumber=" + borrowernumber;
+                    $("#patron_preview_modal").load( page + " div.container-fluid", function(){
+                        $("#patron_preview_modal").find(".close_window").on("click", function(){
+                            $('#patron_preview_modal').html(_("Loading...")).removeClass("show");
+                        });
+                    });
+                    $("#patron_preview_modal").addClass("show");
+                });
+
+                $("#patronPreview").on('hidden.bs.modal', function (e) {
+                    $("#patronPreview .modal-body").html("<img src=\"/intranet-tmpl/prog/img/spinner-small.gif\" alt=\"\" /> Loading");
+                });
+
+                patron_search_form.find(".clear_search").on("click",function(e){
+                    e.preventDefault();
+                    clearFilters();
+                });
+
+                let loaded_from_state = patrons_table.data('loaded_from_state');
+                if ( !defer_loading || loaded_from_state ) {
+                    patron_search_form.submit();
+                }
+
+                
+            });
+
+            
+
+            function update_search_type(){
+                $("#searchtype").val($("#searchtype_filter").val());
+            }
+
+            function filter() {
+                let parent_block = $("#patron_search_modal_searchresults");
+                let patron_search_form = get_patron_search_form();
+                // Empty header filters. Do not need to deal with selects.
+                let table_node = $("#memberresultst");
+                table_node.find('thead tr:eq(1) th input').val("");
+                
+                parent_block.find(".firstletter_filter").val('');
+                $("#memberresultst_search_results").show();
+
+                let table_dt = patrons_table.DataTable();
+                let loaded_from_state = patrons_table.data('loaded_from_state');
+                if ( !loaded_from_state ) {
+                    table_dt.search("").columns().search("");
+                    
+                        
+                    
+                        
+                    
+                        
+                    
+                        
+                            let category_id = patron_search_form.find(".categorycode_filter").val() || "";
+                            let category_column = table_dt.column('category:name');
+                            let category_visible_index = category_column.index("visible");
+                            patrons_table.find(`thead tr:eq(1) th:eq(${category_visible_index}) select`).val('^' + category_id.toLowerCase() + '$');
+                            category_column.search(category_id ? '^'+category_id+'$' : '');
+                        
+                    
+                        
+                            let library_id = patron_search_form.find(".branchcode_filter").val() || "";
+                            let library_column = table_dt.column('library:name');
+                            let library_visible_index = library_column.index("visible");
+                            patrons_table.find(`thead tr:eq(1) th:eq(${library_visible_index}) select`).val('^' + library_id + '$');
+                            library_column.search(library_id ? '^'+library_id+'$' : '');
+                        
+                    
+                        
+                    
+                        
+                    
+                        
+                    
+                }
+                patrons_table.data('loaded_from_state', false);
+                first_draw = 1; // Only redirect if we are coming from here
+                table_dt.on('draw.dt', function () {
+                    patron_search_form.find(".search_patron_filter_btn").prop({disabled: false});
+                });
+                table_dt.draw();
+                return false;
+            }
+
+            function clearFilters() {
+                let parent_block = $("#patron_search_modal_searchresults");
+                let patron_search_form = get_patron_search_form();
+                patron_search_form.find(".searchfieldstype_filter option:first").prop("selected", true);
+                patron_search_form.find(".searchtype_filter option[value='contains']").prop("selected", true);
+                patron_search_form.find(".categorycode_filter option:first").prop("selected", true);
+                patron_search_form.find(".branchcode_filter option:first").prop("selected", true);
+                patron_search_form.find("select[name='sort1_filter']").val('').trigger("change");
+                patron_search_form.find("select[name='sort2_filter']").val('').trigger("change");
+                patron_search_form.find(".search_patron_filter_btn").prop({disabled: false});
+                parent_block.find(".firstletter_filter").val('');
+                patron_search_form.find(".search_patron_filter").val('');
+                
+                $("#memberresultst_search_results").hide();
+                parent_block.find(".search_description").hide();
+            }
+
+            // User has clicked on a letter
+            function filterByFirstLetterSurname(letter, setstate ) {
+                let parent_block = $("#patron_search_modal_searchresults");
+                parent_block.find(".firstletter_filter").val(letter);
+
+                $("#memberresultst_search_results").show();
+
+                
+
+                patrons_table.DataTable().draw();
+            }
+
+            // modify parent window owner element
+            function modal_add_user(borrowernumber, borrowername) {
+                
+                let parent_block = $("#patron_search_modal_searchresults");
+                parent_block.find(".info").hide();
+                parent_block.find(".error").hide();
+                if ( add_user(borrowernumber, borrowername) < 0 ) {
+                    parent_block.find(".error").html(_("Patron '%s' is already in the list.").format(borrowername)).show();
+                } else {
+                    parent_block.find(".info").html(_("Patron '%s' added.").format(borrowername)).show();
+                }
+            }
+            function modal_select_user(borrowernumber, data) {
+                if ( document.getElementById("selected_patron_id") ) {
+                    document.getElementById("selected_patron_id").value = borrowernumber;
+                } else {
+                    
+                        select_user(borrowernumber, data);
+                    
+                }
+            }
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+<button id="backtotop" class="btn btn-default" aria-label="Back to top" style="display: none;"><i class="fa fa-arrow-up" aria-hidden="true"></i></button><ul id="ui-id-1" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" unselectable="on" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div></body><!-- prettier-ignore-start --></html>

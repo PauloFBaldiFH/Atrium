@@ -1,0 +1,2549 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)http://localhost:8080/cgi-bin/koha/tools/viewlog.pl -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Log viewer › Tools › Koha</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="db1d0bdf3f0f396457307ba7284ea8d8c7f97aee,e8413ee2eaeec884c288932dfea9bd4cd97751d4,1793390975">
+<meta name="generator" content="Koha 26.05.05">
+<script nonce="">
+    window.__CSP_NONCE__ = "";
+</script>
+
+    
+
+
+<link rel="shortcut icon" href="https://i.postimg.cc/rs5nhP5c/cone-Castro-Alves.png" type="image/x-icon">
+
+
+    <link href="./Log viewer › Tools › Koha_files/jquery-ui-1.13.2.min_26.0505000.css" type="text/css" rel="stylesheet">
+
+<link type="text/css" rel="stylesheet" href="./Log viewer › Tools › Koha_files/fontawesome.min_26.0505000.css">
+<link href="./Log viewer › Tools › Koha_files/brands.min_26.0505000.css" type="text/css" rel="stylesheet">
+<link href="./Log viewer › Tools › Koha_files/solid.min_26.0505000.css" type="text/css" rel="stylesheet">
+<link href="./Log viewer › Tools › Koha_files/datatables.min_26.0505000.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="./Log viewer › Tools › Koha_files/print_26.0505000.css" media="print">
+
+
+
+    
+
+
+    <link type="text/css" rel="stylesheet" href="./Log viewer › Tools › Koha_files/staff-global_26.0505000.css">
+
+
+<!-- local colors -->
+
+
+<script nonce="" type="module">
+    import { APIClient } from "/intranet-tmpl/prog/js/fetch/api-client.js";
+    window.APIClient = APIClient;
+</script>
+<script nonce="">
+    var Koha = {};
+    
+        var CAN_user_parameters_manage_column_config = 1;
+    
+</script>
+
+<script src="./Log viewer › Tools › Koha_files/Gettext_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/i18n_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/stores_26.0505000.js.download"></script>
+
+
+
+
+
+
+
+
+
+<link href="./Log viewer › Tools › Koha_files/humanmsg_26.0505000.css" type="text/css" rel="stylesheet">
+<style nonce=""> fieldset.rows label.viewlog { float: none; font-weight: normal; margin: 0; min-width: 9em; padding: 0.5em; text-align: left; white-space: nowrap; width: auto; } .log_modules { display: flex; flex-wrap: wrap; } .compare_info { background-color: #e6f0f2; margin: 0.5em -0.5em -0.5em -0.5em; padding: 0.5em; text-align: right; } .modal-dialog { width: 90%; } /* jsdiff styles */ ins { background-color: #e6ffe6; } del { background-color: #ffe6e6; } #col1 ins, #col2 del { display: none; } pre { overflow: scroll; padding: 10px; } /* Struct::Diff renderer */ table.struct-diff { border-collapse: collapse; font-size: 0.85em; width: 100%; } table.struct-diff th, table.struct-diff td { border: 1px solid #ccc; padding: 2px 6px; vertical-align: top; } table.struct-diff th { background-color: #f5f5f5; white-space: nowrap; } table.struct-diff td.diff-key { font-family: monospace; white-space: nowrap; } table.struct-diff del, table.struct-diff ins { font-family: monospace; text-decoration: none; padding: 1px 3px; display: inline-block; } table.struct-diff ul.diff-obj { list-style: none; margin: 0; padding: 0 0 0 0.8em; } table.struct-diff ul.diff-obj li { white-space: nowrap; } /* Catalog log info column (biblio JSON payload) */ div.loginfo-struct { font-family: monospace; font-size: 0.85em; } div.loginfo-struct ul.diff-obj { list-style: none; margin: 0; padding: 0 0 0 0.8em; } </style>
+</head>
+
+<body id="tools_viewlog" class="tools">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand navbar-dark bg-dark" aria-label="Main">
+    <div class="container-fluid">
+        <a id="logo" class="navbar-brand" href="http://localhost:8080/cgi-bin/koha/mainpage.pl"><img src="./Log viewer › Tools › Koha_files/picto-koha.svg" alt="Koha"></a>
+
+        <div class="collapse navbar-collapse" id="header">
+            <ul id="toplevelmenu" class="navbar-nav me-auto">
+                
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:8080/cgi-bin/koha/circ/circulation-home.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-exchange" title="Circulation"></i></span> <span class="nav-link-text">Circulation</span></a></li>
+                
+                
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:8080/cgi-bin/koha/members/members-home.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-id-card" title="Patrons"></i></span> <span class="nav-link-text">Patrons</span></a></li>
+                
+                <li class="nav-item" id="catalog-search-link">
+                    <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-search" title="Search"></i></span> <span class="nav-link-text">Search</span></a>
+                </li>
+                
+                    <li class="nav-item dropdown" id="catalog-search-dropdown">
+                        <a href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl">Advanced search</a></li>
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/itemsearch.pl">Item search</a></li>
+                        </ul>
+                    </li>
+                
+                
+                <li class="nav-item dropdown">
+                    <a href="http://localhost:8080/cgi-bin/koha/mainpage.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="nav-link-icon"><i class="fa fa-fw fa-bars" title="More"></i></span> <span class="nav-link-text">More</span></a>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/virtualshelves/shelves.pl">Lists</a></li>
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/cataloguing/cataloging-home.pl">Cataloging</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/acqui/acqui-home.pl">Acquisitions</a></li>
+                        
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/authorities/authorities-home.pl">Authorities</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/serials/serials-home.pl">Serials</a></li>
+                        
+                        
+                        
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/reports/reports-home.pl">Reports</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/suggestion/suggestion.pl">Suggestions</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/tools-home.pl">Tools</a></li>
+                        
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/admin/admin-home.pl">Administration</a></li>
+                        
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/about.pl">About Koha</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+
+            <ul id="user-menu" class="nav navbar-nav">
+                
+                    <li class="nav-item dropdown" id="logged-in-dropdown">
+                        <a id="logged-in-menu" href="http://localhost:8080/cgi-bin/koha/mainpage.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="logged-in-info-brief">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            <span id="logged-in-info-full">
+                                
+                                <span class="loggedinusername is_superlibrarian" data-loggedinusername="Bibliotecário" data-is-superlibrarian="is_superlibrarian">Bibliotecário</span>
+                                <span class="loggedincategorycode content_hidden" data-loggedincategorycode="B">B</span>
+                                
+                                    <strong>
+                                        <span class="logged-in-branch-name" data-logged-in-branch-name="Castro Alves">Castro Alves</span>
+                                        <span class="logged-in-branch-code content_hidden" data-logged-in-branch-code="MAIN">MAIN</span>
+                                    </strong>
+                                
+                                
+                                
+                            </span>
+                            <b class="caret"></b>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" role="menu" aria-labelledby="logged-in-menu">
+                            <li class="loggedin-menu-label">
+                                Logged in as:<br>
+                                <span class="loggedinusername">Bibliotecário</span>
+                            </li>
+                            <li class="loggedin-menu-label">
+                                
+                                    Location: <br>
+                                    <span class="logged-in-branch-name">Castro Alves</span>
+                                    <span class="logged-in-branch-code content_hidden">MAIN</span>
+                                
+                            </li>
+
+                            
+
+                            
+
+                            
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <div id="set_library_controls">
+                                        <div>
+                                            <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/circ/set-library.pl">
+                                                
+                                                    
+                                                        Set library
+                                                    
+                                                
+                                            </a>
+                                        </div>
+                                        
+                                            <div>
+                                                <a id="branch_select_cog" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl#" role="button" aria-label="Toggle panel for login settings" aria-expanded="false">
+                                                    <i class="fa fa-cog" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        
+                                    </div>
+                                </li>
+
+                                <li id="setlibrary_panel" style="display:none"></li>
+                            
+                            
+
+                            
+                                <li class="nav-item toplinks-myaccount">
+                                    <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/members/moremember.pl?borrowernumber=1">My account</a>
+                                </li>
+                                <li class="nav-item toplinks-mycheckouts">
+                                    <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/circ/circulation.pl?borrowernumber=1">My checkouts</a>
+                                </li>
+                            
+
+                            
+                            <li class="nav-item">
+                                <a id="logout" class="toplinks dropdown-item" href="http://localhost:8080/cgi-bin/koha/mainpage.pl?logout.x=1">Log out</a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                        <li class="nav-item dropdown" id="debug-controls-dropdown">
+                            <a id="debug-controls-menu" href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Debug controls">
+                                <i id="debug-icon" class="fa fa-bug"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" role="menu" aria-labelledby="debug-controls-menu">
+                                <li>
+                                    <a id="toggleUserCSS" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl#"> <i class="fa fa-fw fa-brands fa-css3"></i> <span class="toggle-text">Disable custom CSS</span> </a>
+                                </li>
+                                <li>
+                                    <a id="toggleUserJS" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl#"> <i class="fa fa-fw fa-brands fa-square-js"></i> <span class="toggle-text">Disable custom JS</span> </a>
+                                </li>
+                                <li>
+                                    <a id="toggleStylesheets" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl#"> <i class="fa fa-fw fa-file-code"></i> <span class="toggle-text">Disable custom stylesheets</span> </a>
+                                </li>
+                            </ul>
+                        </li>
+                    
+                    
+
+                
+            </ul>
+        </div>
+    </div>
+
+    
+</nav>
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- cat-search.inc -->
+
+    
+        <div id="header_search" class="toptabs"> 
+    
+    <div class="tab-content"> 
+        
+            
+    <!-- patron-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="circ_search_panel" role="tabpanel" aria-labelledby="circ_search-tab" tabindex="0"> 
+        <form action="http://localhost:8080/cgi-bin/koha/circ/circulation.pl" id="patronsearch" method="get">
+            <div class="form-title">
+                <label class="control-label" for="findborrower"><span class="control-text">Check out</span> <i class="fa fa-fw fa-upload" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input autocomplete="off" id="findborrower" name="findborrower" class="head-searchbox form-control ui-autocomplete-input" type="text" placeholder="Enter patron card number or partial name" size="40">
+
+                
+            </div>
+
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /patron-search-box.inc -->
+
+
+            
+    <!-- checkin-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="checkin_search_panel" role="tabpanel" aria-labelledby="checkin_search-tab" tabindex="0"> 
+        <form method="post" action="http://localhost:8080/cgi-bin/koha/circ/returns.pl" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="db1d0bdf3f0f396457307ba7284ea8d8c7f97aee,e8413ee2eaeec884c288932dfea9bd4cd97751d4,1793390975">
+
+            <div class="form-title">
+                <label class="control-label" for="ret_barcode"><span class="control-text">Check in</span> <i class="fa fa-fw fa-download" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input name="barcode" id="ret_barcode" class="head-searchbox form-control" accesskey="r" type="text" placeholder="Scan a barcode to check in" size="40">
+                <input type="hidden" name="op" value="cud-checkin">
+            </div>
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /checkin-search-box.inc -->
+
+
+            
+    <!-- renew-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="renew_search_panel" role="tabpanel" aria-labelledby="renew_search-tab" tabindex="0"> 
+        <form method="post" action="http://localhost:8080/cgi-bin/koha/circ/renew.pl" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="db1d0bdf3f0f396457307ba7284ea8d8c7f97aee,e8413ee2eaeec884c288932dfea9bd4cd97751d4,1793390975">
+
+
+            <div class="form-title">
+                <label class="control-label" for="ren_barcode"><span class="control-text">Renew</span> <i class="fa fa-fw fa-retweet" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input name="barcode" id="ren_barcode" class="head-searchbox form-control" accesskey="r" type="text" placeholder="Scan a barcode to renew" size="40">
+            </div>
+            <input type="hidden" name="op" value="cud-renew">
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /renew-search-box.inc -->
+
+
+        
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- catalogue-search-box.inc -->
+
+    
+        <div class="tab-pane show active" id="catalog_search_panel" role="tabpanel" aria-labelledby="catalog_search-tab" tabindex="0"> 
+    <form action="http://localhost:8080/cgi-bin/koha/catalogue/search.pl" method="get" id="cat-search-block">
+        <div class="form-title">
+            <label class="control-label" for="search-form"><span class="control-text">Search catalog</span> <i class="fa fa-fw fa-search" aria-hidden="true"></i></label>
+        </div>
+
+        <div class="form-content">
+            
+                <input type="text" name="q" id="search-form" size="20" value="" title="Enter the terms you wish to search for." class="query form-text head-searchbox form-control" placeholder="Enter search keywords">
+            
+
+            
+        </div>
+        <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+
+        <div class="form-extra-content">
+            
+
+            
+        </div>
+    </form>
+ </div>
+    
+
+<!-- /catalogue-search-box.inc -->
+
+        
+     </div>
+
+
+    
+    <ul class="nav nav-tabs" role="tablist">
+        
+        
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl#circ_search_panel" id="circ_search-tab" data-tabname="circ_search" aria-controls="circ_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#circ_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-upload" aria-hidden="true"></i> <span class="tab-title">Check out</span>
+            
+                </a>
+            
+        
+    </li>
+
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl#checkin_search_panel" id="checkin_search-tab" data-tabname="checkin_search" aria-controls="checkin_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#checkin_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-download" aria-hidden="true"></i> <span class="tab-title">Check in</span>
+            
+                </a>
+            
+        
+    </li>
+
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl#renew_search_panel" id="renew_search-tab" data-tabname="renew_search" aria-controls="renew_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#renew_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-retweet" aria-hidden="true"></i> <span class="tab-title">Renew</span>
+            
+                </a>
+            
+        
+    </li>
+
+        
+        
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link active" href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl#catalog_search_panel" id="catalog_search-tab" data-tabname="catalog_search" aria-controls="catalog_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#catalog_search_panel" aria-selected="true">
+                    
+                <i class="fa fa-fw fa-search" aria-hidden="true"></i> <span class="tab-title">Search catalog</span>
+            
+                </a>
+            
+        
+    </li>
+
+        
+    
+    </ul>
+
+ </div>
+    
+
+<!-- /cat-search.inc -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="sub-header">
+    
+    
+    <nav id="breadcrumbs" aria-label="Breadcrumb">
+        <ol class="breadcrumb">
+            
+            
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/mainpage.pl" title="Home"><span class="visually-hidden-focusable">Home</span></a> </li>
+        
+    
+
+            
+        
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/tools/tools-home.pl">Tools</a> </li>
+        
+    
+
+        
+            
+    
+        
+            <li class="breadcrumb-item active" aria-current="page">
+                <a aria-disabled="true" tabindex="-1"> <span>Log viewer</span> </a>
+            </li>
+        
+    
+
+        
+    
+        </ol>
+    </nav>
+
+
+    <nav id="shortcut" class="shortcut" aria-label="Quick shortcuts">
+    
+
+    <div>
+        <a class="" href="http://localhost:8080/cgi-bin/koha/help.pl" id="helper"><i class="fa-solid fa-circle-question"></i> <span>Help</span></a>
+    </div>
+</nav>
+
+</div>
+
+
+
+
+    
+        
+    
+
+
+
+<div class="main container-fluid">
+    <div class="row">
+        
+        
+            <div class="col-md-10 order-sm-1 order-md-2">
+                <main>
+                    <div id="messages">
+    
+
+    <div id="transient_result"></div>
+</div>
+
+                    
+    <h1>Log viewer</h1>
+    <form method="get" action="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl">
+        
+        <input type="hidden" name="src" value="">
+        <fieldset class="rows">
+            <ol>
+                <li>
+                    <label for="user">Librarian:</label>
+                    <input type="text" name="user" id="user" value="" class="ui-autocomplete-input" autocomplete="off">
+                </li>
+                
+                    <li>
+                        <label>Modules:</label>
+                        <div class="log_modules">
+                            
+                                <label for="moduleALL" class="viewlog"><input type="checkbox" id="moduleALL" name="modules" value=""> All</label>
+                            
+                            
+                                
+                                    <label for="moduleAPIKEYS" class="viewlog"><input type="checkbox" id="moduleAPIKEYS" name="modules" value="APIKEYS" disabled=""> 
+    
+        <span>API keys</span><a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=ApiKeyLog" target="_blank"><i class="log-disabled fa-solid fa-triangle-exclamation" data-log="ApiKeyLog" aria-label="Log not enabled" data-bs-original-title="Log not enabled"></i></a>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleAUTH" class="viewlog"><input type="checkbox" id="moduleAUTH" name="modules" value="AUTH" disabled=""> 
+    
+        <span>Authentication</span>
+            <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=AuthFailureLog|AuthSuccessLog" target="_blank"><i class="log-disabled fa-solid fa-triangle-exclamation" data-log="AuthFailureLog|AuthSuccessLog" aria-label="Log not enabled" data-bs-original-title="Log not enabled"></i></a>
+        
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleCATALOGUING" class="viewlog"><input type="checkbox" id="moduleCATALOGUING" name="modules" value="CATALOGUING" disabled=""> 
+    
+        <span>Cataloging</span>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleAUTHORITIES" class="viewlog"><input type="checkbox" id="moduleAUTHORITIES" name="modules" value="AUTHORITIES" disabled=""> 
+    
+        <span>Authorities</span>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleMEMBERS" class="viewlog"><input type="checkbox" id="moduleMEMBERS" name="modules" value="MEMBERS" disabled=""> 
+    
+        <span>Patrons</span>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleACQUISITIONS" class="viewlog"><input type="checkbox" id="moduleACQUISITIONS" name="modules" value="ACQUISITIONS" disabled=""> 
+    
+        <span>Acquisitions</span><a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=AcquisitionLog" target="_blank"><i class="log-disabled fa-solid fa-triangle-exclamation" data-log="AcquisitionLog" aria-label="Log not enabled" data-bs-original-title="Log not enabled"></i></a>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleSERIAL" class="viewlog"><input type="checkbox" id="moduleSERIAL" name="modules" value="SERIAL" disabled=""> 
+    
+        <span>Serials</span>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleHOLDS" class="viewlog"><input type="checkbox" id="moduleHOLDS" name="modules" value="HOLDS" disabled=""> 
+    
+        <span>Holds</span><a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=HoldsLog" target="_blank"><i class="log-disabled fa-solid fa-triangle-exclamation" data-log="HoldsLog" aria-label="Log not enabled" data-bs-original-title="Log not enabled"></i></a>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleILL" class="viewlog"><input type="checkbox" id="moduleILL" name="modules" value="ILL" disabled=""> 
+    
+        <span>Interlibrary loans</span><a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=IllLog" target="_blank"><i class="log-disabled fa-solid fa-triangle-exclamation" data-log="IllLog" aria-label="Log not enabled" data-bs-original-title="Log not enabled"></i></a>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleILL_BATCHES" class="viewlog"><input type="checkbox" id="moduleILL_BATCHES" name="modules" value="ILL_BATCHES" disabled=""> 
+    
+        <span>Interlibrary loan batches</span><a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=IllLog" target="_blank"><i class="log-disabled fa-solid fa-triangle-exclamation" data-log="IllLog" aria-label="Log not enabled" data-bs-original-title="Log not enabled"></i></a>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleCIRCULATION" class="viewlog"><input type="checkbox" id="moduleCIRCULATION" name="modules" value="CIRCULATION" disabled=""> 
+    
+        <span>Circulation</span>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleCLAIMS" class="viewlog"><input type="checkbox" id="moduleCLAIMS" name="modules" value="CLAIMS" disabled=""> 
+    
+        <span>Claims</span>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleFINES" class="viewlog"><input type="checkbox" id="moduleFINES" name="modules" value="FINES" disabled=""> 
+    
+        <span>Fines</span>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleSYSTEMPREFERENCE" class="viewlog"><input type="checkbox" id="moduleSYSTEMPREFERENCE" name="modules" value="SYSTEMPREFERENCE" disabled=""> 
+    
+        <span>System preferences</span>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleCRONJOBS" class="viewlog"><input type="checkbox" id="moduleCRONJOBS" name="modules" value="CRONJOBS" disabled=""> 
+    
+        <span>Cron jobs</span><a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=CronjobLog" target="_blank"><i class="log-disabled fa-solid fa-triangle-exclamation" data-log="CronjobLog" aria-label="Log not enabled" data-bs-original-title="Log not enabled"></i></a>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleREPORTS" class="viewlog"><input type="checkbox" id="moduleREPORTS" name="modules" value="REPORTS" disabled=""> 
+    
+        <span>Reports</span><a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=ReportsLog" target="_blank"><i class="log-disabled fa-solid fa-triangle-exclamation" data-log="ReportsLog" aria-label="Log not enabled" data-bs-original-title="Log not enabled"></i></a>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleSEARCHENGINE" class="viewlog"><input type="checkbox" id="moduleSEARCHENGINE" name="modules" value="SEARCHENGINE" disabled=""> 
+    
+        <span>Search engine</span>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleNOTICES" class="viewlog"><input type="checkbox" id="moduleNOTICES" name="modules" value="NOTICES" disabled=""> 
+    
+        <span>Notices</span><a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=NoticesLog" target="_blank"><i class="log-disabled fa-solid fa-triangle-exclamation" data-log="NoticesLog" aria-label="Log not enabled" data-bs-original-title="Log not enabled"></i></a>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleNEWS" class="viewlog"><input type="checkbox" id="moduleNEWS" name="modules" value="NEWS" disabled=""> 
+    
+        <span>Additional content</span><a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=AdditionalContentLog" target="_blank"><i class="log-disabled fa-solid fa-triangle-exclamation" data-log="AdditionalContentLog" aria-label="Log not enabled" data-bs-original-title="Log not enabled"></i></a>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleRECALLS" class="viewlog"><input type="checkbox" id="moduleRECALLS" name="modules" value="RECALLS" disabled=""> 
+    
+        <span>Recalls</span>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleSUGGESTION" class="viewlog"><input type="checkbox" id="moduleSUGGESTION" name="modules" value="SUGGESTION" disabled=""> 
+    
+        <span>Suggestions</span><a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=SuggestionsLog" target="_blank"><i class="log-disabled fa-solid fa-triangle-exclamation" data-log="SuggestionsLog" aria-label="Log not enabled" data-bs-original-title="Log not enabled"></i></a>
+    
+</label>
+                                
+                            
+                                
+                                    <label for="moduleTRANSFERS" class="viewlog"><input type="checkbox" id="moduleTRANSFERS" name="modules" value="TRANSFERS" disabled=""> 
+    
+        <span>Transfers</span><a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=TransfersLog" target="_blank"><i class="log-disabled fa-solid fa-triangle-exclamation" data-log="TransfersLog" aria-label="Log not enabled" data-bs-original-title="Log not enabled"></i></a>
+    
+</label>
+                                
+                            
+                        </div>
+                    </li>
+                
+                <li>
+                    <label>Actions:</label>
+                    <div class="log_modules">
+                        
+                            <label for="actionALL" class="viewlog"><input type="checkbox" id="actionALL" name="actions" value=""> All</label>
+                        
+
+                        
+                            
+                                <label for="actionACTIVATE" class="viewlog"><input type="checkbox" id="actionACTIVATE" name="actions" value="ACTIVATE" disabled=""> 
+    
+        <span>Activate</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionADD" class="viewlog"><input type="checkbox" id="actionADD" name="actions" value="ADD" disabled=""> 
+    
+        <span>Add</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionDELETE" class="viewlog"><input type="checkbox" id="actionDELETE" name="actions" value="DELETE" disabled=""> 
+    
+        <span>Delete</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionMODIFY" class="viewlog"><input type="checkbox" id="actionMODIFY" name="actions" value="MODIFY" disabled=""> 
+    
+        <span>Modify</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionRESTORE" class="viewlog"><input type="checkbox" id="actionRESTORE" name="actions" value="RESTORE" disabled=""> 
+    
+        <span>Restore</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionREVOKE" class="viewlog"><input type="checkbox" id="actionREVOKE" name="actions" value="REVOKE" disabled=""> 
+    
+        <span>Revoke</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionISSUE" class="viewlog"><input type="checkbox" id="actionISSUE" name="actions" value="ISSUE" disabled=""> 
+    
+        <span>Checkout</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionRETURN" class="viewlog"><input type="checkbox" id="actionRETURN" name="actions" value="RETURN" disabled=""> 
+    
+        <span>Check-in</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionRENEW" class="viewlog"><input type="checkbox" id="actionRENEW" name="actions" value="RENEW" disabled=""> 
+    
+        <span>Renew</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionCREATE" class="viewlog"><input type="checkbox" id="actionCREATE" name="actions" value="CREATE" disabled=""> 
+    
+        <span>Create</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionCANCEL" class="viewlog"><input type="checkbox" id="actionCANCEL" name="actions" value="CANCEL" disabled=""> 
+    
+        <span>Cancel</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionFILL" class="viewlog"><input type="checkbox" id="actionFILL" name="actions" value="FILL" disabled=""> 
+    
+        <span>Fill</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionSUSPEND" class="viewlog"><input type="checkbox" id="actionSUSPEND" name="actions" value="SUSPEND" disabled=""> 
+    
+        <span>Suspend</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionRESUME" class="viewlog"><input type="checkbox" id="actionRESUME" name="actions" value="RESUME" disabled=""> 
+    
+        <span>Resume</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionADDCIRCMESSAGE" class="viewlog"><input type="checkbox" id="actionADDCIRCMESSAGE" name="actions" value="ADDCIRCMESSAGE" disabled=""> 
+    
+        <span>Add circulation message</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionMODCIRCMESSAGE" class="viewlog"><input type="checkbox" id="actionMODCIRCMESSAGE" name="actions" value="MODCIRCMESSAGE" disabled=""> 
+    
+        <span>Modify circulation message</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionDELCIRCMESSAGE" class="viewlog"><input type="checkbox" id="actionDELCIRCMESSAGE" name="actions" value="DELCIRCMESSAGE" disabled=""> 
+    
+        <span>Delete circulation message</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionSTATUS_CHANGE" class="viewlog"><input type="checkbox" id="actionSTATUS_CHANGE" name="actions" value="STATUS_CHANGE" disabled=""> 
+    
+        <span>Change ILL request status</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionPATRON_NOTICE" class="viewlog"><input type="checkbox" id="actionPATRON_NOTICE" name="actions" value="PATRON_NOTICE" disabled=""> 
+    
+        <span>ILL notice sent to patron</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionCHANGE_PASS" class="viewlog"><input type="checkbox" id="actionCHANGE_PASS" name="actions" value="CHANGE PASS" disabled=""> 
+    
+        <span>Change password</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionRESET_PASS" class="viewlog"><input type="checkbox" id="actionRESET_PASS" name="actions" value="RESET PASS" disabled=""> 
+    
+        <span>Reset password</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionRun" class="viewlog"><input type="checkbox" id="actionRun" name="actions" value="Run" disabled=""> 
+    
+        <span>Run</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionEnd" class="viewlog"><input type="checkbox" id="actionEnd" name="actions" value="End" disabled=""> 
+    
+        <span>End</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionPATRON_MERGE" class="viewlog"><input type="checkbox" id="actionPATRON_MERGE" name="actions" value="PATRON_MERGE" disabled=""> 
+    
+        <span>Merge</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionEDIT_MAPPINGS" class="viewlog"><input type="checkbox" id="actionEDIT_MAPPINGS" name="actions" value="EDIT_MAPPINGS" disabled=""> 
+    
+        <span>Edit mappings</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionRESET_MAPPINGS" class="viewlog"><input type="checkbox" id="actionRESET_MAPPINGS" name="actions" value="RESET_MAPPINGS" disabled=""> 
+    
+        <span>Reset mappings</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionADD_BASKET" class="viewlog"><input type="checkbox" id="actionADD_BASKET" name="actions" value="ADD_BASKET" disabled=""> 
+    
+        <span>Create an acquisitions basket</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionMODIFY_BASKET" class="viewlog"><input type="checkbox" id="actionMODIFY_BASKET" name="actions" value="MODIFY_BASKET" disabled=""> 
+    
+        <span>Modify an acquisitions basket</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionMODIFY_BASKET_HEADER" class="viewlog"><input type="checkbox" id="actionMODIFY_BASKET_HEADER" name="actions" value="MODIFY_BASKET_HEADER" disabled=""> 
+    
+        <span>Modify an acquisitions basket header</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionMODIFY_BASKET_USERS" class="viewlog"><input type="checkbox" id="actionMODIFY_BASKET_USERS" name="actions" value="MODIFY_BASKET_USERS" disabled=""> 
+    
+        <span>Modify an acquisitions basket's users</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionCLOSE_BASKET" class="viewlog"><input type="checkbox" id="actionCLOSE_BASKET" name="actions" value="CLOSE_BASKET" disabled=""> 
+    
+        <span>Close an acquisitions basket</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionAPPROVE_BASKET" class="viewlog"><input type="checkbox" id="actionAPPROVE_BASKET" name="actions" value="APPROVE_BASKET" disabled=""> 
+    
+        <span>Approve an acquisitions basket</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionREOPEN_BASKET" class="viewlog"><input type="checkbox" id="actionREOPEN_BASKET" name="actions" value="REOPEN_BASKET" disabled=""> 
+    
+        <span>Reopen an acquisitions basket</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionCANCEL_ORDER" class="viewlog"><input type="checkbox" id="actionCANCEL_ORDER" name="actions" value="CANCEL_ORDER" disabled=""> 
+    
+        <span>Cancel an order</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionCREATE_ORDER" class="viewlog"><input type="checkbox" id="actionCREATE_ORDER" name="actions" value="CREATE_ORDER" disabled=""> 
+    
+        <span>Create an order</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionMODIFY_ORDER" class="viewlog"><input type="checkbox" id="actionMODIFY_ORDER" name="actions" value="MODIFY_ORDER" disabled=""> 
+    
+        <span>Modify an order</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionCREATE_INVOICE_ADJUSTMENT" class="viewlog"><input type="checkbox" id="actionCREATE_INVOICE_ADJUSTMENT" name="actions" value="CREATE_INVOICE_ADJUSTMENT" disabled=""> 
+    
+        <span>Create an invoice adjustment</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionUPDATE_INVOICE_ADJUSTMENT" class="viewlog"><input type="checkbox" id="actionUPDATE_INVOICE_ADJUSTMENT" name="actions" value="UPDATE_INVOICE_ADJUSTMENT" disabled=""> 
+    
+        <span>Modify an invoice adjustment</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionDELETE_INVOICE_ADJUSTMENT" class="viewlog"><input type="checkbox" id="actionDELETE_INVOICE_ADJUSTMENT" name="actions" value="DELETE_INVOICE_ADJUSTMENT" disabled=""> 
+    
+        <span>Delete an invoice adjustment</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionRECEIVE_ORDER" class="viewlog"><input type="checkbox" id="actionRECEIVE_ORDER" name="actions" value="RECEIVE_ORDER" disabled=""> 
+    
+        <span>Receive an order</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionMODIFY_BUDGET" class="viewlog"><input type="checkbox" id="actionMODIFY_BUDGET" name="actions" value="MODIFY_BUDGET" disabled=""> 
+    
+        <span>Modify a budget</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionMODIFY_FUND" class="viewlog"><input type="checkbox" id="actionMODIFY_FUND" name="actions" value="MODIFY_FUND" disabled=""> 
+    
+        <span>Modify a fund</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionCREATE_FUND" class="viewlog"><input type="checkbox" id="actionCREATE_FUND" name="actions" value="CREATE_FUND" disabled=""> 
+    
+        <span>Create a fund</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionDELETE_FUND" class="viewlog"><input type="checkbox" id="actionDELETE_FUND" name="actions" value="DELETE_FUND" disabled=""> 
+    
+        <span>Delete a fund</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionACQUISITION_CLAIM" class="viewlog"><input type="checkbox" id="actionACQUISITION_CLAIM" name="actions" value="ACQUISITION CLAIM" disabled=""> 
+    
+        <span>Acquisition claim</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionACQUISITION_ORDER" class="viewlog"><input type="checkbox" id="actionACQUISITION_ORDER" name="actions" value="ACQUISITION ORDER" disabled=""> 
+    
+        <span>Acquisition order</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionOVERDUE" class="viewlog"><input type="checkbox" id="actionOVERDUE" name="actions" value="OVERDUE" disabled=""> 
+    
+        <span>Overdue</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionEXPIRE" class="viewlog"><input type="checkbox" id="actionEXPIRE" name="actions" value="EXPIRE" disabled=""> 
+    
+        <span>Expire</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionCREATE_RESTRICTION" class="viewlog"><input type="checkbox" id="actionCREATE_RESTRICTION" name="actions" value="CREATE_RESTRICTION" disabled=""> 
+    
+        <span>Create restriction</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionMODIFY_RESTRICTION" class="viewlog"><input type="checkbox" id="actionMODIFY_RESTRICTION" name="actions" value="MODIFY_RESTRICTION" disabled=""> 
+    
+        <span>Modify restriction</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionDELETE_RESTRICTION" class="viewlog"><input type="checkbox" id="actionDELETE_RESTRICTION" name="actions" value="DELETE_RESTRICTION" disabled=""> 
+    
+        <span>Delete restriction</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionMODIFY_CARDNUMBER" class="viewlog"><input type="checkbox" id="actionMODIFY_CARDNUMBER" name="actions" value="MODIFY_CARDNUMBER" disabled=""> 
+    
+        <span>Modify card number</span>
+    
+</label>
+                            
+                        
+                            
+                                <label for="actionRESET_2FA" class="viewlog"><input type="checkbox" id="actionRESET_2FA" name="actions" value="RESET 2FA" disabled=""> 
+    
+        <span>Reset 2FA</span>
+    
+</label>
+                            
+                        
+                    </div>
+                </li>
+                <li>
+                    
+                        <label for="object">Object: </label>
+                        <input type="text" id="object" name="object" value="">
+                    
+                </li>
+                <li>
+                    <label for="info">Info:</label>
+                    <input type="text" id="info" name="info" value="">
+                </li>
+                <li>
+                    <label>Interface:</label>
+                    
+                        <label for="interfaceALL" class="viewlog"><input type="checkbox" id="interfaceALL" name="interfaces" value=""> All</label>
+                    
+
+                    
+                        
+                            <label for="interfaceINTRANET" class="viewlog"><input type="checkbox" id="interfaceINTRANET" name="interfaces" value="INTRANET" disabled=""> 
+    
+        <span>Staff interface</span>
+    
+</label>
+                        
+                    
+                        
+                            <label for="interfaceOPAC" class="viewlog"><input type="checkbox" id="interfaceOPAC" name="interfaces" value="OPAC" disabled=""> 
+    
+        <span>OPAC</span>
+    
+</label>
+                        
+                    
+                        
+                            <label for="interfaceSIP" class="viewlog"><input type="checkbox" id="interfaceSIP" name="interfaces" value="SIP" disabled=""> 
+    
+        <span>SIP</span>
+    
+</label>
+                        
+                    
+                        
+                            <label for="interfaceCOMMANDLINE" class="viewlog"><input type="checkbox" id="interfaceCOMMANDLINE" name="interfaces" value="COMMANDLINE" disabled=""> 
+    
+        <span>Command-line</span>
+    
+</label>
+                        
+                    
+                        
+                            <label for="interfaceAPI" class="viewlog"><input type="checkbox" id="interfaceAPI" name="interfaces" value="API" disabled=""> 
+    
+        <span>REST API</span>
+    
+</label>
+                        
+                    
+                        
+                            <label for="interfaceCRON" class="viewlog"><input type="checkbox" id="interfaceCRON" name="interfaces" value="CRON" disabled=""> 
+    
+        <span>Cron job</span>
+    
+</label>
+                        
+                    
+                </li>
+                <li>
+                    <label for="from"> Display from: </label> <input type="hidden" size="10" id="from" name="from" value="" class="flatpickr flatpickr-input" data-date_to="to"><span class="flatpickr_wrapper flatpickr_wrapper_from"><input class="flatpickr flatpickr-input" placeholder="" tabindex="0" type="text" autocomplete="off"><a href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl#" class="clear_date fa fa-fw fa-times" aria-hidden="true" aria-label="Clear date"></a></span>
+                    <div class="hint">(DD/MM/YYYY)
+</div>
+                </li>
+                <li>
+                    <label for="to">Display to: </label> <input size="10" id="to" name="to" type="hidden" value="" class="flatpickr flatpickr-input"><span class="flatpickr_wrapper flatpickr_wrapper_to"><input class="flatpickr flatpickr-input" placeholder="" tabindex="0" type="text" autocomplete="off"><a href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl#" class="clear_date fa fa-fw fa-times" aria-hidden="true" aria-label="Clear date"></a></span>
+                    <div class="hint">(DD/MM/YYYY)
+</div>
+                </li>
+            </ol>
+        </fieldset>
+        <fieldset class="rows">
+            <legend>Output</legend>
+            <ol>
+                <li> <label for="screen">To screen in the browser:</label> <input id="screen" type="radio" checked="checked" name="output" value="screen"> </li>
+                <li>
+                    <label for="file">To a file:</label>
+                    <input id="file" type="radio" name="output" value="file">
+                    <label class="inline" for="basename">Named:</label>
+                    <input type="text" name="basename" id="basename" value="Export">
+                    <!--
+                    <label for="MIME" class="inline">Into an application:</label>
+                    
+                    
+                    -->
+                    <input type="hidden" name="report_name" value="">
+                </li>
+            </ol>
+        </fieldset>
+        <fieldset class="action">
+            <input type="submit" class="btn btn-primary" value="Submit">
+            <input type="hidden" name="do_it" value="1">
+        </fieldset>
+    </form>
+    
+
+                </main>
+            </div>
+            <div class="col-md-2 order-sm-2 order-md-1">
+                <aside>
+                    
+                        
+                            
+
+
+
+<div id="tools-menu" class="sidebar_menu">
+    <ul>
+        <li><a href="http://localhost:8080/cgi-bin/koha/tools/tools-home.pl">Tools home</a></li>
+    </ul>
+    
+        <h5>Patrons and circulation</h5>
+        <ul>
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/patron_lists/lists.pl">Patron lists</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/clubs/clubs.pl">Patron clubs</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/reviews/reviewswaiting.pl">Comments</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl">Import patrons</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/letter.pl">Notices and slips</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/overduerules.pl">Overdue notice/status triggers</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/patroncards/home.pl">Patron card creator</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/cleanborrowers.pl">Batch patron deletion and anonymization</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/modborrowers.pl">Batch patron modification</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/batch_extend_due_dates.pl">Batch extend due dates</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/batch_modify_holds.pl">Batch modify holds</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tags/review.pl">Tags</a></li>
+            
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/rotating_collections/rotatingCollections.pl">Rotating collections</a></li>
+            
+        </ul>
+    
+
+    
+        <h5>Additional tools</h5>
+        <ul>
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/holidays.pl">Calendar</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/csv-profiles.pl">CSV profiles</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl" class="current">Log viewer</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/additional-contents.pl?category=news">News</a></li>
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/additional-contents.pl?category=html_customizations">HTML customizations</a></li>
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/additional-contents.pl?category=pages">Pages</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/scheduler.pl">Task scheduler</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/quotes.pl">Quote editor</a></li>
+            
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/upload.pl">Uploads</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/access_files.pl">Access files</a></li>
+            
+            
+        </ul>
+    
+    
+</div>
+<!-- /.sidebar_menu -->
+
+                        
+                    
+                </aside>
+            </div>
+        
+    </div>
+</div>
+
+<script nonce="" type="importmap">
+    { "imports": { "vue": "/intranet-tmpl/prog/js/vue/dist/islands.esm_26.0505000.js" } }
+</script>
+<script src="./Log viewer › Tools › Koha_files/islands.esm_26.0505000.js.download" type="module">
+</script>
+<script nonce="" type="module">
+    import { hydrate } from "/intranet-tmpl/prog/js/vue/dist/islands.esm_26.0505000.js";
+    hydrate();
+</script>
+
+
+<div class="modal" id="compareInfo" tabindex="-1" role="dialog" aria-labelledby="compareInfoLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="compareInfoLabel">Compare preference values</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="compare_pane col-sm-6" id="col1">
+                        <h5>Older version</h5>
+                        <pre></pre>
+                    </div>
+                    <div class="compare_pane col-sm-6" id="col2">
+                        <h5>Newer version</h5>
+                        <pre></pre>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default deny" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /#compareInfo -->
+
+
+
+
+
+
+
+
+
+
+
+    
+        <div id="changelanguage" class="navbar navbar-expand navbar-light bg-light">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav_lang_menu" aria-controls="nav_lang_menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nav_lang_menu">
+                    <ul id="i18nMenu" class="navbar-nav me-auto">
+                        
+                            
+                                
+                                    
+                                        
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/changelanguage.pl?language=pt-BR">
+                                                    
+                                                        Português
+                                                    
+                                                </a>
+                                            </li>
+                                        
+                                    
+                                
+                            
+                        
+                            
+                                
+                                    
+                                        
+                                            <li class="nav-item">
+                                                <a class="nav-link active currentlanguage" aria-current="page" aria-disabled="true" tabindex="-1">
+                                                    
+                                                        English
+                                                    
+                                                </a>
+                                            </li>
+                                        
+                                    
+                                
+                            
+                        
+                    </ul>
+                    <!-- /#i18nMenu -->
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#changelanguage -->
+    
+
+
+<span id="audio-alert"></span>
+
+<!-- Cookie consent -->
+
+<!-- CookieConsentedJS code that may run -->
+
+
+
+    
+
+
+
+
+
+
+    <script nonce="">
+        if (self === top) {
+            var antiClickjack = document.getElementById("antiClickjack");
+            antiClickjack.parentNode.removeChild(antiClickjack);
+        } else {
+            top.location = self.location;
+        }
+    </script>
+
+
+<script src="./Log viewer › Tools › Koha_files/jquery-3.6.0.min_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/jquery-migrate-3.3.2.min_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/jquery-ui-1.13.2.min_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/shortcut_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/js.cookie-2.2.1.min_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/jquery.highlight-5_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/bootstrap.bundle.min_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/jquery.validate.min_26.0505000.js.download"></script>
+<!-- koha core js -->
+<script src="./Log viewer › Tools › Koha_files/patron-format_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/staff-global_26.0505000.js.download"></script>
+<script type="module" src="./Log viewer › Tools › Koha_files/form-submit_26.0505000.js.download"></script>
+
+
+
+
+<script src="./Log viewer › Tools › Koha_files/dayjs.min_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/utc_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/timezone_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/customParseFormat_26.0505000.js.download"></script>
+<script nonce="">
+    dayjs.extend(window.dayjs_plugin_utc);
+    dayjs.extend(window.dayjs_plugin_timezone);
+    dayjs.extend(window.dayjs_plugin_customParseFormat);
+</script>
+<!-- js-date-format.inc -->
+<script nonce="">
+    (function() {
+        var def_date_format = 'metric';
+        var def_time_format = '24hr';
+        var def_tz = 'America/Sao_Paulo';
+
+        var get_date_pattern = function(format) {
+            var date_pattern = 'YYYY-MM-DD';
+            if(format == 'us') date_pattern = 'MM/DD/YYYY';
+            if(format == 'metric') date_pattern = 'DD/MM/YYYY';
+            if(format == 'dmydot') date_pattern = 'DD.MM.YYYY';
+            return date_pattern;
+        };
+
+        var get_time_pattern = function(format) {
+            var time_pattern = 'HH:mm';
+            if(format == '12hr') time_pattern = 'hh:mm a';
+            return time_pattern;
+        };
+
+        /**
+         * A JS equivalent of the KohaDates TT Plugin. Passed an rfc3339 formatted date string,
+         * or JS Date, the function will return a date string formatted as per the koha instance config.
+         * @param {String|Date} value                   rfc3339 formatted date string or a JS Date object.
+         * @param {Object} [options]                    Optional set of switches for changing date handling
+         * @property {String} [options.tz]              String representing the timezone of the passed date
+         * @property {Boolean} [options.no_tz_adjust]   Enable/Disable timezone adjustment
+         * @property {String} [options.dateformat]
+         * @property {Boolean} [options.withtime]       Enable/Disable appearance of time in returned string
+         * @property {String} [options.timeformat]
+         * @property {Boolean} [options.as_due_date]    Enable/Disable due date output format
+         * @returns {String}                            A date string formatted as per the koha instance configuration.
+         */
+        window.$date = function(value, options) {
+            if(!value) return '';
+            let tz = (options&&options.tz)||def_tz;
+            let no_tz_adjust = (options&&options.no_tz_adjust)||false;
+            var m = dayjs(value);
+            if ( !no_tz_adjust && ! value.match(/^\d{4}-\d{2}-\d{2}$/ ) ) {
+                m = m.tz(tz);
+            }
+
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            var withtime = (options&&options.withtime)||false;
+
+            if(dateformat=='rfc3339' && withtime) return m.format();
+
+            var timeformat = (options&&options.timeformat)||def_time_format;
+            var date_pattern = get_date_pattern(dateformat);
+            let as_due_date = (options&&options.as_due_date);
+            if (as_due_date) {
+                withtime = !( m.hour() == 23 && m.minute() == 59 );
+            }
+            var time_pattern = !withtime?'':' '+get_time_pattern(timeformat);
+
+            return m.format(date_pattern+time_pattern);
+        }
+
+        window.$datetime = function(value, options) {
+            options = options||{};
+            options.withtime = true;
+            return $date(value, options);
+        };
+
+        window.$time = function(value, options) {
+            if(!value) return '';
+            var tz = (options&&options.tz)||def_tz;
+            var m = dayjs(value);
+            if(tz) m = m.tz(tz);
+
+            var dateformat = (options&&options.dateformat);
+            var timeformat = (dateformat=='rfc3339'&&'24hr')||(options&&options.timeformat)||def_time_format;
+
+            return m.format(get_time_pattern(timeformat)+(dateformat=='rfc3339'?':ss'+(!m.isUTC()?'Z':''):''))+(dateformat=='rfc3339' && m.isUTC()?'Z':'');
+        }
+
+        window.$date_to_rfc3339 = function(value, options) {
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            let m = dayjs(value, get_date_pattern(dateformat), true);
+            return m.format("YYYY-MM-DD");
+        }
+
+        /**
+        * A JS equivalent of the KohaTimes TT Plugin. Passed a time in HH:MM:SS or HH:MM format
+        * the function will return a time string formatted as per the koha instance config.
+        */
+
+        window.$kohatime = function(value) {
+            if(!value) return 'invalid time';
+            var intime = value.split(':');
+            var hours = intime[0];
+            var minutes = intime[1];
+
+            if ( hours < 0 || hours > 23 || minutes < 0 || minutes > 59 ) { return 'invalid time'; }
+
+            if ( def_time_format == '12hr') {
+                var ampm = ( hours >= 12 ) ? 'pm' : 'am';
+                hours = ( hours == 0 ) ? "12" : hours;
+                hours = ( hours > 12 ) ? ( hours - 12 ) : hours;
+
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0') + " " + ampm;
+            } else {
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0');
+            }
+        }
+
+        /**
+         * Returns the configured Koha server timezone.
+         * Useful for components that need to display dates/times in library timezone.
+         */
+        window.$timezone = function() {
+            return def_tz;
+        }
+
+        /**
+         * Converts a dayjs object to a Date for timeline/calendar display.
+         * Creates a Date that displays these exact values regardless of browser timezone.
+         * (Strips timezone info so JS interprets the values as browser-local time)
+         *
+         * Use this when you need to display a specific date/time from a known timezone
+         * (e.g., library timezone) and want it to appear the same for all users.
+         *
+         * @param {dayjs.Dayjs} dayjsObj - A dayjs object (typically converted to a specific timezone)
+         * @returns {Date} A Date object that will display the dayjs values in the browser
+         */
+        window.$toDisplayDate = function(dayjsObj) {
+            return new Date(dayjsObj.format('YYYY-MM-DDTHH:mm:ss'));
+        }
+
+    })();
+</script>
+<!-- / js-date-format.inc -->
+
+
+
+<!-- js-patron-get-age.inc -->
+
+<script nonce="">
+    (function() {
+
+        const tz = 'America/Sao_Paulo';
+        window.$get_age = function(dob, options) {
+            if(!dob) return '';
+
+            let today = new Date();
+            dob = new Date(dob);
+            if ( tz ) {
+                let today_tz = new Date(today.toLocaleString('en-US', {timeZone: tz}));
+                let diff = today.getTime() - today_tz.getTime();
+                today = new Date(today.getTime() - diff);
+
+                let dob_tz = new Date(dob.toLocaleString('en-US', {timeZone: tz}));
+                diff = dob.getTime() - dob_tz.getTime();
+                dob = new Date(dob.getTime() - diff);
+            }
+            let age = today.getFullYear() - dob.getFullYear();
+            let m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+    })();
+</script>
+<!-- / js-patron-get-age.inc -->
+
+<!-- js-patron-format-address.inc -->
+
+
+
+<script nonce="">
+    (function() {
+
+        const roadtypes = [];
+        let roadtypes_map = roadtypes.reduce((map, r) => {
+            map[r.authorised_value] = r.lib;
+            return map;
+        }, {});
+
+        function member_display_address_style_us(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(data.address) + ' ' + escape_str(roadtype_desc);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.city);
+                if ( data.state ) {
+                    if ( data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.state);
+                }
+                if ( data.postal_code ) {
+                    address += " " + escape_str(data.postal_code);
+                }
+                if ( data.country ) {
+                    if ( data.postal_code || data.state || data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.country)
+                }
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_de(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : ' ';
+                    address += escape_str(data.address) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.street_number);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_fr(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.address);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        window.$format_address = function(data, options) {
+            let line_break = options && options.no_line_break ? ' ' : '<br/>';
+            let include_li = options && options.include_li;return member_display_address_style_us(data, line_break, include_li);}
+
+    })();
+</script>
+<!-- / js-patron-format-address.inc -->
+
+
+
+
+<!-- validator-strings.inc -->
+<script nonce="">
+    $(document).ready(function () {
+        jQuery.extend(jQuery.validator.messages, {
+            required: _("This field is required."),
+            remote: _("Please fix this field."),
+            email: _("Please enter a valid email address."),
+            url: _("Please enter a valid URL."),
+            date: _("Please enter a valid date."),
+            dateISO: _("Please enter a valid date (ISO)."),
+            number: _("Please enter a valid number."),
+            digits: _("Please enter only digits."),
+            equalTo: _("Please enter the same value again."),
+            number: _("Please add amount in valid format: 0.00"),
+            maxlength: $.validator.format(_("Please enter no more than {0} characters.")),
+            minlength: $.validator.format(_("Please enter at least {0} characters.")),
+            rangelength: $.validator.format(_("Please enter a value between {0} and {1} characters long.")),
+            range: $.validator.format(_("Please enter a value between {0} and {1}.")),
+            max: $.validator.format(_("Please enter a value less than or equal to {0}.")),
+            min: $.validator.format(_("Please enter a value greater than or equal to {0}.")),
+            phone: $.validator.format(_("Please enter a valid phone number.")),
+        });
+    });
+</script>
+<!-- / validator-strings.inc -->
+
+
+    <!-- js_includes.inc: IntranetUserJS -->
+    <script nonce="">
+        /* koha-easy-installer ai-assistant begin */
+var KEI_AI_V = "1.5.130";
+$(document).ready(function () {
+    // koha.nexus AI assistant (Library tools > AI assistant on the staff home page).
+    if (!$("#main_intranet-main").length || $("#kei-ai").length) return;
+    var box = $("<div id=\"kei-ai\"></div>"), news = $("#area-news");
+    if (news.length) news.replaceWith(box);
+    else {
+        var col = $("#area-quote").parent();
+        if (!col.length) col = $("#container-main .row").first().children("div").first();
+        if (!col.length) return;
+        col.prepend(box);
+    }
+    var url = "/cgi-bin/koha/tools/ai_assistant.pl?v=" + encodeURIComponent(KEI_AI_V) + "&op=";
+    $("<link rel=\"stylesheet\">").attr("href", url + "css").appendTo("head");
+    $.ajax({ url: url + "js", dataType: "script", cache: true });
+});
+/* koha-easy-installer ai-assistant end */
+    </script>
+    <!-- / js_includes.inc: IntranetUserJS -->
+
+
+<!-- js_includes.inc -->
+
+    <script src="./Log viewer › Tools › Koha_files/basket_26.0505000.js.download"></script>
+
+
+
+
+
+<script nonce="">
+    var defaultPatronSearchFields = "firstname|preferred_name|middle_name|surname|othernames|cardnumber|userid";
+    var defaultPatronSearchMethod = "contains";
+    var extendedPatronAttributes = "1";
+    var loggedInLibrary = 'MAIN';
+    var singleBranchMode = '1';
+    var showPatronFirstnameIfDifferentThanPreferredname = 0;
+</script>
+
+    <script nonce="">
+        // PatronAutoComplete
+        var loggedInClass = "";
+        $(document).ready(function(){
+            
+                if ( $("#findborrower").length ) {
+                    patron_autocomplete($("#findborrower"), { 'link-to': 'circ' });
+                }
+                if ( $("#findborrower_main").length ) {
+                    patron_autocomplete($("#findborrower_main"), { 'link-to': 'circ' });
+                }
+            
+            if ( $("#searchmember").length ) {
+                patron_autocomplete($("#searchmember"), { 'link-to': 'patron' });
+            }
+        });
+    </script>
+
+
+
+
+
+    <script nonce="">
+        (function () {
+            function getURLParams() {
+                const params = new URLSearchParams(window.location.search);
+                return params;
+            }
+
+            function toggleURLParams(paramsToToggle) {
+                const url = new URL(window.location.href);
+                const params = url.searchParams;
+
+                // Check if all params are currently set
+                const allSet = paramsToToggle.every(param => params.get(param) === "yes");
+
+                if (allSet) {
+                    // Remove all params
+                    paramsToToggle.forEach(param => params.delete(param));
+                } else {
+                    // Add all params
+                    paramsToToggle.forEach(param => params.set(param, "yes"));
+                }
+
+                window.location.href = url.toString();
+            }
+
+            function updateButtonText() {
+                const params = getURLParams();
+
+                // User CSS button
+                const cssDisabled = params.get("DISABLE_SYSPREF_IntranetUserCSS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserCSS") === "yes";
+                const cssToggle = document.getElementById("toggleUserCSS");
+                if (cssToggle) {
+                    const cssText = cssToggle.querySelector(".toggle-text");
+                    if (cssText) cssText.textContent = cssDisabled ? _("Enable custom CSS") : _("Disable custom CSS");
+                }
+
+                // User JS button
+                const jsDisabled = params.get("DISABLE_SYSPREF_IntranetUserJS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserJS") === "yes";
+                const jsToggle = document.getElementById("toggleUserJS");
+                if (jsToggle) {
+                    const jsText = jsToggle.querySelector(".toggle-text");
+                    if (jsText) jsText.textContent = jsDisabled ? _("Enable custom JS") : _("Disable custom JS");
+                }
+
+                // Stylesheets button
+                const stylesheetsDisabled =
+                    params.get("DISABLE_SYSPREF_OpacAdditionalStylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_opaclayoutstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetcolorstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetstylesheet") === "yes";
+                const stylesheetsToggle = document.getElementById("toggleStylesheets");
+                if (stylesheetsToggle) {
+                    const stylesheetsText = stylesheetsToggle.querySelector(".toggle-text");
+                    if (stylesheetsText) stylesheetsText.textContent = stylesheetsDisabled ? _("Enable custom stylesheets") : _("Disable custom stylesheets");
+                }
+
+                // Update icon color based on whether any toggles are active
+                const anyDisabled = cssDisabled || jsDisabled || stylesheetsDisabled;
+                const debugIcon = document.getElementById("debug-icon");
+                if (debugIcon) {
+                    if (anyDisabled) {
+                        debugIcon.style.color = "#ffc107"; // Warning/amber color
+                    } else {
+                        debugIcon.style.color = ""; // Default color
+                    }
+                }
+            }
+
+            // Update button text on page load
+            updateButtonText();
+
+            // User CSS toggle
+            const cssToggle = document.getElementById("toggleUserCSS");
+            if (cssToggle) {
+                cssToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserCSS", "DISABLE_SYSPREF_OPACUserCSS"]);
+                });
+            }
+
+            // User JS toggle
+            const jsToggle = document.getElementById("toggleUserJS");
+            if (jsToggle) {
+                jsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserJS", "DISABLE_SYSPREF_OPACUserJS"]);
+                });
+            }
+
+            // Stylesheets toggle
+            const stylesheetsToggle = document.getElementById("toggleStylesheets");
+            if (stylesheetsToggle) {
+                stylesheetsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_OpacAdditionalStylesheet", "DISABLE_SYSPREF_opaclayoutstylesheet", "DISABLE_SYSPREF_intranetcolorstylesheet", "DISABLE_SYSPREF_intranetstylesheet"]);
+                });
+            }
+        })();
+    </script>
+
+<!-- / js_includes.inc -->
+
+    
+    
+
+
+<!-- calendar.inc -->
+<script nonce=""> var debug = ""; var dateformat_pref = "metric"; var flatpickr_dateformat_string = ""; var delimiter = ""; var altinput_dateformat = ""; switch ( dateformat_pref ){ case "us": flatpickr_dateformat_string = "m/d/Y"; altinput_dateformat = 'mm/dd/yyyy'; delimiter = "/"; break; case "metric": flatpickr_dateformat_string = "d/m/Y"; altinput_dateformat = 'dd/mm/yyyy'; delimiter = "/"; break; case "dmydot": flatpickr_dateformat_string = "d.m.Y"; altinput_dateformat = 'dd/mm/yyyy'; delimiter = "."; break; default: flatpickr_dateformat_string = "Y-m-d"; altinput_dateformat = 'yyyy/mm/dd'; delimiter = "-"; } var sentmsg = 0; var bidi = false; var calendarFirstDayOfWeek = '0'; var flatpickr_timeformat_string = "H:i"; var flatpickr_timeformat = true; </script> <!-- / calendar.inc --> <script src="./Log viewer › Tools › Koha_files/calendar_26.0505000.js.download"></script> <script src="./Log viewer › Tools › Koha_files/flatpickr.min_26.0505000.js.download"></script> <script src="./Log viewer › Tools › Koha_files/shortcut-buttons-flatpickr.min_26.0505000.js.download"></script> <script src="./Log viewer › Tools › Koha_files/maskito.core_26.0505000.js.download"></script> <script src="./Log viewer › Tools › Koha_files/maskito.kit_26.0505000.js.download"></script> <script nonce=""> flatpickr.l10ns.default.weekdays = flatpickr_weekdays; flatpickr.l10ns.default.months = flatpickr_months; flatpickr.l10ns.default.rangeSeparator = flatpickr_rangeSeparator; let flatpickr_defaults = { allowInput: true, dateFormat: "Y-m-d", altInput: true, altFormat: flatpickr_dateformat_string, altInputClass: 'flatpickr-input', nextArrow: '<i class="fa fa-fw fa-arrow-right"></i>', prevArrow: '<i class="fa fa-fw fa-arrow-left"></i>', time_24hr: flatpickr_timeformat, defaultHour: 23, defaultMinute: 59, locale: { "firstDayOfWeek": calendarFirstDayOfWeek }, onReady: function( selectedDates, dateStr, instance ){ /* When onReady is triggered, remove any existing "clear date" link */ $(instance.input).parent().find('.flatpickr_wrapper_' + instance.input.id).remove(); /* When flatpickr instance is created, automatically append a "clear date" link */ $(instance.input).find('~input.flatpickr:first') /* Add a wrapper element so that we can prevent the clear button from wrapping */ .wrap("<span class='flatpickr_wrapper flatpickr_wrapper_"+instance.input.id+"'></span>") .attr("autocomplete", "off") .after( $("<a/>") .attr("href","#") .addClass("clear_date") .on("click", function(e){ e.preventDefault(); instance.clear(); }) .addClass("fa fa-fw fa-times") .attr("aria-hidden", true) .attr("aria-label", _("Clear date") ) ).keydown(function(e) { var key = (event.keyCode ? event.keyCode : event.which); if ( key == 40 ) { instance.set('allowInput',false); } }); /* When flatpickr instance is ready, add maskito input mask */ var thisInput = instance.input; let accepts_time = $(thisInput).data('flatpickr-enable-time'); let accepts_period = $(thisInput).data('flatpickr-period'); let accepts_time_only = $(thisInput).data('flatpickr-time-only'); let maskitoOptions = {}; if ( !accepts_period ) { if ( accepts_time ) { maskitoOptions = maskitoDateTimeOptionsGenerator({ dateMode: altinput_dateformat, timeMode: 'HH:MM', dateSeparator: delimiter, overwiteMode: 'replace', }); } else if ( accepts_time_only ) { maskitoOptions = { mask: [/\d/, /\d/, ':', /\d/, /\d/], }; } else { maskitoOptions = maskitoDateOptionsGenerator({ mode: altinput_dateformat, separator: delimiter, overwiteMode: 'replace', }); } } new Maskito( instance.altInput, maskitoOptions ); /* If there is a node with data-date_to with the id of this node it means we are instantiating a 'from' for a date range */ const toInput = instance.input; const fromInput = document.querySelector(`[data-date_to='${toInput.id}']`); if (fromInput && fromInput._flatpickr) { const fromDate = fromInput._flatpickr.selectedDates[0]; if (fromDate) { instance.set('minDate', fromDate); } } }, onChange: function( selectedDates, dateText, instance) { if (selectedDates.length === 0) { return; } var thisInput = instance.input; let accepts_time = $(thisInput).data('flatpickr-enable-time'); let accepts_time_only = $(thisInput).data('flatpickr-time-only'); let accepts_period = $(thisInput).data('flatpickr-period'); if ( !accepts_period ) { if ( accepts_time ) { let parsedDate = flatpickr.parseDate(dateText, instance.config.dateFormat); if ( Number.isNaN(parsedDate.getHours()) ) { instance.setDate(selectedDates[0].setHours(23, 59, 0, 0)); } } } }, onOpen: function( selectedDates, dateText, instance) { var thisInput = instance.input; let set_to_today = $(thisInput).data('flatpickr-set-to-today'); if ( set_to_today ) { if ( thisInput.value === '' ) { instance.setDate( new Date() ); } } }, onClose: function( selectedDates, dateText, instance) { var thisInput = instance.input; if ( thisInput.hasAttribute('data-date_to') ) { var endPickerEl = document.querySelector("#"+thisInput.dataset.date_to); if (endPickerEl && endPickerEl._flatpickr) { endPickerEl._flatpickr.set('minDate', selectedDates[0]); } } let = on_close_focus = $(thisInput).data('flatpickr-on-close-focus'); if ( on_close_focus ) { $(on_close_focus).focus(); } }, plugins: [ ShortcutButtonsPlugin({ button: [ { label: _("Yesterday") }, { label: _("Today") }, { label: _("Tomorrow") } ], label: _("or"), onClick: (index, fp) => { let date; let hh = 23, mm = 59; switch (index) { case 0: date = new Date().fp_incr(-1); break; case 1: date = new Date(); if ( $(fp.input).data("flatpickr-pastinclusive") === true ) { hh = date.getHours(); mm = date.getMinutes(); } break; case 2: date = new Date().fp_incr(1); break; } date.setHours(hh, mm, 0, 0); fp.setDate(date); } }) ] }; flatpickr.setDefaults(flatpickr_defaults); function apply_flatpickr(input){ let options = {}; let refresh_max_date = 0; let disable_buttons = []; if( $(input).data("flatpickr-futureinclusive") === true || $(input).data("flatpickr-futuredate") === true ) { let original_date = $(input).val(); if ( original_date ) { original_date = flatpickr.parseDate(original_date, 'Y-m-d').getTime(); let tomorrow = new Date().fp_incr(1).getTime(); options['enable'] = [function(date){ date = date.getTime(); if ( date == original_date ) return true; if ( date >= tomorrow) return true; }]; } else { if( $(input).data("flatpickr-futureinclusive") === true ) { options['minDate'] = new Date().setHours(00, 00, 00, 00); } else { options['minDate'] = new Date().fp_incr(1); } } disable_buttons.push(0); /* Yesterday */ if ( $(input).data("flatpickr-futuredate") === true ) { disable_buttons.push(1); /* Today */ } } if( $(input).data("flatpickr-pastinclusive") === true ) { options['maxDate'] = new Date(); /* Not today or hh:mm will be 00:00 */ refresh_max_date = 1; disable_buttons.push(2); /* Tomorrow */ } if( $(input).data("flatpickr-pastdate") === true ) { options['maxDate'] = new Date().fp_incr(-1).setHours(23, 59, 00, 00); disable_buttons.push(1); /* Today */ disable_buttons.push(2); /* Tomorrow */ } if ( $(input).data('flatpickr-enable-time') === true ) { options['enableTime'] = true; options['dateFormat'] = "Y-m-d H:i"; options['altFormat'] = flatpickr_dateformat_string + ", " + flatpickr_timeformat_string; } if ( $(input).data('flatpickr-disable-shortcuts') === true ) { options['plugins'] = []; } let maxDate = $(input).data("flatpickr-maxdate"); if( typeof maxDate !== 'undefined' ) { options['maxDate'] = new Date(maxDate); } if( $(input).data("flatpickr-time-only") === true ) { options['enableTime'] = true; options['noCalendar'] = true; options['dateFormat'] = "H:i"; options['defaultHour'] = "0"; options['defaultMinute'] = "0"; options['altFormat'] = flatpickr_timeformat_string; options['plugins'] = []; } let fp = $(input).flatpickr(options); $(disable_buttons).each(function(index, value){ $(fp.calendarContainer).find(".shortcut-buttons-flatpickr-button[data-index='"+value+"']").prop("disabled", "disabled"); }); if ( refresh_max_date ) { /* Refresh the maxDate every 30 secondes to make sure the user will not be stuck with the minute passed. Adding 1 minute to not introduce a gap. Example: last update at 40s, a new minute passed at 00. Between 00 and 10s the user won't be able click 'Today'. */ setInterval(() => { let now = new Date(); fp.set("maxDate", now.setMinutes(now.getMinutes() + 1)); }, 30000); } } $(document).ready(function(){ $(".flatpickr").each(function(){ apply_flatpickr(this); }); }); </script>
+
+    
+
+
+
+<!-- format-price.inc -->
+<script nonce="">
+    
+    
+        var default_value = {
+            thousands_sep: ',',
+            decimal_point: '.',
+            decimal_digits: 2
+        };
+
+    
+    Number.prototype.format_price = function( value, params ) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+            var re = '\\d(?=(\\d{' + 3 + '})+' + '\\D' + ')', value = this.toFixed(decimal_digits);
+            return value.replace('.', decimal_point).replace(new RegExp(re, 'g'), '$&' + thousands_sep);
+    }
+    String.prototype.unformat_price = function (params) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+        let value = this.valueOf();
+        value = value.replace(thousands_sep, '').replace(decimal_point, '.').replace(new RegExp('[^\\d.]', 'g'), '');
+        return Number(value).toFixed(decimal_digits);
+    }
+</script>
+<!-- / format-price.inc -->
+
+<script src="./Log viewer › Tools › Koha_files/datatables.min_26.0505000.js.download"></script>
+<script src="./Log viewer › Tools › Koha_files/datatables_26.0505000.js.download"></script>
+
+    <script src="./Log viewer › Tools › Koha_files/humanmsg_26.0505000.js.download"></script>
+    <script src="./Log viewer › Tools › Koha_files/tools-menu_26.0505000.js.download"></script>
+    
+    <script src="./Log viewer › Tools › Koha_files/jsdiff.min_26.0505000.js.download"></script>
+    
+
+
+<!-- str/viewlog.inc -->
+<script nonce="">
+    var module_labels = {
+        APIKEYS: _("API keys"),
+        AUTH: _("Authentication"),
+        CATALOGUING: _("Cataloging"),
+        AUTHORITIES: _("Authorities"),
+        MEMBERS: _("Patrons"),
+        ACQUISITIONS: _("Acquisitions"),
+        SERIAL: _("Serials"),
+        HOLDS: _("Holds"),
+        ILL: _("Interlibrary loans"),
+        CIRCULATION: _("Circulation"),
+        CLAIMS: _("Claims"),
+        FINES: _("Fines"),
+        SYSTEMPREFERENCE: _("System preferences"),
+        CRONJOBS: _("Cron jobs"),
+        REPORTS: _("Reports"),
+        SEARCHENGINE: _("Search engine"),
+        NOTICES: _("Notices"),
+        NEWS: _("Additional content"),
+        RECALLS: _("Recalls"),
+        SUGGESTION: _("Suggestions"),
+        TRANSFERS: _("Transfers"),
+    };
+
+    var action_labels = {
+        ACTIVATE: _("Activate"),
+        ADD: _("Add"),
+        DELETE: _("Delete"),
+        MODIFY: _("Modify"),
+        RESTORE: _("Restore"),
+        REVOKE: _("Revoke"),
+        ISSUE: _("Checkout"),
+        RETURN: _("Check-in"),
+        CREATE: _("Create"),
+        CANCEL: _("Cancel"),
+        FILL: _("Fill"),
+        RESUME: _("Resume"),
+        SUSPEND: _("Suspend"),
+        RENEW: _("Renew"),
+        RENEWAL: _("Renew"),
+        "CHANGE PASS": _("Change password"),
+        "RESET PASS": _("Reset password"),
+        ADDCIRCMESSAGE: _("Add circulation message"),
+        MODCIRCMESSAGE: _("Modify circulation message"),
+        DELCIRCMESSAGE: _("Delete circulation message"),
+        STATUS_CHANGE: _("Change ILL request status"),
+        PATRON_NOTICE: _("ILL notice sent to patron"),
+        ADD_BASKET: _("Create an acquisitions basket"),
+        MODIFY_BASKET: _("Modify an acquisitions basket"),
+        MODIFY_BASKET_HEADER: _("Modify an acquisitions basket header"),
+        MODIFY_BASKET_USERS: _("Modify an acquisitions basket's users"),
+        CLOSE_BASKET: _("Close an acquisitions basket"),
+        APPROVE_BASKET: _("Approve an acquisitions basket"),
+        REOPEN_BASKET: _("Reopen an acquisitions basket"),
+        CANCEL_ORDER: _("Cancel an order"),
+        CREATE_ORDER: _("Create an order"),
+        MODIFY_ORDER: _("Modify an order"),
+        CREATE_INVOICE_ADJUSTMENT: _("Create an invoice adjustment"),
+        UPDATE_INVOICE_ADJUSTMENT: _("Modify an invoice adjustment"),
+        DELETE_INVOICE_ADJUSTMENT: _("Delete an invoice adjustment"),
+        RECEIVE_ORDER: _("Receive an order"),
+        MODIFY_BUDGET: _("Modify a budget"),
+        CREATE_FUND: _("Create a fund"),
+        MODIFY_FUND: _("Modify a fund"),
+        DELETE_FUND: _("Delete a fund"),
+        CREATE_RESTRICTION: _("Create restriction"),
+        MODIFY_RESTRICTION: _("Modify restriction"),
+        DELETE_RESTRICTION: _("Delete restriction"),
+        Run: _("Run"),
+        End: _("End"),
+        PATRON_MERGE: _("Merge"),
+        EDIT_MAPPINGS: _("Edit mappings"),
+        RESET_MAPPINGS: _("Reset mappings"),
+        "SERIAL CLAIM": _("Serial claim"),
+        "ACQUISITION CLAIM": _("Acquisition claim"),
+        "ACQUISITION ORDER": _("Acquisition order"),
+        OVERDUE: _("Overdue"),
+        EXPIRE: _("Expire"),
+        MODIFY_CARDNUMBER: _("Modify card number"),
+        "RESET 2FA": _("Reset 2FA"),
+    };
+
+    var interface_labels = {
+        INTRANET: _("Staff interface"),
+        OPAC: _("OPAC"),
+        SIP: _("SIP"),
+        COMMANDLINE: _("Command-line"),
+        API: _("REST API"),
+        CRON: _("Cron job"),
+        UPGRADE: _("Upgrade"),
+    };
+
+    /*
+     * Translation map for circulation override codes that appear in the
+     * `forced` and `confirmations` arrays of a CIRCULATION info column
+     * JSON payload (see C4::Circulation::CanBookBeIssued and friends).
+     */
+    var override_labels = {
+        HOLD_POLICY_OVERRIDE: _("Hold policy override"),
+        INVALID_DATE: _("Invalid date confirmed"),
+        DEBT_GUARANTEES: _("Guarantees had debts"),
+        DEBT_GUARANTORS: _("Guarantors had debts"),
+        DEBT: _("Patron had debt"),
+        USERBLOCKEDOVERDUE: _("Patron had overdues"),
+        USERBLOCKEDNOENDDATE: _("Patron had an indefinite restriction"),
+        ADDITIONAL_MATERIALS: _("Additional materials were confirmed"),
+        RENEW_ISSUE: _("Renewal"),
+        ISSUED_TO_ANOTHER: _("Item was issued to another patron prior to this checkout"),
+        PATRON_CANT: _("Max renewals reached"),
+        TOO_MANY: _("Too many checkouts"),
+        PREVISSUE: _("Patron was notified of previous issues"),
+        NOT_FOR_LOAN: _("Item was not for loan"),
+        NOT_FOR_LOAN_FORCING: _("Item was not for loan"),
+        ITEM_LOST: _("Item was reported lost"),
+        BORRNOTSAMEBRANCH: _("Patron does not belong to this library"),
+        RENTALCHARGE: _("Item had a rental charge"),
+        RECALLED: _("Item was recalled"),
+        RESERVE_WAITING: _("Hold waiting on item"),
+        RESERVED: _("Hold placed on item"),
+        TRANSFERRED: _("Item was transferred"),
+        PROCESSING: _("Item was in processing"),
+        BOOKED_EARLY: _("Item was booked and checked out early"),
+        BOOKED_TO_ANOTHER: _("Item was booked to another patron"),
+        AGE_RESTRICTION: _("Item has an age restriction"),
+        HIGHHOLDS: _("Item had high holds"),
+        BIBLIO_ALREADY_ISSUED: _("An item from this bibliographic record is already checked out"),
+        DEBARRED: _("Patron is restricted"),
+        RENEWAL_LIMIT: _("Renewal limit override"),
+        UNSEEN_LIMIT: _("Override unseen item restriction"),
+        AUTO_TOO_SOON: _("Override auto-renew too soon restriction"),
+        AUTO_TOO_LATE: _("Override auto-renew too late restriction"),
+        ACCOUNT_EXPIRED: _("Account expired override"),
+        ON_RESERVE: _("Override renew hold for another"),
+        TOO_MUCH: _("Override auto-renew too much owing restriction"),
+        CURRENTISSUE: _("Item is currently checked out to this patron"),
+        UNSEEN: _("Unseen renewal"),
+        SEEN: _("Seen renewal"),
+    };
+</script>
+<!-- / str/viewlog.inc -->
+
+    <script nonce="" data-tt-allowed="true">
+        var table_settings = {"default_save_state":1,"default_save_state_search":0,"page":"logviewer","default_sort_order":null,"default_display_length":20,"module":"tools","columns":[{"cannot_be_modified":0,"cannot_be_toggled":0,"columnname":"date","is_hidden":0},{"cannot_be_toggled":0,"columnname":"librarian","is_hidden":0,"cannot_be_modified":0},{"cannot_be_modified":0,"cannot_be_toggled":0,"columnname":"module","is_hidden":0},{"cannot_be_toggled":0,"columnname":"action","is_hidden":0,"cannot_be_modified":0},{"cannot_be_modified":0,"columnname":"object","is_hidden":0,"cannot_be_toggled":0},{"cannot_be_toggled":0,"columnname":"info","is_hidden":0,"cannot_be_modified":0},{"cannot_be_toggled":0,"columnname":"interface","is_hidden":0,"cannot_be_modified":0},{"cannot_be_toggled":0,"is_hidden":1,"columnname":"diff","cannot_be_modified":0}],"table":"logst"};
+        var CAN_user_parameters_manage_sysprefs = "1";
+        var CAN_user_acquisition_order_manage = "1";
+        var do_it = 0;
+        
+    </script>
+    <script src="./Log viewer › Tools › Koha_files/viewlog_26.0505000.js.download"></script>
+
+
+
+
+
+
+
+
+
+<button id="backtotop" class="btn btn-default" aria-label="Back to top" style="display: none;"><i class="fa fa-arrow-up" aria-hidden="true"></i></button><ul id="ui-id-1" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" unselectable="on" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div class="flatpickr-calendar animate" tabindex="-1"><div class="flatpickr-months"><span class="flatpickr-prev-month"><i class="fa fa-fw fa-arrow-left"></i></span><div class="flatpickr-month"><div class="flatpickr-current-month"><select class="flatpickr-monthDropdown-months" aria-label="Month" tabindex="-1"><option class="flatpickr-monthDropdown-month" value="0" tabindex="-1">January</option><option class="flatpickr-monthDropdown-month" value="1" tabindex="-1">February</option><option class="flatpickr-monthDropdown-month" value="2" tabindex="-1">March</option><option class="flatpickr-monthDropdown-month" value="3" tabindex="-1">April</option><option class="flatpickr-monthDropdown-month" value="4" tabindex="-1">May</option><option class="flatpickr-monthDropdown-month" value="5" tabindex="-1">June</option><option class="flatpickr-monthDropdown-month" value="6" tabindex="-1">July</option><option class="flatpickr-monthDropdown-month" value="7" tabindex="-1">August</option><option class="flatpickr-monthDropdown-month" value="8" tabindex="-1">September</option><option class="flatpickr-monthDropdown-month" value="9" tabindex="-1">October</option><option class="flatpickr-monthDropdown-month" value="10" tabindex="-1">November</option><option class="flatpickr-monthDropdown-month" value="11" tabindex="-1">December</option></select><div class="numInputWrapper"><input class="numInput cur-year" type="number" tabindex="-1" aria-label="Year"><span class="arrowUp"></span><span class="arrowDown"></span></div></div></div><span class="flatpickr-next-month"><i class="fa fa-fw fa-arrow-right"></i></span></div><div class="flatpickr-innerContainer"><div class="flatpickr-rContainer"><div class="flatpickr-weekdays"><div class="flatpickr-weekdaycontainer">
+      <span class="flatpickr-weekday">
+        Sun</span><span class="flatpickr-weekday">Mon</span><span class="flatpickr-weekday">Tue</span><span class="flatpickr-weekday">Wed</span><span class="flatpickr-weekday">Thu</span><span class="flatpickr-weekday">Fri</span><span class="flatpickr-weekday">Sat
+      </span>
+      </div></div><div class="flatpickr-days" tabindex="-1"><div class="dayContainer"><span class="flatpickr-day prevMonthDay" aria-label="September 27, 2026" tabindex="-1">27</span><span class="flatpickr-day prevMonthDay" aria-label="September 28, 2026" tabindex="-1">28</span><span class="flatpickr-day prevMonthDay" aria-label="September 29, 2026" tabindex="-1">29</span><span class="flatpickr-day prevMonthDay" aria-label="September 30, 2026" tabindex="-1">30</span><span class="flatpickr-day " aria-label="October 1, 2026" tabindex="-1">1</span><span class="flatpickr-day " aria-label="October 2, 2026" tabindex="-1">2</span><span class="flatpickr-day " aria-label="October 3, 2026" tabindex="-1">3</span><span class="flatpickr-day " aria-label="October 4, 2026" tabindex="-1">4</span><span class="flatpickr-day " aria-label="October 5, 2026" tabindex="-1">5</span><span class="flatpickr-day " aria-label="October 6, 2026" tabindex="-1">6</span><span class="flatpickr-day " aria-label="October 7, 2026" tabindex="-1">7</span><span class="flatpickr-day " aria-label="October 8, 2026" tabindex="-1">8</span><span class="flatpickr-day " aria-label="October 9, 2026" tabindex="-1">9</span><span class="flatpickr-day " aria-label="October 10, 2026" tabindex="-1">10</span><span class="flatpickr-day " aria-label="October 11, 2026" tabindex="-1">11</span><span class="flatpickr-day " aria-label="October 12, 2026" tabindex="-1">12</span><span class="flatpickr-day " aria-label="October 13, 2026" tabindex="-1">13</span><span class="flatpickr-day " aria-label="October 14, 2026" tabindex="-1">14</span><span class="flatpickr-day " aria-label="October 15, 2026" tabindex="-1">15</span><span class="flatpickr-day " aria-label="October 16, 2026" tabindex="-1">16</span><span class="flatpickr-day " aria-label="October 17, 2026" tabindex="-1">17</span><span class="flatpickr-day " aria-label="October 18, 2026" tabindex="-1">18</span><span class="flatpickr-day " aria-label="October 19, 2026" tabindex="-1">19</span><span class="flatpickr-day " aria-label="October 20, 2026" tabindex="-1">20</span><span class="flatpickr-day " aria-label="October 21, 2026" tabindex="-1">21</span><span class="flatpickr-day " aria-label="October 22, 2026" tabindex="-1">22</span><span class="flatpickr-day " aria-label="October 23, 2026" tabindex="-1">23</span><span class="flatpickr-day " aria-label="October 24, 2026" tabindex="-1">24</span><span class="flatpickr-day " aria-label="October 25, 2026" tabindex="-1">25</span><span class="flatpickr-day " aria-label="October 26, 2026" tabindex="-1">26</span><span class="flatpickr-day " aria-label="October 27, 2026" tabindex="-1">27</span><span class="flatpickr-day " aria-label="October 28, 2026" tabindex="-1">28</span><span class="flatpickr-day " aria-label="October 29, 2026" tabindex="-1">29</span><span class="flatpickr-day today" aria-label="October 30, 2026" aria-current="date" tabindex="-1">30</span><span class="flatpickr-day " aria-label="October 31, 2026" tabindex="-1">31</span><span class="flatpickr-day nextMonthDay" aria-label="November 1, 2026" tabindex="-1">1</span><span class="flatpickr-day nextMonthDay" aria-label="November 2, 2026" tabindex="-1">2</span><span class="flatpickr-day nextMonthDay" aria-label="November 3, 2026" tabindex="-1">3</span><span class="flatpickr-day nextMonthDay" aria-label="November 4, 2026" tabindex="-1">4</span><span class="flatpickr-day nextMonthDay" aria-label="November 5, 2026" tabindex="-1">5</span><span class="flatpickr-day nextMonthDay" aria-label="November 6, 2026" tabindex="-1">6</span><span class="flatpickr-day nextMonthDay" aria-label="November 7, 2026" tabindex="-1">7</span></div></div></div></div><div class="shortcut-buttons-flatpickr-wrapper light"><div class="shortcut-buttons-flatpickr-label">or</div><div class="shortcut-buttons-flatpickr-buttons"><button type="button" class="shortcut-buttons-flatpickr-button" data-index="0">Yesterday</button><button type="button" class="shortcut-buttons-flatpickr-button" data-index="1">Today</button><button type="button" class="shortcut-buttons-flatpickr-button" data-index="2">Tomorrow</button></div></div></div><div class="flatpickr-calendar animate" tabindex="-1"><div class="flatpickr-months"><span class="flatpickr-prev-month"><i class="fa fa-fw fa-arrow-left"></i></span><div class="flatpickr-month"><div class="flatpickr-current-month"><select class="flatpickr-monthDropdown-months" aria-label="Month" tabindex="-1"><option class="flatpickr-monthDropdown-month" value="0" tabindex="-1">January</option><option class="flatpickr-monthDropdown-month" value="1" tabindex="-1">February</option><option class="flatpickr-monthDropdown-month" value="2" tabindex="-1">March</option><option class="flatpickr-monthDropdown-month" value="3" tabindex="-1">April</option><option class="flatpickr-monthDropdown-month" value="4" tabindex="-1">May</option><option class="flatpickr-monthDropdown-month" value="5" tabindex="-1">June</option><option class="flatpickr-monthDropdown-month" value="6" tabindex="-1">July</option><option class="flatpickr-monthDropdown-month" value="7" tabindex="-1">August</option><option class="flatpickr-monthDropdown-month" value="8" tabindex="-1">September</option><option class="flatpickr-monthDropdown-month" value="9" tabindex="-1">October</option><option class="flatpickr-monthDropdown-month" value="10" tabindex="-1">November</option><option class="flatpickr-monthDropdown-month" value="11" tabindex="-1">December</option></select><div class="numInputWrapper"><input class="numInput cur-year" type="number" tabindex="-1" aria-label="Year"><span class="arrowUp"></span><span class="arrowDown"></span></div></div></div><span class="flatpickr-next-month"><i class="fa fa-fw fa-arrow-right"></i></span></div><div class="flatpickr-innerContainer"><div class="flatpickr-rContainer"><div class="flatpickr-weekdays"><div class="flatpickr-weekdaycontainer">
+      <span class="flatpickr-weekday">
+        Sun</span><span class="flatpickr-weekday">Mon</span><span class="flatpickr-weekday">Tue</span><span class="flatpickr-weekday">Wed</span><span class="flatpickr-weekday">Thu</span><span class="flatpickr-weekday">Fri</span><span class="flatpickr-weekday">Sat
+      </span>
+      </div></div><div class="flatpickr-days" tabindex="-1"><div class="dayContainer"><span class="flatpickr-day prevMonthDay" aria-label="September 27, 2026" tabindex="-1">27</span><span class="flatpickr-day prevMonthDay" aria-label="September 28, 2026" tabindex="-1">28</span><span class="flatpickr-day prevMonthDay" aria-label="September 29, 2026" tabindex="-1">29</span><span class="flatpickr-day prevMonthDay" aria-label="September 30, 2026" tabindex="-1">30</span><span class="flatpickr-day " aria-label="October 1, 2026" tabindex="-1">1</span><span class="flatpickr-day " aria-label="October 2, 2026" tabindex="-1">2</span><span class="flatpickr-day " aria-label="October 3, 2026" tabindex="-1">3</span><span class="flatpickr-day " aria-label="October 4, 2026" tabindex="-1">4</span><span class="flatpickr-day " aria-label="October 5, 2026" tabindex="-1">5</span><span class="flatpickr-day " aria-label="October 6, 2026" tabindex="-1">6</span><span class="flatpickr-day " aria-label="October 7, 2026" tabindex="-1">7</span><span class="flatpickr-day " aria-label="October 8, 2026" tabindex="-1">8</span><span class="flatpickr-day " aria-label="October 9, 2026" tabindex="-1">9</span><span class="flatpickr-day " aria-label="October 10, 2026" tabindex="-1">10</span><span class="flatpickr-day " aria-label="October 11, 2026" tabindex="-1">11</span><span class="flatpickr-day " aria-label="October 12, 2026" tabindex="-1">12</span><span class="flatpickr-day " aria-label="October 13, 2026" tabindex="-1">13</span><span class="flatpickr-day " aria-label="October 14, 2026" tabindex="-1">14</span><span class="flatpickr-day " aria-label="October 15, 2026" tabindex="-1">15</span><span class="flatpickr-day " aria-label="October 16, 2026" tabindex="-1">16</span><span class="flatpickr-day " aria-label="October 17, 2026" tabindex="-1">17</span><span class="flatpickr-day " aria-label="October 18, 2026" tabindex="-1">18</span><span class="flatpickr-day " aria-label="October 19, 2026" tabindex="-1">19</span><span class="flatpickr-day " aria-label="October 20, 2026" tabindex="-1">20</span><span class="flatpickr-day " aria-label="October 21, 2026" tabindex="-1">21</span><span class="flatpickr-day " aria-label="October 22, 2026" tabindex="-1">22</span><span class="flatpickr-day " aria-label="October 23, 2026" tabindex="-1">23</span><span class="flatpickr-day " aria-label="October 24, 2026" tabindex="-1">24</span><span class="flatpickr-day " aria-label="October 25, 2026" tabindex="-1">25</span><span class="flatpickr-day " aria-label="October 26, 2026" tabindex="-1">26</span><span class="flatpickr-day " aria-label="October 27, 2026" tabindex="-1">27</span><span class="flatpickr-day " aria-label="October 28, 2026" tabindex="-1">28</span><span class="flatpickr-day " aria-label="October 29, 2026" tabindex="-1">29</span><span class="flatpickr-day today" aria-label="October 30, 2026" aria-current="date" tabindex="-1">30</span><span class="flatpickr-day " aria-label="October 31, 2026" tabindex="-1">31</span><span class="flatpickr-day nextMonthDay" aria-label="November 1, 2026" tabindex="-1">1</span><span class="flatpickr-day nextMonthDay" aria-label="November 2, 2026" tabindex="-1">2</span><span class="flatpickr-day nextMonthDay" aria-label="November 3, 2026" tabindex="-1">3</span><span class="flatpickr-day nextMonthDay" aria-label="November 4, 2026" tabindex="-1">4</span><span class="flatpickr-day nextMonthDay" aria-label="November 5, 2026" tabindex="-1">5</span><span class="flatpickr-day nextMonthDay" aria-label="November 6, 2026" tabindex="-1">6</span><span class="flatpickr-day nextMonthDay" aria-label="November 7, 2026" tabindex="-1">7</span></div></div></div></div><div class="shortcut-buttons-flatpickr-wrapper light"><div class="shortcut-buttons-flatpickr-label">or</div><div class="shortcut-buttons-flatpickr-buttons"><button type="button" class="shortcut-buttons-flatpickr-button" data-index="0">Yesterday</button><button type="button" class="shortcut-buttons-flatpickr-button" data-index="1">Today</button><button type="button" class="shortcut-buttons-flatpickr-button" data-index="2">Tomorrow</button></div></div></div><div id="humanMsg" class="humanMsg"><div id="humanMsg-contents"></div></div> <div id="humanMsgLog"><p class="launcher">Message Log</p><ul></ul></div><ul id="ui-id-2" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" unselectable="on" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div></body><!-- prettier-ignore-start --></html>
