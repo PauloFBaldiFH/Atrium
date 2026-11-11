@@ -1,0 +1,173 @@
+package Koha::Old::Item;
+
+# This file is part of Koha.
+#
+# Koha is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Koha is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Koha; if not, see <https://www.gnu.org/licenses>.
+
+use Modern::Perl;
+
+use base qw(Koha::Object);
+
+use C4::Context;
+use C4::Log qw( logaction );
+use Koha::Biblio;
+use Koha::Biblios;
+use Koha::Database;
+use Koha::Exceptions;
+use Koha::Item;
+use Koha::Old::Biblios;
+use Koha::SearchEngine::Indexer;
+
+=head1 NAME
+
+Koha::Old::Item - Koha Old::Item Object class
+
+=head1 API
+
+=head2 Class methods
+
+=cut
+
+=head3 biblio
+
+    my $biblio = $deleted_item->biblio;
+
+Returns the Koha::Biblio or Koha::Old::Biblio object for this item,
+checking first in the biblio table and then in deletedbiblio table.
+
+=cut
+
+sub biblio {
+    my ($self) = @_;
+
+    my $biblio = Koha::Biblios->find( $self->biblionumber );
+    return $biblio if $biblio;
+
+    return Koha::Old::Biblios->find( $self->biblionumber );
+}
+
+=head3 restore
+
+    my $item = $deleted_item->restore;
+
+Restores the deleted item record back to the items table. This removes
+the record from the deleteditems table and re-inserts it into the items table.
+The biblio record will be reindexed after restoration.
+
+Throws an exception if the biblio record does not exist.
+
+Returns the newly restored Koha::Item object.
+
+=cut
+
+sub restore {
+    my ($self) = @_;
+
+    my $biblio = Koha::Biblios->find( $self->biblionumber );
+
+    Koha::Exceptions::ObjectNotFound->throw("Bibliographic record not found for item")
+        unless $biblio;
+
+    my $new_item = Koha::Database->schema->txn_do(
+        sub {
+            my $item_data = $self->unblessed;
+            delete $item_data->{deleted_on};
+
+            my $item = Koha::Item->new($item_data)->store;
+            $self->delete;
+
+            return $item;
+        }
+    );
+
+    my $indexer = Koha::SearchEngine::Indexer->new( { index => $Koha::SearchEngine::BIBLIOS_INDEX } );
+    $indexer->index_records( $new_item->biblionumber, "specialUpdate", "biblioserver" );
+
+    logaction( "CATALOGUING", "RESTORE", $new_item->itemnumber, "item", undef, $new_item )
+        if C4::Context->preference("CataloguingLog");
+
+    return $new_item;
+}
+
+=head3 to_api_mapping
+
+This method returns the mapping for representing a Koha::Old::Item object
+on the API.
+
+=cut
+
+sub to_api_mapping {
+    return {
+        itemnumber                        => 'item_id',
+        biblionumber                      => 'biblio_id',
+        biblioitemnumber                  => undef,
+        barcode                           => 'external_id',
+        dateaccessioned                   => 'acquisition_date',
+        booksellerid                      => 'acquisition_source',
+        homebranch                        => 'home_library_id',
+        price                             => 'purchase_price',
+        replacementprice                  => 'replacement_price',
+        replacementpricedate              => 'replacement_price_date',
+        datelastborrowed                  => 'last_checkout_date',
+        datelastseen                      => 'last_seen_date',
+        stack                             => undef,
+        notforloan                        => 'not_for_loan_status',
+        damaged                           => 'damaged_status',
+        damaged_on                        => 'damaged_date',
+        itemlost                          => 'lost_status',
+        itemlost_on                       => 'lost_date',
+        withdrawn                         => 'withdrawn',
+        withdrawn_on                      => 'withdrawn_date',
+        itemcallnumber                    => 'callnumber',
+        coded_location_qualifier          => 'coded_location_qualifier',
+        issues                            => 'checkouts_count',
+        renewals                          => 'renewals_count',
+        reserves                          => 'holds_count',
+        restricted                        => 'restricted_status',
+        itemnotes                         => 'public_notes',
+        itemnotes_nonpublic               => 'internal_notes',
+        holdingbranch                     => 'holding_library_id',
+        permanent_location                => 'permanent_location',
+        onloan                            => 'checked_out_date',
+        cn_source                         => 'call_number_source',
+        cn_sort                           => 'call_number_sort',
+        ccode                             => 'collection_code',
+        materials                         => 'materials_notes',
+        itype                             => 'item_type_id',
+        more_subfields_xml                => 'extended_subfields',
+        enumchron                         => 'serial_issue_number',
+        copynumber                        => 'copy_number',
+        stocknumber                       => 'inventory_number',
+        new_status                        => 'new_status',
+        deleted_on                        => 'deleted_on',
+        bookable                          => undef,
+        location                          => undef,
+        uri                               => undef,
+        timestamp                         => undef,
+        localuse                          => undef,
+        exclude_from_local_holds_priority => undef,
+    };
+}
+
+=head2 Internal methods
+
+=head3 _type
+
+=cut
+
+sub _type {
+    return 'Deleteditem';
+}
+
+1;

@@ -1,0 +1,115 @@
+#!/usr/bin/perl
+
+use Modern::Perl;
+use Encode qw( encode );
+use Try::Tiny;
+use JSON qw( to_json );
+
+use C4::Service;
+use Koha::Caches;
+use Koha::Database;
+use C4::Output qw( output_with_http_headers );
+
+our ( $query, $response ) = C4::Service->init( parameters => 'manage_itemtypes' );
+
+sub update_translation {
+    my $source          = $query->param('source');
+    my $localization_id = $query->param('localization_id');
+    my $object_id       = $query->param('object_id');
+    my $lang            = $query->param('lang');
+    my $translation     = $query->param('translation');
+
+    my $schema = Koha::Database->schema;
+    my $row    = $schema->resultset($source)->find($object_id);
+    if ($row) {
+        my $localization = $row->localizations->find($localization_id);
+        if ($localization) {
+            try {
+                my $original_lang = $localization->lang;
+                $localization->lang($lang)               if $lang;
+                $localization->translation($translation) if $translation;
+                $localization->update();
+                Koha::Caches->get_instance('localization')->clear_from_cache("$source:$original_lang");
+                Koha::Caches->get_instance('localization')->clear_from_cache("$source:$lang") if $lang;
+            } catch {
+                $localization->discard_changes();
+                $response->param( error => 1, error_code => 'already_exists' );
+            };
+        }
+
+        $response->param(
+            lang        => $localization->lang,
+            translation => $localization->translation,
+        );
+    }
+
+    C4::Service->return_success($response);
+}
+
+sub add_translation {
+    my $source          = $query->param('source');
+    my $localization_id = $query->param('localization_id');
+    my $object_id       = $query->param('object_id');
+    my $property        = $query->param('property');
+    my $lang            = $query->param('lang');
+    my $translation     = $query->param('translation');
+
+    my $schema = Koha::Database->schema;
+    my $row    = $schema->resultset($source)->find($object_id);
+    try {
+        my $localization = $row->create_related(
+            "${property}_localizations",
+            {
+                entity      => $source,
+                lang        => $lang,
+                translation => $translation,
+            }
+        );
+        Koha::Caches->get_instance('localization')->clear_from_cache("$source:$lang");
+
+        $response->param(
+            lang            => $localization->lang,
+            translation     => $localization->translation,
+            localization_id => $localization->id,
+        );
+    } catch {
+        $response->param( error => 1, error_code => 'already_exists' );
+    };
+
+    C4::Service->return_success($response);
+}
+
+sub delete_translation {
+    my $source          = $query->param('source');
+    my $object_id       = $query->param('object_id');
+    my $localization_id = $query->param('localization_id');
+
+    my $schema = Koha::Database->schema;
+    my $row    = $schema->resultset($source)->find($object_id);
+    if ( $row && $row->can('localizations') ) {
+        my $localization = $row->localizations->find($localization_id);
+
+        unless ($localization) {
+            my $json = to_json( { errors => 'Not found' } );
+            output_with_http_headers $query, undef, $json, 'js', '404 Not Found';
+            exit;
+        }
+
+        if ($localization) {
+            $localization->delete();
+            Koha::Caches->get_instance('localization')->clear_from_cache( "$source:" . $localization->lang );
+        }
+
+        $response->param(
+            localization_id => $localization_id,
+        );
+    }
+
+    C4::Service->return_success($response);
+}
+
+C4::Service->dispatch(
+    [ 'PUT /',    [], \&update_translation ],
+    [ 'POST /',   [], \&add_translation ],
+    [ 'DELETE /', [], \&delete_translation ],
+);

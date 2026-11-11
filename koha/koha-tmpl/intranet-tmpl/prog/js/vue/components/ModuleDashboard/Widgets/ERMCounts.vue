@@ -1,0 +1,169 @@
+<template>
+    <WidgetWrapper v-bind="widgetWrapperProps">
+        <template #default>
+            <ul class="count-list">
+                <li v-for="def in countDefinitions" :key="def.name">
+                    <strong>
+                        <router-link
+                            v-if="def.page && !def.loading"
+                            :to="{ name: def.page }"
+                        >
+                            {{ def.i18nLabel(def.count) }}
+                        </router-link>
+                        <span v-else class="inactive-link">
+                            <div
+                                class="spinner-border spinner-border-sm"
+                                role="status"
+                            ></div>
+                            {{ def.i18nLabel(def.count) }}
+                        </span>
+                    </strong>
+                </li>
+            </ul>
+        </template>
+    </WidgetWrapper>
+</template>
+<script>
+import { reactive } from "vue";
+import { useBaseWidget } from "../../../composables/base-widget.js";
+import { APIClient } from "../../../fetch/api-client.js";
+import WidgetWrapper from "../WidgetWrapper.vue";
+import { useRouter } from "vue-router";
+import { $__ } from "@koha-vue/i18n";
+
+export default {
+    name: "ERMCounts",
+    components: { WidgetWrapper },
+    props: {
+        display: String,
+        dashboardColumn: String,
+    },
+    emits: ["removed", "added", "moveWidget"],
+    setup(props, { emit }) {
+        const router = useRouter();
+        const baseWidget = useBaseWidget(
+            {
+                id: "ERMCounts",
+                name: $__("Counts"),
+                icon: "fas fa-chart-bar",
+                description: $__(
+                    "Shows the number of ERM related resources such as agreements, licenses, local packages, local titles, etc."
+                ),
+                ...props,
+            },
+            emit
+        );
+        baseWidget.loading.value = false;
+        const countDefinitions = reactive([
+            {
+                page: "AgreementsList",
+                name: "agreements_count",
+                fetchCount: () => APIClient.erm.agreements.count(),
+                i18nLabel: count =>
+                    __nx("{count} agreement", "{count} agreements", count, {
+                        count,
+                    }),
+                count: "",
+                loading: true,
+            },
+            {
+                page: "LicensesList",
+                name: "licenses_count",
+                fetchCount: () => APIClient.erm.licenses.count(),
+                i18nLabel: count =>
+                    __nx("{count} license", "{count} licenses", count, {
+                        count,
+                    }),
+                count: "",
+                loading: true,
+            },
+            {
+                page: "EHoldingsLocalPackagesList",
+                name: "eholdings_packages_count",
+                fetchCount: () => APIClient.erm.localPackages.count(),
+                i18nLabel: count =>
+                    __nx(
+                        "{count} local package",
+                        "{count} local packages",
+                        count,
+                        { count }
+                    ),
+                count: "",
+                loading: true,
+            },
+            {
+                page: "EHoldingsLocalTitlesList",
+                name: "eholdings_titles_count",
+                fetchCount: () => APIClient.erm.localTitles.count(),
+                i18nLabel: count =>
+                    __nx("{count} local title", "{count} local titles", count, {
+                        count,
+                    }),
+                count: "",
+                loading: true,
+            },
+            {
+                page: "UsageStatisticsDataProvidersList",
+                name: "usage_data_providers_count",
+                fetchCount: () => APIClient.erm.usage_data_providers.count(),
+                i18nLabel: count =>
+                    __nx(
+                        "{count} usage data provider",
+                        "{count} usage data providers",
+                        count,
+                        { count }
+                    ),
+                count: "",
+                loading: true,
+            },
+        ]);
+
+        async function getCounts() {
+            await Promise.all(
+                countDefinitions.map(async definition => {
+                    const response = await definition.fetchCount();
+                    definition.count = response;
+                    definition.loading = false;
+                })
+            );
+        }
+
+        baseWidget.onDashboardMounted(() => {
+            getCounts();
+        });
+
+        function goToPage(page) {
+            router.push({ name: page });
+        }
+
+        return {
+            ...baseWidget,
+            countDefinitions,
+            goToPage,
+        };
+    },
+};
+</script>
+<style scoped>
+.count-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+.count-list li {
+    background: #eee;
+    padding: 0.3em 0.8em;
+    border-radius: 12px;
+}
+.inactive-link {
+    color: #888;
+}
+.count-list a {
+    text-decoration: none;
+}
+.count-list a:hover {
+    text-decoration: underline;
+}
+</style>

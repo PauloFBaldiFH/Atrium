@@ -1,0 +1,276 @@
+const { VueLoaderPlugin } = require("vue-loader");
+//const autoprefixer = require("autoprefixer");
+const path = require("path");
+const rspack = require("@rspack/core");
+
+// NOTE: Every output.path under koha-tmpl/ that ships must also be handled in
+// Makefile.PL: the 'NONE' entries in the target-directory map and the cp -r
+// lines in the compile step. A new dist dir added here without both changes is
+// silently omitted from builds from source (see Bug 43401).
+
+// The booking API adapter is swapped per application at build time so the
+// same store code talks to the staff or OPAC endpoints.
+const bookingApiAlias = application =>
+    path.resolve(
+        __dirname,
+        application === "opac"
+            ? "koha-tmpl/intranet-tmpl/prog/js/vue/lib/booking/adapters/api/opac.js"
+            : "koha-tmpl/intranet-tmpl/prog/js/vue/lib/booking/adapters/api/staff-interface.js"
+    );
+
+const islandsExport = application => {
+    const vueDir =
+        application === "intranet"
+            ? "intranet-tmpl/prog"
+            : "opac-tmpl/bootstrap";
+
+    return {
+        resolve: {
+            extensions: [".ts", "..."],
+            alias: {
+                "@js": path.resolve(
+                    __dirname,
+                    "koha-tmpl/intranet-tmpl/prog/js"
+                ),
+                "@fetch": path.resolve(
+                    __dirname,
+                    "koha-tmpl/intranet-tmpl/prog/js/fetch"
+                ),
+                "@koha-vue": path.resolve(
+                    __dirname,
+                    "koha-tmpl/intranet-tmpl/prog/js/vue"
+                ),
+                "@bookingApi": bookingApiAlias(application),
+            },
+        },
+        experiments: {
+            outputModule: true,
+        },
+        entry: {
+            islands: [
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/csp-nonce.js",
+                `./koha-tmpl/intranet-tmpl/prog/js/vue/modules/islands-${application}.ts`,
+            ],
+        },
+        output: {
+            filename: "[name].esm.js",
+            path: path.resolve(__dirname, `koha-tmpl/${vueDir}/js/vue/dist/`),
+            chunkFilename: "[name].[contenthash].esm.js",
+            globalObject: "window",
+            library: {
+                type: "module",
+            },
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.vue$/,
+                    loader: "vue-loader",
+                    options: {
+                        experimentalInlineMatchResource: true,
+                    },
+                    exclude: [path.resolve(__dirname, "t/cypress/")],
+                },
+                {
+                    test: /\.ts$/,
+                    loader: "builtin:swc-loader",
+                    options: {
+                        jsc: {
+                            parser: {
+                                syntax: "typescript",
+                            },
+                        },
+                        appendTsSuffixTo: [/\.vue$/],
+                    },
+                    exclude: [
+                        /node_modules/,
+                        path.resolve(__dirname, "t/cypress/"),
+                    ],
+                    type: "javascript/auto",
+                },
+                {
+                    test: /\.css$/i,
+                    type: "javascript/auto",
+                    use: ["style-loader", "css-loader"],
+                },
+            ],
+        },
+        plugins: [
+            new VueLoaderPlugin(),
+            new rspack.DefinePlugin({
+                __VUE_OPTIONS_API__: true,
+                __VUE_PROD_DEVTOOLS__: false,
+                __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
+            }),
+        ],
+        externals: {
+            jquery: "jQuery",
+            "datatables.net": "DataTable",
+            "datatables.net-buttons": "DataTable",
+            "datatables.net-buttons/js/buttons.html5": "DataTable",
+            "datatables.net-buttons/js/buttons.print": "DataTable",
+            "datatables.net-buttons/js/buttons.colVis": "DataTable",
+        },
+    };
+};
+
+module.exports = [
+    {
+        resolve: {
+            extensions: [".ts", "..."],
+            alias: {
+                "@js": path.resolve(
+                    __dirname,
+                    "koha-tmpl/intranet-tmpl/prog/js"
+                ),
+                "@fetch": path.resolve(
+                    __dirname,
+                    "koha-tmpl/intranet-tmpl/prog/js/fetch"
+                ),
+                "@bookingApi": bookingApiAlias("intranet"),
+                "@koha-vue": path.resolve(
+                    __dirname,
+                    "koha-tmpl/intranet-tmpl/prog/js/vue"
+                ),
+                "@cypress": path.resolve(__dirname, "t/cypress"),
+            },
+        },
+        entry: {
+            erm: [
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/csp-nonce.js",
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/erm.ts",
+            ],
+            preservation: [
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/csp-nonce.js",
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/preservation.ts",
+            ],
+            "admin/record_sources": [
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/csp-nonce.js",
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/admin/record_sources.ts",
+            ],
+            acquisitions: [
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/csp-nonce.js",
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/acquisitions.ts",
+            ],
+            islands: [
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/csp-nonce.js",
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/islands-intranet.ts",
+            ],
+            "admin/circulation_triggers": [
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/csp-nonce.js",
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/admin/circulation_triggers.ts",
+            ],
+            sip2: [
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/csp-nonce.js",
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/sip2.ts",
+            ],
+            ill: [
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/csp-nonce.js",
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/ill.ts",
+            ],
+            item_lists: [
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/csp-nonce.js",
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/item_lists.ts",
+            ],
+        },
+        output: {
+            filename: "[name].js",
+            path: path.resolve(
+                __dirname,
+                "koha-tmpl/intranet-tmpl/prog/js/vue/dist/"
+            ),
+            chunkFilename: "[name].[contenthash].js",
+            globalObject: "window",
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.vue$/,
+                    loader: "vue-loader",
+                    options: {
+                        experimentalInlineMatchResource: true,
+                    },
+                    //exclude: [path.resolve(__dirname, "t/cypress/")],
+                },
+                {
+                    test: /\.ts$/,
+                    loader: "builtin:swc-loader",
+                    options: {
+                        jsc: {
+                            parser: {
+                                syntax: "typescript",
+                            },
+                        },
+                        appendTsSuffixTo: [/\.vue$/],
+                    },
+                    exclude: [
+                        /node_modules/,
+                        path.resolve(__dirname, "t/cypress/"),
+                    ],
+                    type: "javascript/auto",
+                },
+                {
+                    test: /\.css$/i,
+                    type: "javascript/auto",
+                    use: ["style-loader", "css-loader"],
+                },
+            ],
+        },
+        plugins: [
+            new VueLoaderPlugin(),
+            new rspack.DefinePlugin({
+                __VUE_OPTIONS_API__: true,
+                __VUE_PROD_DEVTOOLS__: false,
+                __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
+            }),
+        ],
+        externals: {
+            jquery: "jQuery",
+            "datatables.net": "DataTable",
+            "datatables.net-buttons": "DataTable",
+            "datatables.net-buttons/js/buttons.html5": "DataTable",
+            "datatables.net-buttons/js/buttons.print": "DataTable",
+            "datatables.net-buttons/js/buttons.colVis": "DataTable",
+        },
+    },
+    islandsExport("intranet"),
+    islandsExport("opac"),
+    {
+        entry: {
+            "api-client.cjs": [
+                "./koha-tmpl/intranet-tmpl/prog/js/vue/csp-nonce.js",
+                "./koha-tmpl/intranet-tmpl/prog/js/fetch/api-client.js",
+            ],
+        },
+        devtool: false,
+        output: {
+            filename: "[name].js",
+            path: path.resolve(__dirname, "t/cypress/plugins/dist/"),
+            clean: true,
+            library: {
+                type: "commonjs",
+            },
+            globalObject: "global",
+        },
+        target: "node",
+        module: {
+            rules: [
+                {
+                    test: /\.js$/,
+                    loader: "builtin:swc-loader",
+                    options: {
+                        jsc: {
+                            parser: {
+                                syntax: "ecmascript",
+                            },
+                        },
+                    },
+                    exclude: [/node_modules/],
+                    type: "javascript/auto",
+                },
+            ],
+        },
+        externals: [],
+        plugins: [],
+    },
+];

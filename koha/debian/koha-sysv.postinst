@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+# /etc/init.d/koha-common is installed by dh_installinit --name=koha-common
+# (see debian/rules), which also generates the update-rc.d / invoke-rc.d
+# handling below. On systemd hosts systemd-sysv-generator wraps the script
+# as koha-common.service and honours those rc.d links.
+
+#DEBHELPER#
+
+exit 0

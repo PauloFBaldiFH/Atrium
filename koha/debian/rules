@@ -1,0 +1,69 @@
+#!/usr/bin/make -f
+
+TMP = $(CURDIR)/debian/tmp
+
+# Make "perl Makefile.PL" be non-interactive.
+export PERL_MM_USE_DEFAULT=1
+
+%:
+	dh $@ --fail-missing --with bash-completion
+
+# Files under /etc keep their historical koha-common names: koha-core takes
+# them over from the old monolithic koha-common package (Replaces), so dpkg
+# transfers the admin's edited conffiles instead of leaving obsolete copies
+# behind next to freshly named ones. koha-sysv ships the SysV init script
+# under the same name so debhelper generates the update-rc.d/invoke-rc.d
+# handling for /etc/init.d/koha-common.
+override_dh_installinit:
+	dh_installinit -pkoha-core -pkoha-sysv --name=koha-common
+	dh_installinit --remaining-packages
+
+override_dh_installcron:
+	dh_installcron -pkoha-core --name=koha-common
+	dh_installcron --remaining-packages
+
+override_dh_installlogrotate:
+	dh_installlogrotate -pkoha-core --name=koha-common
+	dh_installlogrotate --remaining-packages
+
+override_dh_gencontrol:
+	debian/bd-to-depends >> debian/koha-core.substvars
+	dh_gencontrol
+
+override_dh_auto_install:
+	dh_auto_install
+	rm $(TMP)/etc/koha/README.txt
+	rm $(TMP)/etc/koha/SIPconfig.xml
+	rm $(TMP)/etc/koha/log4perl.conf
+	rm $(TMP)/etc/koha/apache.conf
+	rm $(TMP)/etc/koha/nginx.conf
+	rm $(TMP)/etc/koha/koha-worker.service
+	rm -r $(TMP)/usr/share/koha/doc
+	rm -r $(TMP)/var/run
+	rm -r $(TMP)/var/lock
+	rm $(TMP)/var/log/koha/README
+	install -d $(TMP)/etc/apache2/sites-available
+	install -d $(TMP)/etc/apache2/sites-enabled
+	install -d $(TMP)/etc/apache2/conf.d
+	ln -s ../../koha/koha-httpd.conf $(TMP)/etc/apache2/sites-available/koha
+	ln -s ../sites-available/koha $(TMP)/etc/apache2/sites-enabled/koha
+	install -m 0644 debian/koha.apache-ports $(TMP)/etc/apache2/conf.d/koha
+	sed -i '/^<VirtualHost 127.0.1.1:/s//<VirtualHost *:/' \
+		$(TMP)/etc/koha/koha-httpd.conf
+	mv $(TMP)/etc/koha/koha-conf.xml $(TMP)/usr/share/koha/koha-conf.xml.in
+	sed -i $(TMP)/usr/share/koha/koha-conf.xml.in \
+		-e '/^ <user>/s/>.*</>_DBC_DBUSER_</' \
+		-e '/^ <pass>/s/>.*</>_DBC_DBPASS_</'
+	mkdir -p $(TMP)/debian/tmp_docbook
+	xt/verify-debian-docbook.t
+	xsltproc --output $(TMP)/debian/tmp_docbook/ \
+	    /usr/share/xml/docbook/stylesheet/docbook-xsl-ns/manpages/docbook.xsl \
+	    debian/docs/*.xml
+
+override_dh_compress:
+	# exclude history.txt from compression as about.pl needs it uncompressed
+	dh_compress --exclude=history.txt --exclude=contributors.yaml --exclude=teams.yaml
+
+override_dh_installchangelogs:
+	# Debian Buster onwards renames history.txt to changelog which breaks Koha's timeline feature
+	dh_installchangelogs --exclude=history.txt

@@ -1,0 +1,173 @@
+Source: koha
+Maintainer: Mason James <mtj@kohaaloha.com>
+Section: web
+Priority: optional
+Standards-Version: 3.8.4
+# WARNING: The "control" file is automatically generated from the "control.in" file.
+# Do not manually edit "control" or your changes will be clobbered when you
+# run update-control
+# NOTA BENE: Build dependencies end up as runtime dependencies as well.
+# See debian/rules, the override_dh_gencontrol rules. 
+# There are some exceptions.
+Build-Depends:__AUTODEPENDS__,
+ debhelper (>= 7.0.50), gettext, xsltproc, docbook-xsl, docbook-xsl-ns, fonts-dejavu | ttf-dejavu,
+ libxml2-utils, bash-completion, perl-modules-5.26 | libtest-simple-perl (>= 1.302073)
+
+Package: koha-common
+Architecture: all
+Depends: ${misc:Depends},
+ koha-core,
+ koha-systemd | koha-sysv,
+ apache2,
+ apache2-mpm-itk | libapache2-mpm-itk,
+ idzebra-2.0,
+ memcached
+Suggests: mysql-server | virtual-mysql-server,
+ letsencrypt,
+ rabbitmq-server
+Homepage: http://koha-community.org/
+Description: integrated (physical) library management system
+ Koha is an Integrated Library Management system for real-world libraries
+ (the kinds with books).
+ .
+ This metapackage installs the complete Koha system with all dependencies.
+ On systemd-based systems, it will use native systemd units (koha-systemd).
+ On other systems or containers, it will use SysV init scripts (koha-sysv).
+
+Package: koha
+Architecture: all
+Depends: ${shlib:Depends}, ${misc:Depends},
+ koha-common,
+ dbconfig-common,
+ mysql-server | virtual-mysql-server
+Homepage: http://koha-community.org/
+Description: integrated (physical) library management system
+ Koha is an Integrated Library Management system for real-world libraries
+ (the kinds with books).
+ .
+ This package contains site-specific configuration files and sets up
+ the MySQL database for Koha. For simplicity, the database server is
+ assumed to run on the same host as Koha.
+ .
+ Please see https://wiki.koha-community.org/wiki/Installation_Documentation
+ for instructions on how to configure things after installing this package.
+
+Package: koha-deps
+Depends: ${misc:Depends},
+ apache2,
+ apache2-mpm-itk | libapache2-mpm-itk,
+ at,
+ cron-daemon,
+ daemon,
+ debconf,
+ idzebra-2.0,
+ mysql-client | virtual-mysql-client,
+ mysql-server | virtual-mysql-server,
+ perl-doc,
+ pwgen,
+ sudo,
+ fonts-dejavu | ttf-dejavu,
+ unzip,
+ weasyprint,
+ xmlstarlet,
+ yaz
+Suggests: rabbitmq-server
+Architecture: all
+Description: Other dep. for koha
+ Koha is an Integrated Library Management system for real-world libraries
+ (the kinds with books).
+ .
+ This meta-package contains general dependencies packages for koha (apache2,
+ daemon, debconf, etc.).
+
+Package: koha-perldeps
+Depends:__AUTODEPENDS__
+Architecture: all
+Description: Perl dep. for koha
+ Koha is an Integrated Library Management system for real-world libraries
+ (the kinds with books).
+ .
+ This meta-package contains perl dependencies packages for koha (all
+ perl lib).
+
+Package: koha-core
+Architecture: all
+Replaces: koha-common (<< 26.06~)
+Breaks: koha-common (<< 26.06~)
+Description: integrated (physical) library management system
+ Koha is an Integrated Library Management system for real-world libraries
+ (the kinds with books).
+ .
+ This package provides the core Koha application files, scripts, and
+ configuration without any init system. It requires either koha-sysv or
+ koha-systemd to manage services.
+ .
+ Most users should install koha-common instead, which will automatically
+ select the appropriate init system.
+Recommends: koha-systemd | koha-sysv
+Depends: ${misc:Depends}, ${koha:Depends},
+ at,
+ cron-daemon,
+ debconf,
+ koha-l10n,
+ mysql-client | virtual-mysql-client,
+ perl-doc,
+ pwgen,
+ starman,
+ sudo,
+ fonts-dejavu | ttf-dejavu,
+ unzip,
+ weasyprint,
+ xmlstarlet,
+ yaz
+
+Package: koha-full
+Depends:
+ koha-common,
+ mysql-server | virtual-mysql-server,
+Architecture: all
+Description: integrated (physical) library management system
+ Koha is an Integrated Library Management system for real-world libraries
+ (the kinds with books).
+ .
+ This metapackage provides a version of Koha with the complete set of third-party
+ systems such as MariaDB, RabbitMQ, et cetera.
+ .
+ This package is EXPERIMENTAL and not recommended for production use.
+
+Package: koha-systemd
+Architecture: all
+Depends: ${misc:Depends}, systemd, koha-core
+Provides: koha-init
+Conflicts: koha-sysv
+Replaces: koha-common (<< 26.06~), koha-sysv
+Breaks: koha-common (<< 26.06~)
+Description: systemd units for Koha ILS
+ Koha is an Integrated Library Management system for real-world libraries
+ (the kinds with books).
+ .
+ This package provides native systemd service units for managing Koha
+ instances. Each service type (Plack, Zebra, SIP, Z3950, workers, indexers)
+ is managed as a separate systemd unit using instance templates.
+ .
+ This allows granular control over individual services per instance and
+ leverages systemd features like dependency management, resource limits,
+ and journald logging.
+
+Package: koha-sysv
+Architecture: all
+Depends: ${misc:Depends}, daemon, koha-core
+Provides: koha-init
+Conflicts: koha-systemd
+Replaces: koha-common (<< 26.06~), koha-systemd
+Breaks: koha-common (<< 26.06~)
+Description: SysV init scripts for Koha ILS
+ Koha is an Integrated Library Management system for real-world libraries
+ (the kinds with books).
+ .
+ This package provides traditional SysV init.d scripts for managing Koha
+ instances. All services (Plack, Zebra, SIP, Z3950, workers, indexers) are
+ managed through a single init script using the daemon wrapper.
+ .
+ This package is intended for legacy systems, containers without systemd
+ (like KTD), or environments where SysV init is preferred.

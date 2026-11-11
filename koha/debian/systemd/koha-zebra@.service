@@ -1,0 +1,43 @@
+[Unit]
+Description=Koha Zebra indexing server for %i
+Documentation=man:koha-zebra(8)
+PartOf=koha@%i.target
+Requires=koha-create-dirs@%i.service
+Before=koha@%i.target
+After=koha-create-dirs@%i.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=forking
+User=%i-koha
+Group=%i-koha
+SyslogIdentifier=%i-koha-zebra
+# Capture stdout/stderr to the same files the daemon(1) wrapper used under
+# SysV, so log locations are identical whichever init package is installed.
+StandardOutput=append:/var/log/koha/%i/zebra-output.log
+StandardError=append:/var/log/koha/%i/zebra-error.log
+WorkingDirectory=/var/lib/koha/%i
+Environment=KOHA_CONF=/etc/koha/sites/%i/koha-conf.xml
+Environment=KOHA_HOME=/usr/share/koha
+PIDFile=/run/koha/%i/zebra.pid
+ExecStartPre=+/usr/sbin/koha-generate-env zebra %i
+# Clean up leftover Zebra socket files so Zebra can rebind on startup.
+ExecStartPre=+/bin/sh -c 'rm -f /run/koha/%i/*socket'
+EnvironmentFile=-/run/koha/%i/zebra.env
+ExecStart=/usr/bin/zebrasrv \
+    -v ${ZEBRA_LOGLEVELS} \
+    -k ${ZEBRA_MAX_RECORD_SIZE} \
+    -f /etc/koha/sites/%i/koha-conf.xml \
+    -m '%%FT%%T' \
+    -p /run/koha/%i/zebra.pid \
+    -D
+ProtectSystem=full
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes
+Restart=on-failure
+RestartSec=30s
+
+[Install]
+WantedBy=koha@%i.target

@@ -1,0 +1,156 @@
+<acsconfig xmlns="http://openncip.org/acs-config/1.0/">
+<!-- above address gets nothing, it's just a namespace -->
+  <error-detect enabled="true" />
+
+<!--
+  Set Net::Server::PreFork runtime parameters
+  syslog_ident will identify SIP2 Koha server entries in syslog
+  See documentation for Net::Server
+  user and group select what user the service should run as
+  if started as root (e.g. in server startup ) the server will switch to
+  this user after binding to the socket it is listening on
+  For OpenSolaris, add: syslog_logsock=stream
+-->
+  <server-params
+    min_servers='1'
+    min_spare_servers='0'
+    max_servers='1'
+    setsid="1"
+    user='koha'
+    group='koha'
+    pid_file='/var/run/sipserver.pid'
+    custom_tcp_keepalive='0'
+    custom_tcp_keepalive_time='7200'
+    custom_tcp_keepalive_intvl='75'
+  />
+
+  <listeners>
+<!-- vestigial HTTP, never implemented: just use the OPAC!
+    <service
+      port="0:8080/tcp"
+      transport="http"
+      protocol="NCIP/1.0" />
+-->
+    <service
+      port="127.0.0.1:8023/tcp/IPv4"
+      transport="telnet"
+      protocol="SIP/2.00"
+      timeout="60" />
+
+    <service
+      port="127.0.0.1:6001/tcp/IPv4"
+      transport="RAW"
+      protocol="SIP/2.00"
+      client_timeout="600"
+      timeout="60" />
+<!--- client_timeout times out active connections which have not received
+     input from the client. Many persistent connections will send a status request
+     every 5-7 mins so setting this to less than that will add instability to the connection
+     if explicitly set to zero, no timeout is applied to the connection.
+     NB the parameter timeout applies to the login process only and should be set to a lower value
+     to time out failed connections
+-->
+  </listeners>
+
+<!-- WARNING: Accounts are now managed in the Staff UI SIP2 module -->
+  <accounts>
+      <login id="staff"  password="staff" delimiter="|" error-detect="enabled" institution="CPL" encoding="ascii" checked_in_ok="1" payment_type_writeoff="06" disallow_overpayment="1" />
+      <login id="koha"   password="koha"  delimiter="|" error-detect="enabled" institution="kohalibrary" encoding="utf8" />
+      <login id="koha2"  password="koha" institution="kohalibrary2" terminator="CR" />
+      <login id="lpl-sc" password="1234" institution="LPL" allow_fields="AO,AA,AE"/>
+      <!-- allow_fields hides all fields not in the list, it is the inverse of hide_fields ( hide_fields takes precedence ) -->
+      <login id="lpl-sc-beacock" password="xyzzy"
+             convert_nonprinting_characters=" "
+             delimiter="|" error-detect="enabled" institution="LPL"
+             send_patron_home_library_in_af="1"
+             cv_send_00_on_success="1"
+             ct_always_send="1"
+             cv_triggers_alert="1"
+             allow_empty_passwords="1"
+             cr_item_field="shelving_location"
+             ae_field_template="[% patron.surname %][% IF patron.firstname %], [% patron.firstname %][% END %]"
+             da_field_template="[% patron.surname %][% IF patron.firstname %], [% patron.firstname %][% END %]"
+             av_field_template="[% accountline.description %] [% accountline.amountoutstanding | format('%.2f') %]"
+             hide_fields="BD,BE,BF,PB"
+             allow_additional_materials_checkout="1"
+             register_id=''
+             holds_block_checkin="0"
+             holds_get_captured="1"
+             prevcheckout_block_checkout="0"
+             overdues_block_checkout="1"
+             show_outstanding_amount="1"
+             show_checkin_message="0"
+             format_due_date="0"
+             inhouse_item_types=""
+             inhouse_patron_categories=""
+             lost_status_for_missing="4"
+             blocked_item_types="VM|MU"
+             seen_on_item_information="mark_found"> <!-- could be "keep_lost", empty to disable -->
+             <!-- convert_nonprinting_characters: Convert control and non-space separator characters into the given string -->
+             <!-- show_checkin_message: If enabled, successful checking responses will contain an AF screen message -->
+             <!-- lost_block_checkout sets flag if patron has more than the given current checkouts that are lost ( itemlost > 0 by default ) -->
+             <!-- lost_block_checkout_value determines the minimum lost item value to count ( that is, the value in items.itemlost ) -->
+             <!-- lost_status_for_missing defines which Koha lost status will return the circulation status 13 ( i.e. missing ) for this account -->
+          <!-- Refer to syspref SIP2SortBinMapping for full explanation of sort bin mapping -->
+          <sort_bin_mapping mapping="CPL:itype:eq:BK:1"/>
+          <sort_bin_mapping mapping="CPL:location:eq:OFFICE:2"/>
+          <screen_msg_regex find="Greetings from Koha." replace="Welcome to your library!" />
+          <screen_msg_regex find="Invalid patron barcode." replace="Barcode not found, are you sure this is your library card?" />
+          <patron_attribute field="XY" code="CODE" />
+          <item_field field="ZY" code="permanent_location" />
+          <syspref_overrides>
+              <AllFinesNeedOverride>0</AllFinesNeedOverride>
+          </syspref_overrides>
+          <custom_patron_field field="DE" template="[% patron.dateexpiry %]" />
+          <custom_item_field field="IN" template="[% item.itemnumber %]" />
+      </login>
+  </accounts>
+
+<!--
+Institution tags are for enabled branches.  There needs to be one
+institution stanza for each institution named in the accounts above.
+The implementation attribute is actually used to find the code to run,
+in our case "ILS".
+-->
+
+<!-- WARNING: Institutions are now managed in the Staff UI SIP2 module -->
+<institutions>
+    <institution id="MAIN" implementation="ILS" parms="">
+          <policy checkin="true" renewal="true" checkout="true"
+            status_update="false" offline="false"
+          timeout="100"
+            retries="5" />
+    </institution>
+    <institution id="CPL" implementation="ILS" parms="">
+          <policy checkin="true" renewal="true" checkout="true"
+            status_update="false" offline="false"
+          timeout="25"
+            retries="5" />
+    </institution>
+    <institution id="kohalibrary" implementation="ILS" parms="">
+          <policy checkin="true" renewal="false" checkout="true"
+            status_update="false" offline="false"
+          timeout="100"
+            retries="5" />
+    </institution>
+    <institution id="kohalibrary2" implementation="ILS" parms="">
+          <policy checkin="true" renewal="false" checkout="true"
+          timeout="100"
+            retries="3" />
+    </institution>
+    <institution id="LPL" implementation="ILS">
+          <policy checkin="true" renewal="false" checkout="true"
+          timeout="100"
+            retries="5" />
+    </institution>
+</institutions>
+
+<!-- This section allows system preferences to be overridden on a global basis.
+     If the same system preference is overridden at the login level, the login
+     version will take precedence.
+-->
+<!-- WARNING: Syspref overrides are now managed in the Staff UI SIP2 module -->
+<syspref_overrides>
+      <AllFinesNeedOverride>0</AllFinesNeedOverride>
+</syspref_overrides>
+</acsconfig>

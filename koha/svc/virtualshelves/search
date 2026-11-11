@@ -1,0 +1,92 @@
+#!/usr/bin/perl
+
+use Modern::Perl;
+use CGI;
+
+use C4::Auth   qw( get_template_and_user );
+use C4::Output qw( output_with_http_headers );
+use C4::Utils::DataTables::VirtualShelves;
+
+my $input = CGI->new;
+
+exit unless $input->param('template_path');
+
+my ( $template, $user, $cookie ) = get_template_and_user(
+    {
+        template_name => scalar $input->param('template_path'),
+        query         => $input,
+        type          => "intranet",
+        flagsrequired => { catalogue => 1 }
+    }
+);
+
+my $shelfname      = $input->param('shelfname');
+my $count          = $input->param('count');
+my $owner          = $input->param('owner');
+my $public         = $input->param('public');
+my $sortby         = $input->param('sortby');
+my $allow_transfer = $input->param('allow_transfer');
+my $order_by       = $input->param('order_by');
+my $start          = $input->param('start');
+my $length         = $input->param('length');
+
+# variable information for DataTables (id)
+my $draw = $input->param('draw');
+
+my $results = C4::Utils::DataTables::VirtualShelves::search(
+    {
+        shelfname => $shelfname,
+        count     => $count,
+        owner     => $owner,
+        public    => $public,
+        sortby    => $sortby,
+        order_by  => $order_by,
+        start     => $start,
+        length    => $length,
+    }
+);
+
+$template->param(
+    draw            => $draw,
+    recordsTotal    => $results->{recordsTotal},
+    recordsFiltered => $results->{recordsFiltered},
+    data            => $results->{shelves},
+    public          => $public,
+    allow_transfer  => $allow_transfer,
+);
+
+output_with_http_headers $input, $cookie, $template->output, 'json';
+
+__END__
+
+=head1 NAME
+
+search - a search script for finding virtual shelves
+
+=head1 SYNOPSIS
+
+This script provides a service for template for virtual shelves search using DataTables
+
+=head1 LICENSE
+
+Copyright 2014 BibLibre
+
+This file is part of Koha.
+
+Koha is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+Koha is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+Koha is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Koha; if not, see <https://www.gnu.org/licenses>.

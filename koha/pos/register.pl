@@ -1,0 +1,283 @@
+#!/usr/bin/perl
+
+# Copyright 2020 PTFS-Europe Ltd
+#
+# This file is part of Koha.
+#
+# Koha is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Koha is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Koha; if not, see <https://www.gnu.org/licenses>.
+
+use Modern::Perl;
+use CGI;
+use C4::Auth   qw( get_template_and_user );
+use C4::Output qw( output_html_with_http_headers );
+use C4::Context;
+
+use Koha::Account::Lines;
+use Koha::Cash::Registers;
+use Koha::Database;
+use Koha::DateUtils qw( dt_from_string );
+
+my $input = CGI->new();
+
+my ( $template, $loggedinuser, $cookie, $user_flags ) = get_template_and_user(
+    {
+        template_name   => 'pos/register.tt',
+        query           => $input,
+        type            => 'intranet',
+        authnotrequired => 0,
+        flagsrequired   => { cash_management => [ 'cashup', 'anonymous_refund' ] },
+    }
+);
+my $logged_in_user = Koha::Patrons->find($loggedinuser) or die "Not logged in";
+my $schema         = Koha::Database->new->schema;
+
+my $library_id = C4::Context->userenv->{'branch'};
+my $registerid = $input->param('registerid') // C4::Context->userenv->{'register_id'};
+my $registers  = Koha::Cash::Registers->search(
+    { branch   => $library_id, archived => 0 },
+    { order_by => { '-asc' => 'name' } }
+);
+
+if ( !$registers->count ) {
+    $template->param( error_registers => 1 );
+} else {
+    if ( !$registerid ) {
+        my $default_register = Koha::Cash::Registers->find( { branch => $library_id, branch_default => 1 } );
+        $registerid = $default_register->id if $default_register;
+    }
+    $registerid = $registers->next->id if !$registerid;
+
+    $template->param(
+        registerid => $registerid,
+        registers  => $registers,
+    );
+
+    my $cash_register      = Koha::Cash::Registers->find( { id => $registerid } );
+    my $accountlines       = $cash_register->outstanding_accountlines();
+    my $cashup_in_progress = $cash_register->cashup_in_progress();
+
+    # Get authorized values for reconciliation notes if configured
+    my $note_av_category = C4::Context->preference('CashupReconciliationNoteAuthorisedValue');
+    my $reconciliation_note_avs;
+    if ($note_av_category) {
+        require Koha::AuthorisedValues;
+        $reconciliation_note_avs = Koha::AuthorisedValues->search(
+            { category => $note_av_category },
+            { order_by => { '-asc' => 'lib' } }
+        );
+    }
+
+    $template->param(
+        register                       => $cash_register,
+        accountlines                   => $accountlines,
+        cashup_in_progress             => $cashup_in_progress,
+        reconciliation_note_avs        => $reconciliation_note_avs,
+        reconciliation_note_required   => C4::Context->preference('CashupReconciliationNoteRequired'),
+        cashup_payment_types_breakdown => $cash_register->cashup_payment_types_breakdown,
+        cashup_payment_type_codes      => $cash_register->cashup_payment_types,
+    );
+
+    my $transactions_range_from = $input->param('trange_f');
+    my $last_cashup             = $cash_register->last_cashup;
+    my $transactions_range_to =
+          $input->param('trange_t') ? $input->param('trange_t')
+        : $last_cashup              ? $last_cashup->timestamp
+        :                             '';
+    my $end = dt_from_string($transactions_range_to);
+    $end = $end->set( { hour => 23, minute => 59, second => 59 } );    # To should be 'inclusive'
+
+    if ($transactions_range_from) {
+
+        my $dtf               = $schema->storage->datetime_parser;
+        my $start             = dt_from_string($transactions_range_from);
+        my $past_accountlines = Koha::Account::Lines->search(
+            {
+                register_id => $registerid,
+                timestamp   => {
+                    -between => [
+                        $dtf->format_datetime($start),
+                        $dtf->format_datetime($end)
+                    ]
+                }
+            }
+        );
+        $template->param(
+            past_accountlines => $past_accountlines,
+            trange_f          => $start,
+        );
+    }
+    $template->param( trange_t => $end, );
+
+    my $op = $input->param('op') // '';
+    if ( $op eq 'cud-cashup_start' ) {
+        if ( $logged_in_user->has_permission( { cash_management => 'cashup' } ) ) {
+            eval {
+                $cash_register->start_cashup(
+                    {
+                        manager_id => $logged_in_user->id,
+                    }
+                );
+            };
+            if ($@) {
+                if ( $@->isa('Koha::Exceptions::Object::DuplicateID') ) {
+                    $template->param( error_cashup_in_progress => 1 );
+                } elsif ( $@->isa('Koha::Exceptions::Object::BadValue') ) {
+                    $template->param( error_cashup_no_transactions => 1 );
+                } else {
+                    $template->param( error_cashup_start => 1 );
+                }
+            } else {
+
+                # Redirect to prevent duplicate submissions (POST/REDIRECT/GET pattern)
+                my $redirect_to = $input->param('redirect_to') || 'register';
+
+                if ( $redirect_to eq 'registers' ) {
+                    print $input->redirect("/cgi-bin/koha/pos/registers.pl?cashup_start_success=1");
+                } else {
+                    print $input->redirect( "/cgi-bin/koha/pos/register.pl?registerid=" . $registerid );
+                }
+                exit;
+            }
+        } else {
+            $template->param( error_cashup_permission => 1 );
+        }
+    } elsif ( $op eq 'cud-cashup' ) {
+        if ( $logged_in_user->has_permission( { cash_management => 'cashup' } ) ) {
+
+            # The Complete cashup modal posts actual_amount_<TYPE> +
+            # reconciliation_note_<TYPE> for every configured payment type.
+            my $configured_types = $cash_register->cashup_payment_types;
+            my @reconciliations;
+            for my $type (@$configured_types) {
+                my $amt = $input->param( 'actual_amount_' . $type );
+                next unless defined $amt;
+                push @reconciliations, {
+                    payment_type  => $type,
+                    actual_amount => $amt,
+                    note          => $input->param( 'reconciliation_note_' . $type ),
+                };
+            }
+
+            # The Quick cashup path posts no amounts at all, so fill in the
+            # expected per-type totals so the cashup is balanced.
+            @reconciliations = @{ $cash_register->balanced_reconciliations } unless @reconciliations;
+
+            my $valid_amounts = @reconciliations
+                && !grep { $_->{actual_amount} !~ /^-?\d+(?:\.\d{1,2})?$/ } @reconciliations;
+
+            if ($valid_amounts) {
+
+                my %cashup_params = (
+                    manager_id      => $logged_in_user->id,
+                    reconciliations => \@reconciliations,
+                );
+
+                my $cashup;
+                eval { $cashup = $cash_register->add_cashup( \%cashup_params ); };
+                if ($@) {
+                    if ( $@->isa('Koha::Exceptions::Object::BadValue') ) {
+                        $template->param( error_no_cashup_start => 1 );
+                    } elsif ( $@->isa('Koha::Exceptions::Object::DuplicateID') ) {
+                        $template->param( error_cashup_already_completed => 1 );
+                    } elsif ( $@->isa('Koha::Exceptions::MissingParameter') ) {
+
+                        # Check if this is a reconciliation note error specifically
+                        if ( $@->error =~ /Reconciliation note is required/ ) {
+                            $template->param( error_reconciliation_note_required => 1 );
+                        } else {
+                            $template->param( error_cashup_missing_param => 1, error_message => $@ );
+                        }
+                    } elsif ( $@->isa('Koha::Exceptions::Account::AmountNotPositive') ) {
+                        $template->param( error_cashup_amount_invalid => 1 );
+                    } else {
+
+                        # Log the actual exception for debugging
+                        $template->param( error_cashup_complete => 1, error_details => "$@" );
+                    }
+                } else {
+
+                    # Redirect to prevent duplicate submissions (POST/REDIRECT/GET pattern)
+                    my $redirect_to = $input->param('redirect_to') || 'register';
+
+                    if ( $redirect_to eq 'registers' ) {
+                        print $input->redirect(
+                            "/cgi-bin/koha/pos/registers.pl?cashup_complete_success=1#cashup-" . $cashup->id );
+                    } else {
+                        print $input->redirect(
+                            "/cgi-bin/koha/pos/register.pl?registerid=" . $registerid . "#cashup-" . $cashup->id );
+                    }
+                    exit;
+                }
+            } else {
+                $template->param( error_cashup_amount => 1 );
+            }
+        } else {
+            $template->param( error_cashup_permission => 1 );
+        }
+    } elsif ( $op eq 'cud-refund' ) {
+        if ( $logged_in_user->has_permission( { cash_management => 'anonymous_refund' } ) ) {
+            my $amount         = $input->param('amount');
+            my $quantity       = $input->param('quantity');
+            my $accountline_id = $input->param('accountline');
+            my $refund_type    = $input->param('refund_type');
+
+            my $accountline = Koha::Account::Lines->find($accountline_id);
+
+            # Refuse 'AC' (Account credit) refunds for anonymous accountlines:
+            # there is no patron account to credit, so the refund would be
+            # orphaned and the register would be left unbalanced.
+            if ( $refund_type eq 'AC' && !$accountline->borrowernumber ) {
+                $template->param( error_refund_anonymous_ac => 1 );
+            } else {
+                $schema->txn_do(
+                    sub {
+
+                        my $refund = $accountline->reduce(
+                            {
+                                reduction_type => 'REFUND',
+                                branch         => $library_id,
+                                staff_id       => $logged_in_user->id,
+                                interface      => 'intranet',
+                                amount         => $amount
+                            }
+                        );
+
+                        # Only create a payout if refund_type is not 'AC' (Account Credit)
+                        # When 'AC' is selected, the refund stays as credit on the patron's account
+                        unless ( $refund_type eq 'AC' ) {
+                            my $payout = $refund->payout(
+                                {
+                                    payout_type   => $refund_type,
+                                    branch        => $library_id,
+                                    staff_id      => $logged_in_user->id,
+                                    cash_register => $cash_register->id,
+                                    interface     => 'intranet',
+                                    amount        => $amount
+                                }
+                            );
+                        }
+                    }
+                );
+
+                # Redirect to prevent duplicate submissions (POST/REDIRECT/GET pattern)
+                print $input->redirect( "/cgi-bin/koha/pos/register.pl?registerid=" . $registerid );
+                exit;
+            }
+        } else {
+            $template->param( error_refund_permission => 1 );
+        }
+    }
+}
+
+output_html_with_http_headers( $input, $cookie, $template->output );

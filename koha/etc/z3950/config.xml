@@ -1,0 +1,22 @@
+<yazgfs>
+ <!-- See z3950_responder.pl for available options. The options -c, -u and -p are
+      already passed automatically by koha-z3950-responder, note that dashes for the
+      add-item-status switch are escaped for XML compliance but should not if uncommented -->
+ <!--
+  <config>
+      <z3950_responder_options>\-\-add-item-status k -t 5</z3950_responder_options>
+  </config>
+ -->
+
+  <listen id="public">tcp:@:2100</listen>
+  <server>
+    <cql2rpn>pqf.properties</cql2rpn>
+    <explain xmlns="http://explain.z3950.org/dtd/2.0/">
+      <retrievalinfo>
+        <retrieval syntax="usmarc" name="marc21"/>
+        <retrieval syntax="unimarc" name="unimarc"/>
+        <retrieval syntax="xml" name="marcxml" identifier="info:srw/schema/1/marcxml-v1.1"/>
+      </retrievalinfo>
+    </explain>
+  </server>
+</yazgfs>

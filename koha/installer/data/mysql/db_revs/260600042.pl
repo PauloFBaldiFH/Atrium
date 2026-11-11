@@ -1,0 +1,149 @@
+use Modern::Perl;
+use Koha::Installer::Output qw(say_success say_failure);
+
+return {
+    bug_number  => "42001",
+    description => "Add email notifications for duplicate EDI purchase orders",
+    up          => sub {
+        my ($args) = @_;
+        my ( $dbh, $out ) = @$args{qw(dbh out)};
+        my $ok;
+
+        # Email notification destination
+        $ok = $dbh->do(
+            q{
+            INSERT IGNORE INTO systempreferences (variable, value, options, explanation, type)
+            VALUES (
+                'EdifactOrderSendBlockDuplicatesEmailNotice',
+                '0',
+                '0|AcquisitionsDefaultEmailAddress|EdifactOrderSendBlockDuplicatesEmailAddresses|KohaAdminEmailAddress',
+                'Send duplicate EDIFACT order block notifications using the EDI_DUP_ORD_LIBRARY notice template to the selected address. Vendor EDI contacts are always notified separately via EDI_DUP_ORD_VENDOR.',
+                'Choice'
+            )
+        }
+        );
+        if ($ok) {
+            say_success( $out, "Added system preference 'EdifactOrderSendBlockDuplicatesEmailNotice'" );
+        } else {
+            say_failure(
+                $out,
+                "Failed to add system preference 'EdifactOrderSendBlockDuplicatesEmailNotice': " . $dbh->errstr
+            );
+        }
+
+        # Migrate any pre-release YesNo value to the Choice type
+        $dbh->do(
+            q{
+            UPDATE systempreferences
+            SET type    = 'Choice',
+                options = '0|AcquisitionsDefaultEmailAddress|EdifactOrderSendBlockDuplicatesEmailAddresses|KohaAdminEmailAddress',
+                value   = CASE WHEN value = '1' THEN 'AcquisitionsDefaultEmailAddress' ELSE '0' END,
+                explanation = 'Send duplicate EDIFACT order block notifications using the EDI_DUP_ORD_LIBRARY notice template to the selected address. Vendor EDI contacts are always notified separately via EDI_DUP_ORD_VENDOR.'
+            WHERE variable = 'EdifactOrderSendBlockDuplicatesEmailNotice'
+              AND type = 'YesNo'
+        }
+        );
+
+        # Email recipient list
+        $ok = $dbh->do(
+            q{
+            INSERT IGNORE INTO systempreferences (variable, value, options, explanation, type)
+            VALUES (
+                'EdifactOrderSendBlockDuplicatesEmailAddresses',
+                '',
+                NULL,
+                'Comma-separated list of acquisitions staff email addresses to use when EdifactOrderSendBlockDuplicatesEmailNotice is set to specific email addresses.',
+                'Textarea'
+            )
+        }
+        );
+        if ($ok) {
+            say_success( $out, "Added system preference 'EdifactOrderSendBlockDuplicatesEmailAddresses'" );
+        } else {
+            say_failure(
+                $out,
+                "Failed to add system preference 'EdifactOrderSendBlockDuplicatesEmailAddresses': " . $dbh->errstr
+            );
+        }
+
+        # Add notice template - library staff notification
+        $ok = $dbh->do(
+            q{
+            INSERT IGNORE INTO letter (module, code, branchcode, name, is_html, title, content, message_transport_type, lang)
+            VALUES (
+                'acquisition',
+                'EDI_DUP_ORD_LIBRARY',
+                '',
+                'EDIFACT duplicate order detected - library notification',
+                0,
+                'EDIFACT Duplicate Purchase Order Blocked - [% po_number | html %]',
+                '[%- USE Koha -%]Duplicate EDIFACT Purchase Order Detected and Blocked
+
+Purchase Order Number: [% po_number | html %]
+Vendor: [% bookseller.name | html %] (ID: [% vendor_id | html %])
+Basket No: [% basketno | html %]
+Existing Basket No: [% existing_basketno | html %]
+
+Status: The EDI order was NOT sent. The basket remains open.
+
+This purchase order number already exists for this vendor (basket [% existing_basketno | html %]).
+A basket name/PO number must be unique per vendor when the vendor EDI account has "Use basket name as PO number" enabled.
+
+Action Required:
+Rename the basket to use a unique purchase order number, then resend the EDI order.
+
+View Basket: [% Koha.Preference(''staffClientBaseURL'') %]/cgi-bin/koha/acqui/basket.pl?basketno=[% basketno | uri %]
+View Existing Basket: [% Koha.Preference(''staffClientBaseURL'') %]/cgi-bin/koha/acqui/basket.pl?basketno=[% existing_basketno | uri %]
+
+This is an automated notification from your Koha system.',
+                'email',
+                'default'
+            )
+        }
+        );
+        if ($ok) {
+            say_success( $out, "Added letter template 'EDI_DUP_ORD_LIBRARY'" );
+        } else {
+            say_failure( $out, "Failed to add letter template 'EDI_DUP_ORD_LIBRARY': " . $dbh->errstr );
+        }
+
+        # Add notice template - vendor notification
+        $ok = $dbh->do(
+            q{
+            INSERT IGNORE INTO letter (module, code, branchcode, name, is_html, title, content, message_transport_type, lang)
+            VALUES (
+                'acquisition',
+                'EDI_DUP_ORD_VENDOR',
+                '',
+                'EDIFACT duplicate order detected - vendor notification',
+                0,
+                'Duplicate Purchase Order Number Received - [% po_number | html %]',
+                'Dear Supplier,
+
+We have attempted to send an EDIFACT order to your system but the purchase order number is a duplicate.
+
+Purchase Order Number: [% po_number | html %]
+Your Reference (SAN): [% vendor_san | html %]
+
+Issue:
+This purchase order number has already been used in a previous order with your organisation. We were unable to send the order.
+
+No action is required from you at this stage. Our acquisitions team has been notified and will resubmit the order with a corrected purchase order number.
+
+If you have any questions, please contact our acquisitions department.
+
+Library: [% bookseller.name | html %]
+
+This is an automated notification. Please do not reply to this email.',
+                'email',
+                'default'
+            )
+        }
+        );
+        if ($ok) {
+            say_success( $out, "Added letter template 'EDI_DUP_ORD_VENDOR'" );
+        } else {
+            say_failure( $out, "Failed to add letter template 'EDI_DUP_ORD_VENDOR': " . $dbh->errstr );
+        }
+    },
+};

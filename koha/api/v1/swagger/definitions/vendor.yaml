@@ -1,0 +1,177 @@
+---
+type: object
+properties:
+  id:
+    type: integer
+    description: internally assigned vendor identifier
+    readOnly: true
+  name:
+    type:
+      - string
+    description: Vendor name
+  address1:
+    type:
+      - string
+      - "null"
+    description: Vendor physical address (line 1)
+  address2:
+    type:
+      - string
+      - "null"
+    description: Vendor physical address (line 2)
+  address3:
+    type:
+      - string
+      - "null"
+    description: Vendor physical address (line 3)
+  address4:
+    type:
+      - string
+      - "null"
+    description: Vendor physical address (line 4)
+  phone:
+    type:
+      - string
+      - "null"
+    description: Vendor phone number
+    maxLength: 30
+  fax:
+    type:
+      - string
+      - "null"
+    description: Vendor fax number
+    maxLength: 50
+  accountnumber:
+    type:
+      - string
+      - "null"
+    description: Vendor account number
+  type:
+    type:
+      - string
+      - "null"
+    description: Type of vendor
+    maxLength: 255
+  notes:
+    type:
+      - string
+      - "null"
+    description: Vendor notes
+  postal:
+    type:
+      - string
+      - "null"
+    description: Vendor postal address
+  url:
+    type:
+      - string
+      - "null"
+    description: Vendor web address
+    maxLength: 255
+  active:
+    type:
+      - boolean
+      - "null"
+    description: Is this vendor active
+  list_currency:
+    type:
+      - string
+      - "null"
+    description: List prices currency
+    maxLength: 10
+  invoice_currency:
+    type:
+      - string
+      - "null"
+    description: Invoice prices currency
+    maxLength: 10
+  gst:
+    type:
+      - boolean
+      - "null"
+    description: Is the library taxed when buying from this vendor
+  list_includes_gst:
+    type:
+      - boolean
+      - "null"
+    description: List prices include taxes
+  invoice_includes_gst:
+    type:
+      - boolean
+      - "null"
+    description: Invoice prices include taxes
+  tax_rate:
+    type:
+      - number
+      - "null"
+    description: Default tax rate for items ordered from this vendor
+  discount:
+    type:
+      - number
+      - "null"
+    description: Default discount rate for items ordered from this vendor
+  deliverytime:
+    type:
+      - integer
+      - "null"
+    description: Expected delivery time (in days)
+  external_id:
+    type:
+      - string
+      - "null"
+    description: External id
+    maxLength: 255
+  payment_method:
+    type:
+      - string
+      - "null"
+    description: Payment method
+    maxLength: 255
+  aliases:
+    type: array
+    description: List of aliases
+    items:
+      $ref: "vendor_alias.yaml"
+  baskets:
+    type: array
+    description: List of baskets
+  baskets_count:
+    type:
+      - integer
+      - "null"
+    description: Number of linked baskets
+  subscriptions_count:
+    type:
+      - integer
+      - "null"
+    description: Number of linked subscriptions
+  interfaces:
+    type: array
+    description: List of interfaces
+  contacts:
+    type: array
+    description: List of contacts
+  contracts:
+    type: array
+    description: List of contracts
+  invoices:
+    type: array
+    description: List of invoices
+  invoices_count:
+    type:
+      - integer
+      - "null"
+    description: Number of linked invoices
+  extended_attributes:
+    description: Related additional field values
+    type:
+      - array
+    items:
+      $ref: extended_attribute_value.yaml
+  _strings:
+    type:
+      - object
+      - "null"
+additionalProperties: false
+required:
+  - name

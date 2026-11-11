@@ -1,0 +1,215 @@
+#!/bin/bash
+#
+# Copyright 2023 Koha Development team
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+set -e
+
+. /lib/lsb/init-functions
+
+# Read configuration variable file if it is present
+[ -r /etc/default/koha-common ] && . /etc/default/koha-common
+
+# include helper functions
+if [ -f "/usr/share/koha/bin/koha-functions.sh" ]; then
+    . "/usr/share/koha/bin/koha-functions.sh"
+else
+    echo "Error: /usr/share/koha/bin/koha-functions.sh not present." 1>&2
+    exit 1
+fi
+
+usage()
+{
+    local scriptname=$(basename $0)
+
+    cat <<EOF
+$scriptname
+
+This script lets you manage the ES indexing daemon for your Koha instances.
+
+Usage:
+$scriptname [--start|--stop|--restart] [--batch_size N] [--quiet|-q] instancename1 [instancename2...]
+$scriptname --status instancename1 [instancename2...]
+$scriptname -h|--help
+
+    --start               Start the ES indexing daemon for the specified instances
+    --stop                Stop the ES indexing daemon for the specified instances
+    --restart             Restart the ES indexing daemon for the specified instances
+    --enable              Enable the ES indexing daemon for the specified instances
+    --disable             Disable the ES indexing daemon for the specified instances
+    --batch_size N        Specify the batch size to commit at a time (default: 10)
+    --status              Show the status of the ES indexing for the specified instances
+    --quiet|-q            Make the script quiet about non existent instance names
+                          (useful for calling from another scripts).
+    --help|-h             Display this help message
+
+EOF
+}
+
+start_es_indexer()
+{
+    local name=$1
+    if [ "$(koha_init_backend)" = "systemd" ]; then
+        koha_service_ctl start es-indexer "$name"
+    else
+        _sysv_start_es_indexer "$name"
+    fi
+}
+
+stop_es_indexer()
+{
+    local name=$1
+    if [ "$(koha_init_backend)" = "systemd" ]; then
+        koha_service_ctl stop es-indexer "$name"
+    else
+        _sysv_stop_es_indexer "$name"
+    fi
+}
+
+restart_es_indexer()
+{
+    local name=$1
+    if [ "$(koha_init_backend)" = "systemd" ]; then
+        koha_service_ctl restart es-indexer "$name"
+    else
+        _sysv_restart_es_indexer "$name"
+    fi
+}
+
+enable_es_indexer()
+{
+    local name=$1
+    if [ "$(koha_init_backend)" = "systemd" ]; then
+        koha_service_ctl enable es-indexer "$name"
+    fi
+}
+
+disable_es_indexer()
+{
+    local name=$1
+    if [ "$(koha_init_backend)" = "systemd" ]; then
+        koha_service_ctl disable es-indexer "$name"
+    fi
+}
+
+es_indexer_status()
+{
+    local name=$1
+    if [ "$(koha_init_backend)" = "systemd" ]; then
+        koha_service_ctl status es-indexer "$name"
+    else
+        _sysv_es_indexer_status "$name"
+    fi
+}
+
+set_action()
+{
+    if [ "$op" = "" ]; then
+        op=$1
+    else
+        die "Error: only one action can be specified."
+    fi
+}
+
+op=""
+quiet="no"
+batch_size=10
+
+# Read command line parameters
+while [ $# -gt 0 ]; do
+
+    case "$1" in
+        -h|--help)
+            usage ; exit 0 ;;
+        -q|--quiet)
+            quiet="yes"
+            shift ;;
+        --batch_size)
+            batch_size="$2"
+            shift 2 ;;
+        --start)
+            set_action "start"
+            shift ;;
+        --stop)
+            set_action "stop"
+            shift ;;
+        --restart)
+            set_action "restart"
+            shift ;;
+        --enable)
+            set_action "enable"
+            shift ;;
+        --disable)
+            set_action "disable"
+            shift ;;
+        --status)
+            set_action "status"
+            shift ;;
+        -*)
+            die "Error: invalid option switch ($1)" ;;
+        *)
+            # We expect the remaining stuff are the instance names
+            break ;;
+    esac
+
+done
+
+if [ $# -gt 0 ]; then
+    # We have at least one instance name
+    for name in "$@"; do
+
+        if is_instance $name; then
+
+            adjust_paths_git_install $name
+            worker_DAEMON="${KOHA_HOME}/${KOHA_BINDIR}/workers/es_indexer_daemon.pl"
+            export PERL5LIB
+
+            batch_size=$(get_es_indexer_batch_size ${name})
+
+            case $op in
+                "start")
+                    start_es_indexer $name
+                    ;;
+                "stop")
+                    stop_es_indexer $name
+                    ;;
+                "restart")
+                    restart_es_indexer $name
+                    ;;
+                "enable")
+                    enable_es_indexer $name
+                    ;;
+                "disable")
+                    disable_es_indexer $name
+                    ;;
+                "status")
+                    es_indexer_status $name
+            esac
+
+        else
+            if [ "$quiet" = "no" ]; then
+                log_daemon_msg "Error: Invalid instance name $name"
+                log_end_msg 1
+            fi
+        fi
+
+    done
+else
+    if [ "$quiet" = "no" ]; then
+        warn "Error: you must provide at least one instance name"
+    fi
+fi
+
+exit 0

@@ -1,0 +1,455 @@
+---
+"/public/patrons/{patron_id}/password":
+  post:
+    x-mojo-to: Patrons::Password#set_public
+    operationId: setPatronPasswordPublic
+    tags:
+      - patrons
+    summary: Set password for a patron (public)
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/patron_id_pp"
+      - name: body
+        in: body
+        description: A JSON object containing password information
+        schema:
+          type: object
+          properties:
+            password:
+              description: New password (plain text)
+              type: string
+            password_repeated:
+              description: Repeated new password (plain text)
+              type: string
+            old_password:
+              description: Patron's original password
+              type: string
+          required:
+            - password
+            - password_repeated
+            - old_password
+          additionalProperties: false
+    produces:
+      - application/json
+    responses:
+      "200":
+        description: Password changed
+      "400":
+        description: Bad request
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Access forbidden
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "404":
+        description: Patron not found
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+"/public/patrons/{patron_id}/checkouts":
+  post:
+    x-mojo-to: Checkouts#add
+    operationId: addCheckoutPublic
+    tags:
+      - checkouts
+      - patrons
+    summary: Add a new checkout (public)
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/patron_id_pp"
+      - name: body
+        in: body
+        description: A JSON object containing information about the new checkout
+        required: true
+        schema:
+          $ref: "../swagger.yaml#/definitions/checkout"
+      - name: confirmation
+        in: query
+        description: A JWT confirmation token
+        required: false
+        type: string
+    produces:
+      - application/json
+    responses:
+      "201":
+        description: Created checkout
+        schema:
+          $ref: "../swagger.yaml#/definitions/checkout"
+      "400":
+        description: Bad request
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Cannot create checkout
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "405":
+        description: |
+          Method not allowed. Possible `error_code` attribute values:
+
+          * `FEATURE_DISABLED`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "409":
+        description: |
+          Conflict in creating checkout. Possible `error_code` attribute values:
+
+          * `ITEM_NOT_FOUND`
+          * `PATRON_NOT_FOUND`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "412":
+        description: Precondition failed
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+"/public/patrons/{patron_id}/guarantors/can_see_charges":
+  put:
+    x-mojo-to: Patrons#guarantors_can_see_charges
+    operationId: setPatronGuarantorsCanSeeCharges
+    tags:
+      - patrons
+    summary: Set if guarantors can see charges (public)
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/patron_id_pp"
+      - name: body
+        in: body
+        description: A boolean representing if guarantors should be able to see the
+          patron's charges
+        required: true
+        schema:
+          type: object
+          properties:
+            allowed:
+              type: boolean
+          additionalProperties: false
+    produces:
+      - application/json
+    responses:
+      "200":
+        description: Charges view policy for guarantors changed
+      "400":
+        description: Bad request
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Access forbidden
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "404":
+        description: Patron not found
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+"/public/patrons/{patron_id}/guarantors/can_see_checkouts":
+  put:
+    x-mojo-to: Patrons#guarantors_can_see_checkouts
+    operationId: setPatronGuarantorsCanSeeCheckouts
+    tags:
+      - patrons
+    summary: Set if guarantors can see checkouts
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/patron_id_pp"
+      - name: body
+        in: body
+        description: A boolean representing if guarantors should be able to see the
+          patron's checkouts
+        required: true
+        schema:
+          type: object
+          properties:
+            allowed:
+              type: boolean
+          additionalProperties: false
+    produces:
+      - application/json
+    responses:
+      "200":
+        description: Check-out view policy for guarantors changed
+      "400":
+        description: Bad request
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Access forbidden
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "404":
+        description: Patron not found
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+"/public/patrons/{patron_id}/holds/{hold_id}":
+  delete:
+    x-mojo-to: Patrons::Holds#delete_public
+    operationId: cancelPatronHoldPublic
+    tags:
+      - patrons
+    summary: Cancel a patron's hold (public)
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/patron_id_pp"
+      - $ref: "../swagger.yaml#/parameters/hold_id_pp"
+    produces:
+      - application/json
+    responses:
+      "202":
+        description: Hold cancellation request accepted
+      "204":
+        description: Hold cancelled
+      "400":
+        description: Bad request
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Access forbidden
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "404":
+        description: Hold not found
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+"/public/patrons/{patron_id}/ill/requests":
+  get:
+    x-mojo-to: ILL::Requests#public_patron_list
+    operationId: getPublicPatronIllRequests
+    tags:
+      - ill_requests
+    summary: Get patron's ILL requests
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/patron_id_pp"
+      - $ref: "../swagger.yaml#/parameters/page"
+      - $ref: "../swagger.yaml#/parameters/per_page"
+      - $ref: "../swagger.yaml#/parameters/match"
+      - $ref: "../swagger.yaml#/parameters/order_by"
+      - $ref: "../swagger.yaml#/parameters/q_param"
+      - $ref: "../swagger.yaml#/parameters/q_body"
+      - $ref: "../swagger.yaml#/parameters/request_id_header"
+      - name: x-koha-embed
+        in: header
+        required: false
+        description: Embed list sent as a request header
+        type: array
+        items:
+          type: string
+          enum:
+            - +strings
+            - extended_attributes
+        collectionFormat: csv
+    produces:
+      - application/json
+    responses:
+      "200":
+        description: A list of parton's ILL requests
+        schema:
+          type: array
+          items:
+            $ref: "../swagger.yaml#/definitions/ill_request"
+      "400":
+        description: |
+          Bad request. Possible `error_code` attribute values:
+
+            * `invalid_query`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Access forbidden
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "404":
+        description: Patron not found
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+/public/patrons/{patron_id}/self_renewal:
+  get:
+    x-mojo-to: Patrons::SelfRenewal#start
+    operationId: startSelfRenewal
+    tags:
+      - patrons
+    summary: List patrons
+    produces:
+      - application/json
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/patron_id_pp"
+      - $ref: "../swagger.yaml#/parameters/match"
+      - $ref: "../swagger.yaml#/parameters/order_by"
+      - $ref: "../swagger.yaml#/parameters/page"
+      - $ref: "../swagger.yaml#/parameters/per_page"
+      - $ref: "../swagger.yaml#/parameters/q_param"
+      - $ref: "../swagger.yaml#/parameters/q_body"
+      - $ref: "../swagger.yaml#/parameters/request_id_header"
+    responses:
+      "200":
+        description: The metadata required to start patron self-renewal
+        schema:
+          type: object
+          $ref: "../swagger.yaml#/definitions/patron_self_renewal"
+          additionalProperties: false
+      "400":
+        description: |
+          Bad request. Possible `error_code` attribute values:
+
+            * `invalid_query`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Access forbidden
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+  post:
+    x-mojo-to: Patrons::SelfRenewal#submit
+    operationId: submitSelfRenewal
+    tags:
+      - patrons
+    summary: Submit self-renewal form
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/patron_id_pp"
+      - description: A JSON object containing information about the self-renewal
+        in: body
+        name: body
+        required: true
+        schema:
+            $ref: "../swagger.yaml#/definitions/patron_self_renewal"
+    responses:
+      201:
+        description: A successfully completed renewal
+        schema:
+          items:
+            $ref: "../swagger.yaml#/definitions/patron_self_renewal"
+      400:
+        description: Bad request
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      401:
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      403:
+        description: Access forbidden
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      404:
+        description: Ressource not found
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      409:
+        description: Conflict in creating resource
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      413:
+        description: Payload too large
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      500:
+        description: |-
+          Internal server error. Possible `error_code` attribute values:
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      503:
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"

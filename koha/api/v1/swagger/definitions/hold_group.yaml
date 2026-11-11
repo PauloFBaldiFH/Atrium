@@ -1,0 +1,19 @@
+---
+type: object
+properties:
+  hold_group_id:
+    type: integer
+    description: Internal hold group identifier
+  borrowernumber:
+    type: integer
+    description: Patron this hold group belongs to
+  target_hold_id:
+    type: integer
+    description: Target hold ID of this hold group
+  holds:
+    type:
+      - array
+      - "null"
+    description: The holds in this hold group (x-koha-embed)
+
+additionalProperties: false

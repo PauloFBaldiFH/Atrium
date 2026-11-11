@@ -1,0 +1,596 @@
+package Koha::Report;
+
+# This file is part of Koha.
+#
+# Koha is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Koha is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Koha; if not, see <https://www.gnu.org/licenses>.
+
+use Modern::Perl;
+
+use C4::Context;
+use Koha::Database;
+use Koha::Exceptions;
+use Koha::Exceptions::Report;
+use Koha::Patrons;
+use Koha::Reports;
+
+use Koha::Object;
+use Koha::Object::Limit::Library;
+use Koha::Object::Limit::LibraryGroup;
+use Koha::Patrons;
+use C4::Context;
+
+use base qw(Koha::Object Koha::Object::Limit::Library Koha::Object::Limit::LibraryGroup);
+
+#use Koha::DateUtils qw( dt_from_string output_pref );
+
+#
+# FIXME We could only return an error code instead of the arrayref
+# Only 1 error is returned
+# TODO Koha::Report->store should check this before saving
+
+use constant FORBIDDEN_COLUMN_MATCHES => qw(password token uuid secret);
+use constant ALLOWLISTED_COLUMN_NAMES =>
+    qw(password_expiration_date password_expiry_days reset_password change_password min_password_length require_strong_password password_expiration_date force_password_reset_when_set_by_staff);
+
+=head1 NAME
+
+Koha::Report - Koha Report Object class
+
+=head1 API
+
+=head2 Class Methods
+
+=head3 is_sql_valid
+
+my ( $is_sql_valid, $errors ) = $report->is_sql_valid;
+
+$errors is a arrayref of hashrefs, keys can be sqlerr or queryerr.
+
+Validate SQL query string so it only contains a select,
+not any of the harmful queries.
+
+=cut
+
+sub is_sql_valid {
+    my ($self) = @_;
+
+    my $sql = $self->savedsql;
+    $sql //= '';
+    my @errors = ();
+
+    if ( $sql =~ /;?\W?(UPDATE|DELETE|DROP|INSERT|SHOW|CREATE)\W/i ) {
+        push @errors, { sqlerr => $1 };
+    } elsif ( $sql !~ /^\s*SELECT\b\s*/i ) {
+        push @errors, { queryerr => 'Missing SELECT' };
+    } else {
+        push @errors, { passworderr => "Illegal column in results" }
+            if $self->check_columns($sql);
+    }
+
+    return ( @errors ? 0 : 1, \@errors );
+}
+
+=head3 check_columns
+
+    $self->check_columns('SELECT password from borrowers');
+    $self->check_columns( undef, [qw(password token)] );
+
+    Check if passed sql statement or column_names arrayref contains
+    forbidden column names (credentials etc.).
+    Returns all bad column names or empty list.
+
+=cut
+
+sub check_columns {
+    my ( $self, $sql, $column_names ) = @_;
+
+    # TODO When passing sql, we actually go thru the whole statement, not just columns
+
+    my $regex;
+    push my @columns, @{ $column_names // [] };
+    if ($sql) {
+
+        # Now find all matches for e.g. password but also modulepassword or password_hash
+        # Note that \w includes underscore, not hyphen
+        $regex   = '(\w*(?:' . ( join '|', FORBIDDEN_COLUMN_MATCHES ) . ')\w*)';
+        @columns = ( $sql =~ /$regex/ig );
+    } else {
+        $regex   = '(' . ( join '|', FORBIDDEN_COLUMN_MATCHES ) . ')';
+        @columns = grep { /$regex/i } @columns;
+    }
+
+    # Check for allowlisted variants
+    $regex   = '(^' . ( join '|', ALLOWLISTED_COLUMN_NAMES ) . ')$';    # should be full match
+    @columns = grep { !/$regex/i } @columns;
+    return @columns;
+}
+
+=head3 get_search_info
+
+Return search info
+
+=cut
+
+sub get_search_info {
+    my $self          = shift;
+    my $sub_mana_info = { 'query' => shift };
+    return $sub_mana_info;
+}
+
+=head3 get_sharable_info
+
+Return properties that can be shared.
+
+=cut
+
+sub get_sharable_info {
+    my $self             = shift;
+    my $shared_report_id = shift;
+    my $report           = Koha::Reports->find($shared_report_id);
+    my $sub_mana_info    = {
+        'savedsql'     => $report->savedsql,
+        'report_name'  => $report->report_name,
+        'notes'        => $report->notes,
+        'report_group' => $report->report_group,
+        'type'         => $report->type,
+    };
+    return $sub_mana_info;
+}
+
+=head3 new_from_mana
+
+Clear a Mana report to be imported in Koha?
+
+=cut
+
+sub new_from_mana {
+    my $self = shift;
+    my $data = shift;
+
+    $data->{mana_id} = $data->{id};
+
+    delete $data->{exportemail};
+    delete $data->{kohaversion};
+    delete $data->{creationdate};
+    delete $data->{lastimport};
+    delete $data->{id};
+    delete $data->{nbofusers};
+    delete $data->{language};
+
+    Koha::Report->new($data)->store;
+}
+
+=head3 check_edit_permission
+
+    $report->check_edit_permission;
+
+Throws L<Koha::Exceptions::Report::EditPermission> when the patron in the
+current userenv may not edit this report. A patron may edit a report
+they created; editing a report owned by another librarian, or an
+ownerless report, requires the C<edit_all_reports> permission. When
+there is no logged-in user (eg. a cron job) no check is performed.
+
+=cut
+
+sub check_edit_permission {
+    my ($self) = @_;
+
+    my $userenv = C4::Context->userenv;
+    return 1 unless $userenv && $userenv->{number};
+
+    my $borrowernumber = $userenv->{number};
+    return 1 if $self->borrowernumber && $self->borrowernumber == $borrowernumber;
+
+    my $patron = Koha::Patrons->find($borrowernumber);
+    return 1 if $patron && $patron->has_permission( { reports => 'edit_all_reports' } );
+
+    Koha::Exceptions::Report::EditPermission->throw( report_id => $self->id );
+}
+
+=head3 store
+
+    $report->store;
+
+Overridden to enforce edit permissions. Updating an existing report
+runs L</check_edit_permission> first, so a librarian cannot modify a
+report owned by someone else without the C<edit_all_reports>
+permission. Creating a new report is not checked.
+
+Changing only C<mana_id> is exempt: recording a Mana identifier when
+a report is shared is not a change to the report's contents.
+
+=cut
+
+sub store {
+    my ($self) = @_;
+
+    if ( $self->in_storage ) {
+        my %dirty = $self->_result->get_dirty_columns;
+        delete $dirty{mana_id};
+        $self->check_edit_permission if %dirty;
+    }
+
+    return $self->SUPER::store;
+}
+
+=head3 prep_report
+
+Prep the report and return executable sql with parameters embedded and a list of header types
+for building batch action links in the template.
+
+The returned SQL is suffixed with a tracking comment of the form
+
+    /* { saved_sql.id: <id> } { user_id: <borrowernumber> } { run_type: <type> } */
+
+L<Koha::Reports/check_limits> parses this comment out of
+C<information_schema.processlist> to detect concurrent runs of the same
+report. External log/audit tooling that consumes Koha SQL should treat
+this format as part of the public contract.
+
+C<$params-E<gt>{run_type}> is required and must be C<foreground> or
+C<background>. Missing throws L<Koha::Exceptions::MissingParameter>; any
+other value throws L<Koha::Exceptions::BadParameter>.
+
+If L</effective_run_type> is a single mode, calling C<prep_report>
+with the other mode throws L<Koha::Exceptions::Report::RunTypeNotAllowed>.
+
+=cut
+
+sub prep_report {
+    my ( $self, $param_names, $sql_params, $params ) = @_;    # params keys: export
+    my $sql = $self->savedsql;
+
+    # First we split out the placeholders
+    # This part of the code supports using [[ table.field | alias ]] in the
+    # query and replaces it by table.field AS alias. This is used to build
+    # the batch action links foir cardnumbers, itemnumbers, and biblionumbers in the template
+    # while allowing the library to alter the column names
+    my @split = split /\[\[|\]\]/, $sql;
+    my $headers;
+    for ( my $i = 0 ; $i < $#split / 2 ; $i++ ) {    #The placeholders are always the odd elements of the array
+        my ( $type, $name ) = split /\|/,
+            $split[ $i * 2 + 1 ];                    # We split them on '|'
+        $name =~ s/^\s+|\s+$//;                      # Trim
+        $headers->{$name} = $type;                   # Store as a lookup for the template
+        $headers->{$name} =~ s/^\w*\.//;             # strip the table name just as in $sth->{NAME} array
+        $split[ $i * 2 + 1 ] =~
+            s/(\||\?|\.|\*|\(|\)|\%)/\\$1/g;         #Quote any special characters so we can replace the placeholders
+        $name = C4::Context->dbh->quote($name);
+        $sql =~ s/\[\[$split[$i*2+1]\]\]/$type AS $name/;    # Remove placeholders from SQL
+    }
+
+    my %lookup;
+    unless ( scalar @$param_names ) {
+        my @placeholders = $sql =~ /<<([^<>]+)>>/g;
+        foreach my $placeholder (@placeholders) {
+            push @$param_names, $placeholder unless grep { $_ eq $placeholder } @$param_names;
+        }
+    }
+    @lookup{@$param_names} = @$sql_params;
+
+    # Check every library parameter so the user cannot reach data from a
+    # branch the report's limits exclude. Match on the authorised value,
+    # the label is free text. Multi-select values arrive joined by newlines.
+    for my $i ( 0 .. $#$param_names ) {
+        my ( undef, $authorised_value_all ) = split /\|/, $param_names->[$i];
+        next unless defined $authorised_value_all;
+        my ($authorised_value) = split /:/, $authorised_value_all;
+        next unless $authorised_value eq 'branches';
+        for my $branchcode ( split /\n/, $sql_params->[$i] // '' ) {
+            $branchcode =~ s/\r//;
+            $self->_confirm_branch_param_allowed($branchcode);
+        }
+    }
+
+    @split = split /<<|>>/, $sql;
+    for ( my $i = 0 ; $i < $#split / 2 ; $i++ ) {
+        my $quoted =
+            @$param_names ? $lookup{ $split[ $i * 2 + 1 ] } : @$sql_params[$i];
+
+        # if there are special regexp chars, we must \ them
+        $split[ $i * 2 + 1 ] =~ s/(\||\?|\.|\*|\(|\)|\%)/\\$1/g;
+
+        #if ( $split[ $i * 2 + 1 ] =~ /\|\s*date\s*$/ ) {
+        #    $quoted = output_pref(
+        #        {
+        #            dt         => dt_from_string($quoted),
+        #            dateformat => 'iso',
+        #            dateonly   => 1
+        #        }
+        #    ) if $quoted;
+        #}
+        unless ( $split[ $i * 2 + 1 ] =~ /\|\s*list\s*$|\s*\:in\s*$/ && $quoted ) {
+            $quoted = C4::Context->dbh->quote($quoted);
+        } else {
+            my @list = split /\n/, $quoted;
+            my @quoted_list;
+            foreach my $item (@list) {
+                $item =~ s/\r//;
+                push @quoted_list, C4::Context->dbh->quote($item);
+            }
+            $quoted = "(" . join( ",", @quoted_list ) . ")";
+        }
+        $sql =~ s/<<$split[$i*2+1]>>/$quoted/;
+    }
+
+    $sql = $self->_might_add_limit($sql) if $params->{export};
+
+    my $report_id = $self->id;
+    my $user_id   = C4::Context->userenv ? C4::Context->userenv->{number} : 0;
+
+    my $run_type = $params->{run_type} // Koha::Exceptions::MissingParameter->throw( parameter => 'run_type' );
+    Koha::Exceptions::BadParameter->throw( parameter => 'run_type' )
+        unless $run_type =~ /^(foreground|background)$/;
+
+    my $report_run_type = $self->effective_run_type;
+    if ( $report_run_type ne 'any' && $report_run_type ne $run_type ) {
+        Koha::Exceptions::Report::RunTypeNotAllowed->throw(
+            report_id => $report_id,
+            requested => $run_type,
+            allowed   => $report_run_type,
+        );
+    }
+
+    $sql .= " /* { saved_sql.id: $report_id } { user_id: $user_id } { run_type: $run_type } */";
+
+    return $sql, $headers;
+}
+
+=head3 _might_add_limit
+
+    $sql = $self->_might_add_limit($sql);
+
+Depending on pref ReportsExportLimit. If there is a limit defined
+and the report does not contain a limit already, this routine adds
+a LIMIT to $sql.
+
+=cut
+
+sub _might_add_limit {
+    my ( $self, $sql ) = @_;
+    if ( C4::Context->preference('ReportsExportLimit')
+        && $sql !~ /\sLIMIT\s\d+(?![^\(]*\))/i )
+    {
+        # Note: regex tries to account for allowed limits in subqueries.
+        # This assumes that we dont have an INTO option at the end (which does
+        # not work in current Koha reporting)
+        $sql .= " LIMIT " . C4::Context->preference('ReportsExportLimit');
+    }
+    return $sql;
+}
+
+=head3 apply_execution_time_limit
+
+    $sql = Koha::Report->apply_execution_time_limit($sql);
+
+Apply SQL execution time limits based on report_sql_max_statement_time_seconds.
+
+=cut
+
+sub apply_execution_time_limit {
+    my ( $class, $sql ) = @_;
+
+    # https://bugs.koha-community.org/bugzilla3/show_bug.cgi?id=39164
+    my $report_sql_max_statement_time_seconds = C4::Context->config('report_sql_max_statement_time_seconds') // 0;
+    if ($report_sql_max_statement_time_seconds) {
+        my %versions = C4::Context::get_versions();
+        if ( $versions{'mysqlVersion'} =~ /MariaDB/i ) {
+            $sql = sprintf(
+                'SET STATEMENT max_statement_time=%f FOR %s',
+                $report_sql_max_statement_time_seconds,
+                $sql
+            );
+        } else {
+
+            # mysql timing is in milliseconds
+            $report_sql_max_statement_time_seconds *= 1000;
+            $sql =~ s#select#select /*+ MAX_EXECUTION_TIME($report_sql_max_statement_time_seconds) */#i;
+        }
+    }
+
+    return $sql;
+}
+
+=head3 _type
+
+Returns name of corresponding DBIC resultset
+
+=cut
+
+sub _type {
+    return 'SavedSql';
+}
+
+=head3 library_parameter_branchcodes
+
+    my $branchcodes = $report->library_parameter_branchcodes;
+
+Returns an array reference of the branchcodes a Library runtime parameter
+may take under the LimitReportsBy preference. Returns undef when there is
+no restriction: the preference is 'none' or the report has no library
+limits.
+
+With LimitReportsBy set to 'library' the branchcodes are the report's
+library limits. With 'library_group' they are the library limits plus every
+library in a reports group with them, as resolved by
+C<library_group_limit_branchcodes>.
+
+=cut
+
+sub library_parameter_branchcodes {
+    my ($self) = @_;
+
+    my $pref = C4::Context->preference('LimitReportsBy');
+    return if $pref eq 'none';
+
+    if ( $pref eq 'library' ) {
+        my $limits = $self->get_library_limits;
+        return unless $limits;
+        return [ map { $_->branchcode } $limits->as_list ];
+    }
+
+    if ( $pref eq 'library_group' ) {
+        my $branchcodes = $self->library_group_limit_branchcodes;
+        return unless @$branchcodes;
+        return $branchcodes;
+    }
+
+    return;
+}
+
+=head3 _confirm_branch_param_allowed
+
+Throws Koha::Exceptions::Report::UnauthorizedBranchParameter if a Library
+runtime parameter value is not one of the branchcodes returned by
+C<library_parameter_branchcodes>. Returns without throwing when that method
+returns undef, which means the parameter is unrestricted.
+
+=cut
+
+sub _confirm_branch_param_allowed {
+    my ( $self, $branchcode ) = @_;
+
+    my $allowed = $self->library_parameter_branchcodes;
+    return unless $allowed;
+
+    Koha::Exceptions::Report::UnauthorizedBranchParameter->throw(
+        report_id  => $self->id,
+        branchcode => $branchcode,
+    ) unless grep { $_ eq $branchcode } @$allowed;
+
+    return;
+}
+
+=head3 _library_limits
+
+Configurable library limits
+
+=cut
+
+sub _library_limits {
+    return {
+        class   => "ReportsBranch",
+        id      => "report_id",
+        library => "branchcode",
+    };
+}
+
+=head3 _library_group_limits
+
+Configurable library limits
+
+=cut
+
+sub _library_group_limits {
+    my ($self) = @_;
+    return {
+        %{ $self->_library_limits },
+        group => 'ft_reports'
+    };
+}
+
+=head3 can_manage_limits
+
+    my $can = Koha::Report->can_manage_limits($patron);
+
+Returns true if branch limiting is enabled and the patron can manage report limits (superlibrarian or permission reports => manage_report_limits).
+
+=cut
+
+sub can_manage_limits {
+    my ( $class, $patron ) = @_;
+    return C4::Context->preference('LimitReportsBy') ne 'none'
+        && ( $patron->is_superlibrarian || $patron->has_permission( { reports => 'manage_report_limits' } ) );
+}
+
+=head3 can_access
+
+    my $allowed = $report->can_access($patron);
+
+Returns true if the patron may access this report considering branch limits, or if limits are disabled.
+
+=cut
+
+sub can_access {
+    my ( $self, $patron ) = @_;
+
+    my $pref = C4::Context->preference('LimitReportsBy');
+    return 1 if $pref eq 'none';
+    return 1 if __PACKAGE__->can_manage_limits($patron);
+
+    if ( $pref eq 'library' ) {
+        my $limits_rs = $self->get_library_limits;
+        return 1 unless $limits_rs;
+        my $user_branch = C4::Context::mybranch();
+        return 0 unless $user_branch;
+        my %allowed = map { $_->branchcode => 1 } $limits_rs->as_list;
+        return $allowed{$user_branch} ? 1 : 0;
+    }
+
+    if ( $pref eq 'library_group' ) {
+        my $branchcodes = $self->library_group_limit_branchcodes;
+        return 1 unless @$branchcodes;
+        my $user_branch = C4::Context::mybranch();
+        return 0 unless $user_branch;
+        return ( grep { $_ eq $user_branch } @$branchcodes ) ? 1 : 0;
+    }
+
+    return 1;
+}
+
+=head3 can_run_foreground_background
+
+    my $can_run = Koha::Report->can_run_foreground_background($patron);
+
+Returns all the ways a patron can run a report  based on permissions and the ReportsRunInBackground system preferences.
+
+=cut
+
+sub can_run_foreground_background {
+    my ( $self, $patron ) = @_;
+
+    my $can_run = { foreground => 0, background => 0 };
+
+    my $pref = C4::Context->preference('ReportsRunInBackground');
+
+    my $can_foreground = $patron->has_permission( { reports => 'execute_reports_foreground' } ) ? 1 : 0;
+    my $can_background = $patron->has_permission( { reports => 'execute_reports_background' } ) ? 1 : 0;
+
+    if ( $pref eq 'user_choice' ) {
+        $can_run->{foreground} = $can_foreground;
+        $can_run->{background} = $can_background;
+    } elsif ( $pref eq 'always' ) {
+        $can_run->{background} = $can_background;
+    } elsif ( $pref eq 'never' ) {
+        $can_run->{foreground} = $can_foreground;
+    }
+
+    return $can_run;
+}
+
+=head3 effective_run_type
+
+Returns the report's run_type, or 'any' when ReportsRunInBackground is not set to 'user_choice'.
+
+=cut
+
+sub effective_run_type {
+    my ($self) = @_;
+
+    return 'any' unless C4::Context->preference('ReportsRunInBackground') eq 'user_choice';
+
+    return $self->run_type;
+}
+
+1;

@@ -1,0 +1,264 @@
+#!/bin/bash
+
+# koha-sip - Manage SIP server for Koha instances
+#              Copyright 2019 Theke Solutions
+#              Copyright 2012 Catalyst IT, Ltd
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+set -e
+
+. /lib/lsb/init-functions
+
+# Read configuration variable file if it is present
+[ -r /etc/default/koha-common ] && . /etc/default/koha-common
+
+# include helper functions
+if [ -f "/usr/share/koha/bin/koha-functions.sh" ]; then
+    . "/usr/share/koha/bin/koha-functions.sh"
+else
+    echo "Error: /usr/share/koha/bin/koha-functions.sh not present." 1>&2
+    exit 1
+fi
+
+usage()
+{
+    local scriptname=$(basename $0)
+
+    cat <<EOF
+$scriptname
+
+This script lets you manage the SIP server for your Koha instances.
+
+Usage:
+$scriptname [--start|--stop|--restart] instancename1 [instancename2...]
+$scriptname -h|--help
+
+    --enable              Enable the Koha SIP server.
+    --disable             Disable and stop the Koha SIP server.
+    --start               Start the SIP server for the specified instance(s)
+    --stop                Stop the SIP server for the specified instance(s)
+    --restart             Restart the SIP server for the specified instance(s)
+    --status              Show the status of the SIP server for the specified instance(s)
+    --verbose|-v          Display progress and actions messages
+    --help|-h             Display this help message
+
+EOF
+}
+
+start_sip()
+{
+    local name=$1
+    if [ "$(koha_init_backend)" = "systemd" ]; then
+        koha_service_ctl start sip "$name"
+    else
+        _sysv_start_sip "$name"
+    fi
+}
+
+stop_sip()
+{
+    local name=$1
+    if [ "$(koha_init_backend)" = "systemd" ]; then
+        koha_service_ctl stop sip "$name"
+    else
+        _sysv_stop_sip "$name"
+    fi
+}
+
+restart_sip()
+{
+    local name=$1
+    if [ "$(koha_init_backend)" = "systemd" ]; then
+        koha_service_ctl restart sip "$name"
+    else
+        _sysv_restart_sip "$name"
+    fi
+}
+
+sip_status()
+{
+    local name=$1
+    if [ "$(koha_init_backend)" = "systemd" ]; then
+        koha_service_ctl status sip "$name"
+    else
+        _sysv_sip_status "$name"
+    fi
+}
+
+enable_sip()
+{
+    local name=$1
+    local libdir=/var/lib/koha/${name}
+    local sipfile=/etc/koha/sites/${name}/SIPconfig.xml
+
+    if is_sip_enabled ${name}; then
+        echo "Warning: SIP server already enabled for ${name}"
+        return
+    fi
+
+    # Backend-specific signal:
+    # - On systemd, systemctl enable IS the opt-in. The flag file is
+    #   no longer read on systemd hosts and is left alone.
+    # - On SysV, the flag file IS the opt-in.
+    if [ "$(koha_init_backend)" = "systemd" ]; then
+        koha_service_ctl enable sip "$name"
+    else
+        touch ${libdir}/sip.enabled
+    fi
+
+    echo "Enabling SIP server for ${name} - edit ${sipfile} to configure"
+
+    if [[ ! -f "${sipfile}" ]]; then
+        cp -v /etc/koha/SIPconfig.xml ${sipfile}
+        chown ${name}-koha:${name}-koha ${sipfile}
+        chmod 600 ${sipfile}
+        echo "This is the first time SIP has been enabled. Please check the configurations in ${sipfile}"
+    fi
+}
+
+disable_sip()
+{
+    local name=$1
+    local libdir=/var/lib/koha/${name}
+
+    if ! is_sip_enabled ${name}; then
+        echo " SIP server for ${name} not enabled - use koha-sip --enable <instance> to enable."
+        return
+    fi
+
+    echo "Stopping running SIP"
+    stop_sip ${name}
+
+    if [ "$(koha_init_backend)" = "systemd" ]; then
+        koha_service_ctl disable sip "$name"
+    else
+        rm -f ${libdir}/sip.enabled
+    fi
+
+    echo "Information: SIP server disabled for ${name}"
+}
+
+
+set_action()
+{
+    if [ "$op" = "" ]; then
+        op=$1
+    else
+        die "Error: only one action can be specified."
+    fi
+}
+
+op=""
+verbose="no"
+
+# Backwards compatible with old koha-*-sip scripts
+# TODO: Remove once there's consensus to remove the legacy scripts
+used_script_name=$(basename $0)
+
+if [ "$used_script_name" != "koha-sip" ]; then
+    warn "Deprecated script used (${used_script_name})"
+
+    case "$used_script_name" in
+        koha-start-sip)
+            set_action "start" ;;
+        koha-stop-sip)
+            set_action "stop" ;;
+        koha-enable-sip)
+            set_action "enable" ;;
+        *)
+            break ;;
+    esac
+fi
+# / Backwards compatible handling code
+
+# Read command line parameters
+while [ $# -gt 0 ]; do
+
+    case "$1" in
+        -h|--help)
+            usage ; exit 0 ;;
+        -v|--verbose)
+            verbose="yes"
+            shift ;;
+        --start)
+            set_action "start"
+            shift ;;
+        --stop)
+            set_action "stop"
+            shift ;;
+        --restart)
+            set_action "restart"
+            shift ;;
+        --status)
+            set_action "status"
+            shift ;;
+        --enable)
+            set_action "enable"
+            shift ;;
+        --disable)
+            set_action "disable"
+            shift ;;
+        -*)
+            die "Error: invalid option switch ($1)" ;;
+        *)
+            # We expect the remaining stuff are the instance names
+            break ;;
+    esac
+
+done
+
+if [ $# -gt 0 ]; then
+    # We have at least one instance name
+    for name in "$@"; do
+
+        if is_instance $name; then
+
+            export KOHA_CONF="/etc/koha/sites/$name/koha-conf.xml"
+
+            case $op in
+                "start")
+                    start_sip $name
+                    ;;
+                "stop")
+                    stop_sip $name
+                    ;;
+                "restart")
+                    restart_sip $name
+                    ;;
+                "status")
+                    sip_status $name
+                    ;;
+                "enable")
+                    enable_sip $name
+                    ;;
+                "disable")
+                    disable_sip $name
+            esac
+
+        else
+            if [ "$verbose" != "no" ]; then
+                log_daemon_msg "Error: Invalid instance name $name"
+                log_end_msg 1
+            fi
+        fi
+
+    done
+else
+    if [ "$verbose" != "no" ]; then
+        warn "Error: you must provide at least one instance name"
+    fi
+fi
+
+exit 0

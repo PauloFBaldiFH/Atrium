@@ -1,0 +1,121 @@
+use utf8;
+package Koha::Schema::Result::Localization;
+
+# Created by DBIx::Class::Schema::Loader
+# DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+Koha::Schema::Result::Localization
+
+=cut
+
+use strict;
+use warnings;
+
+use base 'DBIx::Class::Core';
+
+=head1 TABLE: C<localization>
+
+=cut
+
+__PACKAGE__->table("localization");
+
+=head1 ACCESSORS
+
+=head2 localization_id
+
+  data_type: 'integer'
+  is_auto_increment: 1
+  is_nullable: 0
+
+=head2 entity
+
+  data_type: 'varchar'
+  is_nullable: 0
+  size: 16
+
+=head2 code
+
+  data_type: 'varchar'
+  is_nullable: 0
+  size: 64
+
+=head2 property
+
+  data_type: 'varchar'
+  is_nullable: 0
+  size: 100
+
+=head2 lang
+
+  data_type: 'varchar'
+  is_nullable: 0
+  size: 25
+
+could be a foreign key
+
+=head2 translation
+
+  data_type: 'mediumtext'
+  is_nullable: 1
+
+=cut
+
+__PACKAGE__->add_columns(
+  "localization_id",
+  { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
+  "entity",
+  { data_type => "varchar", is_nullable => 0, size => 16 },
+  "code",
+  { data_type => "varchar", is_nullable => 0, size => 64 },
+  "property",
+  { data_type => "varchar", is_nullable => 0, size => 100 },
+  "lang",
+  { data_type => "varchar", is_nullable => 0, size => 25 },
+  "translation",
+  { data_type => "mediumtext", is_nullable => 1 },
+);
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</localization_id>
+
+=back
+
+=cut
+
+__PACKAGE__->set_primary_key("localization_id");
+
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<entity_code_property_lang>
+
+=over 4
+
+=item * L</entity>
+
+=item * L</code>
+
+=item * L</property>
+
+=item * L</lang>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint(
+  "entity_code_property_lang",
+  ["entity", "code", "property", "lang"],
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2026-04-15 16:28:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BwAULPPRTjz6/6oeL2uF+w
+
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+1;

@@ -1,0 +1,86 @@
+#!/bin/sh
+# Copyright 2010-2011  Catalyst IT, Ltd
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Daily cron job for koha.
+# - dump all sites, except one called 'demo'
+
+dirname=""
+days="2"
+
+show_help() {
+    cat <<EOH
+$0 - performs backups of the koha installations on the system
+
+This allows automation of backing up the koha data and configuration to the
+filesystem. It will keep the past so many backups, discarding older ones.
+
+Options:
+    --output /path     The directory that the resulting files will be placed into.
+                       (default: /var/spool/koha)
+    --days 2           The number of days to keep backups around for
+                       (default: 2)
+    --exclude-indexes  Exclude Zebra indexes from the backups (default: false)
+
+    --exclude-logs     Exclude /var/log/koha/name from the backup (default: false)
+
+Note: backups produced using this tool can be restored using \`koha-restore'.
+EOH
+}
+
+exclude_indexes=""
+exclude_logs=""
+
+CMD_LINE=`getopt -o h --long days:,output:,help,exclude-indexes,exclude-logs -n 'koha-run-backups' -- "$@"`
+
+if [ $? != 0 ] ; then show_help ; exit 1 ; fi
+
+eval set -- "$CMD_LINE"
+while true ; do
+    case "$1" in
+        -h|--help)
+            show_help; exit;;
+        --days)
+            days=$2; shift 2 ;;
+        --output)
+            dirname=$2; shift 2 ;;
+        --exclude-indexes)
+            exclude_indexes='--exclude-indexes'; shift ;;
+        --exclude-logs)
+            exclude_logs='--exclude-logs'; shift ;;
+        --) shift ; break ;;
+        *) echo "Unknown error parsing the command line!" ; exit 1 ;;
+    esac
+done
+
+if ! test $days -gt 0 ; then
+    echo "Parameter --days must be an integer greater than 0"
+    exit 1
+fi
+
+for name in $(koha-list --enabled)
+do
+    if koha-dump ${exclude_indexes} ${exclude_logs} "$name" > /dev/null; then
+        # Only delete old backups if dump script return success.
+
+        if [ -z "$dirname" ]; then
+            backupdir="$( xmlstarlet sel -t -v 'yazgfs/config/backupdir' /etc/koha/sites/$name/koha-conf.xml )";
+        else
+            backupdir="$dirname/$name";
+        fi
+
+        find $backupdir -maxdepth 1 \( -mtime +$days -or -mtime $days \) -name $name-'[1-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].???'.gz  \( -name \*.sql.gz -or -name \*.tar.gz \) -print0 | xargs -0 -r rm
+    fi
+done

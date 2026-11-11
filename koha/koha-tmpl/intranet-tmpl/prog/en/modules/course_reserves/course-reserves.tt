@@ -1,0 +1,112 @@
+[% USE raw %]
+[% USE Koha %]
+[% USE Asset %]
+[% USE AuthorisedValues %]
+[% USE TablesSettings %]
+[% USE HtmlScrubber %]
+[% PROCESS 'i18n.inc' %]
+[% SET footerjs = 1 %]
+[% INCLUDE 'doc-head-open.inc' %]
+<title
+    >[% FILTER collapse %]
+        [% t("Course reserves") | html %]
+        &rsaquo; [% t("Koha") | html %]
+    [% END %]</title
+>
+[% INCLUDE 'doc-head-close.inc' %]
+
+</head>
+
+<body id="courses_course_reserves" class="course">
+
+[% WRAPPER 'header.inc' %]
+    [% INCLUDE 'cat-search.inc' %]
+[% END %]
+
+[% WRAPPER 'sub-header.inc' %]
+    [% WRAPPER breadcrumbs %]
+        [% WRAPPER breadcrumb_item bc_active= 1 %]
+            <span>Course reserves</span>
+        [% END %]
+    [% END #/ WRAPPER breadcrumbs %]
+[% END #/ WRAPPER sub-header.inc %]
+
+[% WRAPPER 'main-container.inc' %]
+    [% IF CAN_user_coursereserves_add_reserves OR CAN_user_coursereserves_manage_courses OR CAN_user_coursereserves_manage_courses OR CAN_user_coursereserves_delete_reserves %]
+        <div id="toolbar">
+            [% IF ( CAN_user_coursereserves_manage_courses ) %]
+                <a class="btn btn-default" id="new_course" href="/cgi-bin/koha/course_reserves/course.pl"><i class="fa fa-plus"></i> New course</a>
+            [% END %]
+            [% IF ( CAN_user_coursereserves_delete_reserves ) %]
+                <a class="btn btn-default" id="batch_rm" href="/cgi-bin/koha/course_reserves/batch_rm_items.pl"><i class="fa fa-minus"></i> Batch remove reserves</a>
+            [% END %] </div
+        ><!-- /toolbar -->
+    [% END %]
+
+    <h1>Courses</h1>
+    <div class="page-section">
+        <table id="course_reserves_table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Dept.</th>
+                    <th>Course #</th>
+                    <th>Section</th>
+                    <th>[% tp('Semester', 'Term') | html %]</th>
+                    <th>Instructors</th>
+                    <th>Staff note</th>
+                    <th>Public note</th>
+                    <th># of students</th>
+                    <th>Enabled</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                [% FOREACH c IN courses %]
+                    <tr>
+                        <td><a href="course-details.pl?course_id=[% c.course_id | uri %]">[% c.course_name | html %][%- IF c.section -%][% " - "_ c.section | html %][%- END -%]</a></td>
+                        <td>[% AuthorisedValues.GetByCode( 'DEPARTMENT', c.department ) | html %]</td>
+                        <td>[% c.course_number | html %]</td>
+                        <td>[% c.section | html %]</td>
+                        <td>[% AuthorisedValues.GetByCode( 'TERM' c.term ) | html %]</td>
+                        <td>
+                            [% FOREACH i IN c.instructors %]
+                                <div class="instructor"><a href="/cgi-bin/koha/members/moremember.pl?borrowernumber=[% i.borrowernumber | uri %]">[% INCLUDE 'patron-title.inc' patron=i no_cardnumber=1 %]</a></div>
+                            [% END %]
+                        </td>
+                        <td>[% c.staff_note | html %]</td>
+                        <td>[% c.public_note | scrub_html type => 'note' | $raw %]</td>
+                        <td>[% c.students_count | html %]</td>
+                        <td>
+                            [% IF c.enabled == 'yes' %]
+                                Yes
+                            [% ELSE %]
+                                No
+                            [% END %]
+                        </td>
+                    </tr>
+                [% END %]
+            </tbody>
+        </table>
+    </div>
+    <!-- /.page-section -->
+[% END %]
+
+[% MACRO jsinclude BLOCK %]
+    [% INCLUDE 'datatables.inc' %]
+    <script nonce="[% Koha.CSPNonce | $raw %]" data-tt-allowed="true">
+        var table_settings = [% TablesSettings.GetTableSettings( 'coursereserves', 'courses', 'course_reserves_table', 'json' ) | $raw %];
+    </script>
+    <script nonce="[% Koha.CSPNonce | $raw %]">
+        $(document).ready(function () {
+            var ctable = $("#course_reserves_table").kohaTable(
+                {
+                    autoWidth: false,
+                },
+                table_settings
+            );
+        });
+    </script>
+[% END %]
+
+[% INCLUDE 'intranet-bottom.inc' %]

@@ -1,0 +1,204 @@
+package Koha::ItemType;
+
+# This file is part of Koha.
+#
+# Koha is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Koha is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Koha; if not, see <https://www.gnu.org/licenses>.
+
+use Modern::Perl;
+
+use C4::Koha qw( getitemtypeimagelocation );
+use C4::Languages;
+use Koha::Database;
+use Koha::CirculationRules;
+
+use base qw(Koha::Object Koha::Object::Limit::Library);
+
+=head1 NAME
+
+Koha::ItemType - Koha Item type Object class
+
+=head1 API
+
+=head2 Class methods
+
+=head3 image_location
+
+=cut
+
+sub image_location {
+    my ( $self, $interface ) = @_;
+    return C4::Koha::getitemtypeimagelocation( $interface, $self->imageurl );
+}
+
+=head3 translated_description
+
+=cut
+
+sub translated_description {
+    my ( $self, $lang ) = @_;
+
+    my $localization = $self->localization( 'description', $lang || C4::Languages::getlanguage() );
+}
+
+=head3 translated_descriptions
+
+=cut
+
+sub translated_descriptions {
+    my ($self) = @_;
+
+    return [
+        map {
+            {
+                lang        => $_->lang,
+                translation => $_->translation,
+            }
+        } $self->_result->description_localizations
+    ];
+}
+
+=head3 can_be_deleted
+
+my $can_be_deleted = Koha::ItemType->can_be_deleted();
+
+Counts up the number of biblioitems and items with itemtype (code) and hands back the combined number of biblioitems and items with the itemtype
+
+=cut
+
+sub can_be_deleted {
+    my ($self)         = @_;
+    my $nb_items       = Koha::Items->search( { itype => $self->itemtype } )->count;
+    my $nb_biblioitems = Koha::Biblioitems->search( { itemtype => $self->itemtype } )->count;
+    return $nb_items + $nb_biblioitems == 0 ? 1 : 0;
+}
+
+=head3 may_article_request
+
+    Returns true if it is likely possible to make an article request for
+    this item type.
+    Optional parameter: categorycode (for patron).
+
+=cut
+
+sub may_article_request {
+    my ( $self, $params ) = @_;
+    return q{} if !C4::Context->preference('ArticleRequests');
+    my $itemtype = $self->itemtype;
+    my $category = $params->{categorycode};
+
+    my $guess = Koha::CirculationRules->guess_article_requestable_itemtypes(
+        {
+            $category ? ( categorycode => $category ) : (),
+        }
+    );
+    return ( $guess->{ $itemtype // q{} } || $guess->{'*'} ) ? 1 : q{};
+}
+
+=head3 _library_limits
+
+ configure library limits
+
+=cut
+
+sub _library_limits {
+    return {
+        class   => "ItemtypesBranch",
+        id      => "itemtype",
+        library => "branchcode",
+    };
+}
+
+=head3 parent
+
+    Returns the ItemType object of the parent_type or undef.
+
+=cut
+
+sub parent {
+    my ($self) = @_;
+    my $parent_rs = $self->_result->parent_type;
+    return unless $parent_rs;
+    return Koha::ItemType->_new_from_dbic($parent_rs);
+
+}
+
+=head3 children_with_localization
+
+    Returns the ItemType objects of the children of this type or undef.
+
+=cut
+
+sub children_with_localization {
+    my ($self) = @_;
+    return Koha::ItemTypes->search_with_localization( { parent_type => $self->itemtype } );
+}
+
+=head3 to_api_mapping
+
+This method returns the mapping for representing a Koha::ItemType object
+on the API.
+
+=cut
+
+sub to_api_mapping {
+    return {
+        checkinmsg                   => 'checkin_message',
+        checkinmsgtype               => 'checkin_message_type',
+        defaultreplacecost           => 'default_replacement_cost',
+        hideinopac                   => 'hide_in_opac',
+        imageurl                     => 'image_url',
+        itemtype                     => 'item_type_id',
+        notforloan                   => 'not_for_loan_status',
+        rentalcharge_daily           => 'daily_rental_charge',
+        rentalcharge_daily_calendar  => 'daily_rental_charge_calendar',
+        rentalcharge_hourly          => 'hourly_rental_charge',
+        rentalcharge_hourly_calendar => 'hourly_rental_charge_calendar',
+        bookable_itemtype            => 'bookable_itemtype',
+
+        # TODO Remove after having updated all code using unblessed translated_description
+        translated_description => undef,
+    };
+}
+
+=head3 unblessed
+
+See L<Koha::Object/unblessed>
+
+Overridden to add a C<translated_description> key for backward compatibility.
+This should not be relied on as it may be removed in the future.
+
+=cut
+
+# TODO Remove after having updated all code using unblessed translated_description
+sub unblessed {
+    my ($self) = @_;
+
+    my $unblessed = $self->SUPER::unblessed();
+
+    $unblessed->{translated_description} = $self->translated_description;
+
+    return $unblessed;
+}
+
+=head2 Internal methods
+
+=head3 _type
+
+=cut
+
+sub _type {
+    return 'Itemtype';
+}
+
+1;

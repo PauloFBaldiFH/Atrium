@@ -1,0 +1,1072 @@
+#!/usr/bin/env perl
+
+# This file is part of Koha.
+#
+# Koha is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Koha is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Koha; if not, see <https://www.gnu.org/licenses>.
+
+use Modern::Perl;
+
+use Test::NoWarnings;
+use Test::More tests => 116;
+use Test::MockModule;
+use Test::Mojo;
+use t::lib::Mocks;
+use t::lib::TestBuilder;
+
+use DateTime;
+
+use C4::Context;
+use C4::Circulation qw( AddIssue AddReturn CanBookBeIssued );
+
+use Koha::ActionLogs;
+use Koha::CirculationRules;
+use Koha::Database;
+use Koha::DateUtils qw( dt_from_string output_pref );
+use Koha::Token;
+
+use JSON qw( encode_json from_json );
+
+my $schema  = Koha::Database->schema;
+my $builder = t::lib::TestBuilder->new;
+
+t::lib::Mocks::mock_preference( 'RESTBasicAuth', 1 );
+my $t = Test::Mojo->new('Koha::REST::V1');
+
+$schema->storage->txn_begin;
+
+my $dbh = C4::Context->dbh;
+
+my $librarian = $builder->build_object(
+    {
+        class => 'Koha::Patrons',
+        value => { flags => 2 }
+    }
+);
+my $password = 'thePassword123';
+$librarian->set_password( { password => $password, skip_validation => 1 } );
+my $userid = $librarian->userid;
+
+my $patron = $builder->build_object(
+    {
+        class => 'Koha::Patrons',
+        value => { flags => 0 }
+    }
+);
+my $unauth_password = 'thePassword000';
+$patron->set_password( { password => $unauth_password, skip_validattion => 1 } );
+my $unauth_userid = $patron->userid;
+my $patron_id     = $patron->borrowernumber;
+
+my $branchcode = $builder->build( { source => 'Branch' } )->{branchcode};
+
+$t->get_ok("//$userid:$password@/api/v1/checkouts?patron_id=$patron_id")->status_is(200)->json_is( [] );
+
+my $notexisting_patron_id = $patron_id + 1;
+$t->get_ok("//$userid:$password@/api/v1/checkouts?patron_id=$notexisting_patron_id")->status_is(200)->json_is( [] );
+
+my $bookings_librarian = $builder->build_object(
+    {
+        class => 'Koha::Patrons',
+        value => { flags => 0 }     # no additional permissions
+    }
+);
+$builder->build(
+    {
+        source => 'UserPermission',
+        value  => {
+            borrowernumber => $bookings_librarian->borrowernumber,
+            module_bit     => 1,
+            code           => 'manage_bookings',
+        },
+    }
+);
+$bookings_librarian->set_password( { password => $password, skip_validation => 1 } );
+my $bookings_userid = $bookings_librarian->userid;
+
+$t->get_ok("//$bookings_userid:$password@/api/v1/checkouts?patron_id=$patron_id")
+    ->status_is( 200, 'manage_bookings allows checkouts access' )
+    ->json_is( [] );
+
+Koha::CirculationRules->set_rules(
+    {
+        categorycode => undef,
+        itemtype     => undef,
+        branchcode   => undef,
+        rules        => {
+            renewalperiod   => 7,
+            renewalsallowed => 1,
+            issuelength     => 5,
+        }
+    }
+);
+
+my $item1 = $builder->build_sample_item;
+my $item2 = $builder->build_sample_item;
+my $item3 = $builder->build_sample_item;
+my $item4 = $builder->build_sample_item;
+
+my $date_due  = DateTime->now->add( weeks => 2 );
+my $issue1    = C4::Circulation::AddIssue( $patron, $item1->barcode, $date_due );
+my $date_due1 = Koha::DateUtils::dt_from_string( $issue1->date_due );
+my $issue2    = C4::Circulation::AddIssue( $patron, $item2->barcode, $date_due );
+my $date_due2 = Koha::DateUtils::dt_from_string( $issue2->date_due );
+my $issue3    = C4::Circulation::AddIssue( $librarian, $item3->barcode, $date_due );
+my $date_due3 = Koha::DateUtils::dt_from_string( $issue3->date_due );
+my $issue4    = C4::Circulation::AddIssue( $patron, $item4->barcode );
+C4::Circulation::AddReturn( $item4->barcode, $branchcode );
+
+$t->get_ok("//$userid:$password@/api/v1/checkouts?patron_id=$patron_id")
+    ->status_is(200)
+    ->json_is( '/0/patron_id' => $patron_id )
+    ->json_is( '/0/item_id'   => $item1->itemnumber )
+    ->json_is( '/0/due_date'  => output_pref( { dateformat => "rfc3339", dt => $date_due1 } ) )
+    ->json_is( '/1/patron_id' => $patron_id )
+    ->json_is( '/1/item_id'   => $item2->itemnumber )
+    ->json_is( '/1/due_date'  => output_pref( { dateformat => "rfc3339", dt => $date_due2 } ) )
+    ->json_hasnt('/2');
+
+# Test checked_in parameter, zero means, the response is same as without it
+$t->get_ok("//$userid:$password@/api/v1/checkouts?patron_id=$patron_id&checked_in=0")
+    ->status_is(200)
+    ->json_is( '/0/patron_id' => $patron_id )
+    ->json_is( '/0/item_id'   => $item1->itemnumber )
+    ->json_is( '/0/due_date'  => output_pref( { dateformat => "rfc3339", dt => $date_due1 } ) )
+    ->json_is( '/1/patron_id' => $patron_id )
+    ->json_is( '/1/item_id'   => $item2->itemnumber )
+    ->json_is( '/1/due_date'  => output_pref( { dateformat => "rfc3339", dt => $date_due2 } ) )
+    ->json_hasnt('/2');
+
+# Test checked_in parameter, one measn, the checked in checkout is in the response too
+$t->get_ok("//$userid:$password@/api/v1/checkouts?patron_id=$patron_id&checked_in=1")
+    ->status_is(200)
+    ->json_is( '/0/patron_id' => $patron_id )
+    ->json_is( '/0/item_id'   => $item4->itemnumber )
+    ->json_hasnt('/1');
+
+$item4->delete;
+$t->get_ok("//$userid:$password@/api/v1/checkouts?patron_id=$patron_id&checked_in=1")
+    ->status_is(200)
+    ->json_is( '/0/patron_id' => $patron_id )
+    ->json_is( '/0/item_id'   => undef );
+
+$t->get_ok( "//$unauth_userid:$unauth_password@/api/v1/checkouts/" . $issue3->issue_id )->status_is(403)->json_is(
+    {
+        error                => "Authorization failure. Missing required permission(s).",
+        required_permissions => { circulate => "circulate_remaining_permissions" }
+    }
+);
+
+$t->get_ok("//$userid:$password@/api/v1/checkouts?patron_id=$patron_id")
+    ->status_is(200)
+    ->json_is( '/0/patron_id' => $patron_id )
+    ->json_is( '/0/item_id'   => $item1->itemnumber )
+    ->json_is( '/0/due_date'  => output_pref( { dateformat => "rfc3339", dt => $date_due1 } ) )
+    ->json_is( '/1/patron_id' => $patron_id )
+    ->json_is( '/1/item_id'   => $item2->itemnumber )
+    ->json_is( '/1/due_date'  => output_pref( { dateformat => "rfc3339", dt => $date_due2 } ) )
+    ->json_hasnt('/2');
+
+$t->get_ok("//$userid:$password@/api/v1/checkouts?patron_id=$patron_id&_per_page=1&_page=1")
+    ->status_is(200)
+    ->header_is( 'X-Total-Count', '2' )
+    ->header_like( 'Link', qr|rel="next"| )
+    ->header_like( 'Link', qr|rel="first"| )
+    ->header_like( 'Link', qr|rel="last"| )
+    ->json_is( '/0/patron_id' => $patron_id )
+    ->json_is( '/0/item_id'   => $item1->itemnumber )
+    ->json_is( '/0/due_date'  => output_pref( { dateformat => "rfc3339", dt => $date_due1 } ) )
+    ->json_hasnt('/1');
+
+$t->get_ok("//$userid:$password@/api/v1/checkouts?patron_id=$patron_id&_per_page=1&_page=2")
+    ->status_is(200)
+    ->header_is( 'X-Total-Count', '2' )
+    ->header_like( 'Link', qr|rel="prev"| )
+    ->header_like( 'Link', qr|rel="first"| )
+    ->header_like( 'Link', qr|rel="last"| )
+    ->json_is( '/0/patron_id' => $patron_id )
+    ->json_is( '/0/item_id'   => $item2->itemnumber )
+    ->json_is( '/0/due_date'  => output_pref( { dateformat => "rfc3339", dt => $date_due2 } ) )
+    ->json_hasnt('/1');
+
+$t->get_ok( "//$userid:$password@/api/v1/checkouts/" . $issue1->issue_id )
+    ->status_is(200)
+    ->json_is( '/patron_id' => $patron_id )
+    ->json_is( '/item_id'   => $item1->itemnumber )
+    ->json_is( '/due_date'  => output_pref( { dateformat => "rfc3339", dt => $date_due1 } ) )
+    ->json_hasnt('/1');
+
+$t->get_ok( "//$userid:$password@/api/v1/checkouts/" . $issue1->issue_id )
+    ->status_is(200)
+    ->json_is( '/due_date' => output_pref( { dateformat => "rfc3339", dt => $date_due1 } ) );
+
+$t->get_ok( "//$userid:$password@/api/v1/checkouts/" . $issue2->issue_id )
+    ->status_is(200)
+    ->json_is( '/due_date' => output_pref( { dateformat => "rfc3339", dt => $date_due2 } ) );
+
+my $expected_datedue =
+    $date_due->set_time_zone('local')->add( days => 7 )->set( hour => 23, minute => 59, second => 0 );
+
+$t->post_ok( "//$userid:$password@/api/v1/checkouts/" . $issue1->issue_id . "/renewal" )
+    ->status_is(201)
+    ->json_is( '/due_date' => output_pref( { dateformat => "rfc3339", dt => $expected_datedue } ) )
+    ->header_is( Location => "/api/v1/checkouts/" . $issue1->issue_id . "/renewal" );
+
+my $renewal = $issue1->renewals->last;
+is( $renewal->renewal_type, 'Manual', 'Manual renewal recorded' );
+
+$t->get_ok( "//$userid:$password@/api/v1/checkouts/" . $issue1->issue_id . "/renewals" )
+    ->status_is(200)
+    ->json_is( '/0/checkout_id' => $issue1->issue_id )
+    ->json_is( '/0/interface'   => 'api' )
+    ->json_is( '/0/renewer_id'  => $librarian->borrowernumber );
+
+$t->post_ok( "//$unauth_userid:$unauth_password@/api/v1/checkouts/" . $issue3->issue_id . "/renewal" )
+    ->status_is(403)
+    ->json_is(
+    {
+        error                => "Authorization failure. Missing required permission(s).",
+        required_permissions => { circulate => "circulate_remaining_permissions" }
+    }
+    );
+
+$t->get_ok( "//$userid:$password@/api/v1/checkouts/" . $issue2->issue_id . "/allows_renewal" )
+    ->status_is(200)
+    ->json_is(
+    {
+        allows_renewal   => Mojo::JSON->true,
+        max_renewals     => 1,
+        unseen_renewals  => 0,
+        current_renewals => 0,
+        error            => undef
+    }
+    );
+
+$t->post_ok( "//$userid:$password@/api/v1/checkouts/" . $issue2->issue_id . "/renewal" )
+    ->status_is(201)
+    ->json_is( '/due_date' => output_pref( { dateformat => "rfc3339", dt => $expected_datedue } ) )
+    ->header_is( Location => "/api/v1/checkouts/" . $issue2->issue_id . "/renewal" );
+
+$t->post_ok( "//$userid:$password@/api/v1/checkouts/" . $issue1->issue_id . "/renewal" )
+    ->status_is(403)
+    ->json_is( { error => 'Renewal not authorized (too_many)', error_code => 'too_many' } );
+
+$t->get_ok( "//$userid:$password@/api/v1/checkouts/" . $issue2->issue_id . "/allows_renewal" )
+    ->status_is(200)
+    ->json_is(
+    {
+        allows_renewal   => Mojo::JSON->false,
+        max_renewals     => 1,
+        unseen_renewals  => 0,
+        current_renewals => 1,
+        error            => 'too_many'
+    }
+    );
+
+#Confirm we can get a checkout with a note
+$issue1->note("Test")->notedate( dt_from_string() )->store;
+$t->get_ok("//$userid:$password@/api/v1/checkouts")->status_is(200);
+
+$schema->storage->txn_rollback;
+
+subtest 'get_availability' => sub {
+
+    plan tests => 29;
+
+    $schema->storage->txn_begin;
+    my $librarian = $builder->build_object(
+        {
+            class => 'Koha::Patrons',
+            value => { flags => 2 }
+        }
+    );
+    my $password = 'thePassword123';
+    $librarian->set_password( { password => $password, skip_validation => 1 } );
+    my $userid = $librarian->userid;
+
+    my $patron = $builder->build_object(
+        {
+            class => 'Koha::Patrons',
+            value => { flags => 0 }
+        }
+    );
+    my $unauth_password = 'thePassword000';
+    $patron->set_password( { password => $unauth_password, skip_validattion => 1 } );
+    my $unauth_userid = $patron->userid;
+    my $patron_id     = $patron->borrowernumber;
+
+    my $branchcode = $builder->build( { source => 'Branch' } )->{branchcode};
+
+    my $item1    = $builder->build_sample_item;
+    my $item1_id = $item1->id;
+
+    my %issuingimpossible = ();
+    my %needsconfirmation = ();
+    my %alerts            = ();
+    my %messages          = ();
+    my $mocked_circ       = Test::MockModule->new('C4::Circulation');
+    $mocked_circ->mock(
+        'CanBookBeIssued',
+        sub {
+            return ( \%issuingimpossible, \%needsconfirmation, \%alerts, \%messages );
+        }
+    );
+
+    $t->get_ok(
+        "//$unauth_userid:$unauth_password@/api/v1/checkouts/availability?item_id=$item1_id&patron_id=$patron_id")
+        ->status_is(403)
+        ->json_is(
+        {
+            error                => "Authorization failure. Missing required permission(s).",
+            required_permissions => { circulate => "circulate_remaining_permissions" }
+        }
+        );
+
+    # Available
+    $t->get_ok("//$userid:$password@/api/v1/checkouts/availability?item_id=$item1_id&patron_id=$patron_id")
+        ->status_is(200)
+        ->json_is( '/blockers' => {} )
+        ->json_is( '/confirms' => {} )
+        ->json_is( '/warnings' => {} )
+        ->json_has('/confirmation_token');
+
+    # Blocked
+    %issuingimpossible = ( GNA => 1 );
+    $t->get_ok("//$userid:$password@/api/v1/checkouts/availability?item_id=$item1_id&patron_id=$patron_id")
+        ->status_is(200)
+        ->json_is( '/blockers' => { GNA => 1 } )
+        ->json_is( '/confirms' => {} )
+        ->json_is( '/warnings' => {} )
+        ->json_has('/confirmation_token');
+    %issuingimpossible = ();
+
+    # Warnings/Info
+    %alerts   = ( alert1   => "this is an alert" );
+    %messages = ( message1 => "this is a message" );
+    $t->get_ok("//$userid:$password@/api/v1/checkouts/availability?item_id=$item1_id&patron_id=$patron_id")
+        ->status_is(200)
+        ->json_is( '/blockers' => {} )
+        ->json_is( '/confirms' => {} )
+        ->json_is( '/warnings' => { alert1 => "this is an alert", message1 => "this is a message" } )
+        ->json_has('/confirmation_token');
+    %alerts   = ();
+    %messages = ();
+
+    # Needs confirm
+    %needsconfirmation = ( confirm1 => 1, confirm2 => 'please' );
+    my $token = Koha::Token->new->generate_jwt( { id => $librarian->id . ":" . $item1_id . ":confirm1:confirm2" } );
+    $t->get_ok("//$userid:$password@/api/v1/checkouts/availability?item_id=$item1_id&patron_id=$patron_id")
+        ->status_is(200)
+        ->json_is( '/blockers' => {} )
+        ->json_is( '/confirms' => { confirm1 => 1, confirm2 => 'please' } )
+        ->json_is( '/warnings' => {} )
+        ->json_has('/confirmation_token');
+    my $confirmation_token = $t->tx->res->json('/confirmation_token');
+    ok(
+        Koha::Token->new->check_jwt(
+            {
+                id    => $librarian->id . ":" . $item1_id . ":confirm1:confirm2",
+                token => $confirmation_token
+            }
+        ),
+        'Correct token'
+    );
+    %needsconfirmation = ();
+
+    subtest 'public availability' => sub {
+        plan tests => 40;
+
+        # Authentication required
+        $t->get_ok("/api/v1/public/checkouts/availability?item_id=$item1_id&patron_id=$patron_id")->status_is(401);
+
+        # Only allow availability lookup for self
+        $t->get_ok("//$userid:$password@/api/v1/public/checkouts/availability?item_id=$item1_id&patron_id=$patron_id")
+            ->status_is(403);
+
+        # All ok
+        $t->get_ok(
+            "//$unauth_userid:$unauth_password@/api/v1/public/checkouts/availability?item_id=$item1_id&patron_id=$patron_id"
+            )
+            ->status_is(200)
+            ->json_is( '/blockers' => {} )
+            ->json_is( '/confirms' => {} )
+            ->json_is( '/warnings' => {} )
+            ->json_has('/confirmation_token');
+
+        # Needs confirmation upgrade to blocker
+        %needsconfirmation = ( TOO_MANY => 1, ISSUED_TO_ANOTHER => 1 );
+        $t->get_ok(
+            "//$unauth_userid:$unauth_password@/api/v1/public/checkouts/availability?item_id=$item1_id&patron_id=$patron_id"
+            )
+            ->status_is(200)
+            ->json_is( '/blockers' => { TOO_MANY => 1, ISSUED_TO_ANOTHER => 1 } )
+            ->json_is( '/confirms' => {} )
+            ->json_is( '/warnings' => {} )
+            ->json_has('/confirmation_token');
+        %needsconfirmation = ();
+
+        # Hold confirmations are gated by AllowItemsOnHoldCheckoutSCO.
+        # Because the mocked CanBookBeIssued returns the hashes by reference
+        # and _check_availability mutates them, we reset both hashes before
+        # every request.
+        my $reset_hold_hashes = sub {
+            %issuingimpossible = ();
+            %needsconfirmation = (
+                RESERVED        => 1,
+                RESERVE_WAITING => 1,
+                TRANSFERRED     => 1,
+                PROCESSING      => 1
+            );
+        };
+
+        $reset_hold_hashes->();
+        t::lib::Mocks::mock_preference( 'AllowItemsOnHoldCheckoutSCO', 0 );
+        $t->get_ok(
+            "//$unauth_userid:$unauth_password@/api/v1/public/checkouts/availability?item_id=$item1_id&patron_id=$patron_id"
+        )->status_is(200)->json_is(
+            '/blockers' => {
+                RESERVED        => 1,
+                RESERVE_WAITING => 1,
+                TRANSFERRED     => 1,
+                PROCESSING      => 1
+            }
+        )->json_is( '/confirms' => {} )->json_is( '/warnings' => {} )->json_has('/confirmation_token');
+
+        $reset_hold_hashes->();
+        t::lib::Mocks::mock_preference( 'AllowItemsOnHoldCheckoutSCO', 1 );
+        $t->get_ok(
+            "//$unauth_userid:$unauth_password@/api/v1/public/checkouts/availability?item_id=$item1_id&patron_id=$patron_id"
+        )->status_is(200)->json_is(
+            '/blockers' => {
+                RESERVE_WAITING => 1,
+                TRANSFERRED     => 1,
+                PROCESSING      => 1
+            }
+        )->json_is( '/confirms' => {} )->json_is( '/warnings' => {} )->json_has('/confirmation_token');
+
+        $reset_hold_hashes->();
+        t::lib::Mocks::mock_preference( 'AllowItemsOnHoldCheckoutSCO', 2 );
+        $t->get_ok(
+            "//$unauth_userid:$unauth_password@/api/v1/public/checkouts/availability?item_id=$item1_id&patron_id=$patron_id"
+            )
+            ->status_is(200)
+            ->json_is( '/blockers' => {} )
+            ->json_is( '/confirms' => {} )
+            ->json_is( '/warnings' => {} )
+            ->json_has('/confirmation_token');
+
+        %issuingimpossible = ();
+        %needsconfirmation = ();
+
+        # Remove personal information from public endpoint
+        %issuingimpossible = (
+            issued_borrowernumber => 'private',
+            issued_cardnumber     => 'private',
+            issued_firstname      => 'private',
+            issued_surname        => 'private',
+            resborrowernumber     => 'private',
+            resbranchcode         => 'private',
+            rescardnumber         => 'private',
+            reserve_id            => 'private',
+            resfirstname          => 'private',
+            resreservedate        => 'private',
+            ressurname            => 'private',
+            item_notforloan       => 'private'
+        );
+        %alerts = (
+            issued_borrowernumber => 'private',
+            issued_cardnumber     => 'private',
+            issued_firstname      => 'private',
+            issued_surname        => 'private',
+            resborrowernumber     => 'private',
+            resbranchcode         => 'private',
+            rescardnumber         => 'private',
+            reserve_id            => 'private',
+            resfirstname          => 'private',
+            resreservedate        => 'private',
+            ressurname            => 'private',
+            item_notforloan       => 'private'
+        );
+
+        %needsconfirmation = (
+            issued_borrowernumber => 'private',
+            issued_cardnumber     => 'private',
+            issued_firstname      => 'private',
+            issued_surname        => 'private',
+            resborrowernumber     => 'private',
+            resbranchcode         => 'private',
+            rescardnumber         => 'private',
+            reserve_id            => 'private',
+            resfirstname          => 'private',
+            resreservedate        => 'private',
+            ressurname            => 'private',
+            item_notforloan       => 'private'
+        );
+        $t->get_ok(
+            "//$unauth_userid:$unauth_password@/api/v1/public/checkouts/availability?item_id=$item1_id&patron_id=$patron_id"
+            )
+            ->status_is(200)
+            ->json_is( '/blockers' => {} )
+            ->json_is( '/confirms' => {} )
+            ->json_is( '/warnings' => {} )
+            ->json_has('/confirmation_token');
+        %issuingimpossible = ();
+        %alerts            = ();
+        %needsconfirmation = ();
+    };
+
+    $schema->storage->txn_rollback;
+};
+
+subtest 'add checkout' => sub {
+
+    plan tests => 14;
+
+    $schema->storage->txn_begin;
+    my $librarian = $builder->build_object(
+        {
+            class => 'Koha::Patrons',
+            value => { flags => 2 }
+        }
+    );
+    my $password = 'thePassword123';
+    $librarian->set_password( { password => $password, skip_validation => 1 } );
+    my $userid = $librarian->userid;
+
+    my $patron = $builder->build_object(
+        {
+            class => 'Koha::Patrons',
+            value => { flags => 0 }
+        }
+    );
+    my $unauth_password = 'thePassword000';
+    $patron->set_password( { password => $unauth_password, skip_validattion => 1 } );
+    my $unauth_userid = $patron->userid;
+    my $patron_id     = $patron->borrowernumber;
+
+    my $branchcode = $builder->build( { source => 'Branch' } )->{branchcode};
+
+    my $item1         = $builder->build_sample_item;
+    my $item1_id      = $item1->id;
+    my $item1_barcode = $item1->barcode;
+
+    my $item2         = $builder->build_sample_item;
+    my $item2_id      = $item2->id;
+    my $item2_barcode = $item2->barcode;
+
+    my %issuingimpossible = ();
+    my %needsconfirmation = ();
+    my %alerts            = ();
+    my %messages          = ();
+    my $mocked_circ       = Test::MockModule->new('C4::Circulation');
+    $mocked_circ->mock(
+        'CanBookBeIssued',
+        sub {
+            return ( \%issuingimpossible, \%needsconfirmation, \%alerts, \%messages );
+        }
+    );
+
+    $t->post_ok( "//$unauth_userid:$unauth_password@/api/v1/checkouts" => json =>
+            { item_id => $item1_id, patron_id => $patron_id } )->status_is(403)->json_is(
+        {
+            error                => "Authorization failure. Missing required permission(s).",
+            required_permissions => { circulate => "circulate_remaining_permissions" }
+        }
+            );
+
+    $t->post_ok( "//$userid:$password@/api/v1/checkouts" => json => { item_id => $item1_id, patron_id => $patron_id } )
+        ->status_is(201);
+
+    $t->post_ok(
+        "//$userid:$password@/api/v1/checkouts" => json => { external_id => $item1_barcode, patron_id => $patron_id } )
+        ->status_is(201);
+
+    # mismatch of item_id and barcode when both given
+    $t->post_ok(
+        "//$userid:$password@/api/v1/checkouts" => json => {
+            external_id => $item1_barcode,
+            item_id     => $item2_id,
+            patron_id   => $patron_id
+        }
+    )->status_is(409);
+
+    # Needs confirm
+    %needsconfirmation = ( confirm1 => 1, confirm2 => 'please' );
+    $t->post_ok(
+        "//$userid:$password@/api/v1/checkouts" => json => {
+            item_id   => $item1_id,
+            patron_id => $patron_id,
+        }
+    )->status_is(412);
+
+    my $token = Koha::Token->new->generate_jwt( { id => $librarian->id . ":" . $item1_id . ":confirm1:confirm2" } );
+    $t->post_ok(
+        "//$userid:$password@/api/v1/checkouts?confirmation=$token" => json => {
+            item_id   => $item1_id,
+            patron_id => $patron_id
+        }
+    )->status_is(201)->or( sub { diag $t->tx->res->body } );
+    %needsconfirmation = ();
+
+    subtest 'public add' => sub {
+        plan tests => 14;
+
+        my $useridp = $patron->userid;
+        $patron->set_password( { password => $password, skip_validation => 1 } );
+
+        # Feature disabled
+        t::lib::Mocks::mock_preference( 'OpacTrustedCheckout', 0 );
+
+        $t->post_ok(
+            "/api/v1/public/patrons/$patron_id/checkouts" => json => { item_id => $item1_id, patron_id => $patron_id } )
+            ->status_is(401)
+            ->json_is( { error => "Authentication failure." } );
+
+        $t->post_ok( "//$useridp:$password@/api/v1/public/patrons/$patron_id/checkouts" => json =>
+                { item_id => $item1_id, patron_id => $patron_id } )
+            ->status_is(405)
+            ->json_is( { error => "Feature disabled", error_code => "FEATURE_DISABLED" } );
+
+        # Feature enabled
+        t::lib::Mocks::mock_preference( 'OpacTrustedCheckout', 1 );
+
+        $t->post_ok(
+            "/api/v1/public/patrons/$patron_id/checkouts" => json => { item_id => $item1_id, patron_id => $patron_id } )
+            ->status_is(401)
+            ->json_is( { error => "Authentication failure." } );
+
+        $t->post_ok( "//$userid:$password@/api/v1/public/patrons/$patron_id/checkouts" => json =>
+                { item_id => $item1_id, patron_id => $patron_id } )
+            ->status_is(403)
+            ->json_is( { error => "Unprivileged user cannot access another user's resources" } );
+
+        $t->post_ok( "//$useridp:$password@/api/v1/public/patrons/$patron_id/checkouts" => json =>
+                { item_id => $item1_id, patron_id => $patron_id } )->status_is(201);
+    };
+
+    $schema->storage->txn_rollback;
+};
+
+subtest 'renew with fine override (x-koha-override: debt_limit)' => sub {
+    plan tests => 15;
+
+    $schema->storage->txn_begin;
+
+    # Create a librarian with circulate permission
+    my $librarian = $builder->build_object(
+        {
+            class => 'Koha::Patrons',
+            value => { flags => 2 }     # Superlibrarian
+        }
+    );
+    my $password = 'thePassword123';
+    $librarian->set_password( { password => $password, skip_validation => 1 } );
+    my $userid = $librarian->userid;
+
+    # Create a regular patron
+    my $patron = $builder->build_object(
+        {
+            class => 'Koha::Patrons',
+            value => { flags => 0 }
+        }
+    );
+
+    # Create a branch and set up userenv
+    my $branch = $builder->build( { source => 'Branch' } );
+    t::lib::Mocks::mock_userenv(
+        { branchcode => $branch->{branchcode}, borrowernumber => $librarian->borrowernumber } );
+
+    # Set up circulation rules
+    Koha::CirculationRules->set_rules(
+        {
+            categorycode => undef,
+            itemtype     => undef,
+            branchcode   => undef,
+            rules        => {
+                renewalperiod   => 7,
+                renewalsallowed => 10,
+                issuelength     => 5,
+            }
+        }
+    );
+
+    my $item = $builder->build_sample_item;
+
+    # Check out the item
+    my $checkout = AddIssue( $patron, $item->barcode );
+
+    # Set FineNoRenewals to a low amount
+    t::lib::Mocks::mock_preference( 'FineNoRenewals', 5 );
+
+    # Add a fine that exceeds the limit
+    my $account = Koha::Account->new( { patron_id => $patron->borrowernumber } );
+    $account->add_debit(
+        {
+            amount      => 10.00,
+            type        => 'OVERDUE',
+            interface   => 'test',
+            description => 'Test fine',
+            item_id     => $item->itemnumber,
+        }
+    );
+
+    my $checkout_id = $checkout->id;
+
+    # Test 1: Renewal should be blocked due to excessive fines
+    $t->post_ok("//$userid:$password@/api/v1/checkouts/$checkout_id/renewal")
+        ->status_is(403)
+        ->json_like( '/error' => qr/too_much_owing/ );
+
+    # Test 2: Override should fail when AllowFineOverrideRenewing is disabled
+    t::lib::Mocks::mock_preference( 'AllowFineOverrideRenewing', 0 );
+
+    $t->post_ok( "//$userid:$password@/api/v1/checkouts/$checkout_id/renewal" => { 'x-koha-override' => 'debt_limit' } )
+        ->status_is(403)
+        ->json_like( '/error' => qr/too_much_owing/ );
+
+    # Test 3: Override should succeed when AllowFineOverrideRenewing is enabled
+    t::lib::Mocks::mock_preference( 'AllowFineOverrideRenewing', 1 );
+
+    $t->post_ok( "//$userid:$password@/api/v1/checkouts/$checkout_id/renewal" => { 'x-koha-override' => 'debt_limit' } )
+        ->status_is(201)
+        ->json_has('/due_date');
+
+    # Refresh checkout
+    $checkout = Koha::Checkouts->find($checkout_id);
+
+    # Test 4: Test with /renewals endpoint (alternative endpoint)
+    # Add another checkout to test the other endpoint
+    my $item2        = $builder->build_sample_item;
+    my $checkout2    = AddIssue( $patron, $item2->barcode );
+    my $checkout2_id = $checkout2->id;
+
+    # Should be blocked without override
+    $t->post_ok("//$userid:$password@/api/v1/checkouts/$checkout2_id/renewals")
+        ->status_is(403)
+        ->json_like( '/error' => qr/too_much_owing/ );
+
+    # Should succeed with override
+    $t->post_ok(
+        "//$userid:$password@/api/v1/checkouts/$checkout2_id/renewals" => { 'x-koha-override' => 'debt_limit' } )
+        ->status_is(201)
+        ->json_has('/due_date');
+
+    $schema->storage->txn_rollback;
+};
+
+subtest 'list checkouts that have been checked in and the patron has been deleted' => sub {
+    plan tests => 6;
+
+    $schema->storage->txn_begin;
+
+    # Create a librarian with circulate permission
+    my $librarian = $builder->build_object(
+        {
+            class => 'Koha::Patrons',
+            value => { flags => 2 }     # Superlibrarian
+        }
+    );
+    my $password = 'thePassword123';
+    $librarian->set_password( { password => $password, skip_validation => 1 } );
+    my $userid = $librarian->userid;
+
+    # Create a regular patron
+    my $patron = $builder->build_object(
+        {
+            class => 'Koha::Patrons',
+            value => { flags => 0 }
+        }
+    );
+    my $patron_id = $patron->borrowernumber;
+
+    my $old_checkout = $builder->build_object(
+        {
+            class => 'Koha::Old::Checkouts',
+            value => { borrowernumber => $patron_id }
+        }
+    );
+    my $old_checkout_id = encode_json( { checkout_id => $old_checkout->id } );
+
+    # Test 1: Checkout should be returned
+    $t->get_ok("//$userid:$password@/api/v1/checkouts?checked_in=1&q=$old_checkout_id")
+        ->status_is(200)
+        ->json_is( '/0/patron_id' => $patron_id );
+
+    my $old_checkout_2 = $builder->build_object(
+        {
+            class => 'Koha::Old::Checkouts',
+            value => { borrowernumber => undef }
+        }
+    );
+    my $old_checkout_2_id = encode_json( { checkout_id => $old_checkout_2->id } );
+
+    # Test 2: Checkout should be returned with null patron_id
+
+    $t->get_ok("//$userid:$password@/api/v1/checkouts?checked_in=1&q=$old_checkout_2_id")
+        ->status_is(200)
+        ->json_is( '/0/patron_id' => undef );
+
+    $schema->storage->txn_rollback;
+};
+
+subtest 'renew() with requested due_date and bookings' => sub {
+    plan tests => 21;
+
+    $schema->storage->txn_begin;
+
+    t::lib::Mocks::mock_preference( 'AllowRenewalLimitOverride', 1 );
+
+    my $librarian = $builder->build_object(
+        {
+            class => 'Koha::Patrons',
+            value => { flags => 2 }     # circulate
+        }
+    );
+    my $password = 'thePassword123';
+    $librarian->set_password( { password => $password, skip_validation => 1 } );
+    my $userid = $librarian->userid;
+
+    my $library = $builder->build_object( { class => 'Koha::Libraries' } );
+    my $patron  = $builder->build_object( { class => 'Koha::Patrons' } );
+    my $patron2 = $builder->build_object( { class => 'Koha::Patrons' } );
+    my $item    = $builder->build_sample_item( { library => $library->branchcode, bookable => 1 } );
+
+    Koha::CirculationRules->set_rules(
+        {
+            branchcode   => $library->branchcode,
+            categorycode => $patron->categorycode,
+            itemtype     => $item->effective_itemtype,
+            rules        => {
+                renewalsallowed => 1,
+                renewalperiod   => 7,
+                issuelength     => 7,
+            }
+        }
+    );
+
+    my $start_date = dt_from_string()->truncate( to => 'minute' );
+    my $end_date   = $start_date->clone->add( days => 7 );
+
+    my $booking = $builder->build_object(
+        {
+            class => 'Koha::Bookings',
+            value => {
+                patron_id         => $patron->borrowernumber,
+                item_id           => $item->itemnumber,
+                biblio_id         => $item->biblio->biblionumber,
+                pickup_library_id => $library->branchcode,
+                start_date        => $start_date,
+                end_date          => $end_date,
+                status            => 'new',
+            }
+        }
+    );
+
+    t::lib::Mocks::mock_userenv( { branchcode => $library->branchcode } );
+    my $checkout = AddIssue( $patron, $item->barcode, $end_date->clone );
+    is( $checkout->booking_id, $booking->booking_id, 'Checkout linked to the booking at issue' );
+    my $checkout_id = $checkout->issue_id;
+
+    # Renewal with a requested due date syncs the booking end_date
+    my $renewal_due = $end_date->clone->add( days => 3 );
+    $t->post_ok( "//$userid:$password@/api/v1/checkouts/$checkout_id/renewal" => json =>
+            { due_date => output_pref( { dateformat => 'rfc3339', dt => $renewal_due } ) } )
+        ->status_is(201)
+        ->json_is( '/due_date' => output_pref( { dateformat => 'rfc3339', dt => $renewal_due } ) );
+
+    $booking->discard_changes;
+    is(
+        dt_from_string( $booking->end_date )->compare($renewal_due), 0,
+        'Booking end_date synced to the renewed due date'
+    );
+
+    # Renewal count limit reached; renewal_limit override required
+    my $second_renewal_due = $end_date->clone->add( days => 5 );
+    $t->post_ok( "//$userid:$password@/api/v1/checkouts/$checkout_id/renewal" => json =>
+            { due_date => output_pref( { dateformat => 'rfc3339', dt => $second_renewal_due } ) } )
+        ->status_is(403)
+        ->json_is( '/error_code' => 'too_many' );
+
+    $t->post_ok(
+        "//$userid:$password@/api/v1/checkouts/$checkout_id/renewal" => { 'x-koha-override' => 'renewal_limit' } =>
+            json => { due_date => output_pref( { dateformat => 'rfc3339', dt => $second_renewal_due } ) } )
+        ->status_is(201)
+        ->json_is( '/due_date' => output_pref( { dateformat => 'rfc3339', dt => $second_renewal_due } ) );
+
+    $booking->discard_changes;
+    is(
+        dt_from_string( $booking->end_date )->compare($second_renewal_due), 0,
+        'Booking end_date follows the overridden renewal'
+    );
+
+    # A requested due date running into the next booking is refused
+    my $next_booking = $builder->build_object(
+        {
+            class => 'Koha::Bookings',
+            value => {
+                patron_id         => $patron2->borrowernumber,
+                item_id           => $item->itemnumber,
+                biblio_id         => $item->biblio->biblionumber,
+                pickup_library_id => $library->branchcode,
+                start_date        => $second_renewal_due->clone->add( days => 3 ),
+                end_date          => $second_renewal_due->clone->add( days => 7 ),
+                status            => 'new',
+            }
+        }
+    );
+
+    my $clashing_due = $second_renewal_due->clone->add( days => 4 );
+    $t->post_ok(
+        "//$userid:$password@/api/v1/checkouts/$checkout_id/renewal" => { 'x-koha-override' => 'renewal_limit' } =>
+            json => { due_date => output_pref( { dateformat => 'rfc3339', dt => $clashing_due } ) } )
+        ->status_is(403)
+        ->json_is( '/error_code' => 'booked' );
+
+    $booking->discard_changes;
+    $checkout->discard_changes;
+    is(
+        dt_from_string( $booking->end_date )->compare($second_renewal_due), 0,
+        'Booking end_date unchanged after refused renewal'
+    );
+    is(
+        dt_from_string( $checkout->date_due )->compare($second_renewal_due), 0,
+        'Checkout due date unchanged after refused renewal'
+    );
+
+    # The newer plural endpoint accepts due_date too (same controller)
+    my $plural_renewal_due = $second_renewal_due->clone->add( days => 1 );
+    $t->post_ok(
+        "//$userid:$password@/api/v1/checkouts/$checkout_id/renewals" => { 'x-koha-override' => 'renewal_limit' } =>
+            json => { due_date => output_pref( { dateformat => 'rfc3339', dt => $plural_renewal_due } ) } )
+        ->status_is(201)
+        ->json_is( '/due_date' => output_pref( { dateformat => 'rfc3339', dt => $plural_renewal_due } ) );
+
+    $booking->discard_changes;
+    is(
+        dt_from_string( $booking->end_date )->compare($plural_renewal_due), 0,
+        'Booking end_date synced by a renewal through the plural endpoint'
+    );
+
+    $schema->storage->txn_rollback;
+};
+
+subtest 'renew() records the renewal_limit override in the action log' => sub {
+    plan tests => 6;
+
+    $schema->storage->txn_begin;
+
+    t::lib::Mocks::mock_preference( 'AllowRenewalLimitOverride', 1 );
+    t::lib::Mocks::mock_preference( 'RenewalLog',                1 );
+
+    my $librarian = $builder->build_object(
+        {
+            class => 'Koha::Patrons',
+            value => { flags => 2 }     # circulate
+        }
+    );
+    my $password = 'thePassword123';
+    $librarian->set_password( { password => $password, skip_validation => 1 } );
+    my $userid = $librarian->userid;
+
+    my $library = $builder->build_object( { class => 'Koha::Libraries' } );
+    my $patron  = $builder->build_object( { class => 'Koha::Patrons' } );
+    my $item    = $builder->build_sample_item( { library => $library->branchcode } );
+
+    Koha::CirculationRules->set_rules(
+        {
+            branchcode   => $library->branchcode,
+            categorycode => $patron->categorycode,
+            itemtype     => $item->effective_itemtype,
+            rules        => {
+                renewalsallowed => 5,
+                renewalperiod   => 7,
+                issuelength     => 7,
+            }
+        }
+    );
+
+    t::lib::Mocks::mock_userenv( { branchcode => $library->branchcode } );
+    my $checkout_id = AddIssue( $patron, $item->barcode )->issue_id;
+
+    my $last_renewal_confirmations = sub {
+        my $log = Koha::ActionLogs->search(
+            { module   => 'CIRCULATION', action => 'RENEWAL', object => $patron->borrowernumber },
+            { order_by => { -desc => 'action_id' } }
+        )->next;
+        return from_json( $log->info )->{confirmations};
+    };
+
+    $t->post_ok("//$userid:$password@/api/v1/checkouts/$checkout_id/renewal")->status_is(201);
+    ok(
+        !grep( { $_ eq 'RENEWAL_LIMIT' } @{ $last_renewal_confirmations->() } ),
+        'No RENEWAL_LIMIT without the override'
+    );
+
+    $t->post_ok(
+        "//$userid:$password@/api/v1/checkouts/$checkout_id/renewal" => { 'x-koha-override' => 'renewal_limit' } )
+        ->status_is(201);
+    ok(
+        grep( { $_ eq 'RENEWAL_LIMIT' } @{ $last_renewal_confirmations->() } ),
+        'RENEWAL_LIMIT logged with the override'
+    );
+
+    $schema->storage->txn_rollback;
+};
+
+subtest 'renew() with a malformed requested due_date' => sub {
+    plan tests => 4;
+
+    $schema->storage->txn_begin;
+
+    my $librarian = $builder->build_object(
+        {
+            class => 'Koha::Patrons',
+            value => { flags => 2 }     # circulate
+        }
+    );
+    my $password = 'thePassword123';
+    $librarian->set_password( { password => $password, skip_validation => 1 } );
+    my $userid = $librarian->userid;
+
+    my $library = $builder->build_object( { class => 'Koha::Libraries' } );
+    my $patron  = $builder->build_object( { class => 'Koha::Patrons' } );
+    my $item    = $builder->build_sample_item( { library => $library->branchcode } );
+
+    Koha::CirculationRules->set_rules(
+        {
+            branchcode   => $library->branchcode,
+            categorycode => $patron->categorycode,
+            itemtype     => $item->effective_itemtype,
+            rules        => {
+                renewalsallowed => 1,
+                renewalperiod   => 7,
+                issuelength     => 7,
+            }
+        }
+    );
+
+    t::lib::Mocks::mock_userenv( { branchcode => $library->branchcode } );
+    my $checkout     = AddIssue( $patron, $item->barcode );
+    my $checkout_id  = $checkout->issue_id;
+    my $original_due = $checkout->date_due;
+
+    $t->post_ok(
+        "//$userid:$password@/api/v1/checkouts/$checkout_id/renewal" => json => { due_date => '2026-03-15T10:00:00' }
+        )    # Missing the mandatory RFC3339 offset/Z
+        ->status_is(400)->json_is( '/error_code' => 'invalid_parameter_value' );
+
+    $checkout->discard_changes;
+    is( $checkout->date_due, $original_due, 'Checkout due date unchanged after a rejected due_date' );
+
+    $schema->storage->txn_rollback;
+};

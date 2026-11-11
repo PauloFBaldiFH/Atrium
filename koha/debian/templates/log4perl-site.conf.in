@@ -1,0 +1,94 @@
+log4perl.logger.intranet = WARN, INTRANET
+log4perl.appender.INTRANET=Log::Log4perl::Appender::File
+log4perl.appender.INTRANET.filename=__LOG_DIR__/intranet-error.log
+log4perl.appender.INTRANET.mode=append
+log4perl.appender.INTRANET.layout=PatternLayout
+log4perl.appender.INTRANET.layout.ConversionPattern=[%d] [%p] %m %l%n
+log4perl.appender.INTRANET.utf8=1
+
+log4perl.logger.opac = WARN, OPAC
+log4perl.appender.OPAC=Log::Log4perl::Appender::File
+log4perl.appender.OPAC.filename=__LOG_DIR__/opac-error.log
+log4perl.appender.OPAC.mode=append
+log4perl.appender.OPAC.layout=PatternLayout
+log4perl.appender.OPAC.layout.ConversionPattern=[%d] [%p] %m %l%n
+log4perl.appender.OPAC.utf8=1
+
+log4perl.logger.z3950 = WARN, Z3950
+log4perl.appender.Z3950=Log::Log4perl::Appender::File
+log4perl.appender.Z3950.filename=__LOG_DIR__/z3950-error.log
+log4perl.appender.Z3950.mode=append
+log4perl.appender.Z3950.layout=PatternLayout
+log4perl.appender.Z3950.layout.ConversionPattern=[%d] [%p] %m %l%n
+log4perl.appender.Z3950.utf8=1
+
+log4perl.logger.api = WARN, API
+log4perl.appender.API=Log::Log4perl::Appender::File
+log4perl.appender.API.filename=__LOG_DIR__/api-error.log
+log4perl.appender.API.mode=append
+log4perl.appender.API.layout=PatternLayout
+log4perl.appender.API.layout.ConversionPattern=[%d] [%p] %m %l%n
+log4perl.appender.API.utf8=1
+
+log4perl.logger.sip = DEBUG, SIP
+log4perl.appender.SIP=Log::Log4perl::Appender::File
+log4perl.appender.SIP.filename=__LOG_DIR__/sip-output.log
+log4perl.appender.SIP.mode=append
+log4perl.appender.SIP.layout=PatternLayout
+log4perl.appender.SIP.layout.ConversionPattern=[%d] [%P] [%p] %X{accountid}@%X{peeraddr}: %m{chomp} %l%n
+log4perl.appender.SIP.utf8=1
+
+log4perl.logger.plack-opac = WARN, PLACKOPAC
+log4perl.appender.PLACKOPAC=Log::Log4perl::Appender::File
+log4perl.appender.PLACKOPAC.filename=__LOG_DIR__/plack-opac-error.log
+log4perl.appender.PLACKOPAC.mode=append
+log4perl.appender.PLACKOPAC.layout=PatternLayout
+log4perl.appender.PLACKOPAC.layout.ConversionPattern=[%d] [%p] %m%n
+log4perl.appender.PLACKOPAC.utf8=1
+
+log4perl.logger.plack-api = WARN, PLACKAPI
+log4perl.appender.PLACKAPI=Log::Log4perl::Appender::File
+log4perl.appender.PLACKAPI.filename=__LOG_DIR__/plack-api-error.log
+log4perl.appender.PLACKAPI.mode=append
+log4perl.appender.PLACKAPI.layout=PatternLayout
+log4perl.appender.PLACKAPI.layout.ConversionPattern=[%d] [%p] %m%n
+log4perl.appender.PLACKAPI.utf8=1
+
+log4perl.logger.plack-intranet = WARN, PLACKINTRANET
+log4perl.appender.PLACKINTRANET=Log::Log4perl::Appender::File
+log4perl.appender.PLACKINTRANET.filename=__LOG_DIR__/plack-intranet-error.log
+log4perl.appender.PLACKINTRANET.mode=append
+log4perl.appender.PLACKINTRANET.layout=PatternLayout
+log4perl.appender.PLACKINTRANET.layout.ConversionPattern=[%d] [%p] %m%n
+log4perl.appender.PLACKINTRANET.utf8=1
+
+log4perl.logger.worker = WARN, WORKER
+log4perl.appender.WORKER=Log::Log4perl::Appender::Screen
+log4perl.appender.WORKER.stderr=1
+log4perl.appender.WORKER.layout=PatternLayout
+log4perl.appender.WORKER.layout.ConversionPattern=[%d] [%p] %m %l%n
+log4perl.appender.WORKER.utf8=1
+
+log4perl.logger.edi = TRACE, EDI
+log4perl.appender.EDI=Log::Log4perl::Appender::File
+log4perl.appender.EDI.filename=__LOG_DIR__/editrace.log
+log4perl.appender.EDI.mode=append
+log4perl.appender.EDI.layout=PatternLayout
+log4perl.appender.EDI.layout.ConversionPattern=[%d] [%P] [%p] %X{accountid}@%X{peeraddr}: %m %l%n
+log4perl.appender.EDI.utf8=1
+
+log4perl.logger.csp = WARN, CSP
+log4perl.appender.CSP=Log::Log4perl::Appender::File
+log4perl.appender.CSP.filename=__LOG_DIR__/csp-violations.log
+log4perl.appender.CSP.mode=append
+log4perl.appender.CSP.layout=PatternLayout
+log4perl.appender.CSP.layout.ConversionPattern=[%d] %m%n
+log4perl.appender.CSP.utf8=1
+
+log4perl.logger.plack-csp = WARN, PLACKCSP
+log4perl.appender.PLACKCSP=Log::Log4perl::Appender::File
+log4perl.appender.PLACKCSP.filename=__LOG_DIR__/plack-csp-violations.log
+log4perl.appender.PLACKCSP.mode=append
+log4perl.appender.PLACKCSP.layout=PatternLayout
+log4perl.appender.PLACKCSP.layout.ConversionPattern=[%d] %m%n
+log4perl.appender.PLACKCSP.utf8=1

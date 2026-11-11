@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+
+# Copyright 2015 ByWater Solutions
+#
+# This file is part of Koha.
+#
+# Koha is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Koha is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Koha; if not, see <https://www.gnu.org/licenses>.
+#
+
+use Modern::Perl;
+
+use CGI  qw ( -utf8 );
+use JSON qw(to_json);
+
+use C4::Auth qw(check_cookie_auth);
+use Koha::ArticleRequests;
+
+my $cgi = CGI->new;
+
+my ($auth_status) =
+    check_cookie_auth( $cgi->cookie('CGISESSID'), { circulate => 'circulate_remaining_permissions' } );
+if ( $auth_status ne "ok" ) {
+    exit 0;
+}
+
+binmode STDOUT, ':encoding(UTF-8)';
+print $cgi->header( -type => 'application/json', -charset => 'UTF-8' );
+
+my $id    = $cgi->param('id');
+my $op    = $cgi->param('op') || q{};
+my $notes = $cgi->param('notes');
+
+my $ar = Koha::ArticleRequests->find($id);
+
+if ($ar) {
+    if ( $op eq 'cud-cancel' ) {
+        $ar = $ar->cancel( { notes => $notes } );
+    } elsif ( $op eq 'cud-process' ) {
+        $ar = $ar->process();
+    } elsif ( $op eq 'cud-pending' ) {
+        $ar = $ar->set_pending();
+    } elsif ( $op eq 'cud-complete' ) {
+        $ar = $ar->complete();
+    } elsif ( $op eq 'cud-update_library_id' ) {
+        my $branchcode = $cgi->param('library_id');
+        $ar->branchcode($branchcode) if $branchcode;
+        $ar = $ar->store();
+    } elsif ( $op eq 'cud-update_urls' ) {
+        my $urls = $cgi->param('urls') // q{};
+        $ar->urls($urls);
+        $ar = $ar->store();
+    } else {
+        undef $ar;
+    }
+}
+
+# FIXME do not return 200 if not success
+print to_json( { success => $ar ? 1 : 0 } );

@@ -1,0 +1,15 @@
+Reports:
+    Options:
+        -
+            - Download a maximum of
+            - pref: ReportsExportLimit
+              class: integer
+            - "rows when exporting report results.<br><strong>NOTE:</strong><ul><li>Using LIMIT in a report overrides this setting.</li><li>It does not limit results for 'Open in DataTables' export options.</li></ul>"
+    Reports access:
+        -
+            - "Limit report access based on:"
+            - pref: LimitReportsBy
+              choices:
+                  none: No restriction
+                  library: Library
+                  library_group: Library group

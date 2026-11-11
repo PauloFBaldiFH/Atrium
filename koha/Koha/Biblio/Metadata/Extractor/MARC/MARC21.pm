@@ -1,0 +1,164 @@
+package Koha::Biblio::Metadata::Extractor::MARC::MARC21;
+
+# Copyright Koha Development Team 2023
+#
+# This file is part of Koha.
+#
+# Koha is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Koha is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Koha; if not, see <https://www.gnu.org/licenses>.
+
+=head1 NAME
+
+Koha::Biblio::Metadata::Extractor::MARC::MARC21 - Extract specific metadata from MARC21 MARC::Record objects
+
+=cut
+
+use Modern::Perl;
+
+use base qw(Koha::Biblio::Metadata::Extractor::MARC);
+
+use Koha::Exceptions;
+
+=head1 API
+
+=head2 Class methods
+
+=head3 new
+
+    my $extractor = Koha::Biblio::Metadata::Extractor::MARC::MARC21->new;
+
+Constructor for the I<Koha::Biblio::Metadata::Extractor::MARC::MARC21> class.
+
+=cut
+
+sub new {
+    my ( $class, $params ) = @_;
+
+    return
+        bless $params,
+        $class;
+}
+
+=head2 get_normalized_upc
+
+    my $normalized_upc = $extractor->get_normalized_upc();
+
+Returns a normalized UPC.
+
+=cut
+
+sub get_normalized_upc {
+    my ($self) = @_;
+
+    my $record = $self->metadata;
+    my @fields = $record->field('024');
+    foreach my $field (@fields) {
+
+        my $indicator = $field->indicator(1);
+
+        my $normalized_upc = $self->_normalize_string( $field->subfield('a') );
+
+        if ( $normalized_upc && $indicator eq "1" ) {
+            return $normalized_upc;
+        }
+    }
+}
+
+=head2 get_normalized_ean
+
+    my $normalized_ean = $extractor->get_normalized_ean();
+
+Returns a normalized EAN from 024$a with indicator 1 = 3.
+
+=cut
+
+sub get_normalized_ean {
+    my ($self) = @_;
+
+    my $record = $self->metadata;
+    my @fields = $record->field('024');
+    foreach my $field (@fields) {
+        my $indicator = $field->indicator(1);
+        my $ean       = $self->_normalize_string( $field->subfield('a') );
+        if ( $ean && $indicator eq '3' ) {
+            return $ean;
+        }
+    }
+    return;
+}
+
+=head2 check_fixed_length
+
+    my $info = $extractor->check_fixed_length;
+
+Returns a hash containing passed and failed fixed-length control fields.
+
+=cut
+
+sub check_fixed_length {
+    my $self   = shift;
+    my $len_ok = {
+        '005' => 16,
+        '006' => 18,
+        '007' => {
+            a => 8,
+            c => [ 6, 14 ],
+            d => 6,
+            f => 10,
+            g => 9,
+            h => 13,
+            k => 6,
+            m => [ 8, 23 ],
+            o => 2,
+            q => 2,
+            r => 11,
+            s => 14,
+            t => 2,
+            v => 9,
+            z => 2,
+        },
+        '008' => 40,
+    };
+    my $record = $self->metadata;
+    my $result = { passed => [], failed => [] };
+    foreach my $field ( $record->field( '005', '006', '007', '008' ) ) {
+        my ( $length, $pass );
+        if ( $field->tag ne '007' ) {
+            $length = $len_ok->{ $field->tag };
+            $pass   = length( $field->data ) eq $length;
+        } else {
+            my $pos_0 = substr( $field->data, 0, 1 );
+            $length = $len_ok->{ $field->tag }->{$pos_0};
+            if ( ref($length) eq 'ARRAY' ) {
+                $pass = grep { $_ eq length( $field->data ) } @$length;
+            } else {
+                $pass = length( $field->data ) eq $length;
+            }
+        }
+        push @{ $result->{passed} }, $field->tag if $pass;
+        push @{ $result->{failed} }, $field->tag unless $pass;
+    }
+    return $result;
+}
+
+=head1 AUTHOR
+
+Tomas Cohen Arazi, E<lt>tomascohen@theke.ioE<gt>
+
+Jonathan Druart, E<lt>jonathan.druart@bugs.koha-community.orgE<gt>
+
+=cut
+
+1;
+
+__END__

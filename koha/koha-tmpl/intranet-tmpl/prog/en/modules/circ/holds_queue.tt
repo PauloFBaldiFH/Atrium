@@ -1,0 +1,436 @@
+[% USE raw %]
+[% USE Asset %]
+[% USE Koha %]
+[% USE ItemTypes %]
+[% USE Branches %]
+[% USE AuthorisedValues %]
+[% USE TablesSettings %]
+[% PROCESS 'i18n.inc' %]
+[% SET footerjs = 1 %]
+[% INCLUDE 'doc-head-open.inc' %]
+<title
+    >[% FILTER collapse %]
+        [% t("Holds queue") | html %]
+        &rsaquo; [% t("Circulation") | html %] &rsaquo; [% t("Koha") | html %]
+    [% END %]</title
+>
+[% INCLUDE 'doc-head-close.inc' %]
+<style nonce="[% Koha.CSPNonce | $raw %]">
+    p {
+        margin-top: 0;
+    }
+    #locationslimit + .select2-container,
+    #itemtypeslimit + .select2-container {
+        max-width: 300px !important;
+    }
+    .main .col-md-10 #branchlimit,
+    .main .col-md-10 #itemtypeslimit {
+        width: 300px;
+    }
+</style>
+</head>
+
+<body id="circ_holds_queue" class="circ">
+[% WRAPPER 'header.inc' %]
+    [% INCLUDE 'circ-search.inc' %]
+[% END %]
+
+[% WRAPPER 'sub-header.inc' %]
+    [% WRAPPER breadcrumbs %]
+        [% WRAPPER breadcrumb_item %]
+            <a href="/cgi-bin/koha/circ/circulation-home.pl">Circulation</a>
+        [% END %]
+        [% WRAPPER breadcrumb_item bc_active= 1 %]
+            <span>Holds queue</span>
+        [% END %]
+    [% END #/ WRAPPER breadcrumbs %]
+[% END #/ WRAPPER sub-header.inc %]
+
+[% aside = BLOCK %]
+    [% IF ( run_report ) %]
+        [% PROCESS filter_form %]
+    [% END %]
+    [% INCLUDE 'circ-nav.inc' %]
+[% END %]
+
+[% WRAPPER 'main-container.inc' aside_block=aside %]
+    <h1>Holds queue</h1>
+
+    [% IF ( run_report ) %]
+        <div class="page-section">
+            <table id="holdst">
+                <thead>
+                    <tr>
+                        <th class="hq-title anti-the">Title</th>
+                        <th class="hq-author">Author</th>
+                        <th class="hq-pubdetails">Publication details</th>
+                        <th class="hq-holdingbranch">Current library</th>
+                        <th class="hq-homebranch">Home library</th>
+                        <th class="hq-collection">Collection</th>
+                        <th class="hq-location">Shelving location</th>
+                        <th class="hq-itemtype">Item type</th>
+                        <th class="hq-callnumber">Call number</th>
+                        <th class="hq-copynumber">Copy number</th>
+                        <th class="hq-enumchron">Enumeration</th>
+                        <th class="hq-barcode">Barcode</th>
+                        <th class="hq-patron">Patron</th>
+                        <th class="hq-patroncategory">Patron category</th>
+                        <th class="hq-sendto">Send to</th>
+                        <th class="hq-date">Date</th>
+                        <th class="hq-notes">Notes</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <!-- /.page-section -->
+    [% ELSE %]
+        [% branchlimit = Branches.GetLoggedInBranchcode %]
+        [% PROCESS filter_form %]
+    [% END %]
+[% END %]
+
+[% BLOCK filter_form %]
+    <form method="get" name="f" action="/cgi-bin/koha/circ/holds_queue.pl">
+        [% IF ( run_report ) %]
+            [% SET fieldset_class='brief' %]
+        [% ELSE -%]
+            [% SET fieldset_class='rows' %]
+        [% END %]
+        <fieldset class="[% fieldset_class | html %]">
+            <ol>
+                <li>
+                    <label for="branchlimit">Library: </label>
+                    <select name="branchlimit" id="branchlimit">
+                        [% IF CAN_user_superlibrarian || !Koha.Preference('IndependentBranches') %]
+                            <option value="">All</option>
+                        [% END %]
+                        [% PROCESS options_for_libraries libraries => Branches.all( selected => branchlimit, only_from_group => 1 ) %]
+                    </select>
+                </li>
+                <li>
+                    <label for="itemtypeslimit">Item type: </label>
+                    <select name="itemtypeslimit" id="itemtypeslimit">
+                        <option value="">All</option>
+                        [% PROCESS options_for_item_types itemtypes => ItemTypes.Get(), selected_itemtype => itemtypeslimit %]
+                    </select>
+                </li>
+                <li>
+                    <label for="ccodeslimit">Collection: </label>
+                    <select name="ccodeslimit" id="ccodeslimit" multiple="multiple">
+                        <option value="">All</option>
+                        [% PROCESS options_for_authorised_values_multiselect authorised_values => AuthorisedValues.GetAuthValueDropbox( 'CCODE' ), selected_av => ccodeslimit %]
+                    </select>
+                </li>
+                <li>
+                    <label for="locationslimit">Shelving location: </label>
+                    <select name="locationslimit" id="locationslimit" multiple="multiple">
+                        <option value="">All</option>
+                        [% PROCESS options_for_authorised_values_multiselect authorised_values => AuthorisedValues.GetAuthValueDropbox( 'LOC' ), selected_av => locationslimit %]
+                    </select>
+                </li>
+            </ol>
+            <fieldset class="action">
+                <input type="submit" class="btn btn-primary" value="Submit" />
+                <input type="button" id="clear_filters" class="btn btn-default" value="Clear" />
+                <input type="hidden" name="run_report" value="1" />
+            </fieldset>
+        </fieldset>
+    </form>
+[% END %]
+
+[% INCLUDE 'hold-group-modal.inc' %]
+
+[% MACRO jsinclude BLOCK %]
+    [% INCLUDE 'select2.inc' %]
+    [% INCLUDE 'datatables.inc' %]
+    [% INCLUDE 'js-date-format.inc' %]
+    [% Asset.js("js/hold-group.js") | $raw %]
+    <script nonce="[% Koha.CSPNonce | $raw %]" data-tt-allowed="true">
+        var table_settings = [% TablesSettings.GetTableSettings('circ', 'holds_queue', 'holds-table', 'json') | $raw %];
+        $(document).ready(function () {
+            // Apply select2 to all select fields having a "multiple" attribute
+            let selectFields = document.querySelectorAll("select[multiple]");
+            selectFields.forEach(selectField => {
+                $(selectField).select2({
+                    width: "100%",
+                    allowClear: true,
+                });
+            });
+
+            [% IF run_report %]
+            var additional_filters = {
+                "me.holding_library_id": function () {
+                    let val = $("#branchlimit").val();
+                    if (!val) return "";
+                    return { "=": val };
+                },
+                "item.item_type_id": function () {
+                    let val = $("#itemtypeslimit").val();
+                    if (!val) return "";
+                    return { "=": val };
+                },
+                "item.collection_code": function () {
+                    let vals = $("#ccodeslimit").val();
+                    if (!vals || !vals.length || (vals.length === 1 && vals[0] === "")) return "";
+                    return vals;
+                },
+                "item.location": function () {
+                    let vals = $("#locationslimit").val();
+                    if (!vals || !vals.length || (vals.length === 1 && vals[0] === "")) return "";
+                    return vals;
+                },
+            };
+
+            var holdst = $("#holdst").kohaTable(
+                {
+                    ajax: {
+                        url: "/api/v1/holds/queue",
+                    },
+                    embed: [
+                        "+strings",
+                        "biblio",
+                        "item",
+                        "item.holding_library",
+                        "item.home_library",
+                        "item.item_group",
+                        "patron",
+                        "patron.category",
+                        "patron.library",
+                        "patron.notice_email_address",
+                        "pickup_library",
+                    ],
+                    order: [[0, "asc"]],
+                    columnDefs: [{ defaultContent: "", targets: "_all" }],
+                    columns: [
+                        {
+                            data: "biblio.title",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data, type, row) {
+                                let html = "";
+                                if (row.biblio) {
+                                    html = '<p><a href="/cgi-bin/koha/catalogue/detail.pl?biblionumber=' + row.biblio_id + '">' + (row.biblio.title || "").escapeHtml() + "</a></p>";
+                                }
+                                if (row.hold_group_id) {
+                                    html += '<p>(<a class="hold-group" href="/cgi-bin/koha/reserve/hold-group.pl?hold_group_id=' + row.hold_group_id + '">' + _("Hold group") + " " + row.hold_group_id + "</a>)</p>";
+                                }
+                                return html;
+                            },
+                        },
+                        {
+                            data: "biblio.author",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data, type, row) {
+                                return row.biblio ? (row.biblio.author || "").escapeHtml() : "";
+                            },
+                        },
+                        {
+                            data: "biblio.publisher",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data, type, row) {
+                                if (!row.biblio) return "";
+                                let html = "";
+                                if (row.biblio.edition_statement) {
+                                    html += '<div class="hq-editionstatement">' + row.biblio.edition_statement.escapeHtml() + "</div>";
+                                }
+                                if (row.biblio.publisher) {
+                                    html += row.biblio.publisher.escapeHtml();
+                                }
+                                if (row.biblio.publication_year) {
+                                    html += ", " + ("" + row.biblio.publication_year).escapeHtml();
+                                } else if (row.biblio.copyright_date) {
+                                    html += ", " + ("" + row.biblio.copyright_date).escapeHtml();
+                                }
+                                if (row.biblio.pages) {
+                                    html += ": " + row.biblio.pages.escapeHtml();
+                                }
+                                if (row.biblio.material_size) {
+                                    html += " " + row.biblio.material_size.escapeHtml();
+                                }
+                                if (row.biblio.isbn) {
+                                    html += ' <span>ISBN: ' + row.biblio.isbn.escapeHtml() + "</span>";
+                                }
+                                return html;
+                            },
+                        },
+                        {
+                            data: "item.holding_library.name",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data, type, row) {
+                                if (!row.item || !row.item.holding_library) return "";
+                                return (row.item.holding_library.name || "").escapeHtml();
+                            },
+                        },
+                        {
+                            data: "item.home_library.name",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data, type, row) {
+                                if (!row.item || !row.item.home_library) return "";
+                                return (row.item.home_library.name || "").escapeHtml();
+                            },
+                        },
+                        {
+                            data: "ccode_description",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data, type, row) {
+                                return (data || "").escapeHtml();
+                            },
+                        },
+                        {
+                            data: "location_description",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data, type, row) {
+                                return (data || "").escapeHtml();
+                            },
+                        },
+                        {
+                            data: "item_type_id",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data, type, row) {
+                                // Display the translated item type description (+strings),
+                                // falling back to the materialized default-language value.
+                                // Sorting/filtering is on the item type code (item_type_id);
+                                // sorting by the translated description is left as a follow-up.
+                                let str =
+                                    row._strings &&
+                                    row._strings.item_type_id &&
+                                    row._strings.item_type_id.str;
+                                return (str || row.itype_description || "").escapeHtml();
+                            },
+                        },
+                        {
+                            data: "callnumber",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data) {
+                                return (data || "").escapeHtml();
+                            },
+                        },
+                        {
+                            data: "item.copy_number",
+                            orderable: true,
+                            searchable: false,
+                            render: function (data, type, row) {
+                                return row.item ? (row.item.copy_number || "").escapeHtml() : "";
+                            },
+                        },
+                        {
+                            data: "item.serial_issue_number",
+                            orderable: true,
+                            searchable: false,
+                            render: function (data, type, row) {
+                                return row.item ? (row.item.serial_issue_number || "").escapeHtml() : "";
+                            },
+                        },
+                        {
+                            data: "barcode",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data, type, row) {
+                                let link = '<strong><a href="/cgi-bin/koha/catalogue/moredetail.pl?itemnumber=' + row.item_id + '&biblionumber=' + row.biblio_id + '#item' + row.item_id + '">' + (data || "").escapeHtml() + "</a></strong>";
+                                if (row.item_level) {
+                                    return _("Only item:") + " " + link;
+                                }
+                                let item_group = row.item && row.item.item_group;
+                                if (item_group) {
+                                    return link + " <em>" + _("or any item from item group") + " <strong>" + (item_group.description || "").escapeHtml() + "</strong></em>";
+                                }
+                                return link + " <em>" + _("or any available") + "</em>";
+                            },
+                        },
+                        {
+                            data: "patron.surname:patron.firstname",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data, type, row) {
+                                if (!row.patron) return "";
+                                let patron_label;
+                                if (row.patron.patron_id && !row.patron.surname && !row.patron.preferred_name) {
+                                    patron_label = row.patron.cardnumber
+                                        ? '<a href="/cgi-bin/koha/circ/circulation.pl?borrowernumber=' + encodeURIComponent(row.patron.patron_id) + '#reserves">' + row.patron.cardnumber.escapeHtml() + "</a>"
+                                        : "";
+                                } else {
+                                    patron_label = $patron_to_html(row.patron, {
+                                        invert_name: true,
+                                        display_cardnumber: true,
+                                        url: "circulation_reserves",
+                                    });
+                                }
+                                let html = "<p>" + patron_label + "</p>";
+                                if (row.patron.phone) {
+                                    html += "<p>" + row.patron.phone.escapeHtml() + "</p>";
+                                }
+                                if (row.patron.notice_email_address) {
+                                    html += '<p class="patron-email"><a href="mailto:' + row.patron.notice_email_address.escapeHtml() + '">' + row.patron.notice_email_address.escapeHtml() + "</a></p>";
+                                }
+                                return html;
+                            },
+                        },
+                        {
+                            data: "patron.category.name",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data, type, row) {
+                                if (!row.patron || !row.patron.category) return "";
+                                return (row.patron.category.name || "").escapeHtml() + " (" + (row.patron.category_id || "").escapeHtml() + ")";
+                            },
+                        },
+                        {
+                            data: "pickup_library.name",
+                            orderable: true,
+                            searchable: true,
+                            render: function (data, type, row) {
+                                if (!row.pickup_library) return "";
+                                return (row.pickup_library.name || "").escapeHtml();
+                            },
+                        },
+                        {
+                            data: "hold_date",
+                            orderable: true,
+                            searchable: false,
+                            render: function (data) {
+                                return $date(data);
+                            },
+                        },
+                        {
+                            data: "notes",
+                            orderable: false,
+                            searchable: true,
+                            render: function (data) {
+                                return (data || "").escapeHtml();
+                            },
+                        },
+                    ],
+                },
+                table_settings,
+                1,
+                additional_filters,
+            );
+
+            // Intercept form submit to redraw table instead of page reload
+            $("form[name='f']").on("submit", function (e) {
+                e.preventDefault();
+                holdst.DataTable().draw();
+            });
+
+            // Clear all filters and redraw
+            $("#clear_filters").on("click", function () {
+                $("#branchlimit").val("");
+                $("#itemtypeslimit").val("");
+                $("#ccodeslimit").val([]).trigger("change");
+                $("#locationslimit").val([]).trigger("change");
+                holdst.DataTable().draw();
+            });
+            [% END %]
+        });
+    </script>
+[% END %]
+
+[% INCLUDE 'intranet-bottom.inc' %]

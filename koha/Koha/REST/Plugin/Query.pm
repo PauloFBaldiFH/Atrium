@@ -1,0 +1,904 @@
+package Koha::REST::Plugin::Query;
+
+# This file is part of Koha.
+#
+# Koha is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Koha is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Koha; if not, see <https://www.gnu.org/licenses>.
+
+use Modern::Perl;
+
+use Mojo::Base 'Mojolicious::Plugin';
+use List::MoreUtils qw( any );
+use Scalar::Util    qw( reftype );
+use JSON            qw( decode_json );
+
+use Koha::Exceptions;
+use Koha::Exceptions::REST;
+
+=head1 NAME
+
+Koha::REST::Plugin::Query
+
+=head1 API
+
+=head2 Mojolicious::Plugin methods
+
+=head3 register
+
+=cut
+
+sub register {
+    my ( $self, $app ) = @_;
+
+=head2 Helper methods
+
+=head3 extract_reserved_params
+
+    my ( $filtered_params, $reserved_params ) = $c->extract_reserved_params($params);
+
+Generates the DBIC query from the query parameters.
+
+=cut
+
+    $app->helper(
+        'extract_reserved_params' => sub {
+            my ( $c, $params ) = @_;
+
+            my $reserved_params;
+            my $filtered_params;
+            my $path_params;
+
+            my $reserved_words    = _reserved_words();
+            my @query_param_names = keys %{ $c->req->params->to_hash };
+
+            foreach my $param ( keys %{$params} ) {
+                if ( grep { $param eq $_ } @{$reserved_words} ) {
+                    $reserved_params->{$param} = $params->{$param};
+                } elsif ( grep { $param eq $_ } @query_param_names ) {
+                    $filtered_params->{$param} = $params->{$param};
+                } else {
+                    $path_params->{$param} = $params->{$param};
+                }
+            }
+
+            return ( $filtered_params, $reserved_params, $path_params );
+        }
+    );
+
+=head3 dbic_merge_sorting
+
+    $attributes = $c->dbic_merge_sorting({ attributes => $attributes, params => $params });
+
+Generates the DBIC order_by attributes based on I<$params>, and merges into I<$attributes>.
+
+=cut
+
+    $app->helper(
+        'dbic_merge_sorting' => sub {
+            my ( $c, $args ) = @_;
+            my $attributes = $args->{attributes};
+            my $result_set = $args->{result_set};
+
+            my @order_by_styles = (
+                '_order_by',
+                '_order_by[]'
+            );
+            my @order_by_params;
+
+            foreach my $order_by_style (@order_by_styles) {
+                if ( defined $args->{params}->{$order_by_style}
+                    and ref( $args->{params}->{$order_by_style} ) eq 'ARRAY' )
+                {
+                    push( @order_by_params, @{ $args->{params}->{$order_by_style} } );
+                } else {
+                    push @order_by_params, $args->{params}->{$order_by_style}
+                        if defined $args->{params}->{$order_by_style};
+                }
+            }
+
+            my @THE_order_by;
+
+            foreach my $order_by_param (@order_by_params) {
+                my $order_by;
+                $order_by = [ split( /,/, $order_by_param ) ]
+                    if ( !reftype($order_by_param) && index( ',', $order_by_param ) == -1 );
+
+                if ($order_by) {
+                    if ( reftype($order_by) and reftype($order_by) eq 'ARRAY' ) {
+                        my @order_by =
+                            map { _build_order_atom( { string => $_, result_set => $result_set } ) } @{$order_by};
+                        push( @THE_order_by, @order_by );
+                    } else {
+                        push @THE_order_by, _build_order_atom( { string => $order_by, result_set => $result_set } );
+                    }
+                }
+            }
+
+            $attributes->{order_by} = \@THE_order_by
+                if scalar @THE_order_by > 0;
+
+            return $attributes;
+        }
+    );
+
+=head3 dbic_merge_prefetch
+
+    $attributes = $c->dbic_merge_prefetch({ attributes => $attributes, result_set => $result_set });
+
+Generates the DBIC prefetch attribute based on embedded relations, and merges into I<$attributes>.
+
+=cut
+
+    $app->helper(
+        'dbic_merge_prefetch' => sub {
+            my ( $c, $args ) = @_;
+            my $attributes = $args->{attributes};
+            my $result_set = $args->{result_set};
+            my $embed      = $c->stash('koha.embed');
+            return unless defined $embed;
+
+            my @prefetches;
+            my $count_aliases = {};
+
+            # Extract the main DBIC result source for FK chain resolution in
+            # nested +count subqueries (Bug 42995)
+            my $main_source = _result_source($result_set);
+
+            foreach my $key ( sort keys( %{$embed} ) ) {
+
+                # Handle +count embeds with SQL-level subquery
+                if ( $embed->{$key}->{is_count} ) {
+                    my $subquery = _merge_count_select( $key, $attributes, $result_set );
+                    if ($subquery) {
+                        $count_aliases->{$key} = $subquery;
+                        next;
+                    }
+
+                    # No DBIC relationship found; mark as unsortable (0) so the order_by
+                    # fixup rejects it with a 400. Fall through so to_api can use the
+                    # Koha method ->count fallback for display.
+                    $count_aliases->{$key} = 0;
+                }
+
+                my $parsed =
+                    _parse_prefetch( $key, $embed, $result_set, $attributes, undef, $count_aliases, $main_source );
+                push @prefetches, $parsed if defined $parsed;
+            }
+
+            if ( scalar(@prefetches) ) {
+                $attributes->{prefetch} = \@prefetches;
+            }
+
+            # Fix order_by entries referencing count aliases (me.X_count => X_count).
+            # dbic_merge_sorting (which runs before this) translates _order_by=-me.claims_count
+            # into { -desc => 'me.claims_count' }. But +as aliases are not real table columns,
+            # so DBIC needs them without the 'me.' prefix to match the +select subquery.
+            if ( $attributes->{order_by} ) {
+
+                for my $i ( 0 .. $#{ $attributes->{order_by} } ) {
+                    my $atom = $attributes->{order_by}[$i];
+                    if ( ref($atom) eq 'HASH' ) {
+                        for my $dir ( keys %{$atom} ) {
+                            ( my $col = $atom->{$dir} ) =~ s/^me\.//;
+
+                            # Reject sorting on +count embeds without a DBIC relationship.
+                            # $count_aliases->{$col} is 0 (unsortable) or missing (top-level unsortable)
+                            Koha::Exceptions::BadParameter->throw(
+                                "Cannot sort on $col: no matching database relationship")
+                                if exists $count_aliases->{$col} && !$count_aliases->{$col};
+
+                            # Replace with the literal subquery so DBIC puts it directly
+                            # in the ORDER BY clause (DBIC +as is Perl-side only, not a SQL alias)
+                            $atom->{$dir} = $count_aliases->{$col} if $count_aliases->{$col};
+                        }
+                    } elsif ( !ref($atom) ) {
+                        ( my $col = $atom ) =~ s/^me\.//;
+
+                        Koha::Exceptions::BadParameter->throw("Cannot sort on $col: no matching database relationship")
+                            if exists $count_aliases->{$col} && !$count_aliases->{$col};
+
+                        $attributes->{order_by}[$i] = $count_aliases->{$col} if $count_aliases->{$col};
+                    }
+                }
+            }
+        }
+    );
+
+=head3 dbic_validate_operators
+
+    $attributes = $c->dbic_validate_operators( { filtered_params => $filtered_params } );
+
+Validate operators in the passed query.
+
+=cut
+
+    $app->helper(
+        'dbic_validate_operators' => sub {
+            my ( $c, $args ) = @_;
+            _validate_query( $args->{filtered_params} );
+        }
+    );
+
+=head3 _build_query_params_from_api
+
+    my $params = _build_query_params_from_api( $filtered_params, $reserved_params );
+
+Builds the params for searching on DBIC based on the selected matching algorithm.
+Valid options are I<contains>, I<starts_with>, I<ends_with> and I<exact>. Default is
+I<contains>. If other value is passed, a Koha::Exceptions::WrongParameter exception
+is raised.
+
+=cut
+
+    $app->helper(
+        'build_query_params' => sub {
+
+            my ( $c, $filtered_params, $reserved_params ) = @_;
+
+            my $params;
+            my $match = $reserved_params->{_match} // 'contains';
+
+            foreach my $param ( keys %{$filtered_params} ) {
+                if ( $match eq 'exact' || $filtered_params->{$param} =~ m[^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}] ) {
+                    $params->{$param} = $filtered_params->{$param};
+                } elsif ( $match eq 'contains' ) {
+                    $params->{$param} =
+                        { like => '%' . $filtered_params->{$param} . '%' };
+                } elsif ( $match eq 'starts_with' ) {
+                    $params->{$param} = { like => $filtered_params->{$param} . '%' };
+                } elsif ( $match eq 'ends_with' ) {
+                    $params->{$param} = { like => '%' . $filtered_params->{$param} };
+                } else {
+
+                    # We should never reach here, because the OpenAPI plugin should
+                    # prevent invalid params to be passed
+                    Koha::Exceptions::WrongParameter->throw("Invalid value for _match param ($match)");
+                }
+            }
+
+            return $params;
+        }
+    );
+
+=head3 merge_q_params
+
+    $c->merge_q_params( $filtered_params, $q_params, $result_set );
+
+Merges parameters from $q_params into $filtered_params.
+
+=cut
+
+    $app->helper(
+        'merge_q_params' => sub {
+
+            my ( $c, $filtered_params, $q_params, $result_set ) = @_;
+
+            $q_params = decode_json($q_params) unless reftype $q_params;
+
+            my $params = _parse_dbic_query( $q_params, $result_set );
+
+            return $params unless scalar( keys %{$filtered_params} );
+            return { '-and' => [ $params, $filtered_params ] };
+        }
+    );
+
+=head3 stash_embed
+
+    $c->stash_embed( { spec => $op_spec } );
+
+Unwraps and stashes the x-koha-embed headers for use later query construction
+
+=cut
+
+    $app->helper(
+        'stash_embed' => sub {
+
+            my ( $c, $args ) = @_;
+
+            my $embed_header = $c->req->headers->header('x-koha-embed');
+            return $c unless $embed_header;
+
+            my $spec = $args->{spec} // {};
+            my $embed_spec;
+            for my $param ( @{ $spec->{parameters} } ) {
+                next unless $param->{name} eq 'x-koha-embed';
+                $embed_spec = $param->{items}->{enum};
+            }
+            Koha::Exceptions::BadParameter->throw("Embedding objects is not allowed on this endpoint.")
+                unless defined($embed_spec);
+
+            if ($embed_header) {
+                my $THE_embed = {};
+                foreach my $embed_req ( split /\s*,\s*/, $embed_header ) {
+                    if ( $embed_req eq '+strings' ) {    # special case
+                        $c->stash( 'koha.strings' => 1 );
+                    } else {
+                        _merge_embed( _parse_embed($embed_req), $THE_embed );
+                    }
+                }
+
+                $c->stash( 'koha.embed' => $THE_embed )
+                    if $THE_embed;
+            }
+
+            return $c;
+        }
+    );
+
+=head3 stash_overrides
+
+    # Stash the overrides
+    $c->stash_overrides();
+    # Use it
+    my $overrides = $c->stash('koha.overrides');
+    if ( $overrides->{pickup_location} ) { ... }
+
+This helper method parses the 'x-koha-override' headers and stashes the passed overrides
+in the form of a I<hashref> for easy use in controller methods.
+
+FIXME: With the currently used JSON::Validator version we use, it is not possible to
+use the validated and coerced data (it doesn't validate array-type headers) so this
+implementation relies on manual parsing. Look at the JSON::Validator changelog for
+reference: https://metacpan.org/changes/distribution/JSON-Validator#L14
+
+=cut
+
+    $app->helper(
+        'stash_overrides' => sub {
+
+            my ($c) = @_;
+
+            my $override_header = $c->req->headers->header('x-koha-override') || q{};
+
+            my $overrides = { map { $_ => 1 } split /\s*,\s*/, $override_header };
+
+            $c->stash( 'koha.overrides' => $overrides );
+
+            return $c;
+        }
+    );
+
+=head3 stash_request_id
+
+    # Stash the request ID
+    $c->stash_request_id();
+    # Use it
+    my $request_id = $c->stash('koha.request_id');
+
+This helper method parses the 'x-koha-request-id' header and stashes the value.
+
+=cut
+
+    $app->helper(
+        'stash_request_id' => sub {
+
+            my ($c) = @_;
+
+            my $request_id = $c->req->headers->header('x-koha-request-id') || q{};
+
+            $c->stash( 'koha.request_id' => $request_id );
+
+            return $c;
+        }
+    );
+}
+
+=head2 Internal methods
+
+=head3 _reserved_words
+
+    my $reserved_words = _reserved_words();
+
+=cut
+
+sub _reserved_words {
+
+    my @reserved_words = qw( _match _order_by _order_by[] _page _per_page q );
+    return \@reserved_words;
+}
+
+=head3 _build_order_atom
+
+    my $order_atom = _build_order_atom( $string );
+
+Parses I<$string> and outputs data valid for using in SQL::Abstract order_by attribute
+according to the following rules:
+
+     string -> I<string>
+    +string -> I<{ -asc => string }>
+    -string -> I<{ -desc => string }>
+
+=cut
+
+sub _build_order_atom {
+    my ($args)     = @_;
+    my $string     = $args->{string};
+    my $result_set = $args->{result_set};
+
+    my $param = $string;
+    $param =~ s/^(\+|\-|\s)//;
+    if ($result_set) {
+        my $model_param = _from_api_param( $param, $result_set );
+        $param = $model_param if defined $model_param;
+    }
+
+    if (   $string =~ m/^\+/
+        or $string =~ m/^\s/ )
+    {
+        # asc order operator present
+        return { -asc => $param };
+    } elsif ( $string =~ m/^\-/ ) {
+
+        # desc order operator present
+        return { -desc => $param };
+    } else {
+
+        # no order operator present
+        return $param;
+    }
+}
+
+=head3 _parse_embed
+
+    my $embed = _parse_embed( $string );
+
+Parses I<$string> and outputs data valid for passing to the Kohaa::Object(s)->to_api
+method.
+
+=cut
+
+sub _parse_embed {
+    my $string = shift;
+
+    my $result;
+    my ( $curr, $next ) = split /\s*\.\s*/, $string, 2;
+
+    if ($next) {
+        $result->{$curr} = { children => _parse_embed($next) };
+    } else {
+        if ( $curr =~ m/^(?<relation>.*)[\+|:]count/ ) {
+            my $key = $+{relation} . "_count";
+            $result->{$key} = { is_count => 1 };
+        } elsif ( $curr =~ m/^(?<relation>.*)\+strings/ ) {
+            my $key = $+{relation};
+            $result->{$key} = { strings => 1 };
+        } else {
+            $result->{$curr} = {};
+        }
+    }
+
+    return $result;
+}
+
+=head3 _merge_embed
+
+    _merge_embed( $parsed_embed, $global_embed );
+
+Merges the hash referenced by I<$parsed_embed> into I<$global_embed>.
+
+=cut
+
+sub _merge_embed {
+    my ( $structure, $embed ) = @_;
+
+    my ($root) = keys %{$structure};
+
+    if ( any { $root eq $_ } keys %{$embed} ) {
+
+        # Recurse
+        _merge_embed( $structure->{$root}, $embed->{$root} );
+    } else {
+
+        # Embed
+        $embed->{$root} = $structure->{$root};
+    }
+}
+
+=head3 _result_source
+
+    my $source = _result_source( $result_set );
+
+Returns the DBIC result source for I<$result_set>. Handles both C<Koha::Objects>
+(plural, via C<_resultset>) and C<Koha::Object> (singular, via C<_result>).
+
+=cut
+
+sub _result_source {
+    my ($result_set) = @_;
+
+    return $result_set->can('_resultset')
+        ? $result_set->_resultset->result_source
+        : $result_set->_result->result_source;
+}
+
+=head3 _merge_count_select
+
+    my $added = _merge_count_select( $key, $attributes, $result_set );
+
+Given a I<$key> like C<claims_count> (from a C<claims+count> embed), strips the C<_count>
+suffix to derive the DBIC relationship name, then uses the relationship metadata to build
+a correlated COUNT subquery added via C<+select>/C<+as>.
+
+This makes the count available as a virtual column in the SQL result, enabling both
+server-side sorting (ORDER BY) and an efficient single-query count instead of N+1.
+
+Returns the subquery scalar reference if added (used by the caller to substitute
+into ORDER BY clauses), or undef if the relationship was not found in the
+C<prefetch_whitelist> or has no DBIC relationship info. In the latter case, the count
+embed still works for display: C<to_api> falls back transparently to the original
+C<< $object->$relation->count >> Perl-level call. Only sorting is unavailable.
+
+Handles both C<Koha::Objects> (plural, via C<_resultset>) and C<Koha::Object> (singular,
+via C<_result>) for accessing the DBIC result source.
+
+=cut
+
+sub _merge_count_select {
+    my ( $key, $attributes, $result_set ) = @_;
+
+    ( my $rel = $key ) =~ s/_count$//;
+    return unless exists $result_set->prefetch_whitelist->{$rel};
+
+    my $subquery = _build_count_subquery( $rel, $result_set, 'me' );
+    return unless $subquery;
+
+    push @{ $attributes->{'+select'} }, $subquery;
+    push @{ $attributes->{'+as'} },     $key;
+
+    return $subquery;
+}
+
+=head3 _build_count_subquery
+
+    my $subquery = _build_count_subquery( $rel, $result_set, $parent_alias, $main_source );
+
+Builds a correlated COUNT subquery scalar ref for the given DBIC relationship.
+I<$parent_alias> is the SQL alias of the parent table (e.g. C<me> for top-level,
+or the relation name for nested embeds like C<biblio>).
+
+I<$main_source> is the DBIC ResultSource of the top-level result set (the one
+aliased as C<me>). It is used for nested embeds to resolve the FK chain back
+to C<me>, avoiding references to join aliases that may not be available inside
+DBIC's limiting subquery when pagination and has_many prefetches are combined.
+
+This FK-chain resolution only covers ONE level of nesting: I<$parent_alias>
+must be a direct relationship of I<$main_source> (true for every C<+count>
+embed currently declared in F<api/v1/swagger/>, e.g. C<biblio.items+count>).
+If that assumption doesn't hold - I<$parent_alias> is itself a nested alias,
+its relationship condition isn't a plain hashref (e.g. a coderef custom join),
+or no matching column is found - we decline to build the subquery and return
+undef, rather than emit SQL that may reference an unavailable alias. The
+caller then falls back to its normal "no DBIC relationship" degradation path
+(prefetching the association directly, so C<to_api> uses the Perl-level
+C<< $object->$relation->count >> call, and the sort fixup rejects a sort
+attempt with a clean 400 instead of a 500).
+
+Returns the scalar ref, or undef if the relationship has no DBIC metadata or
+the correlation cannot be safely resolved.
+
+=cut
+
+sub _build_count_subquery {
+    my ( $rel, $result_set, $parent_alias, $main_source ) = @_;
+
+    my $source   = _result_source($result_set);
+    my $rel_info = $source->relationship_info($rel);
+    return unless $rel_info;
+
+    my $rel_table = $source->related_source($rel)->name;
+    my $cond      = $rel_info->{cond};
+
+    # NOTE: assumes single-column FK joins. Multi-column FKs would need
+    # a compound WHERE clause here. Rare in Koha but worth noting.
+    my ($fk_foreign) = keys %{$cond};
+    my $fk_self = $cond->{$fk_foreign};
+    $fk_foreign =~ s/^foreign\.//;
+    $fk_self    =~ s/^self\.//;
+
+    my $correlation_expr;
+
+    if ( $parent_alias eq 'me' ) {
+        $correlation_expr = "me.$fk_self";
+    } else {
+
+        # Nested embed: resolve the correlation back to me.column to avoid
+        # referencing a join alias that DBIC may not include in the inner
+        # subquery when pagination + has_many prefetch triggers the limiting
+        # subquery optimization (Bug 42995). See the caveats in the POD above.
+        return unless $main_source;
+
+        my $parent_rel_info = $main_source->relationship_info($parent_alias);
+        return unless $parent_rel_info;
+
+        my $parent_cond = $parent_rel_info->{cond};
+
+        # Only plain hashref conditions are supported; a coderef (custom
+        # join) can't be walked the same way.
+        return unless ref($parent_cond) eq 'HASH';
+
+        # Find which me.column maps to parent.fk_self by matching column
+        # NAMES (parent_cond is like
+        # { 'foreign.biblionumber' => 'self.biblionumber' }). This relies on
+        # Koha's convention of reusing the same column name across the FK
+        # chain (e.g. biblionumber, guarantee_id/borrowernumber) - it is not
+        # a general-purpose column mapper.
+        for my $fk_key ( keys %{$parent_cond} ) {
+            ( my $foreign_col = $fk_key ) =~ s/^foreign\.//;
+            if ( $foreign_col eq $fk_self ) {
+                ( my $self_col = $parent_cond->{$fk_key} ) =~ s/^self\.//;
+                $correlation_expr = "me.$self_col";
+                last;
+            }
+        }
+
+        return unless $correlation_expr;
+    }
+
+    return \"(SELECT COUNT(*) FROM $rel_table WHERE $rel_table.$fk_foreign = $correlation_expr)";
+}
+
+=head3 _parse_prefetch
+
+    my $prefetch = _parse_prefetch( $key, $embed, $result_set, $attributes, $parent_alias, $count_aliases, $main_source );
+
+Recursively builds the DBIC prefetch structure for a given embed key. Handles nested
++count embeds by injecting correlated COUNT subqueries via C<_build_count_subquery>.
+
+=cut
+
+sub _parse_prefetch {
+    my ( $key, $embed, $result_set, $attributes, $parent_alias, $count_aliases, $main_source ) = @_;
+
+    $parent_alias //= 'me';
+
+    my $pref_key = $key;
+    $pref_key =~ s/_count$// if $embed->{$key}->{is_count};
+
+    if ( !exists $result_set->prefetch_whitelist->{$pref_key} ) {
+
+        # Track unsortable nested +count embeds (no DBIC relationship) so the
+        # order_by fixup can reject them with a 400 instead of a DBIC 500
+        if ( $embed->{$key}->{is_count} && $count_aliases ) {
+            my $alias_key = $parent_alias eq 'me' ? $key : "$parent_alias.$key";
+            $count_aliases->{$alias_key} = 0;    # 0 = unsortable
+        }
+        return;
+    }
+
+    # Handle nested +count embeds with SQL-level subquery
+    if ( $embed->{$key}->{is_count} && $attributes ) {
+        my $subquery = _build_count_subquery( $pref_key, $result_set, $parent_alias, $main_source );
+        if ($subquery) {
+
+            # Use the full dotted path as the alias key so order_by fixup
+            # can match e.g. "biblio.items_count" from _from_api_param
+            my $alias_key = $parent_alias eq 'me' ? $key : "$parent_alias.$key";
+            push @{ $attributes->{'+select'} }, $subquery;
+            push @{ $attributes->{'+as'} },     $alias_key;
+            $count_aliases->{$alias_key} = $subquery if $count_aliases;
+            return;    # no prefetch needed, count is in the subquery
+        }
+    }
+
+    my $ko_class = $result_set->prefetch_whitelist->{$pref_key};
+    return $pref_key unless defined $embed->{$key}->{children} && defined $ko_class;
+
+    my @prefetches;
+    foreach my $child ( sort keys( %{ $embed->{$key}->{children} } ) ) {
+        my $parsed = _parse_prefetch(
+            $child,         $embed->{$key}->{children}, $ko_class->new, $attributes, $pref_key,
+            $count_aliases, $main_source
+        );
+        push @prefetches, $parsed if defined $parsed;
+    }
+
+    return $pref_key unless scalar(@prefetches);
+
+    return { $pref_key => $prefetches[0] } if scalar(@prefetches) eq 1;
+
+    return { $pref_key => \@prefetches };
+}
+
+=head3 _from_api_param
+
+    my $dbic_param = _from_api_param( $key, $result_set );
+
+Translates a dot-separated API parameter name into its DBIC equivalent using
+the result set's C<from_api_mapping>.
+
+=cut
+
+sub _from_api_param {
+    my ( $key, $result_set ) = @_;
+
+    if ( $key =~ /\./ ) {
+
+        my ( $curr, $next ) = split /\s*\.\s*/, $key, 2;
+
+        return $curr . '.' . _from_api_param( $next, $result_set ) if $curr eq 'me';
+
+        my $ko_class = $result_set->prefetch_whitelist->{$curr};
+
+        Koha::Exceptions::BadParameter->throw("Cannot find Koha::Object class for $curr")
+            unless defined $ko_class;
+
+        $result_set = $ko_class->new;
+
+        if ( $next =~ /\./ ) {
+            return _from_api_param( $next, $result_set );
+        } else {
+            return
+                $curr . '.'
+                . (
+                  $result_set->from_api_mapping && defined $result_set->from_api_mapping->{$next}
+                ? $result_set->from_api_mapping->{$next}
+                : $next
+                );
+        }
+    } else {
+        return defined $result_set->from_api_mapping->{$key} ? $result_set->from_api_mapping->{$key} : $key;
+    }
+}
+
+=head3 _parse_dbic_query
+
+    my $query = _parse_dbic_query( $q_params, $result_set );
+
+Recursively translates API query parameters into DBIC-compatible query structures,
+resolving dot-separated paths into nested relationship queries.
+
+=cut
+
+sub _parse_dbic_query {
+    my ( $q_params, $result_set ) = @_;
+
+    if ( reftype($q_params) && reftype($q_params) eq 'HASH' ) {
+        my $parsed_hash;
+        foreach my $key ( keys %{$q_params} ) {
+            if ( $key =~ /-?(not_?)?bool/i ) {
+                $parsed_hash->{$key} = _from_api_param( $q_params->{$key}, $result_set );
+                next;
+            }
+            my $k     = _from_api_param( $key, $result_set );
+            my $value = $q_params->{$key};
+
+            # Apply datetime/boolean fixup when the key maps to a known column.
+            # This is needed because values inside q= queries bypass attributes_from_api
+            # (which normally calls _recursive_fixup) when nested within DBIC operators
+            # like -and or -or. We resolve the column info here - handling both the
+            # primary table (me.col or bare col) and related objects (relation.col).
+            if ( $k !~ /^-/ ) {
+                my ( $ko, $col ) = _resolve_column_info( $key, $result_set );
+                if ( $ko && $col ) {
+                    my $columns_info = $ko->_result->result_source->columns_info;
+                    if ( exists $columns_info->{$col} ) {
+                        $value = $ko->_recursive_fixup( $col, $value, $columns_info->{$col} );
+                    }
+                }
+            }
+
+            $parsed_hash->{$k} = ref($value) ? _parse_dbic_query( $value, $result_set ) : $value;
+        }
+        return $parsed_hash;
+    } elsif ( reftype($q_params) && reftype($q_params) eq 'ARRAY' ) {
+        my @mapped = map { _parse_dbic_query( $_, $result_set ) } @$q_params;
+        return \@mapped;
+    } else {
+        return $q_params;
+    }
+}
+
+=head3 _resolve_column_info
+
+    my ( $ko, $col ) = _resolve_column_info( $api_key, $result_set );
+
+Given an API field key (e.g. "timestamp", "me.timestamp",
+"librarian.expiry_date", or "patron.holds.item.creation_date") and a
+result_set, walks the relation chain to resolve the Koha::Object that
+owns the leaf column. Returns ($ko, $col) where $ko is the resolved
+Koha::Object instance and $col is the DBIC column name, or () if
+resolution fails.
+
+Related object instances are cached on $result_set->{_related_objects}
+to avoid repeated prefetch_whitelist lookups.
+
+=cut
+
+sub _resolve_column_info {
+    my ( $key, $result_set ) = @_;
+
+    my @parts = split /\./, $key;
+
+    # Strip "me" prefix - it refers to the primary table
+    shift @parts if @parts > 1 && $parts[0] eq 'me';
+
+    # The last part is the column (in API naming)
+    my $api_col = pop @parts;
+
+    # Walk the relation chain. prefetch_whitelist returns singular
+    # Koha::Object class names (e.g. "Koha::Patron"), which we
+    # instantiate to access their prefetch_whitelist and from_api_mapping.
+    my $ko = $result_set->{_singular_object} ||= $result_set->object_class->new();
+    my @path;
+    for my $rel (@parts) {
+        push @path, $rel;
+        my $cache_key = join( '.', @path );
+        unless ( exists $result_set->{_related_objects}{$cache_key} ) {
+            my $class = $ko->prefetch_whitelist->{$rel};
+            $result_set->{_related_objects}{$cache_key} = $class ? $class->new() : undef;
+        }
+        $ko = $result_set->{_related_objects}{$cache_key};
+        return () unless $ko;
+    }
+
+    # Resolve the column name through from_api_mapping
+    my $mapping = $ko->from_api_mapping;
+    my $col     = ( $mapping && defined $mapping->{$api_col} ) ? $mapping->{$api_col} : $api_col;
+
+    return ( $ko, $col );
+}
+
+=head3 _validate_operator
+
+=cut
+
+sub _validate_operator {
+    my ($operator) = @_;
+    my %allowed_operators =
+        map { $_ => 1 }
+        qw(= != < > <= >= -in -ident -bool -not_bool -or like -like -not_like -between -not_between -not -and -regexp -not_in);
+    Koha::Exceptions::REST::Query::InvalidOperator->throw( operator => $operator )
+        unless exists $allowed_operators{$operator};
+    return;
+}
+
+=head3 _validate_query
+
+=cut
+
+sub _validate_query {
+    my ($query) = @_;
+
+    if ( ref $query eq 'HASH' ) {
+        for my $field ( keys %$query ) {
+            my $value = $query->{$field};
+
+            if ( ref $value eq 'HASH' ) {
+
+                # Hash reference with operators
+                for my $operator ( keys %$value ) {
+                    _validate_operator($operator);
+                }
+            } elsif ( ref $value eq 'ARRAY' ) {
+
+                # Array reference with operator as the first element
+                _validate_query($value);
+            } else {
+
+                # Simple key-value pairs (no operator to validate)
+            }
+        }
+    } elsif ( ref $query eq 'ARRAY' ) {
+
+        # Top-level OR combination or nested AND combination
+        for my $element (@$query) {
+            if ( ref $element eq 'ARRAY' && scalar @{$element} && $element->[0] eq '-and' ) {
+                _validate_query( $element->[1] );
+            } else {
+                _validate_query($element);
+            }
+        }
+    }
+}
+
+1;

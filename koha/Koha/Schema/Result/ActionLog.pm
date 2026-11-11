@@ -1,0 +1,221 @@
+use utf8;
+package Koha::Schema::Result::ActionLog;
+
+# Created by DBIx::Class::Schema::Loader
+# DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+Koha::Schema::Result::ActionLog
+
+=cut
+
+use strict;
+use warnings;
+
+use base 'DBIx::Class::Core';
+
+=head1 TABLE: C<action_logs>
+
+=cut
+
+__PACKAGE__->table("action_logs");
+
+=head1 ACCESSORS
+
+=head2 action_id
+
+  data_type: 'integer'
+  is_auto_increment: 1
+  is_nullable: 0
+
+unique identifier for each action
+
+=head2 timestamp
+
+  data_type: 'timestamp'
+  datetime_undef_if_invalid: 1
+  default_value: current_timestamp
+  is_nullable: 0
+
+the date and time the action took place
+
+=head2 user
+
+  data_type: 'integer'
+  default_value: 0
+  is_nullable: 0
+
+the staff member who performed the action (borrowers.borrowernumber)
+
+=head2 module
+
+  data_type: 'mediumtext'
+  is_nullable: 1
+
+the module this action was taken against
+
+=head2 action
+
+  data_type: 'mediumtext'
+  is_nullable: 1
+
+the action (includes things like DELETED, ADDED, MODIFY, etc)
+
+=head2 object
+
+  data_type: 'integer'
+  is_nullable: 1
+
+the object that the action was taken against (could be a borrowernumber, itemnumber, etc)
+
+=head2 info
+
+  data_type: 'mediumtext'
+  is_nullable: 1
+
+information about the action (usually includes SQL statement)
+
+=head2 interface
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 30
+
+the context this action was taken in
+
+=head2 script
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+the name of the cron script that caused this change
+
+=head2 trace
+
+  data_type: 'text'
+  is_nullable: 1
+
+An optional stack trace enabled by ActionLogsTraceDepth
+
+=head2 diff
+
+  data_type: 'longtext'
+  is_nullable: 1
+
+Stores a diff of the changed object
+
+=cut
+
+__PACKAGE__->add_columns(
+  "action_id",
+  { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
+  "timestamp",
+  {
+    data_type => "timestamp",
+    datetime_undef_if_invalid => 1,
+    default_value => \"current_timestamp",
+    is_nullable => 0,
+  },
+  "user",
+  { data_type => "integer", default_value => 0, is_nullable => 0 },
+  "module",
+  { data_type => "mediumtext", is_nullable => 1 },
+  "action",
+  { data_type => "mediumtext", is_nullable => 1 },
+  "object",
+  { data_type => "integer", is_nullable => 1 },
+  "info",
+  { data_type => "mediumtext", is_nullable => 1 },
+  "interface",
+  { data_type => "varchar", is_nullable => 1, size => 30 },
+  "script",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "trace",
+  { data_type => "text", is_nullable => 1 },
+  "diff",
+  { data_type => "longtext", is_nullable => 1 },
+);
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</action_id>
+
+=back
+
+=cut
+
+__PACKAGE__->set_primary_key("action_id");
+
+
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2024-05-02 14:28:43
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:8ZJaG4iJAbay93LAg5xPsQ
+
+# Both relations below are pseudo-relations: action_logs.user and
+# action_logs.object have no SQL foreign-key constraint on borrowers,
+# so we set is_foreign_key_constraint => 0 to keep TestBuilder from
+# trying to materialise a Borrower row when building action_logs
+# fixtures.
+__PACKAGE__->belongs_to(
+    "librarian",
+    "Koha::Schema::Result::Borrower",
+    { borrowernumber => "user" },
+    {
+        is_foreign_key_constraint => 0,
+        join_type                 => "LEFT",
+    },
+);
+
+# `object` is polymorphic across modules (borrowernumber, biblionumber,
+# subscriptionid, ...). The relation is only meaningful for MEMBERS,
+# CIRCULATION, FINES and APIKEYS rows; other modules may produce a
+# coincidentally-matching borrowernumber row that callers must ignore.
+__PACKAGE__->belongs_to(
+    "patron",
+    "Koha::Schema::Result::Borrower",
+    { borrowernumber => "object" },
+    {
+        is_foreign_key_constraint => 0,
+        join_type                 => "LEFT",
+    },
+);
+
+# Circulation logs carry the itemnumber in info, either as a legacy number
+# or in JSON. A SQL relationship makes the displayed barcode searchable
+# before pagination. Other modules may use info for unrelated identifiers.
+__PACKAGE__->belongs_to(
+    "item",
+    "Koha::Schema::Result::Item",
+    sub {
+        my ($args) = @_;
+        my $self_alias = $args->{self_alias};
+        my $itemnumber = qq{
+            CASE WHEN $self_alias.module = 'CIRCULATION' THEN
+                CASE
+                    WHEN $self_alias.info REGEXP '^[[:space:]]*[0-9]+[[:space:]]*\$'
+                        THEN TRIM($self_alias.info)
+                    WHEN JSON_VALID($self_alias.info)
+                        THEN JSON_UNQUOTE(JSON_EXTRACT($self_alias.info, '\$.itemnumber'))
+                END
+            END
+        };
+        return { "$args->{foreign_alias}.itemnumber" => { '=' => \$itemnumber } };
+    },
+    {
+        is_foreign_key_constraint => 0,
+        join_type                 => "LEFT",
+    },
+);
+
+sub koha_object_class {
+    'Koha::ActionLog';
+}
+
+sub koha_objects_class {
+    'Koha::ActionLogs';
+}
+
+1;

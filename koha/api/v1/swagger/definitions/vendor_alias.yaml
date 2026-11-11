@@ -1,0 +1,15 @@
+---
+type: object
+properties:
+  vendor_alias_id:
+    description: Internally assigned vendor alias identifier
+    type: integer
+  vendor_id:
+    description: Internally assigned vendor alias identifier
+    type: integer
+  alias:
+    description: The alias
+    type: string
+additionalProperties: false
+required:
+  - alias

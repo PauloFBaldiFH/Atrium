@@ -1,0 +1,1529 @@
+#!/usr/bin/perl
+
+# This file is part of Koha.
+#
+# Koha is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Koha is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Koha; if not, see <https://www.gnu.org/licenses>.
+
+use Modern::Perl;
+
+use Test::More tests => 28;
+use Test::NoWarnings;
+use Test::MockModule;
+use Test::Warn;
+use List::MoreUtils qw( uniq );
+use MARC::Record;
+
+use t::lib::Mocks;
+use t::lib::TestBuilder;
+
+use Koha::ActionLogs;
+use Koha::Database;
+use Koha::Caches;
+use Koha::Cache::Memory::Lite;
+use Koha::MarcSubfieldStructures;
+
+use C4::Linker::Default qw( get_link );
+
+BEGIN {
+    use_ok(
+        'C4::Biblio',
+        qw( AddBiblio GetMarcFromKohaField BiblioAutoLink GetMarcSubfieldStructure GetMarcSubfieldStructureFromKohaField LinkBibHeadingsToAuthorities GetBiblioData ModBiblio GetMarcISSN GetMarcISBN GetMarcPrice GetFrameworkCode GetMarcUrls IsMarcStructureInternal GetMarcStructure GetXmlBiblio DelBiblio )
+    );
+}
+
+my $schema = Koha::Database->new->schema;
+$schema->storage->txn_begin;
+my $dbh = C4::Context->dbh;
+Koha::Caches->get_instance->clear_from_cache("MarcSubfieldStructure-");
+
+my $builder = t::lib::TestBuilder->new;
+
+subtest 'AddBiblio' => sub {
+    plan tests => 10;
+
+    my $marcflavour = 'MARC21';
+    t::lib::Mocks::mock_preference( 'marcflavour', $marcflavour );
+
+    my ( $f, $sf ) = GetMarcFromKohaField('biblioitems.cn_item');
+    my $cn_item_field = MARC::Field->new(
+        $f, ' ', ' ',
+        $sf => 'Thisisgoingtobetoomanycharactersforthe.cn_item.field'
+    );
+    my $record = MARC::Record->new();
+    $record->append_fields($cn_item_field);
+
+    my $nb_biblios = Koha::Biblios->count;
+    my ( $biblionumber, $biblioitemnumber );
+    warnings_like { ( $biblionumber, $biblioitemnumber ) = C4::Biblio::AddBiblio( $record, '' ) }
+    [ qr/Data too long for column 'cn_item'/, qr/Data too long for column 'cn_item'/ ],
+        "expected warnings when adding too long cn_item";
+    is(
+        $biblionumber, undef,
+        'AddBiblio returns undef for biblionumber if something went wrong'
+    );
+    is(
+        $biblioitemnumber, undef,
+        'AddBiblio returns undef for biblioitemnumber if something went wrong'
+    );
+    is(
+        Koha::Biblios->count, $nb_biblios,
+        'No biblio should have been added if something went wrong'
+    );
+
+    ( $f, $sf ) = GetMarcFromKohaField('biblioitems.lccn');
+    my $lccn_field = MARC::Field->new(
+        $f, ' ', ' ',
+        $sf => 'ThisisNOTgoingtobetoomanycharactersfortheLCCNfield'
+    );
+    $record = MARC::Record->new();
+    $record->append_fields($lccn_field);
+
+    warnings_like { ( $biblionumber, $biblioitemnumber ) = C4::Biblio::AddBiblio( $record, '' ) }
+    [],
+        "No warning expected when adding a long LCCN";
+    isnt(
+        $biblionumber, undef,
+        'AddBiblio returns the biblionumber'
+    );
+    isnt(
+        $biblioitemnumber, undef,
+        'AddBiblio returns the biblioitemnumber'
+    );
+    is(
+        Koha::Biblios->count, $nb_biblios + 1,
+        'The biblio should have been added if nothing went wrong'
+    );
+
+    t::lib::Mocks::mock_preference( 'AutoLinkBiblios',       $marcflavour );
+    t::lib::Mocks::mock_preference( 'AutoCreateAuthorities', $marcflavour );
+    t::lib::Mocks::mock_preference( 'autoControlNumber',     "OFF" );
+
+    my $mock_biblio = Test::MockModule->new("C4::Biblio");
+    $mock_biblio->mock(
+        BiblioAutoLink => sub {
+            my $record        = shift;
+            my $frameworkcode = shift;
+            warn "My biblionumber is " . $record->subfield( '999', 'c' ) . " and my frameworkcode is $frameworkcode";
+        }
+    );
+    warning_like { $builder->build_sample_biblio(); }
+    qr/My biblionumber is \d+ and my frameworkcode is /, "The biblionumber is correctly passed to BiblioAutoLink";
+    $mock_biblio->unmock('BiblioAutoLink');
+
+    subtest 'record_source_id param tests' => sub {
+
+        plan tests => 2;
+
+        my $source = $builder->build_object( { class => 'Koha::RecordSources' } );
+
+        my $record = MARC::Record->new;
+        $record->append_fields( MARC::Field->new( '245', ' ', ' ', a => 'Some title' ) );
+
+        my ($biblio_id) = C4::Biblio::AddBiblio( $record, '', { record_source_id => undef } );
+        my $metadata = Koha::Biblios->find($biblio_id)->metadata;
+
+        is( $metadata->record_source_id, undef, 'Record source is not defined' );
+
+        ($biblio_id) = C4::Biblio::AddBiblio( $record, '', { record_source_id => $source->id } );
+        $metadata = Koha::Biblios->find($biblio_id)->metadata;
+
+        is( $metadata->record_source_id, $source->id, 'Record source is stored as expected' );
+    };
+};
+
+subtest 'GetMarcSubfieldStructureFromKohaField' => sub {
+    plan tests => 27;
+
+    # Add second mapping for copyrightdate
+    Koha::MarcSubfieldStructures->search( { frameworkcode => '', tagfield => '264', tagsubfield => 'c' } )->delete;
+    Koha::MarcSubfieldStructure->new(
+        { frameworkcode => '', tagfield => '264', tagsubfield => 'c', kohafield => "biblio.copyrightdate" } )->store;
+    Koha::Caches->get_instance->clear_from_cache("MarcSubfieldStructure-");
+
+    my @columns = qw(
+        tagfield tagsubfield liblibrarian libopac repeatable mandatory kohafield tab
+        authorised_value authtypecode value_builder isurl hidden frameworkcode
+        seealso link defaultvalue maxlength
+    );
+
+    # biblio.biblionumber must be mapped so this should return something
+    my $marc_subfield_structure = GetMarcSubfieldStructureFromKohaField('biblio.biblionumber');
+
+    is( ref $marc_subfield_structure, "ARRAY", "Result is an arrayref" );
+    is( @$marc_subfield_structure,    1,       'Expecting one hit only' );
+    foreach my $col (@columns) {
+        ok( exists $marc_subfield_structure->[0]->{$col}, "Hashref contains key '$col'" );
+    }
+    is( $marc_subfield_structure->[0]->{kohafield}, 'biblio.biblionumber', "Result is the good result" );
+    like( $marc_subfield_structure->[0]->{tagfield}, qr/^\d{3}$/, "tagfield is a valid tagfield" );
+
+    # Multiple mappings expected for kohafield biblio.copyrightdate (in 260, 264)
+    $marc_subfield_structure = GetMarcSubfieldStructureFromKohaField('biblio.copyrightdate');
+    is( ref $marc_subfield_structure, "ARRAY", "Result is again an arrayref" );
+    is( @$marc_subfield_structure,    2,       'We expect two hits' );
+    ok( exists $marc_subfield_structure->[0]->{tagsubfield}, 'Testing a random column for existence in 1st hash' );
+    ok( exists $marc_subfield_structure->[1]->{hidden},      'Testing a random column for existence in 2nd hash' );
+
+    # foo.bar does not exist so this should return []
+    $marc_subfield_structure = GetMarcSubfieldStructureFromKohaField('foo.bar');
+    is_deeply( $marc_subfield_structure, [], "invalid kohafield returns empty arrayref" );
+
+};
+
+subtest "GetMarcSubfieldStructure" => sub {
+    plan tests => 5;
+
+    # Add multiple Koha to Marc mappings
+    Koha::MarcSubfieldStructures->search( { frameworkcode => '', tagfield => '399', tagsubfield => [ 'a', 'b' ] } )
+        ->delete;
+    Koha::MarcSubfieldStructure->new(
+        { frameworkcode => '', tagfield => '399', tagsubfield => 'a', kohafield => "mytable.nicepages" } )->store;
+    Koha::MarcSubfieldStructure->new(
+        { frameworkcode => '', tagfield => '399', tagsubfield => 'b', kohafield => "mytable.nicepages" } )->store;
+    Koha::Caches->get_instance->clear_from_cache("MarcSubfieldStructure-");
+    my $structure = C4::Biblio::GetMarcSubfieldStructure('');
+
+    is(
+        @{ $structure->{"mytable.nicepages"} }, 2,
+        'GetMarcSubfieldStructure should return two entries for nicepages'
+    );
+    is(
+        $structure->{"mytable.nicepages"}->[0]->{tagfield}, '399',
+        'Check tagfield for first entry'
+    );
+    is(
+        $structure->{"mytable.nicepages"}->[0]->{tagsubfield}, 'a',
+        'Check tagsubfield for first entry'
+    );
+    is(
+        $structure->{"mytable.nicepages"}->[1]->{tagfield}, '399',
+        'Check tagfield for second entry'
+    );
+    is(
+        $structure->{"mytable.nicepages"}->[1]->{tagsubfield}, 'b',
+        'Check tagsubfield for second entry'
+    );
+};
+
+subtest "GetMarcFromKohaField" => sub {
+    plan tests => 7;
+
+    # NOTE: We are building on data from the previous subtest
+    # With: field 399 / mytable.nicepages
+
+    # Check call in list context for multiple mappings
+    my @retval = C4::Biblio::GetMarcFromKohaField('mytable.nicepages');
+    is( @retval,    4,     'Should return two tags and subfields' );
+    is( $retval[0], '399', 'Check first tag' );
+    is( $retval[1], 'a',   'Check first subfield' );
+    is( $retval[2], '399', 'Check second tag' );
+    is( $retval[3], 'b',   'Check second subfield' );
+
+    # Check same call in scalar context
+    is(
+        C4::Biblio::GetMarcFromKohaField('mytable.nicepages'), 4,
+        'GetMarcFromKohaField returns list count in scalar context'
+    );
+
+    # Check for warning about obsoleted framework parameter
+    warning_like { @retval = C4::Biblio::GetMarcFromKohaField( 'mytable.nicepages', 1 ) }
+    qr/obsoleted for long/,
+        'Found warning about obsoleted parameter';
+};
+
+subtest "Authority creation with default linker" => sub {
+    plan tests => 4;
+
+    # Automatic authority creation
+    t::lib::Mocks::mock_preference( 'LinkerModule',          'Default' );
+    t::lib::Mocks::mock_preference( 'AutoLinkBiblios',       1 );
+    t::lib::Mocks::mock_preference( 'AutoCreateAuthorities', 1 );
+    t::lib::Mocks::mock_preference( 'marcflavour',           'MARC21' );
+    my $linker          = C4::Linker::Default->new( {} );
+    my $authorities_mod = Test::MockModule->new('C4::Heading');
+    $authorities_mod->mock(
+        'authorities',
+        sub {
+            my $results = [ { authid => 'original' }, { authid => 'duplicate' } ];
+            return $results;
+        }
+    );
+    my $marc_record = MARC::Record->new();
+    my $field       = MARC::Field->new( 655, ' ', ' ', 'a' => 'Magical realism' );
+    $marc_record->append_fields($field);
+    my ( $num_changed, $results ) = LinkBibHeadingsToAuthorities( $linker, $marc_record, "", undef );
+    is( $num_changed, 0, "We shouldn't link or create a new record" );
+    ok( !defined $results->{added}, "If we have multiple matches, we shouldn't create a new record" );
+
+    ( $num_changed, $results ) = LinkBibHeadingsToAuthorities( $linker, $marc_record, "", undef );
+    is( $num_changed, 0, "We shouldn't link or create a new record using cached result" );
+    ok(
+        !defined $results->{added},
+        "If we have multiple matches, we shouldn't create a new record on second instance"
+    );
+};
+
+subtest "Test caching of authority types in LinkBibHeadingsToAuthorities" => sub {
+    plan tests => 3;
+    Koha::Cache::Memory::Lite->flush();    #Clear cache like we have a new request
+    my $cache = Koha::Cache::Memory::Lite->get_instance();
+
+    # No automatic authority creation
+    t::lib::Mocks::mock_preference( 'LinkerModule',          'Default' );
+    t::lib::Mocks::mock_preference( 'AutoLinkBiblios',       1 );
+    t::lib::Mocks::mock_preference( 'AutoCreateAuthorities', 0 );
+    t::lib::Mocks::mock_preference( 'marcflavour',           'MARC21' );
+    my $linker          = C4::Linker::Default->new( {} );
+    my $authorities_mod = Test::MockModule->new('C4::Heading');
+    $authorities_mod->mock(
+        'authorities',
+        sub {
+            my $results = [];
+            return $results;
+        }
+    );
+    my $authorities_type = Test::MockModule->new('Koha::Authority::Types');
+    my $found_auth_type  = {};
+    $authorities_type->mock(
+        'find',
+        sub {
+            my ( $self, $params ) = @_;
+            $found_auth_type->{$params}++;
+            return $authorities_type->original("find")->( $self, $params );
+        }
+    );
+    my $marc_record = MARC::Record->new();
+    my $field1      = MARC::Field->new( 655, ' ', ' ', 'a' => 'Magical realism' );
+    my $field2      = MARC::Field->new( 655, ' ', ' ', 'a' => 'Magical falsism' );
+    $marc_record->append_fields( ( $field1, $field2 ) );
+    my ( $num_changed, $results ) = LinkBibHeadingsToAuthorities( $linker, $marc_record, "", undef );
+    is_deeply( $found_auth_type, { "GENRE/FORM" => 1 }, "Type fetched only once" );
+    my $gf_type = $cache->get_from_cache("LinkBibHeadingsToAuthorities:AuthorityType:GENRE/FORM");
+    ok( $gf_type, "GENRE/FORM type is found in cache" );
+
+    ( $num_changed, $results ) = LinkBibHeadingsToAuthorities( $linker, $marc_record, "", undef );
+    is_deeply( $found_auth_type, { "GENRE/FORM" => 1 }, "Type not fetched a second time" );
+};
+
+# Mocking variables
+my $biblio_module = Test::MockModule->new('C4::Biblio');
+$biblio_module->mock(
+    'GetMarcSubfieldStructure',
+    sub {
+        my ($self) = shift;
+
+        my ( $title_field,       $title_subfield )       = get_title_field();
+        my ( $subtitle_field,    $subtitle_subfield )    = get_subtitle_field();
+        my ( $medium_field,      $medium_subfield )      = get_medium_field();
+        my ( $part_number_field, $part_number_subfield ) = get_part_number_field();
+        my ( $part_name_field,   $part_name_subfield )   = get_part_name_field();
+        my ( $isbn_field,        $isbn_subfield )        = get_isbn_field();
+        my ( $issn_field,        $issn_subfield )        = get_issn_field();
+        my ( $biblionumber_field, $biblionumber_subfield )         = ( '999', 'c' );
+        my ( $biblioitemnumber_field, $biblioitemnumber_subfield ) = ( '999', '9' );
+        my ( $itemnumber_field, $itemnumber_subfield )             = get_itemnumber_field();
+
+        return {
+            'biblio.title'        => [ { tagfield => $title_field,        tagsubfield => $title_subfield } ],
+            'biblio.subtitle'     => [ { tagfield => $subtitle_field,     tagsubfield => $subtitle_subfield } ],
+            'biblio.medium'       => [ { tagfield => $medium_field,       tagsubfield => $medium_subfield } ],
+            'biblio.part_number'  => [ { tagfield => $part_number_field,  tagsubfield => $part_number_subfield } ],
+            'biblio.part_name'    => [ { tagfield => $part_name_field,    tagsubfield => $part_name_subfield } ],
+            'biblio.biblionumber' => [ { tagfield => $biblionumber_field, tagsubfield => $biblionumber_subfield } ],
+            'biblioitems.isbn'    => [ { tagfield => $isbn_field,         tagsubfield => $isbn_subfield } ],
+            'biblioitems.issn'    => [ { tagfield => $issn_field,         tagsubfield => $issn_subfield } ],
+            'biblioitems.biblioitemnumber' =>
+                [ { tagfield => $biblioitemnumber_field, tagsubfield => $biblioitemnumber_subfield } ],
+            'items.itemnumber' => [ { tagfield => $itemnumber_subfield, tagsubfield => $itemnumber_subfield } ],
+        };
+    }
+);
+
+my $currency = Test::MockModule->new('Koha::Acquisition::Currencies');
+$currency->mock(
+    'get_active',
+    sub {
+        return Koha::Acquisition::Currency->new(
+            {
+                symbol   => '$',
+                isocode  => 'USD',
+                currency => 'USD',
+                active   => 1,
+            }
+        );
+    }
+);
+
+sub run_tests {
+
+    Koha::Cache::Memory::Lite->flush();    #Clear cache like we have a new request
+    my $marcflavour = shift;
+    t::lib::Mocks::mock_preference( 'marcflavour', $marcflavour );
+
+    # Authority tests don't interact well with Elasticsearch at the moment due to the fact that there's currently no way to
+    # roll back ES index changes.
+    t::lib::Mocks::mock_preference( 'SearchEngine',      'Zebra' );
+    t::lib::Mocks::mock_preference( 'autoControlNumber', 'OFF' );
+
+    t::lib::Mocks::mock_preference( 'RealTimeHoldsQueue', 0 );
+
+    my $isbn        = '0590353403';
+    my $title       = 'Foundation';
+    my $subtitle1   = 'Research';
+    my $subtitle2   = 'Conclusions';
+    my $medium      = 'Medium';
+    my $part_number = '123';
+    my $part_name   = 'First years';
+
+    # Generate a record with just the ISBN
+    my $marc_record = MARC::Record->new;
+    $marc_record->append_fields( create_isbn_field( $isbn, $marcflavour ) );
+
+    # Add the record to the DB
+    my ( $biblionumber, $biblioitemnumber ) = AddBiblio( $marc_record, '' );
+    my $data = GetBiblioData($biblionumber);
+    is(
+        $data->{isbn}, $isbn,
+        '(GetBiblioData) ISBN correctly retrieved.'
+    );
+    is(
+        $data->{title}, undef,
+        '(GetBiblioData) Title field is empty in fresh biblio.'
+    );
+
+    my $biblio = Koha::Biblios->find($biblionumber);
+
+    my ( $isbn_field, $isbn_subfield ) = get_isbn_field();
+    my $marc = $biblio->metadata->record;
+    is( $marc->subfield( $isbn_field, $isbn_subfield ), $isbn, );
+
+    # Add title
+    my $field = create_title_field( $title, $marcflavour );
+    $marc_record->append_fields($field);
+    ModBiblio( $marc_record, $biblionumber, '' );
+    $data = GetBiblioData($biblionumber);
+    is(
+        $data->{title}, $title,
+        'ModBiblio correctly added the title field, and GetBiblioData.'
+    );
+    is( $data->{isbn}, $isbn, '(ModBiblio) ISBN is still there after ModBiblio.' );
+    $marc = $biblio->get_from_storage->metadata->record;
+    my ( $title_field, $title_subfield ) = get_title_field();
+    is( $marc->subfield( $title_field, $title_subfield ), $title, );
+
+    # Add other fields
+    $marc_record->append_fields( create_field( $subtitle1,   $marcflavour, get_subtitle_field() ) );
+    $marc_record->append_fields( create_field( $subtitle2,   $marcflavour, get_subtitle_field() ) );
+    $marc_record->append_fields( create_field( $medium,      $marcflavour, get_medium_field() ) );
+    $marc_record->append_fields( create_field( $part_number, $marcflavour, get_part_number_field() ) );
+    $marc_record->append_fields( create_field( $part_name,   $marcflavour, get_part_name_field() ) );
+
+    ModBiblio( $marc_record, $biblionumber, '' );
+    $data = GetBiblioData($biblionumber);
+    is( $data->{title}, $title, '(ModBiblio) still there after adding other fields.' );
+    is( $data->{isbn},  $isbn,  '(ModBiblio) ISBN is still there after adding other fields.' );
+
+    is(
+        $data->{subtitle}, "$subtitle1 | $subtitle2",
+        '(ModBiblio) subtitles correctly added and returned in GetBiblioData.'
+    );
+    is( $data->{medium},      $medium,      '(ModBiblio) medium correctly added and returned in GetBiblioData.' );
+    is( $data->{part_number}, $part_number, '(ModBiblio) part_number correctly added and returned in GetBiblioData.' );
+    is( $data->{part_name},   $part_name,   '(ModBiblio) part_name correctly added and returned in GetBiblioData.' );
+
+    my $biblioitem = Koha::Biblioitems->find($biblioitemnumber);
+    is(
+        $biblioitem->_result->biblio->title,
+        $title,    # Should be $biblioitem->biblio instead, but not needed elsewhere for now
+        'Do not know if this makes sense - compare result of previous two GetBiblioData tests.'
+    );
+    is(
+        $biblioitem->isbn, $isbn,
+        'Second test checking it returns the correct isbn.'
+    );
+
+    my $success = 0;
+    $field = MARC::Field->new(
+        655, ' ', ' ',
+        'a' => 'Auction catalogs',
+        '9' => '1'
+    );
+    eval {
+        $marc_record->append_fields($field);
+        $success = ModBiblio( $marc_record, $biblionumber, '' );
+    } or do {
+        diag($@);
+        $success = 0;
+    };
+    ok( $success, "ModBiblio handles authority-linked 655" );
+
+    eval {
+        $field->delete_subfields('a');
+        $marc_record->append_fields($field);
+        $success = ModBiblio( $marc_record, $biblionumber, '' );
+    } or do {
+        diag($@);
+        $success = 0;
+    };
+    ok( $success, "ModBiblio handles 655 with authority link but no heading" );
+
+    eval {
+        $field->delete_subfields('9');
+        $marc_record->append_fields($field);
+        $success = ModBiblio( $marc_record, $biblionumber, '' );
+    } or do {
+        diag($@);
+        $success = 0;
+    };
+    ok( $success, "ModBiblio handles 655 with no subfields" );
+
+    ## Testing GetMarcISSN
+    my $issns;
+    $issns = GetMarcISSN( $marc_record, $marcflavour );
+    is(
+        $issns->[0], undef,
+        'GetMarcISSN handles records without the ISSN field (list is empty)'
+    );
+    is(
+        scalar @$issns, 0,
+        'GetMarcISSN handles records without the ISSN field (count is 0)'
+    );
+
+    # Add an ISSN field
+    my $issn = '1234-1234';
+    $field = create_issn_field( $issn, $marcflavour );
+    $marc_record->append_fields($field);
+    $issns = GetMarcISSN( $marc_record, $marcflavour );
+    is(
+        $issns->[0], $issn,
+        'GetMarcISSN handles records with a single ISSN field (first element is correct)'
+    );
+    is(
+        scalar @$issns, 1,
+        'GetMARCISSN handles records with a single ISSN field (count is 1)'
+    );
+
+    # Add multiple ISSN field
+    my @more_issns = qw/1111-1111 2222-2222 3333-3333/;
+    foreach (@more_issns) {
+        $field = create_issn_field( $_, $marcflavour );
+        $marc_record->append_fields($field);
+    }
+    $issns = GetMarcISSN( $marc_record, $marcflavour );
+    is(
+        scalar @$issns, 4,
+        'GetMARCISSN handles records with multiple ISSN fields (count correct)'
+    );
+
+    # Create an empty ISSN
+    $field = create_issn_field( "", $marcflavour );
+    $marc_record->append_fields($field);
+    $issns = GetMarcISSN( $marc_record, $marcflavour );
+    is(
+        scalar @$issns, 4,
+        'GetMARCISSN skips empty ISSN fields (Bug 12674)'
+    );
+
+    ## Testing GetMarcISBN
+    my $record_for_isbn = MARC::Record->new();
+    my $isbns           = GetMarcISBN( $record_for_isbn, $marcflavour );
+    is( scalar @$isbns, 0, '(GetMarcISBN) The record contains no ISBN' );
+
+    # We add one ISBN
+    $isbn_field = create_isbn_field( $isbn, $marcflavour );
+    $record_for_isbn->append_fields($isbn_field);
+    $isbns = GetMarcISBN( $record_for_isbn, $marcflavour );
+    is( scalar @$isbns, 1,     '(GetMarcISBN) The record contains one ISBN' );
+    is( $isbns->[0],    $isbn, '(GetMarcISBN) The record contains our ISBN' );
+
+    # We add 3 more ISBNs
+    $record_for_isbn = MARC::Record->new();
+    my @more_isbns = qw/1111111111 2222222222 3333333333 444444444/;
+    foreach (@more_isbns) {
+        $field = create_isbn_field( $_, $marcflavour );
+        $record_for_isbn->append_fields($field);
+    }
+    $isbns = GetMarcISBN( $record_for_isbn, $marcflavour );
+    is( scalar @$isbns, 4, '(GetMarcISBN) The record contains 4 ISBNs' );
+    for my $i ( 0 .. $#more_isbns ) {
+        is(
+            $isbns->[$i], $more_isbns[$i],
+            "(GetMarcISBN) Correctly retrieves ISBN #" . ( $i + 1 )
+        );
+    }
+
+    is(
+        GetMarcPrice( $record_for_isbn, $marcflavour ), 100,
+        "GetMarcPrice returns the correct value"
+    );
+    my $frameworkcode = GetFrameworkCode($biblionumber);
+    my $updatedrecord = $biblio->metadata->record;
+    my ( $biblioitem_tag, $biblioitem_subfield ) = GetMarcFromKohaField("biblioitems.biblioitemnumber");
+    die qq{No biblioitemnumber tag for framework "$frameworkcode"} unless $biblioitem_tag;
+    my $biblioitemnumbertotest;
+    if ( $biblioitem_tag < 10 ) {
+        $biblioitemnumbertotest = $updatedrecord->field($biblioitem_tag)->data();
+    } else {
+        $biblioitemnumbertotest = $updatedrecord->field($biblioitem_tag)->subfield($biblioitem_subfield);
+    }
+
+    # test for GetMarcUrls
+    $marc_record->append_fields(
+        MARC::Field->new( '856', '', '', u => ' https://koha-community.org ' ),
+        MARC::Field->new( '856', '', '', u => 'koha-community.org' ),
+    );
+    my $marcurl = GetMarcUrls( $marc_record, $marcflavour );
+    is( @$marcurl, 2, 'GetMarcUrls returns two URLs' );
+    like( $marcurl->[0]->{MARCURL}, qr/^https/, 'GetMarcUrls did not stumble over a preceding space' );
+    ok(
+        $marcflavour ne 'MARC21' || $marcurl->[1]->{MARCURL} =~ /^http:\/\//,
+        "GetMarcUrls prefixed a $marcflavour URL with http://"
+    );
+
+    # Automatic authority creation
+    t::lib::Mocks::mock_preference( 'AutoLinkBiblios',       1 );
+    t::lib::Mocks::mock_preference( 'AutoCreateAuthorities', 1 );
+    my $authorities_mod = Test::MockModule->new('C4::Heading');
+    $authorities_mod->mock(
+        'authorities',
+        sub {
+            my @results;
+            return \@results;
+        }
+    );
+    $success = 0;
+    $field   = create_author_field('Author Name');
+    eval {
+        $marc_record->append_fields($field);
+        $success = ModBiblio( $marc_record, $biblionumber, '' );
+    } or do {
+        diag($@);
+        $success = 0;
+    };
+    ok( $success, "ModBiblio handles authority addition for author" );
+
+    my ( $author_field, $author_subfield, $author_relator_subfield ) = get_author_field();
+    $field = $marc_record->field($author_field);
+    ok( $field->subfield($author_subfield), "ModBiblio keeps $author_field$author_subfield intact" );
+
+    my $authid = $field->subfield('9');
+    ok( $authid, 'ModBiblio adds authority id' );
+
+    use_ok( 'C4::AuthoritiesMarc', qw( GetAuthority ) );
+    my $auth_record = C4::AuthoritiesMarc::GetAuthority($authid);
+    ok( $auth_record, 'Authority record successfully retrieved' );
+
+    my ( $auth_author_field, $auth_author_subfield ) = get_auth_author_field();
+    $field = $auth_record->field($auth_author_field);
+    ok( $field, "Authority record contains field $auth_author_field" );
+    is(
+        $field->subfield($auth_author_subfield),
+        'Author Name',
+        'Authority $auth_author_field$auth_author_subfield contains author name'
+    );
+    is( $field->subfield($author_relator_subfield), undef, 'Authority does not contain relator subfield' );
+
+    # Reset settings
+    t::lib::Mocks::mock_preference( 'AutoLinkBiblios',       0 );
+    t::lib::Mocks::mock_preference( 'AutoCreateAuthorities', 0 );
+    Koha::Cache::Memory::Lite->flush();    # Since we may have changed flavours
+}
+
+sub get_title_field {
+    my $marc_flavour = C4::Context->preference('marcflavour');
+    return ( $marc_flavour eq 'UNIMARC' ) ? ( '200', 'a' ) : ( '245', 'a' );
+}
+
+sub get_medium_field {
+    my $marc_flavour = C4::Context->preference('marcflavour');
+    return ( $marc_flavour eq 'UNIMARC' ) ? ( '200', 'b' ) : ( '245', 'h' );
+}
+
+sub get_subtitle_field {
+    my $marc_flavour = C4::Context->preference('marcflavour');
+    return ( $marc_flavour eq 'UNIMARC' ) ? ( '200', 'e' ) : ( '245', 'b' );
+}
+
+sub get_part_number_field {
+    my $marc_flavour = C4::Context->preference('marcflavour');
+    return ( $marc_flavour eq 'UNIMARC' ) ? ( '200', 'h' ) : ( '245', 'n' );
+}
+
+sub get_part_name_field {
+    my $marc_flavour = C4::Context->preference('marcflavour');
+    return ( $marc_flavour eq 'UNIMARC' ) ? ( '200', 'i' ) : ( '245', 'p' );
+}
+
+sub get_isbn_field {
+    my $marc_flavour = C4::Context->preference('marcflavour');
+    return ( $marc_flavour eq 'UNIMARC' ) ? ( '010', 'a' ) : ( '020', 'a' );
+}
+
+sub get_issn_field {
+    my $marc_flavour = C4::Context->preference('marcflavour');
+    return ( $marc_flavour eq 'UNIMARC' ) ? ( '011', 'a' ) : ( '022', 'a' );
+}
+
+sub get_itemnumber_field {
+    my $marc_flavour = C4::Context->preference('marcflavour');
+    return ( $marc_flavour eq 'UNIMARC' ) ? ( '995', '9' ) : ( '952', '9' );
+}
+
+sub get_author_field {
+    my $marc_flavour = C4::Context->preference('marcflavour');
+    return ( $marc_flavour eq 'UNIMARC' ) ? ( '700', 'a', '4' ) : ( '100', 'a', 'e' );
+}
+
+sub get_auth_author_field {
+    my $marc_flavour = C4::Context->preference('marcflavour');
+    return ( $marc_flavour eq 'UNIMARC' ) ? ( '106', 'a' ) : ( '100', 'a' );
+}
+
+sub create_title_field {
+    my ( $title, $marcflavour ) = @_;
+
+    my ( $title_field, $title_subfield ) = get_title_field();
+    my $field = MARC::Field->new( $title_field, '', '', $title_subfield => $title );
+
+    return $field;
+}
+
+sub create_field {
+    my ( $content, $marcflavour, $field, $subfield ) = @_;
+
+    return MARC::Field->new( $field, '', '', $subfield => $content );
+}
+
+sub create_isbn_field {
+    my ( $isbn, $marcflavour ) = @_;
+
+    my ( $isbn_field, $isbn_subfield ) = get_isbn_field();
+    my $field = MARC::Field->new( $isbn_field, '', '', $isbn_subfield => $isbn );
+
+    # Add the price subfield
+    my $price_subfield = ( $marcflavour eq 'UNIMARC' ) ? 'd' : 'c';
+    $field->add_subfields( $price_subfield => '$100' );
+
+    return $field;
+}
+
+sub create_issn_field {
+    my ( $issn, $marcflavour ) = @_;
+
+    my ( $issn_field, $issn_subfield ) = get_issn_field();
+    my $field = MARC::Field->new( $issn_field, '', '', $issn_subfield => $issn );
+
+    return $field;
+}
+
+sub create_author_field {
+    my ($author) = @_;
+
+    my ( $author_field, $author_subfield, $author_relator_subfield ) = get_author_field();
+    my $field = MARC::Field->new(
+        $author_field, '', '',
+        $author_subfield         => $author,
+        $author_relator_subfield => 'aut'
+    );
+
+    return $field;
+}
+
+subtest 'MARC21' => sub {
+    plan tests => 43;
+    run_tests('MARC21');
+    $schema->storage->txn_rollback;
+    $schema->storage->txn_begin;
+};
+
+subtest 'UNIMARC' => sub {
+    plan tests => 43;
+
+    # Mock the auth type data for UNIMARC
+    $dbh->do("UPDATE auth_types SET auth_tag_to_report = '106' WHERE auth_tag_to_report = '100'") or die $dbh->errstr;
+
+    $dbh->do(
+        "UPDATE marc_subfield_structure SET tagfield = '106' WHERE authtypecode = 'PERSO_NAME' AND frameworkcode='' AND tagfield='100' "
+    ) or die $dbh->errstr;
+
+    run_tests('UNIMARC');
+    $schema->storage->txn_rollback;
+    $schema->storage->txn_begin;
+};
+
+subtest 'IsMarcStructureInternal' => sub {
+    plan tests => 9;
+    my $tagslib = GetMarcStructure();
+    my @internals;
+    for my $tag ( sort keys %$tagslib ) {
+        next unless $tag;
+        for my $subfield ( sort keys %{ $tagslib->{$tag} } ) {
+            push @internals, $subfield if IsMarcStructureInternal( $tagslib->{$tag}{$subfield} );
+        }
+    }
+    @internals = uniq @internals;
+    is( scalar(@internals), 7, 'expect 7 internals' );
+    is( grep( /^lib$/,               @internals ), 1, 'check lib' );
+    is( grep( /^tab$/,               @internals ), 1, 'check tab' );
+    is( grep( /^mandatory$/,         @internals ), 1, 'check mandatory' );
+    is( grep( /^repeatable$/,        @internals ), 1, 'check repeatable' );
+    is( grep( /^important$/,         @internals ), 1, 'check important' );
+    is( grep( /^a$/,                 @internals ), 0, 'no subfield a' );
+    is( grep( /^ind1_defaultvalue$/, @internals ), 1, 'check indicator 1 default value' );
+    is( grep( /^ind2_defaultvalue$/, @internals ), 1, 'check indicator 2 default value' );
+};
+
+subtest 'deletedbiblio_metadata' => sub {
+    plan tests => 2;
+
+    t::lib::Mocks::mock_preference( 'RealTimeHoldsQueue', 0 );
+
+    my ( $biblionumber, $biblioitemnumber ) = AddBiblio( MARC::Record->new, '' );
+    my $biblio_metadata = C4::Biblio::GetXmlBiblio($biblionumber);
+    C4::Biblio::DelBiblio($biblionumber);
+    my ($moved) =
+        $dbh->selectrow_array( q|SELECT biblionumber FROM deletedbiblio WHERE biblionumber=?|, undef, $biblionumber );
+    is( $moved, $biblionumber, 'Found in deletedbiblio' );
+    ($moved) = $dbh->selectrow_array(
+        q|SELECT biblionumber FROM deletedbiblio_metadata WHERE biblionumber=?|, undef,
+        $biblionumber
+    );
+    is( $moved, $biblionumber, 'Found in deletedbiblio_metadata' );
+};
+
+subtest 'DelBiblio' => sub {
+
+    plan tests => 11;
+
+    t::lib::Mocks::mock_preference( 'RealTimeHoldsQueue', 0 );
+
+    subtest 'DelBiblio holds handling' => sub {
+
+        plan tests => 3;
+        my $biblio = $builder->build_sample_biblio;
+        my $hold   = $builder->build_object(
+            {
+                class => 'Koha::Holds',
+                value => { biblionumber => $biblio->biblionumber }
+            }
+        );
+        my $old_hold = $builder->build_object(
+            {
+                class => 'Koha::Old::Holds',
+                value => { biblionumber => $biblio->biblionumber }
+            }
+        );
+
+        C4::Biblio::DelBiblio( $biblio->biblionumber );
+        $old_hold->discard_changes();
+        $hold = Koha::Old::Holds->find( $hold->reserve_id );
+        ok( $hold, "Hold has been successfully cancelled on deletion of biblio" );
+        is(
+            $old_hold->deleted_biblionumber, $biblio->biblionumber,
+            "Biblionumber has been successfully recorded during deletion for old holds"
+        );
+        is(
+            $hold->deleted_biblionumber, $biblio->biblionumber,
+            "Biblionumber has been successfully recorded during deletion for existing hold that was cancelled"
+        );
+    };
+
+    my ( $biblionumber, $biblioitemnumber ) = C4::Biblio::AddBiblio( MARC::Record->new, '' );
+    my $deleted = C4::Biblio::DelBiblio($biblionumber);
+    is( $deleted, undef, 'DelBiblio returns undef is the biblio has been deleted correctly - Must be 1 instead' )
+        ;    # FIXME We should return 1 instead!
+
+    $deleted = C4::Biblio::DelBiblio($biblionumber);
+    is( $deleted, undef, 'DelBiblo should return undef is the record did not exist' );
+
+    my $biblio       = $builder->build_sample_biblio;
+    my $subscription = $builder->build_object(
+        {
+            class => 'Koha::Subscriptions',
+            value => { biblionumber => $biblio->biblionumber }
+        }
+    );
+    my $serial = $builder->build_object(
+        {
+            class => 'Koha::Serials',
+            value => {
+                biblionumber   => $biblio->biblionumber,
+                subscriptionid => $subscription->subscriptionid
+            }
+        }
+    );
+    my $subscription_history = $builder->build_object(
+        {
+            class => 'Koha::Subscription::Histories',
+            value => {
+                biblionumber   => $biblio->biblionumber,
+                subscriptionid => $subscription->subscriptionid
+            }
+        }
+    );
+
+    my $order_basket = $builder->build( { source => 'Aqbasket' } );
+
+    my $orderinfo = {
+        biblionumber => $biblio->biblionumber,
+        basketno     => $order_basket->{basketno},
+    };
+    my $order = $builder->build_object( { class => 'Koha::Acquisition::Orders', value => $orderinfo } );
+
+    # Add some ILL requests
+    my $ill_req_1 = $builder->build_object(
+        { class => 'Koha::ILL::Requests', value => { biblio_id => $biblio->id, deleted_biblio_id => undef } } );
+    my $ill_req_2 = $builder->build_object(
+        { class => 'Koha::ILL::Requests', value => { biblio_id => $biblio->id, deleted_biblio_id => undef } } );
+
+    C4::Biblio::DelBiblio( $biblio->biblionumber );    # Or $biblio->delete
+    is( $subscription->get_from_storage,         undef, 'subscription should be deleted on biblio deletion' );
+    is( $serial->get_from_storage,               undef, 'serial should be deleted on biblio deletion' );
+    is( $subscription_history->get_from_storage, undef, 'subscription history should be deleted on biblio deletion' );
+    is(
+        $order->get_from_storage->deleted_biblionumber, $biblio->biblionumber,
+        'biblionumber of order has been moved to deleted_biblionumber column'
+    );
+
+    $ill_req_1 = $ill_req_1->get_from_storage;
+    $ill_req_2 = $ill_req_2->get_from_storage;
+    is( $ill_req_1->biblio_id,         undef,       'biblio_id cleared on biblio deletion' );
+    is( $ill_req_1->deleted_biblio_id, $biblio->id, 'biblio_id is kept on the deleted_biblio_id column' );
+    is( $ill_req_2->biblio_id,         undef,       'biblio_id cleared on biblio deletion' );
+    is( $ill_req_2->deleted_biblio_id, $biblio->id, 'biblio_id is kept on the deleted_biblio_id column' );
+};
+
+subtest 'MarcFieldForCreatorAndModifier' => sub {
+    plan tests => 8;
+
+    t::lib::Mocks::mock_preference( 'MarcFieldForCreatorId',    '998$a' );
+    t::lib::Mocks::mock_preference( 'MarcFieldForCreatorName',  '998$b' );
+    t::lib::Mocks::mock_preference( 'MarcFieldForModifierId',   '998$c' );
+    t::lib::Mocks::mock_preference( 'MarcFieldForModifierName', '998$d' );
+    my $c4_context = Test::MockModule->new('C4::Context');
+    $c4_context->mock( 'userenv', sub { return { number => 123, firstname => 'John', surname => 'Doe' }; } );
+
+    my $record = MARC::Record->new();
+    my ($biblionumber) = C4::Biblio::AddBiblio( $record, '' );
+
+    my $biblio = Koha::Biblios->find($biblionumber);
+    $record = $biblio->metadata->record;
+    is( $record->subfield( '998', 'a' ), 123,        '998$a = 123' );
+    is( $record->subfield( '998', 'b' ), 'John Doe', '998$b = John Doe' );
+    is( $record->subfield( '998', 'c' ), 123,        '998$c = 123' );
+    is( $record->subfield( '998', 'd' ), 'John Doe', '998$d = John Doe' );
+
+    $c4_context->mock( 'userenv', sub { return { number => 321, firstname => 'Jane', surname => 'Doe' }; } );
+    C4::Biblio::ModBiblio( $record, $biblionumber, '' );
+
+    $record = $biblio->get_from_storage->metadata->record;
+    is( $record->subfield( '998', 'a' ), 123,        '998$a = 123' );
+    is( $record->subfield( '998', 'b' ), 'John Doe', '998$b = John Doe' );
+    is( $record->subfield( '998', 'c' ), 321,        '998$c = 321' );
+    is( $record->subfield( '998', 'd' ), 'Jane Doe', '998$d = Jane Doe' );
+};
+
+subtest 'ModBiblio called from linker test' => sub {
+    plan tests => 2;
+    my $called = 0;
+    t::lib::Mocks::mock_preference( 'AutoLinkBiblios', 1 );
+    my $biblio_mod = Test::MockModule->new('C4::Biblio');
+    $biblio_mod->mock(
+        'LinkBibHeadingsToAuthorities',
+        sub {
+            $called = 1;
+        }
+    );
+    my $record = MARC::Record->new();
+    my ($biblionumber) = C4::Biblio::AddBiblio( $record, '' );
+    C4::Biblio::ModBiblio( $record, $biblionumber, '' );
+    is( $called, 1, "We called to link bibs because not from linker" );
+    $called = 0;
+    C4::Biblio::ModBiblio( $record, $biblionumber, '', { disable_autolink => 1 } );
+    is( $called, 0, "We didn't call to link bibs because from linker" );
+};
+
+subtest "LinkBibHeadingsToAuthorities tests" => sub {
+    plan tests => 5;
+
+    # Set up mocks to return more than 1 match
+    my $biblio_mod = Test::MockModule->new('C4::Linker::Default');
+    $biblio_mod->mock(
+        'get_link',
+        sub {
+            return ( undef, undef, 2 );
+        }
+    );
+
+    # UNIMARC return values should be consistent with MARC21
+    # testing with MARC21 should be sufficient for now
+    t::lib::Mocks::mock_preference( 'marcflavour',           'MARC21' );
+    t::lib::Mocks::mock_preference( 'AutoCreateAuthorities', '0' );
+
+    my $linker = C4::Linker::Default->new();
+    my $biblio = $builder->build_sample_biblio();
+    my $record = $biblio->metadata->record;
+
+    # Generate a field, no current link
+    my $field = MARC::Field->new( '650', '', '', 'a' => 'Duplicated' );
+
+    $record->append_fields($field);
+    my ( $num_headings_changed, $results ) = LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 650, 1 );
+    is( $num_headings_changed, 0, 'We did not make any changes because we found 2' );
+    is_deeply(
+        $results->{unlinked},
+        { "Duplicated" => 1 },
+        "The heading was not linked"
+    );
+    is_deeply(
+        $results->{details}[0],
+        {
+            tag           => 650,
+            authid        => undef,
+            status        => 'MULTIPLE_MATCH',
+            auth_type     => 'TOPIC_TERM',
+            tag_to_report => 150
+        },
+        "The heading was not linked"
+    );
+
+    t::lib::Mocks::mock_preference( 'AutoCreateAuthorities', '1' );
+    ( $num_headings_changed, $results ) = LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 650, 1 );
+    is( $num_headings_changed, 0, 'We did not make any changes because we found 2' );
+    is_deeply(
+        $results->{details}[0],
+        {
+            tag           => 650,
+            authid        => undef,
+            status        => 'MULTIPLE_MATCH',
+            auth_type     => 'TOPIC_TERM',
+            tag_to_report => 150
+        },
+        "When AutoCreateAuthorities is enabled, multiple results are reported"
+    );
+
+};
+
+subtest "LinkBibHeadingsToAuthorities record generation tests" => sub {
+    plan tests => 12;
+
+    # Set up mocks to ensure authorities are generated
+    my $biblio_mod = Test::MockModule->new('C4::Linker::Default');
+    $biblio_mod->mock(
+        'get_link',
+        sub {
+            return ( undef, undef, 0 );
+        }
+    );
+
+    # UNIMARC valid headings are built from the marc_subfield_structure for bibs and
+    # include all subfields as valid, testing with MARC21 should be sufficient for now
+    t::lib::Mocks::mock_preference( 'marcflavour',           'MARC21' );
+    t::lib::Mocks::mock_preference( 'AutoCreateAuthorities', '1' );
+
+    my $linker = C4::Linker::Default->new();
+    my $biblio = $builder->build_sample_biblio();
+    my $record = $biblio->metadata->record;
+
+    # Generate a record including all valid subfields and an invalid one 'e'
+    my $field = MARC::Field->new(
+        '650', '', '', 'a' => 'Beach city', 'b' => 'Weirdness', 'v' => 'Fiction', 'x' => 'Books',
+        'y' => '21st Century', 'z' => 'Fish Stew Pizza', 'e' => 'Depicted'
+    );
+
+    $record->append_fields($field);
+    my ( $num_headings_changed, $results ) = LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 650 );
+
+    is( $num_headings_changed, 1, 'We changed the one we passed' );
+    is_deeply(
+        $results->{added},
+        { "Beach city Weirdness--Fiction--Books--21st Century--Fish Stew Pizza" => 1 },
+        "We added an authority record for the heading"
+    );
+
+    # Now we check the authority record itself
+    my $authority = GetAuthority( $record->subfield( '650', '9' ) );
+    is(
+        $authority->field('150')->as_string(),
+        "Beach city Weirdness Fiction Books 21st Century Fish Stew Pizza",
+        "The generated record contains the correct subfields"
+    );
+
+    #Add test for this case using verbose
+    $record->field('650')->delete_subfield('9');
+    ( $num_headings_changed, $results ) = LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 650, 1 );
+    is( $num_headings_changed,              1,         'We changed the one we passed' );
+    is( $results->{details}->[0]->{status}, 'CREATED', "We added an authority record for the heading using verbose" );
+
+    # Now we check the authority record itself
+    $authority = GetAuthority( $results->{details}->[0]->{authid} );
+
+    is(
+        $authority->field('150')->as_string(),
+        "Beach city Weirdness Fiction Books 21st Century Fish Stew Pizza",
+        "The generated record contains the correct subfields when using verbose"
+    );
+
+    # Example series link with volume and punctuation
+    $field = MARC::Field->new(
+        '800', '', '', 'a' => 'Tolkien, J. R. R.', 'q' => '(John Ronald Reuel),',
+        'd' => '1892-1973.', 't' => 'Lord of the rings ;', 'v' => '1'
+    );
+    $record->append_fields($field);
+
+    ( $num_headings_changed, $results ) = LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 800 );
+
+    is( $num_headings_changed, 1, 'We changed the one we passed' );
+    is_deeply(
+        $results->{added},
+        { "Tolkien, J. R. R. (John Ronald Reuel), 1892-1973. Lord of the rings ;" => 1 },
+        "We added an authority record for the heading"
+    );
+
+    # Now we check the authority record itself
+    $authority = GetAuthority( $record->subfield( '800', '9' ) );
+    is(
+        $authority->field('100')->as_string(),
+        "Tolkien, J. R. R. (John Ronald Reuel), 1892-1973. Lord of the rings",
+        "The generated record contains the correct subfields"
+    );
+
+    # The same example With verbose
+    $record->field('800')->delete_subfield('9');
+    ( $num_headings_changed, $results ) = LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 800, 1 );
+    is( $num_headings_changed,              1,         'We changed the one we passed' );
+    is( $results->{details}->[0]->{status}, 'CREATED', "We added an authority record for the heading using verbose" );
+
+    # Now we check the authority record itself
+    $authority = GetAuthority( $results->{details}->[0]->{authid} );
+    is(
+        $authority->field('100')->as_string(),
+        "Tolkien, J. R. R. (John Ronald Reuel), 1892-1973. Lord of the rings",
+        "The generated record contains the correct subfields"
+    );
+};
+
+subtest "LinkBibHeadingsToAuthorities codes new authorities with the source thesaurus (bug 31925)" => sub {
+    plan tests => 13;
+
+    my $biblio_mod = Test::MockModule->new('C4::Linker::Default');
+    $biblio_mod->mock(
+        'get_link',
+        sub {
+            return ( undef, undef, 0 );
+        }
+    );
+
+    t::lib::Mocks::mock_preference( 'marcflavour',             'MARC21' );
+    t::lib::Mocks::mock_preference( 'AutoCreateAuthorities',   '1' );
+    t::lib::Mocks::mock_preference( 'LinkerConsiderThesaurus', '1' );
+
+    my $linker = C4::Linker::Default->new();
+
+    # Case 1: plain LCSH (ind2=0, no $2) - regression guard, must stay coded 'a'
+    my $biblio = $builder->build_sample_biblio();
+    my $record = $biblio->metadata->record;
+    my $field  = MARC::Field->new( '650', '', '0', 'a' => 'Feminism' );
+    $record->append_fields($field);
+    LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 650 );
+    my $authority = GetAuthority( $record->subfield( '650', '9' ) );
+    is( substr( $authority->field('008')->data(), 11, 1 ), 'a',   'Plain LCSH heading (ind2=0) is coded 008/11=a' );
+    is( $authority->subfield( '040', 'f' ),                undef, 'Plain LCSH heading (ind2=0) gets no 040$f' );
+
+    # Case 2: FAST heading (ind2=7, $2=fast) - the actual bug: must NOT be coded as LCSH
+    $biblio = $builder->build_sample_biblio();
+    $record = $biblio->metadata->record;
+    $field  = MARC::Field->new( '650', '', '7', 'a' => 'Miracles', '2' => 'fast' );
+    $record->append_fields($field);
+    LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 650 );
+    $authority = GetAuthority( $record->subfield( '650', '9' ) );
+    is( substr( $authority->field('008')->data(), 11, 1 ), 'z',    'FAST heading (ind2=7, $2=fast) is coded 008/11=z' );
+    is( $authority->subfield( '040', 'f' ),                'fast', 'FAST heading (ind2=7, $2=fast) gets 040$f=fast' );
+
+    # Case 3: MeSH heading (ind2=2, no $2)
+    $biblio = $builder->build_sample_biblio();
+    $record = $biblio->metadata->record;
+    $field  = MARC::Field->new( '650', '', '2', 'a' => 'Something' );
+    $record->append_fields($field);
+    LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 650 );
+    $authority = GetAuthority( $record->subfield( '650', '9' ) );
+    is( substr( $authority->field('008')->data(), 11, 1 ), 'c',   'MeSH heading (ind2=2) is coded 008/11=c' );
+    is( $authority->subfield( '040', 'f' ),                undef, 'MeSH heading (ind2=2) gets no 040$f' );
+
+    # Case 4: non-subject heading (personal name added entry) is unaffected - no thesaurus semantics
+    $biblio = $builder->build_sample_biblio();
+    $record = $biblio->metadata->record;
+    $field  = MARC::Field->new( '700', '', '', 'a' => 'Doe, Jane' );
+    $record->append_fields($field);
+    LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 700 );
+    $authority = GetAuthority( $record->subfield( '700', '9' ) );
+    is(
+        substr( $authority->field('008')->data(), 11, 1 ), 'a',
+        'Non-subject heading (700) keeps the default LCSH 008/11=a coding, unaffected by this fix'
+    );
+
+    # Case 5: blank ind2 (thesaurus not identified at all) - must respect the
+    # MARCAuthorityControlField008 syspref default, not be forced to 'z' (bug 31925 comment 30)
+    $biblio = $builder->build_sample_biblio();
+    $record = $biblio->metadata->record;
+    $field  = MARC::Field->new( '650', '', ' ', 'a' => 'Unidentified thesaurus' );
+    $record->append_fields($field);
+    LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 650 );
+    $authority = GetAuthority( $record->subfield( '650', '9' ) );
+    is(
+        substr( $authority->field('008')->data(), 11, 1 ), 'a',
+        'Blank ind2 (no thesaurus identified) keeps the syspref default 008/11=a, not forced to z'
+    );
+    is( $authority->subfield( '040', 'f' ), undef, 'Blank ind2 (no thesaurus identified) gets no 040$f' );
+
+    # Case 6: ind2=4 (explicitly "source not specified") - must also respect a customised
+    # MARCAuthorityControlField008 syspref default rather than being forced to '|'
+    my $custom_008 = '|| acn||aabn           | a|a     d';    # codespell:ignore acn
+    t::lib::Mocks::mock_preference( 'MARCAuthorityControlField008', $custom_008 );
+    $biblio = $builder->build_sample_biblio();
+    $record = $biblio->metadata->record;
+    $field  = MARC::Field->new( '650', '', '4', 'a' => 'Source not specified' );
+    $record->append_fields($field);
+    LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 650 );
+    $authority = GetAuthority( $record->subfield( '650', '9' ) );
+    is(
+        substr( $authority->field('008')->data(), 11, 1 ), 'n',
+        'ind2=4 (source not specified) respects a customised syspref default 008/11=n, not forced to |'
+    );
+    is( $authority->subfield( '040', 'f' ), undef, 'ind2=4 (source not specified) gets no 040$f' );
+
+    # Case 7: LinkerConsiderThesaurus off (the default) - a FAST heading must NOT get
+    # thesaurus-aware coding on the new authority (bug 31925 comment 45). With thesaurus
+    # matching disabled, any other heading spelled the same can link to this same
+    # auto-created authority regardless of its own thesaurus, so coding it FAST here would
+    # let that thesaurus silently propagate onto unrelated bibs the next time the authority
+    # is saved. Only sites that opted into LinkerConsiderThesaurus should get this coding.
+    t::lib::Mocks::mock_preference( 'MARCAuthorityControlField008', '' );
+    t::lib::Mocks::mock_preference( 'LinkerConsiderThesaurus',      '0' );
+    $biblio = $builder->build_sample_biblio();
+    $record = $biblio->metadata->record;
+    $field  = MARC::Field->new( '650', '', '7', 'a' => 'Miracles', '2' => 'fast' );
+    $record->append_fields($field);
+    LinkBibHeadingsToAuthorities( $linker, $record, "", undef, 650 );
+    $authority = GetAuthority( $record->subfield( '650', '9' ) );
+    is(
+        substr( $authority->field('008')->data(), 11, 1 ), 'a',
+        'FAST heading (ind2=7, $2=fast) is coded with the syspref default, not z, when LinkerConsiderThesaurus is off'
+    );
+    is(
+        $authority->subfield( '040', 'f' ), undef,
+        'FAST heading gets no 040$f when LinkerConsiderThesaurus is off'
+    );
+};
+
+subtest 'autoControlNumber tests' => sub {
+
+    plan tests => 3;
+
+    t::lib::Mocks::mock_preference( 'autoControlNumber', 'OFF' );
+
+    my $record      = MARC::Record->new();
+    my ($biblio_id) = C4::Biblio::AddBiblio( $record, '' );
+    my $biblio      = Koha::Biblios->find($biblio_id);
+
+    $record = $biblio->metadata->record;
+    is( $record->field('001'), undef, '001 not set when pref is off' );
+
+    t::lib::Mocks::mock_preference( 'autoControlNumber', 'biblionumber' );
+    C4::Biblio::ModBiblio( $record, $biblio_id, "", { skip_record_index => 1, disable_autolink => 1 } );
+    $biblio->discard_changes;
+    $record = $biblio->metadata->record;
+    is( $record->field('001')->as_string(), $biblio_id, '001 set to biblionumber when pref set and field is blank' );
+
+    $record->field('001')->update('Not biblionumber');
+    C4::Biblio::ModBiblio( $record, $biblio_id, "", { skip_record_index => 1, disable_autolink => 1 } );
+    $biblio->discard_changes;
+    $record = $biblio->metadata->record;
+    is(
+        $record->field('001')->as_string(), 'Not biblionumber',
+        '001 not set to biblionumber when pref set and field exists'
+    );
+
+};
+
+subtest 'record test' => sub {
+    plan tests => 1;
+
+    my $marc_record = MARC::Record->new;
+    $marc_record->append_fields( create_isbn_field( '0590353403', 'MARC21' ) );
+
+    my ($biblionumber) = C4::Biblio::AddBiblio( $marc_record, '' );
+
+    my $biblio = Koha::Biblios->find($biblionumber);
+
+    is(
+        $biblio->record->as_formatted,
+        $biblio->metadata->record->as_formatted
+    );
+};
+
+subtest 'record_schema test' => sub {
+    plan tests => 1;
+
+    my $marc_record = MARC::Record->new;
+    $marc_record->append_fields( create_isbn_field( '0590353403', 'MARC21' ) );
+
+    my ($biblionumber) = C4::Biblio::AddBiblio( $marc_record, '' );
+
+    my $biblio = Koha::Biblios->find($biblionumber);
+
+    is(
+        $biblio->record_schema,
+        $biblio->metadata->schema
+    );
+};
+
+subtest 'GetFrameworkCode' => sub {
+    plan tests => 4;
+
+    my $biblio = $builder->build_sample_biblio( { frameworkcode => 'OBP' } );
+
+    is( GetFrameworkCode( $biblio->biblionumber ), 'OBP', 'GetFrameworkCode returns correct frameworkcode' );
+
+    my $cache         = Koha::Cache::Memory::Lite->get_instance();
+    my $cache_key     = "FrameworkCode-" . $biblio->biblionumber;
+    my $frameworkcode = $cache->get_from_cache($cache_key);
+    is( $frameworkcode, 'OBP', 'Cache has been set in GetFrameworkCode' );
+
+    # Set new value directly in cache to make sure it's actually being used
+    $cache->set_in_cache( $cache_key, 'OD' );
+    is(
+        GetFrameworkCode( $biblio->biblionumber ), 'OD',
+        'GetFrameworkCode returns correct frameworkcode, using cache'
+    );
+
+    # Test cache invalidation
+    ModBiblio( $biblio->metadata->record, $biblio->biblionumber, 'OGR' );
+    is(
+        GetFrameworkCode( $biblio->biblionumber ), 'OGR',
+        'GetFrameworkCode returns correct frameworkcode after setting a new one though ModBiblio'
+    );
+
+};
+
+subtest 'ModBiblio on invalid record' => sub {
+    plan tests => 4;
+
+    t::lib::Mocks::mock_preference( "CataloguingLog", 1 );
+
+    # We create a record with an invalid control character in the MARC
+    my $record = MARC::Record->new();
+    my $field  = MARC::Field->new( '650', '', '', 'a' => "00aD000015937" );
+    $record->append_fields($field);
+
+    my ($biblionumber) = C4::Biblio::AddBiblio( $record, '' );
+
+    # Modify the record to add a title field so MARC changes are captured in the diff
+    my $title_field = MARC::Field->new( '245', '1', '0', 'a' => 'New Title' );
+    $record->append_fields($title_field);
+
+    C4::Biblio::ModBiblio( $record, $biblionumber, '' );
+    my $action_logs =
+        Koha::ActionLogs->search( { object => $biblionumber, module => 'Cataloguing', action => 'MODIFY' } );
+    is( $action_logs->count, 1, "Modification of biblio was successful and recorded" );
+    my $action_log = $action_logs->next;
+    like( $action_log->info, qr/^biblio /, "Biblio data logged in action log info" );
+    ok( defined $action_log->diff, "Diff column is populated for MODIFY" );
+    like( $action_log->diff, qr/_marc/, "MARC field changes are captured in the diff column" );
+};
+
+subtest 'ModBiblio on record with strippable non-XML characters' => sub {
+    plan tests => 4;
+
+    t::lib::Mocks::mock_preference( "CataloguingLog", 1 );
+
+    # We create a record with an invalid control character (chr(31)) in the MARC
+    my $record = MARC::Record->new();
+    my $field  = MARC::Field->new( '650', '', '', 'a' => '00' . chr(31) . 'aD000015937' );
+    $record->append_fields($field);
+
+    my ($biblionumber) = C4::Biblio::AddBiblio( $record, '' );
+
+    # New behaviour: strippable non-XML characters are silently fixed; the
+    # stripping event is reported via the warnings arrayref, not Perl warn()
+    my @warnings;
+    C4::Biblio::ModBiblio( $record, $biblionumber, '', { warnings => \@warnings } );
+    like(
+        $warnings[0]{message}, qr/650\$a: invalid char value 31 \(U\+001F\) at position \d+/,
+        'Non-XML character stripping reported via warnings arrayref with field and char context'
+    );
+
+    my $metadata      = Koha::Biblios->find($biblionumber)->metadata;
+    my @nonxml_errors = $metadata->metadata_errors->search( { error_type => 'nonxml_stripped' } )->as_list;
+    ok( scalar @nonxml_errors, 'nonxml_stripped errors persisted in biblio_metadata_errors after ModBiblio' );
+    like(
+        $nonxml_errors[0]->message, qr/650\$a: invalid char value 31 \(U\+001F\) at position \d+/,
+        'error message identifies field, char value, and position'
+    );
+
+    my $action_logs =
+        Koha::ActionLogs->search( { object => $biblionumber, module => 'Cataloguing', action => 'MODIFY' } );
+    is( $action_logs->count, 1, "Modification of biblio was successfully recorded in action logs" );
+};
+
+subtest 'UpdateTotalIssues on Invalid record' => sub {
+    plan tests => 2;
+
+    my $return_record = Test::MockModule->new('Koha::Biblio::Metadata');
+    $return_record->mock(
+        'record',
+        sub {
+            my $self = shift;
+            Koha::Exceptions::Metadata::Invalid->throw(
+                id             => $self->id,
+                biblionumber   => $self->biblionumber,
+                format         => $self->format,
+                schema         => $self->schema,
+                decoding_error => "Error goes here",
+            );
+        }
+    );
+
+    my $biblio             = $builder->build_sample_biblio;
+    my $biblionumber       = $biblio->biblionumber;
+    my $biblio_metadata_id = $biblio->metadata->id;
+
+    my $increase = 1;
+
+    my $success;
+    warnings_like {
+        $success = C4::Biblio::UpdateTotalIssues( $biblio->biblionumber, $increase, undef );
+    }
+    [
+        qr/Invalid data, cannot decode metadata object/,
+        qr/UpdateTotalIssues could not get bibliographic record for biblionumber $biblionumber/
+    ],
+        "Expected warning found";
+
+    is( $success, -1, 'UpdateTotalIssues fails gracefully for invalid record' );
+
+};
+
+subtest 'UpdateTotalIssues tests' => sub {
+    plan tests => 5;
+
+    my $c4_biblio = Test::MockModule->new('C4::Biblio');
+    $c4_biblio->mock(
+        'GetMarcFromKohaField',
+        sub {
+            my $field = shift;
+            return ( '', '' ) if $field eq 'biblioitems.totalissues';
+            return $c4_biblio->original("GetMarcFromKohaField")->($field);
+        }
+    );
+
+    my $biblio             = $builder->build_sample_biblio;
+    my $biblionumber       = $biblio->biblionumber;
+    my $biblio_metadata_id = $biblio->metadata->id;
+
+    my $increase = 1;
+
+    my $success = C4::Biblio::UpdateTotalIssues( $biblio->biblionumber, $increase, undef );
+    is( $success, 0, 'UpdateTotalIssues does nothing if totalissues tag is not mapped' );
+
+    $c4_biblio->mock(
+        'GetMarcFromKohaField',
+        sub {
+            my $field = shift;
+            return ( '555', 'a' ) if $field eq 'biblioitems.totalissues';
+            return $c4_biblio->original("GetMarcFromKohaField")->($field);
+        }
+    );
+
+    $c4_biblio->mock(
+        'GetMarcSubfieldStructure',
+        sub {
+            my @params = shift;
+            my $sff    = $c4_biblio->original("GetMarcSubfieldStructure")->(@params);
+            $sff->{'biblioitems.totalissues'} = [
+                {
+                    'tagfield'    => '555',
+                    'tagsubfield' => 'a',
+                    'kohafield'   => 'biblioitems.totalissues',
+                }
+            ];
+            return $sff;
+        }
+    );
+
+    my $biblioitem = $biblio->biblioitem;
+    $biblioitem->totalissues(1)->store();
+
+    $success = C4::Biblio::UpdateTotalIssues( $biblio->biblionumber, $increase, undef );
+    is( $success, 1, 'UpdateTotalIssues updates when passed an increase and no value' );
+
+    $biblioitem->discard_changes;
+    is( $biblioitem->totalissues, 2, "Total issues was increased by 1" );
+
+    $success = C4::Biblio::UpdateTotalIssues( $biblio->biblionumber, $increase, 5 );
+    is( $success, 1, 'UpdateTotalIssues updates when passed a value' );
+
+    $biblioitem->discard_changes;
+    is( $biblioitem->totalissues, 5, "Total issues is set to the value when passed" );
+
+};
+
+subtest 'ModBiblio - record_source_id param tests' => sub {
+
+    plan tests => 4;
+
+    my $source = $builder->build_object( { class => 'Koha::RecordSources' } );
+
+    my $record = MARC::Record->new;
+    $record->append_fields( MARC::Field->new( '245', ' ', ' ', a => 'Some title' ) );
+
+    my ($biblio_id) = C4::Biblio::AddBiblio( $record, '', { record_source_id => undef } );
+    my $metadata = Koha::Biblios->find($biblio_id)->metadata;
+
+    is( $metadata->record_source_id, undef, 'Record source is not defined' );
+
+    C4::Biblio::ModBiblio( $record, $biblio_id, '', { record_source_id => $source->id } );
+    $metadata->discard_changes;
+
+    is( $metadata->record_source_id, $source->id, 'Record source is stored as expected' );
+
+    C4::Biblio::ModBiblio( $record, $biblio_id, '' );
+    $metadata->discard_changes;
+
+    is( $metadata->record_source_id, $source->id, 'Record source not passed, remains untouched' );
+
+    C4::Biblio::ModBiblio( $record, $biblio_id, '', { record_source_id => undef } );
+    $metadata->discard_changes;
+
+    is( $metadata->record_source_id, undef, 'Record source is not defined' );
+};
+
+subtest 'AddBiblio/ModBiblio calling ModBiblioMarc for field 005' => sub {
+    plan tests => 2;
+
+    my $marc_record    = MARC::Record->new;
+    my ($biblionumber) = C4::Biblio::AddBiblio( $marc_record, '' );
+    my $biblio         = Koha::Biblios->find($biblionumber);
+
+    my $field = $biblio->metadata->record->field('005');
+    ok( $field && $field->data, 'Record contains field 005 after AddBiblio' );
+    $marc_record = MARC::Record->new;
+    C4::Biblio::ModBiblio( $marc_record, $biblionumber, '' );
+    $field = $biblio->metadata->record->field('005');
+    ok( $field && $field->data, 'Record contains field 005 after ModBiblio' );
+};
+
+# Cleanup
+Koha::Caches->get_instance->clear_from_cache("MarcSubfieldStructure-");
+$schema->storage->txn_rollback;

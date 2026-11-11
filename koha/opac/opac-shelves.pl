@@ -1,0 +1,593 @@
+#!/usr/bin/perl
+
+# Copyright 2015 Koha Team
+#
+# This file is part of Koha.
+#
+# Koha is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Koha is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Koha; if not, see <https://www.gnu.org/licenses>.
+
+use Modern::Perl;
+
+use CGI        qw ( -utf8 );
+use C4::Auth   qw( get_template_and_user );
+use C4::Biblio qw( GetBiblioData GetFrameworkCode );
+use C4::Koha   qw(
+    GetNormalizedISBN
+);
+use C4::Members;
+use C4::Output qw( pagination_bar output_with_http_headers );
+use C4::Tags   qw( get_tags );
+use C4::XSLT   qw( XSLTParse4Display );
+
+use Koha::Biblios;
+use Koha::Biblioitems;
+use Koha::CirculationRules;
+use Koha::CsvProfiles;
+use Koha::DateUtils qw/dt_from_string/;
+use Koha::Items;
+use Koha::ItemTypes;
+use Koha::Patrons;
+use Koha::Virtualshelfshares;
+use Koha::Virtualshelves;
+use Koha::RecordProcessor;
+use Koha::Biblio::Metadata::Extractor;
+
+use constant ANYONE    => 2;
+use constant STAFF     => 3;
+use constant PERMITTED => 4;
+
+my $query = CGI->new;
+
+my $template_name = $query->param('rss') ? "opac-shelves-rss.tt" : "opac-shelves.tt";
+
+# if virtualshelves is disabled, leave immediately
+if ( !C4::Context->preference('virtualshelves') ) {
+    print $query->redirect("/cgi-bin/koha/errors/404.pl");
+    exit;
+}
+
+my $op = $query->param('op') || 'list';
+my ( $template, $loggedinuser, $cookie );
+
+if ( $op eq 'view' || $op eq 'list' ) {
+    ( $template, $loggedinuser, $cookie ) = get_template_and_user(
+        {
+            template_name   => $template_name,
+            query           => $query,
+            type            => "opac",
+            authnotrequired => ( C4::Context->preference("OpacPublic") ? 1 : 0 ),
+        }
+    );
+} else {
+    ( $template, $loggedinuser, $cookie ) = get_template_and_user(
+        {
+            template_name   => $template_name,
+            query           => $query,
+            type            => "opac",
+            authnotrequired => 0,
+        }
+    );
+}
+
+my $referer = $query->param('referer') || $op;
+my $page    = int( $query->param('page') || 1 );
+my $public  = 0;
+$public = 1 if $query->param('public') && $query->param('public') == 1;
+
+my ( $shelf, $shelfnumber, @messages );
+
+# PART 1: Perform a few actions
+if ( $op eq 'add_form' ) {
+
+    # Only pass default
+    $shelf = { allow_change_from_owner => 1 };
+} elsif ( $op eq 'edit_form' ) {
+    $shelfnumber = $query->param('shelfnumber');
+    $shelf       = Koha::Virtualshelves->find($shelfnumber);
+
+    if ($shelf) {
+        $public = $shelf->public;
+        my $patron = Koha::Patrons->find( $shelf->owner );
+        $template->param( owner => $patron, );
+        unless ( $shelf->can_be_managed($loggedinuser) ) {
+            push @messages, { type => 'error', code => 'unauthorized_on_update' };
+            $op = 'list';
+        }
+    } else {
+        push @messages, { type => 'error', code => 'does_not_exist' };
+    }
+} elsif ( $op eq 'cud-add' ) {
+    if ($loggedinuser) {
+        my $allow_changes_from = $query->param('allow_changes_from');
+        eval {
+            $shelf = Koha::Virtualshelf->new(
+                {
+                    shelfname                         => scalar $query->param('shelfname'),
+                    sortfield                         => scalar $query->param('sortfield'),
+                    public                            => $public,
+                    allow_change_from_owner           => $allow_changes_from > 0,
+                    allow_change_from_others          => $allow_changes_from == ANYONE,
+                    allow_change_from_staff           => $allow_changes_from == STAFF,
+                    allow_change_from_permitted_staff => $allow_changes_from == PERMITTED,
+                    owner                             => scalar $loggedinuser,
+                }
+            );
+            $shelf->store;
+            $shelfnumber = $shelf->shelfnumber;
+        };
+        if ($@) {
+            push @messages, { type => 'error', code => ref($@), msg => $@ };
+        } elsif ( not $shelf ) {
+            push @messages, { type => 'error', code => 'error_on_insert' };
+        } else {
+            push @messages, { type => 'message', code => 'success_on_insert' };
+            $op = 'view';
+        }
+    } else {
+        push @messages, { type => 'error', code => 'unauthorized_on_insert' };
+        $op = 'list';
+    }
+} elsif ( $op eq 'cud-edit' ) {
+    $shelfnumber = $query->param('shelfnumber');
+    $shelf       = Koha::Virtualshelves->find($shelfnumber);
+    if ($shelf) {
+        $op = $referer;
+        my $sortfield = $query->param('sortfield');
+        $sortfield = 'title' unless grep { $_ eq $sortfield } qw( title author copyrightdate itemcallnumber dateadded );
+        if ( $sortfield eq 'copyrightdate' and C4::Context->preference('marcflavour') eq 'UNIMARC' ) {
+            $sortfield = 'publicationyear';
+        }
+        if ( $shelf->can_be_managed($loggedinuser) ) {
+            $shelf->shelfname( scalar $query->param('shelfname') );
+            $shelf->sortfield($sortfield);
+            my $allow_changes_from = $query->param('allow_changes_from');
+            $shelf->allow_change_from_owner( $allow_changes_from > 0 );
+            $shelf->allow_change_from_others( $allow_changes_from == ANYONE );
+            $shelf->allow_change_from_staff( $allow_changes_from == STAFF );
+            $shelf->allow_change_from_permitted_staff( $allow_changes_from == PERMITTED );
+            $shelf->public($public);
+            eval { $shelf->store };
+
+            if ($@) {
+                push @messages, { type => 'error', code => 'error_on_update' };
+                $op = 'edit_form';
+            } else {
+                push @messages, { type => 'message', code => 'success_on_update' };
+            }
+        } else {
+            push @messages, { type => 'error', code => 'unauthorized_on_update' };
+        }
+    } else {
+        push @messages, { type => 'error', code => 'does_not_exist' };
+    }
+} elsif ( $op eq 'cud-delete' ) {
+    $shelfnumber = $query->param('shelfnumber');
+    $shelf       = Koha::Virtualshelves->find($shelfnumber);
+    if ($shelf) {
+        if ( $shelf->can_be_deleted($loggedinuser) ) {
+            eval { $shelf->delete; };
+            if ($@) {
+                push @messages, { type => 'error', code => ref($@), msg => $@ };
+            } else {
+                push @messages, { type => 'message', code => 'success_on_delete' };
+            }
+        } else {
+            push @messages, { type => 'error', code => 'unauthorized_on_delete' };
+        }
+    } else {
+        push @messages, { type => 'error', code => 'does_not_exist' };
+    }
+    $op = $referer;
+} elsif ( $op eq 'cud-remove_share' ) {
+    $shelfnumber = $query->param('shelfnumber');
+    $shelf       = Koha::Virtualshelves->find($shelfnumber);
+    if ($shelf) {
+        my $removed = eval { $shelf->remove_share($loggedinuser); };
+        if ($@) {
+            push @messages, { type => 'error', code => ref($@), msg => $@ };
+        } elsif ($removed) {
+            push @messages, { type => 'message', code => 'success_on_remove_share' };
+        } else {
+            push @messages, { type => 'error', code => 'error_on_remove_share' };
+        }
+    } else {
+        push @messages, { type => 'error', code => 'does_not_exist' };
+    }
+    $op = $referer;
+
+} elsif ( $op eq 'cud-add_biblio' ) {
+    $shelfnumber = $query->param('shelfnumber');
+    $shelf       = Koha::Virtualshelves->find($shelfnumber);
+    if ($shelf) {
+        if ( my $barcode = $query->param('barcode') ) {
+            my $item = Koha::Items->find( { barcode => $barcode } );
+            if ($item) {
+                if ( $shelf->can_biblios_be_added($loggedinuser) ) {
+                    my $added = eval { $shelf->add_biblio( $item->biblionumber, $loggedinuser ); };
+                    if ($@) {
+                        push @messages, { type => 'error', code => ref($@), msg => $@ };
+                    } elsif ($added) {
+                        push @messages, { type => 'message', code => 'success_on_add_biblio' };
+                    } else {
+                        push @messages, { type => 'message', code => 'error_on_add_biblio' };
+                    }
+                } else {
+                    push @messages, { type => 'error', code => 'unauthorized_on_add_biblio' };
+                }
+            } else {
+                push @messages, { type => 'error', code => 'item_does_not_exist' };
+            }
+        }
+    } else {
+        push @messages, { type => 'error', code => 'does_not_exist' };
+    }
+    $op = $referer;
+} elsif ( $op eq 'cud-remove_biblios' ) {
+    $shelfnumber = $query->param('shelfnumber');
+    $shelf       = Koha::Virtualshelves->find($shelfnumber);
+    my @biblionumber = $query->multi_param('biblionumber');
+    if ($shelf) {
+        if ( $shelf->can_biblios_be_removed($loggedinuser) ) {
+            my $number_of_biblios_removed = eval {
+                $shelf->remove_biblios(
+                    {
+                        biblionumbers  => \@biblionumber,
+                        borrowernumber => $loggedinuser,
+                    }
+                );
+            };
+            if ($@) {
+                push @messages, { type => 'error', code => ref($@), msg => $@ };
+            } elsif ($number_of_biblios_removed) {
+                push @messages, { type => 'message', code => 'success_on_remove_biblios' };
+            } else {
+                push @messages, { type => 'error', code => 'no_biblio_removed' };
+            }
+        } else {
+            push @messages, { type => 'error', code => 'unauthorized_on_remove_biblios' };
+        }
+    } else {
+        push @messages, { type => 'error', code => 'does_not_exist' };
+    }
+    $op = 'view';
+} elsif ( $op eq 'cud-transfer' ) {
+    $shelfnumber = $query->param('shelfnumber');
+    $shelf       = Koha::Virtualshelves->find($shelfnumber) if $shelfnumber;
+    my $new_owner = $query->param('new_owner');    # borrowernumber or undef
+    my $error_code =
+          $shelf
+        ? $shelf->cannot_be_transferred( { by => $loggedinuser, to => $new_owner, interface => 'opac' } )
+        : 'does_not_exist';
+
+    if ( !$new_owner && $error_code eq 'missing_to_parameter' ) {    # show transfer form
+        my $patrons = [];
+        my $shares  = $shelf->get_shares->search( { borrowernumber => { '!=' => undef } } );
+        while ( my $share = $shares->next ) {
+            my $email = $share->sharee->notice_email_address;
+            push @$patrons, { email => $email, borrowernumber => $share->get_column('borrowernumber') } if $email;
+        }
+        if (@$patrons) {
+            $template->param( shared_users => $patrons );
+            $op = 'cud-transfer';
+        } else {
+            push @messages, { type => 'error', code => 'no_email_found' };
+        }
+    } elsif ($error_code) {
+        push @messages, { type => 'error', code => $error_code };
+        $op = 'list';
+    } else {    # transfer; remove new_owner from virtualshelfshares, add loggedinuser
+        $shelf->_result->result_source->schema->txn_do(
+            sub {
+                $shelf->get_shares->search( { borrowernumber => $new_owner } )->delete;
+                Koha::Virtualshelfshare->new(
+                    { shelfnumber => $shelfnumber, borrowernumber => $loggedinuser, sharedate => dt_from_string } )
+                    ->store;
+                $shelf->owner($new_owner)->store;
+            }
+        );
+        $op = 'list';
+    }
+}
+
+# PART 2: After a possible action, view one list or show a number of lists
+if ( $op eq 'view' ) {
+    $shelfnumber ||= $query->param('shelfnumber');
+    $shelf = Koha::Virtualshelves->find($shelfnumber);
+    if ($shelf) {
+        if ( $shelf->can_be_viewed($loggedinuser) ) {
+            $public = $shelf->public;
+
+            # Sortfield param may still include sort order with :asc or :desc, but direction overrides it
+            my ( $sortfield, $direction );
+            if ( $query->param('sortfield') ) {
+                ( $sortfield, $direction ) = split /:/, $query->param('sortfield');
+            } else {
+                $sortfield = $shelf->sortfield;
+                $direction = 'asc';
+            }
+            $direction = $query->param('direction') if $query->param('direction');
+            $direction = 'asc'                      if !$direction or ( $direction ne 'asc' and $direction ne 'desc' );
+            $sortfield = 'title'
+                if !$sortfield
+                or !grep { $_ eq $sortfield } qw( title author copyrightdate itemcallnumber dateadded );
+            if ( $sortfield eq 'copyrightdate' and C4::Context->preference('marcflavour') eq 'UNIMARC' ) {
+                $sortfield = 'publicationyear';
+            }
+
+            my $rows;
+            if ( $query->param('print') or $query->param('rss') ) {
+                $page = "";
+            } else {
+                $rows = C4::Context->preference('OPACnumSearchResults') || 20;
+            }
+            my $order_by       = $sortfield eq 'itemcallnumber' ? 'items.cn_sort' : $sortfield;
+            my $shelf_contents = $shelf->get_contents;
+
+            if ( C4::Context->preference('OpacSuppression') ) {
+                my $ip_in_range = 0;
+                if ( my $ip_range = C4::Context->preference('OpacSuppressionByIPRange') ) {
+                    my $ip_address = $ENV{'REMOTE_ADDR'};
+                    $ip_in_range = ( $ip_address =~ /^$ip_range/ );
+                }
+                $shelf_contents = $shelf_contents->filter_by_not_suppressed
+                    unless $ip_in_range;
+            }
+
+            my $contents = $shelf_contents->search(
+                {},
+                {
+                    distinct => 'biblionumber',
+                    join     => [ { 'biblionumber' => { 'biblioitems' => 'items' } } ],
+                    page     => $page,
+                    rows     => $rows,
+                    order_by => { "-$direction" => $order_by },
+                }
+            );
+
+            # get biblionumbers stored in the cart
+            my @cart_list;
+            if ( my $cart_list = $query->cookie('bib_list') ) {
+                @cart_list = split( /\//, $cart_list );
+            }
+
+            my $patron = Koha::Patrons->find($loggedinuser);
+
+            my $categorycode;    # needed for may_article_request
+            if ( C4::Context->preference('ArticleRequests') ) {
+                $categorycode = $patron ? $patron->categorycode : undef;
+            }
+
+            my $record_processor = Koha::RecordProcessor->new( { filters => 'ViewPolicy' } );
+
+            my $art_req_itypes;
+            if ( C4::Context->preference('ArticleRequests') ) {
+                $art_req_itypes = Koha::CirculationRules->guess_article_requestable_itemtypes(
+                    { $patron ? ( categorycode => $patron->categorycode ) : () } );
+            }
+
+            my @items_info;
+            while ( my $content = $contents->next ) {
+                my $biblionumber = $content->biblionumber;
+                my $this_item    = GetBiblioData($biblionumber);
+                my $biblio       = Koha::Biblios->find($biblionumber);
+                my $record       = $biblio->metadata->record;
+                my $framework    = GetFrameworkCode($biblionumber);
+                $record_processor->options(
+                    {
+                        interface     => 'opac',
+                        frameworkcode => $framework
+                    }
+                );
+                $record_processor->process($record);
+
+                my $marcflavour = C4::Context->preference("marcflavour");
+                my $itemtype = Koha::Biblioitems->search( { biblionumber => $content->biblionumber } )->next->itemtype;
+                $itemtype = Koha::ItemTypes->find($itemtype);
+                if ($itemtype) {
+                    $this_item->{imageurl}    = C4::Koha::getitemtypeimagelocation( 'opac', $itemtype->imageurl );
+                    $this_item->{description} = $itemtype->description;  #FIXME Should not it be translated_description?
+                    $this_item->{notforloan}  = $itemtype->notforloan;
+                }
+                my $extractor = Koha::Biblio::Metadata::Extractor->new( { metadata => $record } );
+                $this_item->{'coins'}           = $biblio->get_coins;
+                $this_item->{'normalized_upc'}  = $extractor->get_normalized_upc;
+                $this_item->{'normalized_ean'}  = $extractor->get_normalized_ean;
+                $this_item->{'normalized_oclc'} = $extractor->get_normalized_oclc;
+                $this_item->{'normalized_isbn'} = GetNormalizedISBN( undef, $record, $marcflavour );
+
+                # BZ17530: 'Intelligent' guess if result can be article requested
+                $this_item->{artreqpossible} =
+                    ( $art_req_itypes->{ $this_item->{itemtype} // q{} } || $art_req_itypes->{'*'} ) ? 1 : q{};
+
+                unless ( defined $this_item->{size} ) {
+
+                    #TT has problems with size
+                    $this_item->{size} = q||;
+                }
+
+                if ( C4::Context->preference('TagsEnabled') and C4::Context->preference('TagsShowOnList') ) {
+                    $this_item->{TagLoop} = get_tags(
+                        {
+                            biblionumber => $biblionumber, approved => 1, 'sort' => '-weight',
+                            limit        => C4::Context->preference('TagsShowOnList'),
+                        }
+                    );
+                }
+
+                my $items = $biblio->items->filter_by_visible_in_opac( { patron => $patron } );
+                my $allow_onshelf_holds;
+                while ( my $item = $items->next ) {
+
+                    # This method must take a Koha::Items rs
+                    $allow_onshelf_holds ||=
+                        Koha::CirculationRules->get_onshelfholds_policy( { item => $item, patron => $patron } );
+
+                }
+
+                $this_item->{allow_onshelf_holds} = $allow_onshelf_holds;
+                $this_item->{'ITEM_RESULTS'}      = $items;
+
+                my $variables = { anonymous_session => ($loggedinuser) ? 0 : 1 };
+                $this_item->{XSLTBloc} = XSLTParse4Display(
+                    {
+                        biblionumber   => $biblionumber,
+                        record         => $record,
+                        xsl_syspref    => "OPACXSLTListsDisplay",
+                        fix_amps       => 1,
+                        xslt_variables => $variables,
+                        items_rs       => $items->reset,
+                    }
+                );
+
+                if ( grep { $_ eq $biblionumber } @cart_list ) {
+                    $this_item->{incart} = 1;
+                }
+
+                $this_item->{biblio_object} = $biblio;
+                $this_item->{biblionumber}  = $biblionumber;
+                $this_item->{shelves}       = Koha::Virtualshelves->get_shelves_containing_record(
+                    {
+                        biblionumber   => $biblionumber,
+                        borrowernumber => $loggedinuser,
+                    }
+                );
+
+                if ( C4::Context->preference('OPACLocalCoverImages') ) {
+                    $this_item->{has_local_cover_image} =
+                        $this_item->{biblio_object} ? $this_item->{biblio_object}->cover_images->count : 0;
+                }
+                push @items_info, $this_item;
+            }
+
+            $template->param(
+                can_manage_shelf   => $shelf->can_be_managed($loggedinuser),
+                can_delete_shelf   => $shelf->can_be_deleted($loggedinuser),
+                can_remove_biblios => $shelf->can_biblios_be_removed($loggedinuser),
+                can_add_biblios    => $shelf->can_biblios_be_added($loggedinuser),
+                contents_count     => $shelf_contents->count,
+                itemsloop          => \@items_info,
+                sortfield          => $sortfield,
+                direction          => $direction,
+                csv_profiles       => Koha::CsvProfiles->search(
+                    {
+                        type       => 'marc',
+                        used_for   => 'export_records',
+                        staff_only => 0
+                    }
+                ),
+            );
+            if ($page) {
+                my $pager = $contents->pager;
+                $template->param(
+                    pagination_bar => pagination_bar(
+                        q||,   $pager->last_page - $pager->first_page + 1,
+                        $page, "page",
+                        {
+                            op        => 'view', shelfnumber => $shelf->shelfnumber, sortfield => $sortfield,
+                            direction => $direction,
+                        }
+                    ),
+                );
+            }
+            my $some_private_shelves = Koha::Virtualshelves->get_some_shelves(
+                {
+                    borrowernumber => $loggedinuser,
+                    add_allowed    => 1,
+                    public         => 0,
+                }
+            );
+            my $some_public_shelves = Koha::Virtualshelves->get_some_shelves(
+                {
+                    borrowernumber => $loggedinuser,
+                    add_allowed    => 1,
+                    public         => 1,
+                }
+            );
+
+            $template->param(
+                add_to_some_private_shelves => $some_private_shelves,
+                add_to_some_public_shelves  => $some_public_shelves,
+            );
+        } else {
+            push @messages, { type => 'error', code => 'unauthorized_on_view' };
+            undef $shelf;
+        }
+    } else {
+        push @messages, { type => 'error', code => 'does_not_exist' };
+    }
+} elsif ( $op eq 'list' ) {
+    my $direction = $query->param('direction') || 'asc';
+    my $sortfield = $query->param('sortfield') || 'shelfname';
+    my $sort_by   = { sortfield => $sortfield, direction => $direction };
+
+    my $shelves;
+    my ($rows) = (20);
+    if ( !$public ) {
+        $shelves = Koha::Virtualshelves->get_private_shelves(
+            { page => $page, rows => $rows, borrowernumber => $loggedinuser, sort_by => $sort_by, } );
+    } else {
+        $shelves = Koha::Virtualshelves->get_public_shelves( { page => $page, rows => $rows, sort_by => $sort_by, } );
+    }
+
+    my $pager = $shelves->pager;
+
+    # Pre-compute contents count per shelf, respecting suppression
+    my $apply_suppression = C4::Context->preference('OpacSuppression');
+    my $ip_in_range       = 0;
+    if ( $apply_suppression && ( my $ip_range = C4::Context->preference('OpacSuppressionByIPRange') ) ) {
+        my $ip_address = $ENV{'REMOTE_ADDR'};
+        $ip_in_range = ( $ip_address =~ /^$ip_range/ );
+    }
+
+    my @shelves_list;
+    while ( my $s = $shelves->next ) {
+        my $shelf_contents = $s->get_contents;
+        $shelf_contents = $shelf_contents->filter_by_not_suppressed
+            if $apply_suppression && !$ip_in_range;
+        push @shelves_list, { shelf => $s, contents_count => $shelf_contents->count };
+    }
+    $shelves->reset;
+
+    $template->param(
+        shelves        => $shelves,
+        shelves_list   => \@shelves_list,
+        pagination_bar => pagination_bar(
+            q||,   $pager->last_page - $pager->first_page + 1,
+            $page, "page",
+            {
+                op        => 'list', public => $public, sortfield => $sortfield,
+                direction => $direction,
+            }
+        ),
+    );
+}
+
+my ( $staffuser, $permitteduser );
+$staffuser     = Koha::Patrons->find($loggedinuser)->can_patron_change_staff_only_lists      if $loggedinuser;
+$permitteduser = Koha::Patrons->find($loggedinuser)->can_patron_change_permitted_staff_lists if $loggedinuser;
+
+$template->param(
+    op            => $op,
+    referer       => $referer,
+    shelf         => $shelf,
+    messages      => \@messages,
+    public        => $public,
+    print         => scalar $query->param('print') || 0,
+    listsview     => 1,
+    staffuser     => $staffuser,
+    permitteduser => $permitteduser
+);
+
+my $content_type = $query->param('rss') ? 'rss' : 'html';
+output_with_http_headers $query, $cookie, $template->output, $content_type;

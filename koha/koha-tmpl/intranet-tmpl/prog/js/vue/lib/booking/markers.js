@@ -1,0 +1,316 @@
+/**
+ * Marker generation for the booking calendar.
+ *
+ * This module derives per-day calendar markers from availability data and
+ * the translated labels and hover feedback that describe them.
+ *
+ * @module markers
+ */
+
+import { formatYMD, toDay, today } from "./dates.js";
+import { calculateMaxEndDate } from "./availability/predicate.js";
+import { idsEqual } from "../../utils/functions.js";
+import { $__ } from "@koha-vue/i18n";
+
+const MARKER_TYPE_MAP = Object.freeze({
+    booking: "booked",
+    checkout: "checked-out",
+});
+
+/**
+ * Get the translated display label for a marker type.
+ *
+ * @param {string} type
+ * @returns {string}
+ */
+export function getMarkerTypeLabel(type) {
+    const labels = {
+        booked: $__("Unavailable"),
+        "checked-out": $__("Unavailable"),
+        lead: $__("Lead period"),
+        "lead-floor": $__("Minimum lead time from today"),
+        "lead-theoretical": $__("Lead period for a follow-up booking"),
+        trail: $__("Trail period"),
+        holiday: $__("Library closed"),
+    };
+    return labels[type] || type;
+}
+
+/**
+ * Describe a marker with its type label and barcode as one reorderable
+ * translation, e.g. "Booked (Barcode: 3999900000001)".
+ *
+ * @param {import('./types/bookings.d.ts').CalendarMarker} marker
+ * @returns {string}
+ */
+export function getMarkerDescription(marker) {
+    return $__("%s (Barcode: %s)").format(
+        getMarkerTypeLabel(marker.type),
+        marker.barcode || $__("N/A")
+    );
+}
+
+/**
+ * Aggregate all booking/checkouts for a given date (for calendar indicators)
+ * @param {import('./types/bookings.d.ts').UnavailableByDate} unavailableByDate - Map produced by serverMapToUnavailableByDate
+ * @param {string|Date|import("dayjs").Dayjs} dateStr - date to check (YYYY-MM-DD or Date or dayjs)
+ * @param {Array<import('./types/bookings.d.ts').BookableItem>} bookableItems - Array of all bookable items
+ * @returns {import('./types/bookings.d.ts').CalendarMarker[]} indicators for that date
+ */
+export function getBookingMarkersForDate(
+    unavailableByDate,
+    dateStr,
+    bookableItems = []
+) {
+    if (!unavailableByDate) {
+        return [];
+    }
+
+    let d;
+    try {
+        d = dateStr ? toDay(dateStr) : today();
+    } catch {
+        d = today();
+    }
+    const key = d.format("YYYY-MM-DD");
+    const markers = [];
+
+    /**
+     * Resolve a marker item across string and numeric identifier forms.
+     *
+     * @param {import('./types/bookings.d.ts').Id|null|undefined} item_id Item identifier.
+     * @returns {import('./types/bookings.d.ts').BookableItem|undefined} Matching item.
+     */
+    const findItem = item_id => {
+        if (item_id == null) return undefined;
+        return bookableItems.find(i => idsEqual(i?.item_id, item_id));
+    };
+
+    const entry = unavailableByDate[key];
+
+    if (!entry) {
+        return [];
+    }
+
+    for (const [item_id, reasons] of Object.entries(entry)) {
+        const item = findItem(item_id);
+        for (const reason of reasons) {
+            const type = MARKER_TYPE_MAP[reason] ?? reason;
+            markers.push({
+                /** @type {import('./types/bookings.d.ts').MarkerType} */
+                type: /** @type {any} */ (type),
+                item: String(item_id),
+                itemName:
+                    item?.external_id || item?.barcode || item?.title || "",
+                barcode: item?.external_id || item?.barcode || null,
+            });
+        }
+    }
+    return markers;
+}
+
+/**
+ * Contextual hover feedback messages for booking calendar dates.
+ *
+ * Generates user-facing messages explaining why a date is disabled
+ * or providing context about the current selection mode.
+ * Mirrors upstream's ~20 contextual messages adapted for the Vue architecture.
+ *
+ * @module hover-feedback
+ */
+
+/**
+ * Generate a contextual feedback message for a hovered calendar date.
+ *
+ * leadDays/trailDays/maxPeriod must be the already-derived effective
+ * values (e.g. useBookingCalendarMaps's bufferConfig, built via
+ * extractBookingConfiguration/toEffectiveRules) rather than raw
+ * circulation-rule fields - maxPeriod in particular depends on the
+ * active dateRangeConstraint mode (plain issuelength vs. issuelength
+ * with renewals vs. a custom formula), which a bare rules object
+ * doesn't carry. Passing raw rules here previously fell back to bare
+ * issuelength unconditionally, understating maxPeriod and - since this
+ * check runs before the marker-based reasons below - reporting "exceeds
+ * maximum booking period" instead of the actual disabling conflict.
+ *
+ * @param {Date} date - The date being hovered
+ * @param {Object} context
+ * @param {boolean} context.isDisabled - Whether the date is disabled in the calendar
+ * @param {string[]} context.selectedDateRange - Currently selected dates (ISO strings)
+ * @param {number} [context.leadDays] - Effective lead days
+ * @param {number} [context.trailDays] - Effective trail days
+ * @param {number} [context.maxPeriod] - Effective max booking period
+ * @param {Object} context.unavailableByDate - Unavailability map from store
+ * @param {string[]} [context.holidays] - Holiday date strings (YYYY-MM-DD)
+ * @returns {{ message: string, variant: "info"|"warning"|"danger" } | null}
+ */
+export function getDateFeedbackMessage(date, context) {
+    const {
+        isDisabled,
+        selectedDateRange,
+        leadDays = 0,
+        trailDays = 0,
+        maxPeriod = 0,
+        unavailableByDate,
+        holidays,
+    } = context;
+
+    const currentDay = today();
+    const d = toDay(date);
+    const dateKey = formatYMD(date);
+
+    const hasStart = selectedDateRange && selectedDateRange.length >= 1;
+    const isSelectingEnd = hasStart;
+    const isSelectingStart = !hasStart;
+
+    if (isDisabled) {
+        const reason = getDisabledReason(d, dateKey, {
+            today: currentDay,
+            leadDays,
+            trailDays,
+            maxPeriod,
+            isSelectingStart,
+            isSelectingEnd,
+            selectedDateRange,
+            unavailableByDate,
+            holidays,
+        });
+        return { message: reason, variant: "danger" };
+    }
+
+    const info = getEnabledInfo({ isSelectingStart, isSelectingEnd });
+    return info ? { message: info, variant: "info" } : null;
+}
+
+/**
+ * Determine the reason a date is disabled.
+ * Checks conditions in priority order matching upstream logic.
+ *
+ * @param {import('dayjs').Dayjs} d Date being described.
+ * @param {string} dateKey Date key in YYYY-MM-DD format.
+ * @param {Object} ctx Calendar feedback context.
+ * @returns {string} Translated reason the date is disabled.
+ */
+function getDisabledReason(d, dateKey, ctx) {
+    // Past date
+    if (d.isBefore(ctx.today, "day")) {
+        return $__("Cannot select: date is in the past");
+    }
+
+    // Holiday
+    if (ctx.holidays && ctx.holidays.includes(dateKey)) {
+        return $__("Cannot select: library is closed on this date");
+    }
+
+    // Insufficient lead time from today
+    if (ctx.isSelectingStart && ctx.leadDays > 0) {
+        const minStart = ctx.today.add(ctx.leadDays, "day");
+        if (d.isBefore(minStart, "day")) {
+            return $__(
+                "Cannot select: insufficient lead time (%s days required before start)"
+            ).format(ctx.leadDays);
+        }
+    }
+
+    // Exceeds maximum booking period
+    if (ctx.isSelectingEnd && ctx.maxPeriod > 0 && ctx.selectedDateRange?.[0]) {
+        const maxEnd = calculateMaxEndDate(
+            ctx.selectedDateRange[0],
+            ctx.maxPeriod
+        );
+        if (d.isAfter(maxEnd, "day")) {
+            return $__(
+                "Cannot select: exceeds maximum booking period (%s days)"
+            ).format(ctx.maxPeriod);
+        }
+    }
+
+    // Check markers in unavailableByDate for specific reasons
+    const markerReasons = collectMarkerReasons(ctx.unavailableByDate, dateKey);
+
+    if (markerReasons.has("holiday")) {
+        return $__("Cannot select: library is closed on this date");
+    }
+    if (markerReasons.has("booking")) {
+        return $__("Cannot select: this date is part of an existing booking");
+    }
+    if (markerReasons.has("checkout")) {
+        return $__("Cannot select: this date is part of an existing checkout");
+    }
+    if (markerReasons.has("lead-floor")) {
+        return $__(
+            "Cannot select: minimum %s-day lead time from today is required before any booking can start"
+        ).format(ctx.leadDays);
+    }
+    if (markerReasons.has("lead-theoretical")) {
+        return $__(
+            "Cannot select: a %s-day lead time is required after an existing booking's trail period before a new booking can start"
+        ).format(ctx.leadDays);
+    }
+    if (markerReasons.has("lead")) {
+        return $__(
+            "Cannot select: this date is part of an existing booking's lead period"
+        );
+    }
+    if (markerReasons.has("trail")) {
+        return $__(
+            "Cannot select: this date is part of an existing booking's trail period"
+        );
+    }
+
+    // Lead period of selected start would conflict
+    if (ctx.isSelectingStart && ctx.leadDays > 0) {
+        return $__(
+            "Cannot select: lead period (%s days before start) conflicts with an existing booking"
+        ).format(ctx.leadDays);
+    }
+
+    // Trail period of selected end would conflict
+    if (ctx.isSelectingEnd && ctx.trailDays > 0) {
+        return $__(
+            "Cannot select: trail period (%s days after return) conflicts with an existing booking"
+        ).format(ctx.trailDays);
+    }
+
+    return $__("Cannot select: conflicts with an existing booking");
+}
+
+/**
+ * Generate info message for an enabled (selectable) date.
+ *
+ * Pure instruction - day-count numbers live permanently in the
+ * booking-constraint-info box now, and per-marker context (lead/trail
+ * adjacency, barcodes) lives in the day-details panel, so this has one
+ * job: say what to do next.
+ *
+ * @param {Object} ctx Calendar feedback context.
+ * @param {boolean} ctx.isSelectingStart
+ * @param {boolean} ctx.isSelectingEnd
+ * @returns {string|null} Translated selection guidance when applicable.
+ */
+function getEnabledInfo(ctx) {
+    if (ctx.isSelectingStart) return $__("Select a start date");
+    if (ctx.isSelectingEnd) return $__("Select an end date");
+    return null;
+}
+
+/**
+ * Collect all marker reason strings for a date from the unavailableByDate map.
+ * @param {Object} unavailableByDate
+ * @param {string} dateKey - YYYY-MM-DD
+ * @returns {Set<string>}
+ */
+function collectMarkerReasons(unavailableByDate, dateKey) {
+    const reasons = new Set();
+    const entry = unavailableByDate?.[dateKey];
+    if (!entry) return reasons;
+
+    Object.values(entry).forEach(itemReasons => {
+        if (itemReasons instanceof Set) {
+            itemReasons.forEach(r => reasons.add(r));
+        } else if (Array.isArray(itemReasons)) {
+            itemReasons.forEach(r => reasons.add(r));
+        }
+    });
+    return reasons;
+}

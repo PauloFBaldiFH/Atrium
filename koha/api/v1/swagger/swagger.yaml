@@ -1,0 +1,1634 @@
+---
+swagger: "2.0"
+basePath: /api/v1
+definitions:
+  account_line:
+    $ref: ./definitions/account_line.yaml
+  action_log:
+    $ref: ./definitions/action_log.yaml
+  additional_content:
+    $ref: ./definitions/additional_content.yaml
+  advancededitormacro:
+    $ref: ./definitions/advancededitormacro.yaml
+  allows_renewal:
+    $ref: ./definitions/allows_renewal.yaml
+  authorised_value:
+    $ref: ./definitions/authorised_value.yaml
+  authorised_value_category:
+    $ref: ./definitions/authorised_value_category.yaml
+  circulation_rules:
+    $ref: ./definitions/circulation_rules.yaml
+  circulation_rules_config:
+    $ref: ./definitions/circulation_rules_config.yaml
+  identity_provider:
+    $ref: ./definitions/identity_provider.yaml
+  identity_provider_domain:
+    $ref: ./definitions/identity_provider_domain.yaml
+  basket:
+    $ref: ./definitions/basket.yaml
+  booking:
+    $ref: ./definitions/booking.yaml
+  booking_availability:
+    $ref: ./definitions/booking_availability.yaml
+  booking_patch:
+    $ref: ./definitions/booking_patch.yaml
+  bundle_link:
+    $ref: ./definitions/bundle_link.yaml
+  cash_register:
+    $ref: ./definitions/cash_register.yaml
+  cashup:
+    $ref: ./definitions/cashup.yaml
+  checkout:
+    $ref: ./definitions/checkout.yaml
+  checkouts:
+    $ref: ./definitions/checkouts.yaml
+  checkout_availability:
+    $ref: ./definitions/checkout_availability.yaml
+  circ-rule-kind:
+    $ref: ./definitions/circ-rule-kind.yaml
+  city:
+    $ref: ./definitions/city.yaml
+  credit:
+    $ref: ./definitions/credit.yaml
+  debit:
+    $ref: ./definitions/debit.yaml
+  desk:
+    $ref: ./definitions/desk.yaml
+  edifact_file:
+    $ref: ./definitions/edifact_file.yaml
+  erm_config:
+    $ref: ./definitions/erm_config.yaml
+  erm_agreement:
+    $ref: ./definitions/erm_agreement.yaml
+  erm_counter_file:
+    $ref: ./definitions/erm_counter_file.yaml
+  erm_counter_registry:
+    $ref: ./definitions/erm_counter_registry.yaml
+  erm_counter_log:
+    $ref: ./definitions/erm_counter_log.yaml
+  erm_custom_report:
+    $ref: ./definitions/erm_custom_report.yaml
+  erm_default_usage_report:
+    $ref: ./definitions/erm_default_usage_report.yaml
+  erm_eholdings_title:
+    $ref: ./definitions/erm_eholdings_title.yaml
+  erm_eholdings_package:
+    $ref: ./definitions/erm_eholdings_package.yaml
+  erm_eholdings_resource:
+    $ref: ./definitions/erm_eholdings_resource.yaml
+  erm_license:
+    $ref: ./definitions/erm_license.yaml
+  erm_sushi_service:
+    $ref: ./definitions/erm_sushi_service.yaml
+  erm_usage_data_provider:
+    $ref: ./definitions/erm_usage_data_provider.yaml
+  erm_usage_database:
+    $ref: ./definitions/erm_usage_database.yaml
+  erm_usage_item:
+    $ref: ./definitions/erm_usage_item.yaml
+  erm_usage_mus:
+    $ref: ./definitions/erm_usage_mus.yaml
+  erm_usage_platform:
+    $ref: ./definitions/erm_usage_platform.yaml
+  erm_usage_title:
+    $ref: ./definitions/erm_usage_title.yaml
+  erm_usage_yus:
+    $ref: ./definitions/erm_usage_yus.yaml
+  error:
+    $ref: ./definitions/error.yaml
+  extended_attribute_type:
+    $ref: ./definitions/extended_attribute_type.yaml
+  extended_attribute_value:
+    $ref: ./definitions/extended_attribute_value.yaml
+  fund:
+    $ref: ./definitions/fund.yaml
+  hold:
+    $ref: ./definitions/hold.yaml
+  holds:
+    $ref: ./definitions/holds.yaml
+  holds_queue_item:
+    $ref: ./definitions/holds_queue_item.yaml
+  hold_group:
+    $ref: ./definitions/hold_group.yaml
+  ill_backend:
+    $ref: ./definitions/ill_backend.yaml
+  ill_backends:
+    $ref: ./definitions/ill_backends.yaml
+  ill_config:
+    $ref: ./definitions/ill_config.yaml
+  ill_status:
+    $ref: ./definitions/ill_status.yaml
+  ill_request:
+    $ref: ./definitions/ill_request.yaml
+  ill_batch:
+    $ref: ./definitions/ill_batch.yaml
+  ill_batches:
+    $ref: ./definitions/ill_batches.yaml
+  ill_batchstatus:
+    $ref: ./definitions/ill_batchstatus.yaml
+  ill_batchstatuses:
+    $ref: ./definitions/ill_batchstatuses.yaml
+  iso18626_request:
+    $ref: ./definitions/iso18626_request.yaml
+  iso18626_requesting_agency:
+    $ref: ./definitions/iso18626_requesting_agency.yaml
+  ISO18626request:
+    $ref: ./definitions/ISO18626/request.yaml
+  ISO18626requestingAgencyMessage:
+    $ref: ./definitions/ISO18626/requestingAgencyMessage.yaml
+  ISO18626supplyingAgencyMessage:
+    $ref: ./definitions/ISO18626/supplyingAgencyMessage.yaml
+  ISO18626requestConfirmation:
+    $ref: ./definitions/ISO18626/requestConfirmation.yaml
+  ISO18626requestingAgencyMessageConfirmation:
+    $ref: ./definitions/ISO18626/requestingAgencyMessageConfirmation.yaml
+  ISO18626supplyingAgencyMessageConfirmation:
+    $ref: ./definitions/ISO18626/supplyingAgencyMessageConfirmation.yaml
+  import_batch_profile:
+    $ref: ./definitions/import_batch_profile.yaml
+  import_batch_profiles:
+    $ref: ./definitions/import_batch_profiles.yaml
+  import_record_match:
+    $ref: ./definitions/import_record_match.yaml
+  koha_version:
+    $ref: definitions/koha_version.yaml
+  record_source:
+    $ref: ./definitions/record_source.yaml
+  invoice:
+    $ref: ./definitions/invoice.yaml
+  item:
+    $ref: ./definitions/item.yaml
+  item_group:
+    $ref: ./definitions/item_group.yaml
+  item_list:
+    $ref: ./definitions/item_list.yaml
+  item_list_share:
+    $ref: ./definitions/item_list_share.yaml
+  item_lists_config:
+    $ref: ./definitions/item_lists_config.yaml
+  item_type:
+    $ref: ./definitions/item_type.yaml
+  job:
+    $ref: ./definitions/job.yaml
+  library:
+    $ref: ./definitions/library.yaml
+  library_group:
+    $ref: ./definitions/library_group.yaml
+  list:
+    $ref: ./definitions/list.yaml
+  merge_biblios:
+    $ref: ./definitions/merge_biblios.yaml
+  message:
+    $ref: ./definitions/message.yaml
+  message_patch:
+    $ref: ./definitions/message_patch.yaml
+  order:
+    $ref: ./definitions/order.yaml
+  order_claim:
+    $ref: ./definitions/order_claim.yaml
+  patron:
+    $ref: ./definitions/patron.yaml
+  patron_account_credit:
+    $ref: ./definitions/patron_account_credit.yaml
+  patron_account_link:
+    $ref: ./definitions/patron_account_link.yaml
+  patron_balance:
+    $ref: ./definitions/patron_balance.yaml
+  patron_category:
+    $ref: ./definitions/patron_category.yaml
+  patron_self_renewal:
+    $ref: ./definitions/patron_self_renewal.yaml
+  patron_extended_attribute:
+    $ref: ./definitions/patron_extended_attribute.yaml
+  preservation_config:
+    $ref: ./definitions/preservation_config.yaml
+  preservation_train:
+    $ref: ./definitions/preservation_train.yaml
+  preservation_train_item:
+    $ref: ./definitions/preservation_train_item.yaml
+  preservation_processing:
+    $ref: ./definitions/preservation_processing.yaml
+  quote:
+    $ref: ./definitions/quote.yaml
+  recall:
+    $ref: ./definitions/recall.yaml
+  recalls:
+    $ref: ./definitions/recalls.yaml
+  report_job:
+    $ref: ./definitions/report_job.yaml
+  running_report:
+    $ref: ./definitions/running_report.yaml
+  renewal:
+    $ref: ./definitions/renewal.yaml
+  renewals:
+    $ref: ./definitions/renewals.yaml
+  return_claim:
+    $ref: ./definitions/return_claim.yaml
+  rota:
+    $ref: ./definitions/rota.yaml
+  search_filter:
+    $ref: ./definitions/search_filter.yaml
+  sip2_account:
+    $ref: ./definitions/sip2_account.yaml
+  sip2_institution:
+    $ref: ./definitions/sip2_institution.yaml
+  sip2_system_preference_override:
+    $ref: ./definitions/sip2_system_preference_override.yaml
+  smtp_server:
+    $ref: ./definitions/smtp_server.yaml
+  file_transport:
+    $ref: ./definitions/file_transport.yaml
+  suggestion:
+    $ref: ./definitions/suggestion.yaml
+  syspref:
+    $ref: ./definitions/syspref.yaml
+  ticket:
+    $ref: ./definitions/ticket.yaml
+  ticket_update:
+    $ref: ./definitions/ticket_update.yaml
+  transfer:
+    $ref: ./definitions/transfer.yaml
+  transfer_limit:
+    $ref: ./definitions/transfer_limit.yaml
+  vendor:
+    $ref: ./definitions/vendor.yaml
+  vendor_alias:
+    $ref: ./definitions/vendor_alias.yaml
+  vendor_interface:
+    $ref: ./definitions/vendor_interface.yaml
+  vendor_issue:
+    $ref: ./definitions/vendor_issue.yaml
+  vendors_config:
+    $ref: ./definitions/vendors_config.yaml
+paths:
+  /action_logs:
+    $ref: ./paths/action_logs.yaml#/~1action_logs
+  /acquisitions/baskets:
+    $ref: ./paths/acquisitions_baskets.yaml#/~1acquisitions~1baskets
+  /acquisitions/baskets/managers:
+    $ref: ./paths/acquisitions_baskets.yaml#/~1acquisitions~1baskets~1managers
+  /acquisitions/edifiles:
+    $ref: ./paths/acquisitions_edifiles.yaml#/~1acquisitions~1edifiles
+  /acquisitions/funds:
+    $ref: ./paths/acquisitions_funds.yaml#/~1acquisitions~1funds
+  /acquisitions/funds/owners:
+    $ref: ./paths/acquisitions_funds.yaml#/~1acquisitions~1funds~1owners
+  /acquisitions/funds/users:
+    $ref: ./paths/acquisitions_funds.yaml#/~1acquisitions~1funds~1users
+  /acquisitions/orders:
+    $ref: ./paths/acquisitions_orders.yaml#/~1acquisitions~1orders
+  "/acquisitions/orders/{order_id}":
+    $ref: "./paths/acquisitions_orders.yaml#/~1acquisitions~1orders~1{order_id}"
+  /acquisitions/vendors:
+    $ref: ./paths/acquisitions_vendors.yaml#/~1acquisitions~1vendors
+  /acquisitions/vendors/extended_attribute_types:
+    $ref: ./paths/acquisitions_vendors_extended_attribute_types.yaml#/~1acquisitions~1vendors~1extended_attribute_types
+  /acquisitions/vendors/config:
+    $ref: ./paths/acquisitions_vendors_config.yaml#/~1acquisitions~1vendors~1config
+  "/acquisitions/vendors/{vendor_id}":
+    $ref: "./paths/acquisitions_vendors.yaml#/~1acquisitions~1vendors~1{vendor_id}"
+  "/acquisitions/vendors/{vendor_id}/issues":
+    $ref: "./paths/acquisitions_vendor_issues.yaml#/~1acquisitions~1vendors~1{vendor_id}~1issues"
+  /advanced_editor/macros:
+    $ref: ./paths/advancededitormacros.yaml#/~1advanced_editor~1macros
+  /advanced_editor/macros/shared:
+    $ref: ./paths/advancededitormacros.yaml#/~1advanced_editor~1macros~1shared
+  /bookings:
+    $ref: ./paths/bookings.yaml#/~1bookings
+  "/bookings/{booking_id}":
+    $ref: ./paths/bookings.yaml#/~1bookings~1{booking_id}
+  /search_filters:
+    $ref: ./paths/search_filters.yaml#/~1search_filters
+  "/search_filters/{search_filter_id}":
+    $ref: "./paths/search_filters.yaml#/~1search_filters~1{search_filter_id}"
+  "/advanced_editor/macros/shared/{advancededitormacro_id}":
+    $ref: "./paths/advancededitormacros.yaml#/~1advanced_editor~1macros~1shared~1{advancededitormacro_id}"
+  "/advanced_editor/macros/{advancededitormacro_id}":
+    $ref: "./paths/advancededitormacros.yaml#/~1advanced_editor~1macros~1{advancededitormacro_id}"
+  "/article_requests/{article_request_id}":
+    $ref: "./paths/article_requests.yaml#/~1article_requests~1{article_request_id}"
+  /auth/otp/token_delivery:
+    $ref: "./paths/auth.yaml#/~1auth~1otp~1token_delivery"
+  "/auth/password/validation":
+    $ref: "./paths/auth.yaml#/~1auth~1password~1validation"
+  /auth/two-factor/registration:
+    $ref: ./paths/auth.yaml#/~1auth~1two-factor~1registration
+  /auth/two-factor/registration/verification:
+    $ref: ./paths/auth.yaml#/~1auth~1two-factor~1registration~1verification
+  /auth/identity_providers:
+    $ref: ./paths/auth.yaml#/~1auth~1identity_providers
+  "/auth/identity_providers/{identity_provider_id}":
+    $ref: ./paths/auth.yaml#/~1auth~1identity_providers~1{identity_provider_id}
+  "/auth/identity_providers/{identity_provider_id}/domains":
+    $ref: ./paths/auth.yaml#/~1auth~1identity_providers~1{identity_provider_id}~1domains
+  "/auth/identity_providers/{identity_provider_id}/domains/{identity_provider_domain_id}":
+    $ref: ./paths/auth.yaml#/~1auth~1identity_providers~1{identity_provider_id}~1domains~1{identity_provider_domain_id}
+  /authorised_value_categories:
+    $ref: ./paths/authorised_value_categories.yaml#/~1authorised_value_categories
+  "/authorised_value_categories/{authorised_value_category_name}/authorised_values":
+    $ref: "./paths/authorised_values.yaml#/~1authorised_value_categories~1{authorised_value_category_name}~1authorised_values"
+  "/authorities":
+    $ref: paths/authorities.yaml#/~1authorities
+  "/authorities/{authority_id}":
+    $ref: "./paths/authorities.yaml#/~1authorities~1{authority_id}"
+  "/biblios":
+    $ref: "./paths/biblios.yaml#/~1biblios"
+  "/biblios/{biblio_id}":
+    $ref: "./paths/biblios.yaml#/~1biblios~1{biblio_id}"
+  "/biblios/{biblio_id}/booking_availability":
+    $ref: "./paths/biblios.yaml#/~1biblios~1{biblio_id}~1booking_availability"
+  "/biblios/{biblio_id}/bookings":
+    $ref: "./paths/biblios.yaml#/~1biblios~1{biblio_id}~1bookings"
+  "/biblios/{biblio_id}/checkouts":
+    $ref: "./paths/biblios.yaml#/~1biblios~1{biblio_id}~1checkouts"
+  "/biblios/{biblio_id}/items":
+    $ref: "./paths/biblios.yaml#/~1biblios~1{biblio_id}~1items"
+  "/biblios/{biblio_id}/items/{item_id}":
+    $ref: "./paths/biblios.yaml#/~1biblios~1{biblio_id}~1items~1{item_id}"
+  "/biblios/{biblio_id}/pickup_locations":
+    $ref: "./paths/biblios.yaml#/~1biblios~1{biblio_id}~1pickup_locations"
+  "/biblios/{biblio_id}/item_groups":
+    $ref: "./paths/biblios_item_groups.yaml#/~1biblios~1{biblio_id}~1item_groups"
+  "/biblios/{biblio_id}/item_groups/{item_group_id}":
+    $ref: "./paths/biblios_item_groups.yaml#/~1biblios~1{biblio_id}~1item_groups~1{item_group_id}"
+  "/biblios/{biblio_id}/item_groups/{item_group_id}/items":
+    $ref: "./paths/biblios_item_groups.yaml#/~1biblios~1{biblio_id}~1item_groups~1{item_group_id}~1items"
+  "/biblios/{biblio_id}/item_groups/{item_group_id}/items/{item_id}":
+    $ref: "./paths/biblios_item_groups.yaml#/~1biblios~1{biblio_id}~1item_groups~1{item_group_id}~1items~1{item_id}"
+  "/biblios/{biblio_id}/metadata/errors/{error_id}":
+    $ref: "./paths/biblios_metadata_errors.yaml#/~1biblios~1{biblio_id}~1metadata~1errors~1{error_id}"
+  "/biblios/{biblio_id}/merge":
+    $ref: "./paths/biblios_merge.yaml#/~1biblios~1{biblio_id}~1merge"
+  /cash_registers:
+    $ref: "./paths/cash_registers.yaml#/~1cash_registers"
+  "/cash_registers/{cash_register_id}/cashups":
+    $ref: "./paths/cash_registers.yaml#/~1cash_registers~1{cash_register_id}~1cashups"
+  "/cashups/{cashup_id}":
+    $ref: "./paths/cash_registers.yaml#/~1cashups~1{cashup_id}"
+  /checkouts:
+    $ref: ./paths/checkouts.yaml#/~1checkouts
+  "/checkouts/{checkout_id}":
+    $ref: "./paths/checkouts.yaml#/~1checkouts~1{checkout_id}"
+  "/checkouts/{checkout_id}/allows_renewal":
+    $ref: "./paths/checkouts.yaml#/~1checkouts~1{checkout_id}~1allows_renewal"
+  "/checkouts/{checkout_id}/renewals":
+    $ref: "./paths/checkouts.yaml#/~1checkouts~1{checkout_id}~1renewals"
+  "/checkouts/{checkout_id}/renewal":
+    $ref: "./paths/checkouts.yaml#/~1checkouts~1{checkout_id}~1renewal"
+  "/checkouts/availability":
+    $ref: "./paths/checkouts.yaml#/~1checkouts~1availability"
+  /circulation_rules:
+    $ref: ./paths/circulation_rules.yaml#/~1circulation_rules
+  /circulation_rules/kinds:
+    $ref: ./paths/circulation_rules.yaml#/~1circulation_rules~1kinds
+  /circulation_rules/config:
+    $ref: ./paths/circulation_rules_config.yaml#/~1circulation_rules~1config
+  /cities:
+    $ref: ./paths/cities.yaml#/~1cities
+  "/cities/{city_id}":
+    $ref: "./paths/cities.yaml#/~1cities~1{city_id}"
+  "/clubs/{club_id}/holds":
+    $ref: "./paths/clubs.yaml#/~1clubs~1{club_id}~1holds"
+  /config/smtp_servers:
+    $ref: ./paths/config_smtp_servers.yaml#/~1config~1smtp_servers
+  "/config/smtp_servers/{smtp_server_id}":
+    $ref: "./paths/config_smtp_servers.yaml#/~1config~1smtp_servers~1{smtp_server_id}"
+  /config/file_transports:
+    $ref: ./paths/config_file_transports.yaml#/~1config~1file_transports
+  "/config/file_transports/{file_transport_id}":
+    $ref: "./paths/config_file_transports.yaml#/~1config~1file_transports~1{file_transport_id}"
+  /config/search_mappings:
+    $ref: ./paths/config_search_mappings.yaml#/~1config~1search_mappings
+  "/deleted/biblios":
+    $ref: "./paths/deleted_biblios.yaml#/~1deleted~1biblios"
+  "/deleted/biblios/{biblio_id}":
+    $ref: "./paths/deleted_biblios.yaml#/~1deleted~1biblios~1{biblio_id}"
+  "/deleted/items":
+    $ref: "./paths/deleted_items.yaml#/~1deleted~1items"
+  "/deleted/items/{item_id}":
+    $ref: "./paths/deleted_items.yaml#/~1deleted~1items~1{item_id}"
+  /erm/config:
+    $ref: ./paths/erm_config.yaml#/~1erm~1config
+  /erm/agreements:
+    $ref: ./paths/erm_agreements.yaml#/~1erm~1agreements
+  "/erm/agreements/{agreement_id}":
+    $ref: "./paths/erm_agreements.yaml#/~1erm~1agreements~1{agreement_id}"
+  "/erm/documents/{document_id}/file/content":
+    $ref: "./paths/erm_documents.yaml#/~1erm~1documents~1{document_id}~1file~1content"
+  /erm/counter_files:
+    $ref: ./paths/erm_counter_files.yaml#/~1erm~1counter_files
+  "/erm/counter_files/{erm_counter_files_id}":
+    $ref: "./paths/erm_counter_files.yaml#/~1erm~1counter_files~1{erm_counter_files_id}"
+  "/erm/counter_files/{erm_counter_files_id}/file/content":
+    $ref: "./paths/erm_counter_files.yaml#/~1erm~1counter_files~1{erm_counter_files_id}~1file~1content"
+  /erm/counter_logs:
+    $ref: ./paths/erm_counter_logs.yaml#/~1erm~1counter_logs
+  /erm/counter_registry:
+    $ref: ./paths/erm_counter_registries.yaml#/~1erm~1counter_registry
+  /erm/default_usage_reports:
+    $ref: ./paths/erm_default_usage_reports.yaml#/~1erm~1default_usage_reports
+  "/erm/default_usage_reports/{erm_default_usage_report_id}":
+    $ref: "./paths/erm_default_usage_reports.yaml#/~1erm~1default_usage_reports~1{erm_default_usage_report_id}"
+  "/erm/eholdings/{provider}/titles":
+    $ref: "./paths/erm_eholdings_titles.yaml#/~1erm~1eholdings~1{provider}~1titles"
+  /erm/eholdings/local/titles/import:
+    $ref: ./paths/erm_eholdings_titles.yaml#/~1erm~1eholdings~1local~1titles~1import
+  /erm/eholdings/local/titles/import_kbart:
+    $ref: ./paths/erm_eholdings_titles.yaml#/~1erm~1eholdings~1local~1titles~1import_kbart
+  "/erm/eholdings/{provider}/titles/{title_id}":
+    $ref: "./paths/erm_eholdings_titles.yaml#/~1erm~1eholdings~1{provider}~1titles~1{title_id}"
+  "/erm/eholdings/{provider}/titles/{title_id}/resources":
+    $ref: "./paths/erm_eholdings_titles_resources.yaml#/~1erm~1eholdings~1{provider}~1titles~1{title_id}~1resources"
+  "/erm/eholdings/{provider}/packages":
+    $ref: "./paths/erm_eholdings_packages.yaml#/~1erm~1eholdings~1{provider}~1packages"
+  "/erm/eholdings/{provider}/resources":
+    $ref: "./paths/erm_eholdings_resources.yaml#/~1erm~1eholdings~1{provider}~1resources"
+  "/erm/eholdings/{provider}/resources/{resource_id}":
+    $ref: "./paths/erm_eholdings_resources.yaml#/~1erm~1eholdings~1{provider}~1resources~1{resource_id}"
+  "/erm/eholdings/{provider}/packages/{package_id}":
+    $ref: "./paths/erm_eholdings_packages.yaml#/~1erm~1eholdings~1{provider}~1packages~1{package_id}"
+  "/erm/eholdings/{provider}/packages/{package_id}/resources":
+    $ref: "./paths/erm_eholdings_packages_resources.yaml#/~1erm~1eholdings~1{provider}~1packages~1{package_id}~1resources"
+  "/erm/eUsage/monthly_report/{data_type}":
+    $ref: "./paths/erm_custom_reports.yaml#/~1erm~1eUsage~1monthly_report~1{data_type}"
+  "/erm/eUsage/yearly_report/{data_type}":
+    $ref: "./paths/erm_custom_reports.yaml#/~1erm~1eUsage~1yearly_report~1{data_type}"
+  "/erm/eUsage/metric_types_report/{data_type}":
+    $ref: "./paths/erm_custom_reports.yaml#/~1erm~1eUsage~1metric_types_report~1{data_type}"
+  "/erm/eUsage/provider_rollup_report/{data_type}":
+    $ref: "./paths/erm_custom_reports.yaml#/~1erm~1eUsage~1provider_rollup_report~1{data_type}"
+  /erm/extended_attribute_types:
+    $ref: ./paths/erm_extended_attribute_types.yaml#/~1erm~1extended_attribute_types
+  /erm/licenses:
+    $ref: ./paths/erm_licenses.yaml#/~1erm~1licenses
+  "/erm/licenses/{license_id}":
+    $ref: "./paths/erm_licenses.yaml#/~1erm~1licenses~1{license_id}"
+  /erm/sushi_service:
+    $ref: ./paths/erm_sushi_services.yaml#/~1erm~1sushi_service
+  /erm/usage_data_providers:
+    $ref: ./paths/erm_usage_data_providers.yaml#/~1erm~1usage_data_providers
+  "/erm/usage_data_providers/{erm_usage_data_provider_id}":
+    $ref: "./paths/erm_usage_data_providers.yaml#/~1erm~1usage_data_providers~1{erm_usage_data_provider_id}"
+  "/erm/usage_data_providers/{erm_usage_data_provider_id}/process_SUSHI_response":
+    $ref: "./paths/erm_usage_data_providers.yaml#/~1erm~1usage_data_providers~1{erm_usage_data_provider_id}~1process_SUSHI_response"
+  "/erm/usage_data_providers/{erm_usage_data_provider_id}/process_COUNTER_file":
+    $ref: "./paths/erm_usage_data_providers.yaml#/~1erm~1usage_data_providers~1{erm_usage_data_provider_id}~1process_COUNTER_file"
+  "/erm/usage_data_providers/{erm_usage_data_provider_id}/test_connection":
+    $ref: "./paths/erm_usage_data_providers.yaml#/~1erm~1usage_data_providers~1{erm_usage_data_provider_id}~1test_connection"
+  /erm/usage_databases:
+    $ref: ./paths/erm_usage_databases.yaml#/~1erm~1usage_databases
+  /erm/usage_items:
+    $ref: ./paths/erm_usage_items.yaml#/~1erm~1usage_items
+  /erm/usage_platforms:
+    $ref: ./paths/erm_usage_platforms.yaml#/~1erm~1usage_platforms
+  /erm/usage_titles:
+    $ref: ./paths/erm_usage_titles.yaml#/~1erm~1usage_titles
+  /erm/users:
+    $ref: ./paths/erm_users.yaml#/~1erm~1users
+  /extended_attribute_types:
+    $ref: ./paths/extended_attribute_types.yaml#/~1extended_attribute_types
+  /holds:
+    $ref: ./paths/holds.yaml#/~1holds
+  "/holds/queue":
+    $ref: "./paths/holds_queue.yaml#/~1holds~1queue"
+  "/holds/suspension_bulk":
+    $ref: "./paths/holds.yaml#/~1holds~1suspension_bulk"
+  "/holds/cancellation_bulk":
+    $ref: "./paths/holds.yaml#/~1holds~1cancellation_bulk"
+  "/holds/{hold_id}":
+    $ref: "./paths/holds.yaml#/~1holds~1{hold_id}"
+  "/holds/{hold_id}/pickup_location":
+    $ref: "./paths/holds.yaml#/~1holds~1{hold_id}~1pickup_location"
+  "/holds/{hold_id}/pickup_locations":
+    $ref: "./paths/holds.yaml#/~1holds~1{hold_id}~1pickup_locations"
+  "/holds/{hold_id}/priority":
+    $ref: "./paths/holds.yaml#/~1holds~1{hold_id}~1priority"
+  "/holds/{hold_id}/suspension":
+    $ref: "./paths/holds.yaml#/~1holds~1{hold_id}~1suspension"
+  "/holds/{hold_id}/lowest_priority":
+    $ref: "./paths/holds.yaml#/~1holds~1{hold_id}~1lowest_priority"
+  /ill/config:
+    $ref: ./paths/ill_config.yaml#/~1ill~1config
+  /ill/backends:
+    $ref: ./paths/ill_backends.yaml#/~1ill~1backends
+  "/ill/backends/{ill_backend_id}":
+    $ref: "./paths/ill_backends.yaml#/~1ill~1backends~1{ill_backend_id}"
+  /ill/iso18626_requests:
+    $ref: ./paths/ill_iso18626_requests.yaml#/~1ill~1iso18626_requests
+  "/ill/iso18626_requests/{iso18626_request_id}":
+    $ref: ./paths/ill_iso18626_requests.yaml#/~1ill~1iso18626_requests~1{iso18626_request_id}
+  /ill/iso18626_requesting_agencies:
+    $ref: ./paths/ill_iso18626_requesting_agencies.yaml#/~1ill~1iso18626_requesting_agencies
+  "/ill/iso18626_requesting_agencies/{iso18626_requesting_agency_id}":
+    $ref: ./paths/ill_iso18626_requesting_agencies.yaml#/~1ill~1iso18626_requesting_agencies~1{iso18626_requesting_agency_id}
+  /ill/requests:
+    $ref: ./paths/ill_requests.yaml#/~1ill~1requests
+  /ill/batches:
+    $ref: ./paths/ill_batches.yaml#/~1ill~1batches
+  "/ill/batches/{ill_batch_id}":
+    $ref: "./paths/ill_batches.yaml#/~1ill~1batches~1{ill_batch_id}"
+  /ill/batchstatuses:
+    $ref: ./paths/ill_batchstatuses.yaml#/~1ill~1batchstatuses
+  "/ill/batchstatuses/{ill_batchstatus_code}":
+    $ref: "./paths/ill_batchstatuses.yaml#/~1ill~1batchstatuses~1{ill_batchstatus_code}"
+  /ill/users:
+    $ref: ./paths/ill_users.yaml#/~1ill~1users
+  "/import_batches/{import_batch_id}/records/{import_record_id}/matches/chosen":
+    $ref: "./paths/import_batches.yaml#/~1import_batches~1{import_batch_id}~1records~1{import_record_id}~1matches~1chosen"
+  /import_batch_profiles:
+    $ref: ./paths/import_batch_profiles.yaml#/~1import_batch_profiles
+  "/import_batch_profiles/{import_batch_profile_id}":
+    $ref: "./paths/import_batch_profiles.yaml#/~1import_batch_profiles~1{import_batch_profile_id}"
+  /item_types:
+    $ref: ./paths/item_types.yaml#/~1item_types
+  /items:
+    $ref: ./paths/items.yaml#/~1items
+  "/items/{item_id}":
+    $ref: "./paths/items.yaml#/~1items~1{item_id}"
+  "/items/{item_id}/bookings":
+    $ref: "./paths/items.yaml#/~1items~1{item_id}~1bookings"
+  "/items/{item_id}/bundled_items":
+    $ref: ./paths/items.yaml#/~1items~1{item_id}~1bundled_items
+  "/items/{item_id}/bundled_items/{bundled_item_id}":
+    $ref: ./paths/items.yaml#/~1items~1{item_id}~1bundled_items~1{bundled_item_id}
+  "/items/{item_id}/pickup_locations":
+    $ref: "./paths/items.yaml#/~1items~1{item_id}~1pickup_locations"
+  /item-lists:
+    $ref: ./paths/item_lists.yaml#/~1item-lists
+  /item-lists/config:
+    $ref: ./paths/item_lists.yaml#/~1item-lists~1config
+  "/item-lists/{item_list_id}":
+    $ref: "./paths/item_lists.yaml#/~1item-lists~1{item_list_id}"
+  "/item-lists/{item_list_id}/items":
+    $ref: "./paths/item_lists.yaml#/~1item-lists~1{item_list_id}~1items"
+  "/item-lists/{item_list_id}/shares":
+    $ref: "./paths/item_lists.yaml#/~1item-lists~1{item_list_id}~1shares"
+  "/item-lists/{item_list_id}/shares/{patron_id}":
+    $ref: "./paths/item_lists.yaml#/~1item-lists~1{item_list_id}~1shares~1{patron_id}"
+  /jobs:
+    $ref: ./paths/jobs.yaml#/~1jobs
+  "/jobs/{job_id}":
+    $ref: "./paths/jobs.yaml#/~1jobs~1{job_id}"
+  /libraries:
+    $ref: ./paths/libraries.yaml#/~1libraries
+  "/libraries/{library_id}":
+    $ref: "./paths/libraries.yaml#/~1libraries~1{library_id}"
+  "/libraries/{library_id}/cash_registers":
+    $ref: "./paths/libraries.yaml#/~1libraries~1{library_id}~1cash_registers"
+  "/libraries/{library_id}/desks":
+    $ref: "./paths/libraries.yaml#/~1libraries~1{library_id}~1desks"
+  "/libraries/{library_id}/closed_dates":
+    $ref: "./paths/libraries.yaml#/~1libraries~1{library_id}~1closed_dates"
+  /library_groups:
+    $ref: ./paths/library_groups.yaml#/~1library_groups
+  "/messages":
+    $ref: "./paths/messages.yaml#/~1messages"
+  "/messages/{message_id}":
+    $ref: "./paths/messages.yaml#/~1messages~1{message_id}"
+  "/oauth/login/{provider_code}/{interface}":
+    $ref: ./paths/oauth.yaml#/~1oauth~1login~1{provider_code}~1{interface}
+  /oauth/token:
+    $ref: ./paths/oauth.yaml#/~1oauth~1token
+  /patrons:
+    $ref: ./paths/patrons.yaml#/~1patrons
+  "/patrons/{patron_id}":
+    $ref: "./paths/patrons.yaml#/~1patrons~1{patron_id}"
+  "/patrons/{patron_id}/overdues_count":
+    $ref: "./paths/patrons.yaml#/~1patrons~1{patron_id}~1overdues_count"
+  "/patrons/{patron_id}/account":
+    $ref: "./paths/patrons_account.yaml#/~1patrons~1{patron_id}~1account"
+  "/patrons/{patron_id}/account/credits":
+    $ref: "./paths/patrons_account.yaml#/~1patrons~1{patron_id}~1account~1credits"
+  "/patrons/{patron_id}/account/credits/{credit_id}":
+      $ref: "./paths/patrons_account.yaml#/~1patrons~1{patron_id}~1account~1credits~1{credit_id}"
+  "/patrons/{patron_id}/account/debits/{debit_id}":
+      $ref: "./paths/patrons_account.yaml#/~1patrons~1{patron_id}~1account~1debits~1{debit_id}"
+  "/patrons/{patron_id}/account/debits":
+    $ref: "./paths/patrons_account.yaml#/~1patrons~1{patron_id}~1account~1debits"
+  "/patrons/{patron_id}/account_links":
+    $ref: "./paths/patrons_account_links.yaml#/~1patrons~1{patron_id}~1account_links"
+  "/patrons/{patron_id}/account_links/{account_link_id}":
+    $ref: "./paths/patrons_account_links.yaml#/~1patrons~1{patron_id}~1account_links~1{account_link_id}"
+  "/patrons/{patron_id}/extended_attributes":
+    $ref: "./paths/patrons_extended_attributes.yaml#/~1patrons~1{patron_id}~1extended_attributes"
+  "/patrons/{patron_id}/extended_attributes/{extended_attribute_id}":
+    $ref: "./paths/patrons_extended_attributes.yaml#/~1patrons~1{patron_id}~1extended_attributes~1{extended_attribute_id}"
+  "/patrons/{patron_id}/holds":
+    $ref: "./paths/patrons_holds.yaml#/~1patrons~1{patron_id}~1holds"
+  "/patrons/{patron_id}/hold_groups":
+    $ref: "./paths/patrons_hold_groups.yaml#/~1patrons~1{patron_id}~1hold_groups"
+  "/patrons/{patron_id}/hold_groups/{hold_group_id}":
+    $ref: "./paths/patrons_hold_groups.yaml#/~1patrons~1{patron_id}~1hold_groups~1{hold_group_id}"
+  "/patrons/{patron_id}/hold_groups/{hold_group_id}/cancel":
+    $ref: "./paths/patrons_hold_groups.yaml#/~1patrons~1{patron_id}~1hold_groups~1{hold_group_id}~1cancel"
+  "/patrons/{patron_id}/checkouts":
+    $ref: "./paths/patrons_checkouts.yaml#/~1patrons~1{patron_id}~1checkouts"
+  "/patrons/{patron_id}/default_image":
+    $ref: "./paths/patrons_image.yaml#/~1patrons~1{patron_id}~1default_image"
+  "/patrons/{patron_id}/password":
+    $ref: "./paths/patrons_password.yaml#/~1patrons~1{patron_id}~1password"
+  "/patrons/{patron_id}/password/expiration_date":
+    $ref: "./paths/patrons_password.yaml#/~1patrons~1{patron_id}~1password~1expiration_date"
+  "/patrons/{patron_id}/recalls":
+    $ref: "./paths/patrons_recalls.yaml#/~1patrons~1{patron_id}~1recalls"
+  "/patrons/{patron_id}/ill/requests":
+    $ref: "./paths/patrons.yaml#/~1patrons~1{patron_id}~1ill~1requests"
+  /patron_categories:
+    $ref: ./paths/patron_categories.yaml#/~1patron_categories
+  /preservation/config:
+    $ref: ./paths/preservation_config.yaml#/~1preservation~1config
+  /preservation/trains:
+    $ref: ./paths/preservation_trains.yaml#/~1preservation~1trains
+  "/preservation/trains/{train_id}":
+    $ref: "./paths/preservation_trains.yaml#/~1preservation~1trains~1{train_id}"
+  "/preservation/trains/{train_id}/items":
+    $ref: "./paths/preservation_trains.yaml#/~1preservation~1trains~1{train_id}~1items"
+  "/preservation/trains/{train_id}/items/batch":
+    $ref: "./paths/preservation_trains.yaml#/~1preservation~1trains~1{train_id}~1items~1batch"
+  "/preservation/trains/{train_id}/items/{train_item_id}":
+    $ref: "./paths/preservation_trains.yaml#/~1preservation~1trains~1{train_id}~1items~1{train_item_id}"
+  "/preservation/trains/{train_id}/items/{train_item_id}/copy":
+    $ref: "./paths/preservation_trains.yaml#/~1preservation~1trains~1{train_id}~1items~1{train_item_id}~1copy"
+  /preservation/processings:
+    $ref: ./paths/preservation_processings.yaml#/~1preservation~1processings
+  "/preservation/processings/{processing_id}":
+    $ref: "./paths/preservation_processings.yaml#/~1preservation~1processings~1{processing_id}"
+  /preservation/waiting-list/items:
+    $ref: ./paths/preservation_waiting_list.yaml#/~1preservation~1waiting-list~1items
+  "/preservation/waiting-list/items/{item_id}":
+    $ref: "./paths/preservation_waiting_list.yaml#/~1preservation~1waiting-list~1items~1{item_id}"
+  "/public/additional_contents":
+    $ref: ./paths/additional_contents.yaml#/~1public~1additional_contents
+  "/public/biblios/{biblio_id}":
+    $ref: "./paths/biblios.yaml#/~1public~1biblios~1{biblio_id}"
+  "/public/checkouts/availability":
+    $ref: ./paths/checkouts.yaml#/~1public~1checkouts~1availability
+  "/public/ill/iso18626":
+    $ref: ./paths/ill_iso18626.yaml#/~1public~1ill~1iso18626
+  "/public/items":
+    $ref: "./paths/items.yaml#/~1public~1items"
+  "/public/biblios/{biblio_id}/items":
+    $ref: "./paths/biblios.yaml#/~1public~1biblios~1{biblio_id}~1items"
+  "/public/biblios/{biblio_id}/ratings":
+    $ref: "./paths/biblios.yaml#/~1public~1biblios~1{biblio_id}~1ratings"
+  /public/libraries:
+    $ref: ./paths/libraries.yaml#/~1public~1libraries
+  "/public/libraries/{library_id}":
+    $ref: "./paths/libraries.yaml#/~1public~1libraries~1{library_id}"
+  "/public/lists":
+    $ref: "./paths/lists.yaml#/~1public~1lists"
+  "/public/csp-reports":
+    $ref: ./paths/public_csp_reports.yaml#/~1public~1csp-reports
+  "/public/oauth/login/{provider_code}/{interface}":
+    $ref: ./paths/public_oauth.yaml#/~1public~1oauth~1login~1{provider_code}~1{interface}
+  "/public/patrons/{patron_id}/article_requests/{article_request_id}":
+    $ref: "./paths/article_requests.yaml#/~1public~1patrons~1{patron_id}~1article_requests~1{article_request_id}"
+  "/public/patrons/{patron_id}/checkouts":
+    $ref: "./paths/public_patrons.yaml#/~1public~1patrons~1{patron_id}~1checkouts"
+  "/public/patrons/{patron_id}/guarantors/can_see_charges":
+    $ref: "./paths/public_patrons.yaml#/~1public~1patrons~1{patron_id}~1guarantors~1can_see_charges"
+  "/public/patrons/{patron_id}/guarantors/can_see_checkouts":
+    $ref: "./paths/public_patrons.yaml#/~1public~1patrons~1{patron_id}~1guarantors~1can_see_checkouts"
+  "/public/patrons/{patron_id}/holds/{hold_id}":
+    $ref: "./paths/public_patrons.yaml#/~1public~1patrons~1{patron_id}~1holds~1{hold_id}"
+  "/public/patrons/{patron_id}/ill/requests":
+    $ref: "./paths/public_patrons.yaml#/~1public~1patrons~1{patron_id}~1ill~1requests"
+  "/public/patrons/{patron_id}/password":
+    $ref: "./paths/public_patrons.yaml#/~1public~1patrons~1{patron_id}~1password"
+  "/public/patrons/{patron_id}/self_renewal":
+    $ref: "./paths/public_patrons.yaml#/~1public~1patrons~1{patron_id}~1self_renewal"
+  "/public/tickets":
+    $ref: "./paths/tickets.yaml#/~1public~1tickets"
+  /quotes:
+    $ref: ./paths/quotes.yaml#/~1quotes
+  "/quotes/{quote_id}":
+    $ref: "./paths/quotes.yaml#/~1quotes~1{quote_id}"
+  /record_sources:
+    $ref: ./paths/record_sources.yaml#/~1record_sources
+  "/record_sources/{record_source_id}":
+    $ref: ./paths/record_sources.yaml#/~1record_sources~1{record_source_id}
+  /reports/jobs:
+    $ref: ./paths/reports_jobs.yaml#/~1reports~1jobs
+  /reports/jobs/running:
+    $ref: ./paths/reports_jobs.yaml#/~1reports~1jobs~1running
+  "/reports/jobs/{job_id}/cancel":
+    $ref: "./paths/reports_jobs.yaml#/~1reports~1jobs~1{job_id}~1cancel"
+  /return_claims:
+    $ref: ./paths/return_claims.yaml#/~1return_claims
+  "/return_claims/{claim_id}":
+    $ref: "./paths/return_claims.yaml#/~1return_claims~1{claim_id}"
+  "/return_claims/{claim_id}/notes":
+    $ref: "./paths/return_claims.yaml#/~1return_claims~1{claim_id}~1notes"
+  "/return_claims/{claim_id}/resolve":
+    $ref: "./paths/return_claims.yaml#/~1return_claims~1{claim_id}~1resolve"
+  "/rotas":
+    $ref: "./paths/rotas.yaml#/~1rotas"
+  "/rotas/{rota_id}":
+    $ref: "./paths/rotas.yaml#/~1rotas~1{rota_id}"
+  "/rotas/{rota_id}/stages/{stage_id}/position":
+    $ref: "./paths/rotas.yaml#/~1rotas~1{rota_id}~1stages~1{stage_id}~1position"
+  /sip2/accounts:
+    $ref: ./paths/sip2_accounts.yaml#/~1sip2~1accounts
+  "/sip2/accounts/{sip_account_id}":
+    $ref: "./paths/sip2_accounts.yaml#/~1sip2~1accounts~1{sip_account_id}"
+  "/sip2/accounts/{sip_account_id}/test_message":
+    $ref: "./paths/sip2_accounts.yaml#/~1sip2~1accounts~1{sip_account_id}~1test_message"
+  /sip2/institutions:
+    $ref: ./paths/sip2_institutions.yaml#/~1sip2~1institutions
+  "/sip2/institutions/{sip_institution_id}":
+    $ref: "./paths/sip2_institutions.yaml#/~1sip2~1institutions~1{sip_institution_id}"
+  /sip2/system_preference_overrides:
+    $ref: ./paths/sip2_system_preference_overrides.yaml#/~1sip2~1system_preference_overrides
+  "/sip2/system_preference_overrides/{sip_system_preference_override_id}":
+    $ref: "./paths/sip2_system_preference_overrides.yaml#/~1sip2~1system_preference_overrides~1{sip_system_preference_override_id}"
+  /suggestions:
+    $ref: ./paths/suggestions.yaml#/~1suggestions
+  "/suggestions/{suggestion_id}":
+    $ref: "./paths/suggestions.yaml#/~1suggestions~1{suggestion_id}"
+  /suggestions/managers:
+    $ref: "./paths/suggestions.yaml#/~1suggestions~1managers"
+  /sysprefs:
+    $ref: ./paths/sysprefs.yaml#/~1sysprefs
+  "/tickets":
+    $ref: "./paths/tickets.yaml#/~1tickets"
+  "/tickets/{ticket_id}":
+    $ref: "./paths/tickets.yaml#/~1tickets~1{ticket_id}"
+  "/tickets/{ticket_id}/updates":
+    $ref: "./paths/tickets.yaml#/~1tickets~1{ticket_id}~1updates"
+  /transfer_limits:
+    $ref: ./paths/transfer_limits.yaml#/~1transfer_limits
+  /transfer_limits/batch:
+    $ref: ./paths/transfer_limits.yaml#/~1transfer_limits~1batch
+  "/transfer_limits/{limit_id}":
+    $ref: "./paths/transfer_limits.yaml#/~1transfer_limits~1{limit_id}"
+  /transfers:
+    $ref: ./paths/transfers.yaml#/~1transfers
+  "/transfers/{transfer_id}/cancellation":
+    $ref: "./paths/transfers.yaml#/~1transfers~1{transfer_id}~1cancellation"
+  /status/version:
+    $ref: ./paths/status.yaml#/~1status~1version
+parameters:
+  advancededitormacro_id_pp:
+    description: Advanced editor macro internal identifier
+    in: path
+    name: advancededitormacro_id
+    required: true
+    type: integer
+  agreement_id_pp:
+    description: Agreement internal identifier
+    in: path
+    name: agreement_id
+    required: true
+    type: integer
+  agreement_period_id_pp:
+    description: Agreement period internal identifier
+    in: path
+    name: agreement_period_id
+    required: true
+    type: integer
+  authorised_value_id_pp:
+    description: Authorised value internal identifier
+    in: path
+    name: authorised_value_id
+    required: true
+    type: integer
+  authority_id_pp:
+    description: Authority identifier
+    in: path
+    name: authority_id
+    required: true
+    type: integer
+  authority_type_header:
+    description: Authority type code. Use when content type is not application/json
+    name: x-authority-type
+    in: header
+    required: false
+    type: string
+  booking_id_pp:
+    description: Booking identifier
+    in: path
+    name: booking_id
+    required: true
+    type: integer
+  framework_id_header:
+    description: Framework id. Use when content type is not application/json
+    name: x-framework-id
+    in: header
+    required: false
+    type: string
+  marc_schema_header:
+    description: March schema. One of MARC21 or UNIMARC
+    name: x-record-schema
+    in: header
+    required: false
+    type: string
+    enum:
+      - MARC21
+      - UNIMARC
+  confirm_not_duplicate_header:
+    description: Confirm the posted element is not a duplicate
+    name: x-confirm-not-duplicate
+    in: header
+    required: false
+    type: integer
+  identity_provider_id_pp:
+    description: Identity provider internal identifier
+    in: path
+    name: identity_provider_id
+    required: true
+    type: integer
+  identity_provider_domain_id_pp:
+    description: Identity provider domain internal identifier
+    in: path
+    name: identity_provider_domain_id
+    required: true
+    type: integer
+  biblio_id_pp:
+    description: Record internal identifier
+    in: path
+    name: biblio_id
+    required: true
+    type: integer
+  candidate_match_id_pp:
+    description: Internal import record match identifier
+    in: path
+    name: candidate_match_id
+    required: true
+    type: integer
+  cash_register_id_pp:
+    description: Cash register internal identifier
+    in: path
+    name: cash_register_id
+    required: true
+    type: integer
+  cashup_id_pp:
+    description: Cashup internal identifier
+    in: path
+    name: cashup_id
+    required: true
+    type: integer
+  checkout_id_pp:
+    description: Internal checkout identifier
+    in: path
+    name: checkout_id
+    required: true
+    type: integer
+  city_id_pp:
+    description: City internal identifier
+    in: path
+    name: city_id
+    required: true
+    type: integer
+  club_id_pp:
+    description: Internal club identifier
+    in: path
+    name: club_id
+    required: true
+    type: integer
+  credit_id_pp:
+    description: Internal credit identifier
+    in: path
+    name: credit_id
+    required: true
+    type: integer
+  debit_id_pp:
+    description: Internal debit identifier
+    in: path
+    name: debit_id
+    required: true
+    type: integer
+  eholdings_title_id_pp:
+    description: Title internal identifier
+    in: path
+    name: title_id
+    required: true
+    type: integer
+  eholdings_package_id_pp:
+    description: Package internal identifier
+    in: path
+    name: package_id
+    required: true
+    type: string
+  eholdings_resource_id_pp:
+    description: Resource internal identifier
+    in: path
+    name: resource_id
+    required: true
+    type: string
+  erm_counter_files_id_pp:
+    description: ERM counter_files internal identifier
+    in: path
+    name: erm_counter_files_id
+    required: true
+    type: integer
+  erm_counter_log_id_pp:
+    description: ERM counter_log internal identifier
+    in: path
+    name: erm_counter_log_id
+    required: true
+    type: integer
+  erm_default_usage_report_id_pp:
+    description: ERM default_usage_report internal identifier
+    in: path
+    name: erm_default_usage_report_id
+    required: true
+    type: integer
+  erm_usage_data_provider_id_pp:
+    description: ERM usage_data_provider internal identifier
+    in: path
+    name: erm_usage_data_provider_id
+    required: true
+    type: integer
+  data_type_pp:
+    description: ERM custom report data type
+    in: path
+    name: data_type
+    required: true
+    type: string
+  fund_id_pp:
+    description: Fund id
+    in: path
+    name: fund_id
+    required: true
+    type: integer
+  hold_id_pp:
+    description: Internal hold identifier
+    in: path
+    name: hold_id
+    required: true
+    type: integer
+  ill_batch_id_pp:
+    description: Internal ILL batch identifier
+    in: path
+    name: ill_batch_id
+    required: true
+    type: integer
+  ill_batchstatus_code_pp:
+    description: Internal ILL batch status identifier
+    in: path
+    name: ill_batchstatus_code
+    required: true
+    type: string
+  iso18626_request_id_pp:
+    description: ISO18626 ILL request internal identifier
+    in: path
+    name: iso18626_request_id
+    required: true
+    type: integer
+  iso18626_requesting_agency_id_pp:
+    description: ISO18626 ILL requesting agency internal identifier
+    in: path
+    name: iso18626_requesting_agency_id
+    required: true
+    type: integer
+  import_batch_profile_id_pp:
+    description: Internal profile identifier
+    in: path
+    name: import_batch_profile_id
+    required: true
+    type: integer
+  import_record_id_pp:
+    description: Internal import record identifier
+    in: path
+    name: import_record_id
+    required: true
+    type: integer
+  record_source_id_pp:
+    description: Internal record source identifier
+    in: path
+    name: record_source_id
+    required: true
+    type: integer
+  item_id_pp:
+    description: Internal item identifier
+    in: path
+    name: item_id
+    required: true
+    type: integer
+  item_id_qp:
+    description: Internal item identifier
+    in: query
+    name: item_id
+    type: integer
+  item_list_id_pp:
+    description: Internal item list identifier
+    in: path
+    name: item_list_id
+    required: true
+    type: integer
+  job_id_pp:
+    description: Job internal identifier
+    in: path
+    name: job_id
+    required: true
+    type: integer
+  library_id_pp:
+    description: Internal library identifier
+    in: path
+    name: library_id
+    required: true
+    type: string
+  license_id_pp:
+    description: License internal identifier
+    in: path
+    name: license_id
+    required: true
+    type: integer
+  message_id_pp:
+    description: Message internal identifier
+    in: path
+    name: message_id
+    required: true
+    type: integer
+  match:
+    description: Matching criteria
+    enum:
+      - contains
+      - exact
+      - starts_with
+      - ends_with
+    in: query
+    name: _match
+    required: false
+    type: string
+  order_by:
+    collectionFormat: csv
+    description: Sorting criteria
+    in: query
+    items:
+      type: string
+    name: _order_by
+    required: false
+    type: array
+  order_id_pp:
+    description: Internal order identifier
+    in: path
+    name: order_id
+    required: true
+    type: integer
+  page:
+    description: "Page number, for paginated object listing"
+    in: query
+    name: _page
+    required: false
+    type: integer
+  patron_id_pp:
+    description: Internal patron identifier
+    in: path
+    name: patron_id
+    required: true
+    type: integer
+  patron_id_qp:
+    description: Internal patron identifier
+    in: query
+    name: patron_id
+    type: integer
+  per_page:
+    description: "Page size, for paginated object listing"
+    in: query
+    name: _per_page
+    required: false
+    type: integer
+  preservation_processing_id_pp:
+    description: processing internal identifier
+    in: path
+    name: processing_id
+    required: true
+    type: integer
+  preservation_train_id_pp:
+    description: train internal identifier
+    in: path
+    name: train_id
+    required: true
+    type: integer
+  preservation_train_item_id_pp:
+    description: train item internal identifier
+    in: path
+    name: train_item_id
+    required: true
+    type: integer
+  q_body:
+    description: Query filter sent through request"s body
+    in: body
+    name: query
+    required: false
+    schema:
+      type: object
+  q_param:
+    description: Query filter sent as a request parameter
+    in: query
+    name: q
+    required: false
+    type: array
+    items:
+      type: string
+    collectionFormat: multi
+  quote_id_pp:
+    description: Quote internal identifier
+    in: path
+    name: quote_id
+    required: true
+    type: integer
+  record_source_id_header:
+    description: Internal record source identifier.
+    name: x-record-source-id
+    in: header
+    required: false
+    type: string
+  request_id_header:
+    description: Request id header
+    in: header
+    name: x-koha-request-id
+    required: false
+    type: integer
+  rota_id_pp:
+    description: Rota internal identifier
+    in: path
+    name: rota_id
+    required: true
+    type: integer
+  search_filter_id_pp:
+    name: search_filter_id
+    in: path
+    description: Search filter internal identifier
+    required: true
+    type: integer
+  seen_pp:
+    description: Item was seen flag
+    in: query
+    name: seen
+    required: false
+    type: integer
+  sip_account_id_pp:
+    description: SIP2 account internal identifier
+    in: path
+    name: sip_account_id
+    required: true
+    type: integer
+  sip_institution_id_pp:
+    description: SIP2 institution internal identifier
+    in: path
+    name: sip_institution_id
+    required: true
+    type: integer
+  sip_listener_id_pp:
+    description: SIP2 listener internal identifier
+    in: path
+    name: sip_listener_id
+    required: true
+    type: integer
+  sip_system_preference_override_id_pp:
+    description: SIP2 system preference override internal identifier
+    in: path
+    name: sip_system_preference_override_id
+    required: true
+    type: integer
+  smtp_server_id_pp:
+    description: SMTP server internal identifier
+    in: path
+    name: smtp_server_id
+    required: true
+    type: integer
+  file_transport_id_pp:
+    description: File transport internal identifier
+    in: path
+    name: file_transport_id
+    required: true
+    type: integer
+  suggestion_id_pp:
+    description: Internal suggestion identifier
+    in: path
+    name: suggestion_id
+    required: true
+    type: integer
+  ticket_id_pp:
+    description: Internal ticket identifier
+    in: path
+    name: ticket_id
+    required: true
+    type: integer
+  transfer_id_pp:
+    description: Internal transfer identifier
+    in: path
+    name: transfer_id
+    required: true
+    type: integer
+  transfer_limit_id_pp:
+    description: Internal transfer limit identifier
+    in: path
+    name: limit_id
+    required: true
+    type: string
+  vendor_id_pp:
+    description: Vendor id
+    in: path
+    name: vendor_id
+    required: true
+    type: integer
+info:
+  title: Koha REST API
+  version: "1"
+  license:
+    name: "GPL v3,"
+    url: https://www.gnu.org/licenses/gpl.txt
+  contact:
+    name: Koha Development Team
+    url: https://koha-community.org/
+  description: |
+    ## Background
+
+    The API supports two sets of endpoints, one targetted at library staff and the other at at library users.
+
+    Those endpoints under the `/public` path are aimed at delivering functionality tailored to library users and offer
+    a more restricted set of functions, overrides and data in thier responses for data privacy and library policy
+    reasons. Many of these endpoints do not require authentication for fetching public data, though an authenticated
+    session will expose additional options and allow users to see more data where it is part of their own record.
+
+    All other endpoints are targetted at the staff interface level and allow for additional functionality and a more
+    unrestricted view of data.  These endpoints, however, have a level of redaction built in for resources that the
+    api consumer should not have access to.  For example, user data for users who do not belong to the same library
+    or library group of your api user will be reduced to just minimum neccesary for a valid response. Object keys will
+    be consistent for all responses, but their values may be removed depending on access.
+
+    ## Authentication
+
+    The API supports the following authentication mechanisms
+
+    * HTTP Basic authentication
+    * OAuth2 (client credentials grant)
+    * Cookie-based
+
+    Both _Basic authentication_ and the _OAuth2_ flow, need to be enabled
+    by system preferences.
+
+    ## Authorization
+
+    The API uses existing user profiles to restrict access to resources based on user permissions and the library the
+    API user is assigned to.  This may result, at times, in resources being returned in a redacted form with all keys
+    present but sensative values nulled.
+
+    We do not yet support OAuth Scopes or the Authorization Code grant flow.
+
+    ## Errors
+
+    The API uses standard HTTP status codes to indicate the success or failure
+    of the API call. The body of the response will be JSON in the following format:
+
+    ```
+    {
+      "error": "Current settings prevent the passed due date to be applied",
+      "error_code": "invalid_due_date"
+    }
+    ```
+
+    Note: Some routes might offer additional attributes in their error responses but that"s
+    subject to change and thus not documented.
+
+    ## Filtering responses
+
+    The API allows for some advanced response filtering using a JSON based query syntax. The
+    query can be added to the requests:
+
+    * as a query parameter `q=`
+    * in the request body
+
+    For simple field equality matches we can use `{ "fieldname": "value" }` where the fieldname
+    matches one of the fields as described in the particular endpoints response object.
+
+    We can refine that with more complex matching clauses by nesting a the clause into the
+    object; `{ "fieldname": { "clause": "value" } }`.
+
+    Available matching clauses include `=`, `!=`, `<`, `>`, `<=`, `>=` and `-not`. We also support `-like`
+    and `-not_like` string comparisons with `%` used to denote wildcards, thus you can pass
+    `{ "fieldname": { "-like": "value%" } }` to do a 'starts with' string match for example.
+
+    We can filter on multiple fields by adding them to the JSON respresentation. Adding at `HASH`
+    level will result in an "AND" query, whilst combinding them in an `ARRAY` will result in an
+    "OR" query: `{ "field1": "value2", "field2": "value2" }` will filter the response to only those
+    results with both field1 containing value2 AND field2 containing value2 for example.
+
+    There is a collection of special operators also available to you, including:
+
+    * `-in` - Expects an array of values to perform an OR match against
+    * `-not_in` - Expects an array of values to perform a NOR match against
+    * `-between` - Expects two values which the value of the field is expected to fall between
+    * `-not_between` - Expects two values which the value of the field is expected to fall outside of
+    * `-ident` - Expects a second field name to match the two field values against
+    * `-regexp` - Expects a perl compatible regular expression for which the value should match
+
+    Logic and nesting is also supported and you may use `-and` and `-or` to change the logic of an ARRAY
+    or HASH as described above.
+
+    Additionally, if you are requesting related data be embedded into the response one can query
+    on the related data using dot notation in the field names.
+
+    ### Examples
+
+    The following request would return any patron with firstname "Henry" and lastname "Acevedo";
+
+    `curl -u koha:koha --request GET "http://127.0.0.1:8081/api/v1/patrons/" --data-raw '{ "surname": "Acevedo", "firstname": "Henry" }'`
+
+    The following request would return any patron whose lastname begins with "Ace";
+
+    `curl -u koha:koha --request GET "http://127.0.0.1:8081/api/v1/patrons/" --data-raw '{ "surname": { "-like": "Ace%" }'`
+
+    The following request would return any patron whose lastname is "Acevedo" OR "Bernardo"
+
+    `curl -u koha:koha --request GET "http://127.0.0.1:8081/api/v1/patrons/" --data-raw '{ "surname": [ "Acevedo", "Bernardo" ] }'`
+
+    The following request embeds the related patron extended attributes data and filters on it.
+
+    `curl -u koha:koha =--request GET 'http://127.0.0.1:8081/api/v1/patrons/' --header 'x-koha-embed: extended_attributes' --data-raw '{ "extended_attributes.code": "internet", "extended_attributes.attribute": "1" }'`
+
+    ## Special headers
+
+    ### x-koha-embed
+
+    This optional header allows the api consumer to request additional related data
+    to be returned in the api response.  It also allows for cross referencing in the
+    queries as described above. It accepts a comma delimited list of relation names.
+
+    Relations may on occasion also support dot delimited nesting to allow traversal.
+
+    ### x-koha-library
+
+    This optional header should be passed to give your api request a library
+    context; If it is not included in the request, then the request context
+    will default to using your api comsumer"s assigned home library.
+tags:
+  - description: "Manage additional contents\n"
+    x-displayName: Additional contents
+    name: additional_contents
+  - description: "Manage additional fields\n"
+    name: additional_fields
+    x-displayName: Additional fields
+  - description: "Manage action logs\n"
+    name: action_logs
+    x-displayName: Action logs
+  - description: "Manage article requests\n"
+    name: article_requests
+    x-displayName: Article requests
+  - description: "Manage authorised value categories\n"
+    name: authorised_value_categories
+    x-displayName: Authorised value categories
+  - description: "Manage authorised values\n"
+    name: authorised_values
+    x-displayName: Authorised values
+  - description: "Manage batch import profiles\n"
+    name: batch_import_profiles
+    x-displayName: Batch import profiles
+  - description: "Manage baskets for the acquisitions module\n"
+    name: baskets
+    x-displayName: Baskets
+  - description: "Manage Authority records\n"
+    name: authorities
+    x-displayName: Authorities
+  - description: "Manage bibliographic records\n"
+    name: biblios
+    x-displayName: Biblios
+  - description: "Manage bookings\n"
+    name: bookings
+    x-displayName: Bookings
+  - description: "Manage cash registers\n"
+    name: cash_registers
+    x-displayName: Cash registers
+  - description: "Manage cash register cashups\n"
+    name: cashups
+    x-displayName: Cashups
+  - description: "Manage categories\n"
+    name: categories
+    x-displayName: Categories
+  - description: "Manage checkouts\n"
+    name: checkouts
+    x-displayName: Checkouts
+  - description: "Report Content-Security-Policy violations\n"
+    name: csp-reports
+    x-displayName: Content-Security-Policy violations
+  - description: "Manage circulation desks\n"
+    name: desks
+    x-displayName: Circulation desks
+  - description: "Manage circulation rules\n"
+    name: circulation_rules
+    x-displayName: Circulation rules
+  - description: "Retrieve configuration relevant to circulation rules\n"
+    name: circulation_rules_config
+    x-displayName: Circulation rules config
+  - description: "Manage cities\n"
+    name: cities
+    x-displayName: Cities
+  - description: "Manage patron clubs\n"
+    name: clubs
+    x-displayName: Clubs
+  - description: "Manage EDI files\n"
+    name: edi_files
+    x-displayName: EDI files
+  - description: "Manage ERM agreements\n"
+    name: erm_agreements
+    x-displayName: ERM agreements
+  - description: "Manage ERM configuration\n"
+    name: erm_config
+    x-displayName: ERM configuration
+  - description: "Manage ERM counter files\n"
+    name: erm_counter_files
+    x-displayName: ERM counter files
+  - description: "Manage ERM counter logs\n"
+    name: erm_counter_logs
+    x-displayName: ERM counter logs
+  - description: "Retrieve counter registry data\n"
+    name: erm_counter_registry
+    x-displayName: ERM counter registry
+  - description: "Manage ERM saved reports\n"
+    name: erm_default_usage_reports
+    x-displayName: ERM saved reports
+  - description: "Manage ERM docuemnts\n"
+    name: erm_documents
+    x-displayName: ERM documents
+  - description: "Manage ERM eHoldings packages\n"
+    name: erm_eholdings_packages
+    x-displayName: ERM eHoldings packages
+  - description: "Manage ERM eHoldings resources\n"
+    name: erm_eholdings_resources
+    x-displayName: ERM eHoldings resources
+  - description: "Manage ERM eHoldings titles\n"
+    name: erm_eholdings_titles
+    x-displayName: ERM eHoldings titles
+  - description: "Manage ERM licences\n"
+    name: erm_licences
+    x-displayName: ERM licences
+  - description: "Retrieve SUSHI service data\n"
+    name: erm_sushi_service
+    x-displayName: ERM SUSHI services
+  - description: "Manage ERM usage data providers\n"
+    name: erm_usage_data_providers
+    x-displayName: ERM usage data providers
+  - description: "Manage ERM usage databases\n"
+    name: erm_usage_databases
+    x-displayName: ERM usage databases
+  - description: "Manage ERM usage items\n"
+    name: erm_usage_items
+    x-displayName: ERM usage items
+  - description: "Manage ERM usage platforms\n"
+    name: erm_usage_platforms
+    x-displayName: ERM usage platforms
+  - description: "Manage ERM usage titles\n"
+    name: erm_usage_titles
+    x-displayName: ERM usage titles
+  - description: "Manage ERM usage reports\n"
+    name: erm_usage_reports
+    x-displayName: ERM usage reports
+  - description: "Manage ERM users\n"
+    name: erm_users
+    x-displayName: ERM users
+  - description: "Manage funds for the acquisitions module\n"
+    name: funds
+    x-displayName: Funds
+  - description: "Manage holds\n"
+    name: holds
+    x-displayName: Holds
+  - description: "Manage hold groups\n"
+    name: hold_groups
+    x-displayName: Hold groups
+  - description: "Manage identity providers\n"
+    name: identity_providers
+    x-displayName: Identity providers
+  - description: "Manage ILL module backends\n"
+    name: ill_backends
+    x-displayName: ILL backends
+  - description: "Manage ILL module batches\n"
+    name: ill_batches
+    x-displayName: ILL batches
+  - description: "Manage ILL module batch statuses\n"
+    name: ill_batchstatuses
+    x-displayName: ILL batch statuses
+  - description: "Manage ILL configuration\n"
+    name: ill_config
+    x-displayName: ILL configuration
+  - description: "Manage ILL requests\n"
+    name: ill_requests
+    x-displayName: ILL requests
+  - description: "Manage ISO18626 ILL protocol\n"
+    name: iso18626
+    x-displayName: ISO18626
+  - description: "Manage ISO18626 ILL requests\n"
+    name: iso18626_requests
+    x-displayName: ISO18626 requests
+  - description: "Manage ISO18626 requesting agencies\n"
+    name: iso18626_requesting_agencies
+    x-displayName: ISO18626 requesting agencies
+  - description: "Manage import batches\n"
+    name: import_batches
+    x-displayName: Import batches
+  - description: "Manage item groups\n"
+    name: item_groups
+    x-displayName: Item groups
+  - description: "Manage ILL users\n"
+    name: ill_users
+    x-displayName: ILL users
+  - description: "Manage record sources\n"
+    name: record_sources
+    x-displayName: Record source
+  - description: "Manage item lists\n"
+    x-displayName: Item Lists
+    name: item_lists
+  - description: "Manage items\n"
+    name: items
+    x-displayName: Items
+  - description: "Manage item types\n"
+    name: item_types
+    x-displayName: Item Types
+  - description: "Manage jobs\n"
+    name: jobs
+    x-displayName: Jobs
+  - description: "Manage libraries\n"
+    name: libraries
+    x-displayName: Libraries
+  - description: "Manage library groups\n"
+    name: library_groups
+    x-displayName: Library groups
+  - description: "Manage lists"
+    name: "lists"
+    x-displayName: Lists
+  - description: "Manage macros\n"
+    name: macros
+    x-displayName: Macros
+  - description: "Manage patron messages\n"
+    name: messages
+    x-displayName: Messages
+  - description: "Manage acquisition orders\n"
+    name: orders
+    x-displayName: Orders
+  - description: "Handle OAuth flows\n"
+    name: oauth
+    x-displayName: OAuth
+  - description: "Manage patron categories\n"
+    name: patron_categories
+    x-displayName: Patron categories
+  - description: "Manage patrons\n"
+    name: patrons
+    x-displayName: Patrons
+  - description: "Manage preservation tasks\n"
+    name: preservation
+    x-displayName: Preservation
+  - description: "Manage purchase suggestions\n"
+    name: suggestions
+    x-displayName: Purchase suggestions
+  - description: "Manage quotes\n"
+    name: quotes
+    x-displayName: Quotes
+  - description: "Manage recalls\n"
+    name: recalls
+    x-displayName: Recalls
+  - description: "Manage report jobs\n"
+    name: reports
+    x-displayName: Reports
+  - description: "Manage return claims\n"
+    name: return_claims
+    x-displayName: Return claims
+  - description: "Manage stock rotation\n"
+    name: stockrotation
+    x-displayName: Rotas
+  - description: "Manage search filters"
+    name: search_filters
+    x-displayName: Search filters
+  - description: "Manage search field mappings"
+    name: search_mappings
+    x-displayName: Search mappings
+  - description: "Manage SIP2 accounts"
+    name: sip2_accounts
+    x-displayName: SIP2 Accounts
+  - description: "Manage SIP2 institutions"
+    name: sip2_institutions
+    x-displayName: SIP2 Institutions
+  - description: "Manage SIP2 system preference overrides"
+    name: sip2_system_preference_overrides
+    x-displayName: SIP2 System preference overrides
+  - description: "Manage SMTP servers configurations\n"
+    name: smtp_servers
+    x-displayName: SMTP servers
+  - description: "Manage system preferences\n"
+    name: sysprefs
+    x-displayName: System preferences
+  - description: "Manage file transport configurations\n"
+    name: file_transports
+    x-displayName: File transports
+  - description: "System status\n"
+    name: status
+    x-displayName: Status
+  - description: "Manage tickets\n"
+    name: tickets
+    x-displayName: Tickets
+  - description: "Manage transfer limits\n"
+    name: transfer_limits
+    x-displayName: Transfer limits
+  - description: "Manage item transfers\n"
+    name: transfers
+    x-displayName: Transfers
+  - description: "Handle two factor authentication flows\n"
+    name: 2fa
+    x-displayName: Two factor authentication
+  - description: "Manage vendors for the acquisitions module\n"
+    name: vendors
+    x-displayName: Vendors
+  - description: "Manage vendors configuration\n"
+    name: vendors_config
+    x-displayName: Vendors configuration

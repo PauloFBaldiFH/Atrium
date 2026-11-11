@@ -1,0 +1,55 @@
+---
+additionalProperties: false
+properties:
+  biblio_id:
+    description: Internal identifier for the parent bibliographic record
+    type: integer
+  booking_id:
+    description: Internal booking identifier
+    readOnly: true
+    type: integer
+  cancellation_reason:
+    description: Booking cancellation reason
+    type:
+      - string
+      - 'null'
+  creation_date:
+    description: Creation date and time of this booking
+    readOnly: true
+    format: date-time
+    type: string
+  end_date:
+    description: Start date and time of this booking
+    format: date-time
+    type: string
+  item_id:
+    description: Internal item identifier for specific item bookings
+    type:
+      - integer
+      - 'null'
+  itemtype_id:
+    description: Item type identifier for "any item" bookings. Either item_id or itemtype_id must be provided. This is used for server-side optimal item selection and is not persisted.
+    type:
+      - string
+      - 'null'
+  modification_date:
+    description: Modification date and time of this booking
+    readOnly: true
+    format: date-time
+    type: string
+  patron_id:
+    description: Internal patron identifier
+    type: integer
+  pickup_library_id:
+    description: Internal pickup_library identifier
+    type: string
+  start_date:
+    description: Start date and time of this booking
+    format: date-time
+    type: string
+  status:
+    description: Status of the booking
+    type:
+      - string
+      - "null"
+type: object

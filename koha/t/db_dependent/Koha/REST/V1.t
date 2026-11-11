@@ -1,0 +1,202 @@
+#!/usr/bin/perl
+
+# This file is part of Koha.
+#
+# Koha is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Koha is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Koha; if not, see <https://www.gnu.org/licenses>.
+
+use Modern::Perl;
+
+use Test::NoWarnings;
+use Test::More tests => 5;
+use Test::Mojo;
+use Test::MockModule;
+use Test::Warn;
+
+use File::Basename;
+use t::lib::Mocks;
+
+BEGIN {
+    # Mock pluginsdir before loading Plugins module
+    my $path = dirname(__FILE__) . '/../../../lib/plugins';
+    t::lib::Mocks::mock_config( 'pluginsdir', $path );
+}
+
+use Koha::Database;
+use Koha::Plugins;
+
+my $schema = Koha::Database->new->schema;
+
+subtest 'Type definition tests' => sub {
+
+    plan tests => 4;
+
+    # initialize Koha::REST::V1 after mocking
+    my $remote_address = '127.0.0.1';
+    my $t;
+
+    $t = Test::Mojo->new('Koha::REST::V1');
+    my $types = $t->app->types;
+
+    is(
+        $types->type('json'),
+        'application/json; charset=utf8',
+        'application/json gets charset added'
+    );
+    is( $types->type('marcxml'), 'application/marcxml+xml',  'application/marcxml+xml is defined' );
+    is( $types->type('mij'),     'application/marc-in-json', 'application/marc-in-json is defined' );
+    is( $types->type('marc'),    'application/marc',         'application/marc is defined' );
+};
+
+subtest 'x-koha-raw-payload tests' => sub {
+
+    plan tests => 7;
+
+    $schema->storage->txn_begin;
+
+    t::lib::Mocks::mock_config( 'enable_plugins', 1 );
+    Koha::Plugins::Methods->search->delete;
+    my $plugins = Koha::Plugins->new;
+    $plugins->InstallPlugins( { include => ['Koha::Plugin::Test'] } );
+    $_->enable for $plugins->GetPlugins( { all => 1 } );
+
+    my $t = Test::Mojo->new('Koha::REST::V1');
+
+    # Attributes and ordering are exactly the kind of thing the default XML<->JSON
+    # conversion cannot round-trip; parse_xml() never reads node attributes at all.
+    my $xml =
+          '<NCIPMessage version="1.0">'
+        . '<Request type="RequestItem" priority="high">'
+        . '<InitiationHeader><FromAgencyId>AgencyA</FromAgencyId><ToAgencyId>AgencyB</ToAgencyId></InitiationHeader>'
+        . '<BibliographicId scheme="ISBN">9780140449136</BibliographicId>'
+        . '</Request>'
+        . '</NCIPMessage>';
+
+    $t->post_ok(
+        '/api/v1/contrib/testplugin/patrons/echo_raw',
+        { 'Content-Type' => 'application/xml' },
+        $xml
+        )
+        ->status_is(200)
+        ->header_is( 'Content-Type' => 'application/xml' )
+        ->content_is( $xml, 'x-koha-raw-payload leaves the request/response body byte-for-byte untouched' );
+
+    $t->post_ok(
+        '/api/v1/contrib/testplugin/patrons/echo_converted',
+        { 'Content-Type' => 'application/xml' },
+        $xml
+    )->status_is(200)->json_is(
+        '/received' => {
+            NCIPMessage => {
+                Request => {
+                    InitiationHeader => { FromAgencyId => 'AgencyA', ToAgencyId => 'AgencyB' },
+                    BibliographicId  => '9780140449136',
+                }
+            }
+        },
+        'Without the flag, the default conversion silently drops all XML attributes (version/type/priority/scheme)'
+    );
+
+    $schema->storage->txn_rollback;
+};
+
+subtest 'XML payload conversion tests' => sub {
+
+    plan tests => 12;
+
+    $schema->storage->txn_begin;
+
+    t::lib::Mocks::mock_config( 'enable_plugins', 1 );
+    Koha::Plugins::Methods->search->delete;
+    my $plugins = Koha::Plugins->new;
+    $plugins->InstallPlugins( { include => ['Koha::Plugin::Test'] } );
+    $_->enable for $plugins->GetPlugins( { all => 1 } );
+
+    my $t = Test::Mojo->new('Koha::REST::V1');
+
+    my $conversions = 0;
+    my $rest        = Test::MockModule->new('Koha::REST::V1');
+    $rest->mock(
+        'parse_xml',
+        sub {
+            $conversions++;
+            return $rest->original('parse_xml')->(@_);
+        }
+    );
+
+    my $xml = '<NCIPMessage version="1.0"><Request/></NCIPMessage>';
+
+    $t->post_ok(
+        '/api/v1/contrib/testplugin/patrons/echo_converted',
+        { 'Content-Type' => 'application/xml' },
+        $xml
+    )->status_is(200);
+
+    is( $conversions, 1, 'Well-formed XML is converted to JSON' );
+
+    # A body that isn't XML is left alone for the route to validate itself
+    $t->post_ok(
+        '/api/v1/contrib/testplugin/patrons/echo_converted',
+        { 'Content-Type' => 'application/xml' },
+        '{"already":"json"}'
+        )
+        ->status_is(200)
+        ->json_is( '/received' => { already => 'json' }, 'A JSON body sent as application/xml reaches the controller' );
+
+    $t->post_ok(
+        '/api/v1/contrib/testplugin/patrons/echo_converted',
+        { 'Content-Type' => 'application/xml' },
+        '<NCIPMessage><unclosed>'
+    )->status_is(400)->json_is(
+        '/errors/0/message' => 'Expected object - got string.',
+        'Malformed XML is rejected by the route validation'
+    );
+
+    # around_action fires for the authentication bridge too. A request the
+    # bridge rejects must not have paid for the conversion
+    $conversions = 0;
+
+    $t->post_ok(
+        '/api/v1/contrib/testplugin/patrons/echo_authorized',
+        { 'Content-Type' => 'application/xml' },
+        $xml
+    )->status_is(401);
+
+    is( $conversions, 0, 'The payload is not converted for a request the authentication bridge rejects' );
+
+    $schema->storage->txn_rollback;
+};
+
+subtest 'XML response bodies tests' => sub {
+
+    plan tests => 4;
+
+    $schema->storage->txn_begin;
+
+    t::lib::Mocks::mock_config( 'enable_plugins', 1 );
+    Koha::Plugins::Methods->search->delete;
+    my $plugins = Koha::Plugins->new;
+    $plugins->InstallPlugins( { include => ['Koha::Plugin::Test'] } );
+    $_->enable for $plugins->GetPlugins( { all => 1 } );
+
+    my $t = Test::Mojo->new('Koha::REST::V1');
+
+    # A route without the flag that renders its XML itself, the way TwiML
+    # responses are built
+    $t->get_ok('/api/v1/contrib/testplugin/patrons/xml_response')
+        ->status_is(200)
+        ->header_is( 'Content-Type' => 'application/xml' )
+        ->content_is( '<Response><Say>Hello</Say></Response>', 'A response body that is already XML is left alone' );
+
+    $schema->storage->txn_rollback;
+};
