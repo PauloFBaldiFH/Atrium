@@ -1,0 +1,3078 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>Build a report, step 1 of 7: Choose a module › Guided reports wizard › Reports › Koha</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="afa9491e1a80843083d1415bfdb507f57f8cf2b4,8a7b1c7ce7aa41d7d6240adb4fb08fc22c4e4b95,1793390471">
+<meta name="generator" content="Koha 26.05.05">
+<script nonce="">
+    window.__CSP_NONCE__ = "";
+</script>
+
+    
+
+
+<link rel="shortcut icon" href="https://i.postimg.cc/rs5nhP5c/cone-Castro-Alves.png" type="image/x-icon">
+
+
+    <link href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/jquery-ui-1.13.2.min_26.0505000.css" rel="stylesheet" type="text/css">
+
+<link href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/fontawesome.min_26.0505000.css" type="text/css" rel="stylesheet">
+<link href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/brands.min_26.0505000.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/solid.min_26.0505000.css">
+<link rel="stylesheet" type="text/css" href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/datatables.min_26.0505000.css">
+<link rel="stylesheet" type="text/css" href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/print_26.0505000.css" media="print">
+
+
+
+    
+
+
+    <link rel="stylesheet" type="text/css" href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/staff-global_26.0505000.css">
+
+
+<!-- local colors -->
+
+
+<script nonce="" type="module">
+    import { APIClient } from "/intranet-tmpl/prog/js/fetch/api-client.js";
+    window.APIClient = APIClient;
+</script>
+<script nonce="">
+    var Koha = {};
+    
+        var CAN_user_parameters_manage_column_config = 1;
+    
+</script>
+
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/Gettext_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/i18n_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/stores_26.0505000.js.download"></script>
+
+
+
+
+
+
+
+
+
+<link href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/codemirror.min_26.0505000.css" type="text/css" rel="stylesheet">
+<style nonce=""> .CodeMirror { resize: vertical; } .cm-sqlParams { color: #11917b; } .cm-columnPlaceholder { color: #bf2d5d; } #mana_search_errortext { font-family: monospace; font-weight: bold; } .data-plain { display: none; } div.radio label { font-weight: bold; margin: 0; } #tabs .tab-pane { display: block; } #column_selection { display: flex; flex-direction: row; flex-wrap: nowrap; } #column_options { flex-shrink: 1; } #column_controls { flex-shrink: 1; display: flex; flex-direction: column; justify-content: center; } #selected_columns { flex-grow: 1; } </style>
+<link type="text/css" rel="stylesheet" href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/reports_26.0505000.css">
+<link href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/c3.min_26.0505000.css" rel="stylesheet" type="text/css">
+</head>
+
+<body id="rep_guided_reports_start" class="rep">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand navbar-dark bg-dark" aria-label="Main">
+    <div class="container-fluid">
+        <a id="logo" class="navbar-brand" href="http://localhost:8080/cgi-bin/koha/mainpage.pl"><img src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/picto-koha.svg" alt="Koha"></a>
+
+        <div class="collapse navbar-collapse" id="header">
+            <ul id="toplevelmenu" class="navbar-nav me-auto">
+                
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:8080/cgi-bin/koha/circ/circulation-home.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-exchange" title="Circulation"></i></span> <span class="nav-link-text">Circulation</span></a></li>
+                
+                
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:8080/cgi-bin/koha/members/members-home.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-id-card" title="Patrons"></i></span> <span class="nav-link-text">Patrons</span></a></li>
+                
+                <li class="nav-item" id="catalog-search-link">
+                    <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-search" title="Search"></i></span> <span class="nav-link-text">Search</span></a>
+                </li>
+                
+                    <li class="nav-item dropdown" id="catalog-search-dropdown">
+                        <a href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl">Advanced search</a></li>
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/itemsearch.pl">Item search</a></li>
+                        </ul>
+                    </li>
+                
+                
+                <li class="nav-item dropdown">
+                    <a href="http://localhost:8080/cgi-bin/koha/mainpage.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="nav-link-icon"><i class="fa fa-fw fa-bars" title="More"></i></span> <span class="nav-link-text">More</span></a>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/virtualshelves/shelves.pl">Lists</a></li>
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/cataloguing/cataloging-home.pl">Cataloging</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/acqui/acqui-home.pl">Acquisitions</a></li>
+                        
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/authorities/authorities-home.pl">Authorities</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/serials/serials-home.pl">Serials</a></li>
+                        
+                        
+                        
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/reports/reports-home.pl">Reports</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/suggestion/suggestion.pl">Suggestions</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/tools-home.pl">Tools</a></li>
+                        
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/admin/admin-home.pl">Administration</a></li>
+                        
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/about.pl">About Koha</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+
+            <ul id="user-menu" class="nav navbar-nav">
+                
+                    <li class="nav-item dropdown" id="logged-in-dropdown">
+                        <a id="logged-in-menu" href="http://localhost:8080/cgi-bin/koha/mainpage.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="logged-in-info-brief">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            <span id="logged-in-info-full">
+                                
+                                <span class="loggedinusername is_superlibrarian" data-loggedinusername="Bibliotecário" data-is-superlibrarian="is_superlibrarian">Bibliotecário</span>
+                                <span class="loggedincategorycode content_hidden" data-loggedincategorycode="B">B</span>
+                                
+                                    <strong>
+                                        <span class="logged-in-branch-name" data-logged-in-branch-name="Castro Alves">Castro Alves</span>
+                                        <span class="logged-in-branch-code content_hidden" data-logged-in-branch-code="MAIN">MAIN</span>
+                                    </strong>
+                                
+                                
+                                
+                            </span>
+                            <b class="caret"></b>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" role="menu" aria-labelledby="logged-in-menu">
+                            <li class="loggedin-menu-label">
+                                Logged in as:<br>
+                                <span class="loggedinusername">Bibliotecário</span>
+                            </li>
+                            <li class="loggedin-menu-label">
+                                
+                                    Location: <br>
+                                    <span class="logged-in-branch-name">Castro Alves</span>
+                                    <span class="logged-in-branch-code content_hidden">MAIN</span>
+                                
+                            </li>
+
+                            
+
+                            
+
+                            
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <div id="set_library_controls">
+                                        <div>
+                                            <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/circ/set-library.pl">
+                                                
+                                                    
+                                                        Set library
+                                                    
+                                                
+                                            </a>
+                                        </div>
+                                        
+                                            <div>
+                                                <a id="branch_select_cog" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form#" role="button" aria-label="Toggle panel for login settings" aria-expanded="false">
+                                                    <i class="fa fa-cog" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        
+                                    </div>
+                                </li>
+
+                                <li id="setlibrary_panel" style="display:none"></li>
+                            
+                            
+
+                            
+                                <li class="nav-item toplinks-myaccount">
+                                    <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/members/moremember.pl?borrowernumber=1">My account</a>
+                                </li>
+                                <li class="nav-item toplinks-mycheckouts">
+                                    <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/circ/circulation.pl?borrowernumber=1">My checkouts</a>
+                                </li>
+                            
+
+                            
+                            <li class="nav-item">
+                                <a id="logout" class="toplinks dropdown-item" href="http://localhost:8080/cgi-bin/koha/mainpage.pl?logout.x=1">Log out</a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                        <li class="nav-item dropdown" id="debug-controls-dropdown">
+                            <a id="debug-controls-menu" href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Debug controls">
+                                <i id="debug-icon" class="fa fa-bug"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" role="menu" aria-labelledby="debug-controls-menu">
+                                <li>
+                                    <a id="toggleUserCSS" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form#"> <i class="fa fa-fw fa-brands fa-css3"></i> <span class="toggle-text">Disable custom CSS</span> </a>
+                                </li>
+                                <li>
+                                    <a id="toggleUserJS" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form#"> <i class="fa fa-fw fa-brands fa-square-js"></i> <span class="toggle-text">Disable custom JS</span> </a>
+                                </li>
+                                <li>
+                                    <a id="toggleStylesheets" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form#"> <i class="fa fa-fw fa-file-code"></i> <span class="toggle-text">Disable custom stylesheets</span> </a>
+                                </li>
+                            </ul>
+                        </li>
+                    
+                    
+
+                
+            </ul>
+        </div>
+    </div>
+
+    
+</nav>
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- circ-search.inc -->
+
+    
+        <div id="header_search" class="toptabs"> 
+    
+    <div class="tab-content"> 
+        
+            
+    <!-- patron-search-box.inc -->
+    
+    
+        <div class="tab-pane show active" id="circ_search_panel" role="tabpanel" aria-labelledby="circ_search-tab" tabindex="0"> 
+        <form action="http://localhost:8080/cgi-bin/koha/circ/circulation.pl" id="patronsearch" method="get">
+            <div class="form-title">
+                <label class="control-label" for="findborrower"><span class="control-text">Check out</span> <i class="fa fa-fw fa-upload" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input autocomplete="off" id="findborrower" name="findborrower" class="head-searchbox form-control ui-autocomplete-input" type="text" placeholder="Enter patron card number or partial name" size="40">
+
+                
+            </div>
+
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /patron-search-box.inc -->
+
+
+            
+    <!-- checkin-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="checkin_search_panel" role="tabpanel" aria-labelledby="checkin_search-tab" tabindex="0"> 
+        <form method="post" action="http://localhost:8080/cgi-bin/koha/circ/returns.pl" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="afa9491e1a80843083d1415bfdb507f57f8cf2b4,8a7b1c7ce7aa41d7d6240adb4fb08fc22c4e4b95,1793390471">
+
+            <div class="form-title">
+                <label class="control-label" for="ret_barcode"><span class="control-text">Check in</span> <i class="fa fa-fw fa-download" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input name="barcode" id="ret_barcode" class="head-searchbox form-control" accesskey="r" type="text" placeholder="Scan a barcode to check in" size="40">
+                <input type="hidden" name="op" value="cud-checkin">
+            </div>
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /checkin-search-box.inc -->
+
+
+            
+    <!-- renew-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="renew_search_panel" role="tabpanel" aria-labelledby="renew_search-tab" tabindex="0"> 
+        <form method="post" action="http://localhost:8080/cgi-bin/koha/circ/renew.pl" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="afa9491e1a80843083d1415bfdb507f57f8cf2b4,8a7b1c7ce7aa41d7d6240adb4fb08fc22c4e4b95,1793390471">
+
+
+            <div class="form-title">
+                <label class="control-label" for="ren_barcode"><span class="control-text">Renew</span> <i class="fa fa-fw fa-retweet" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input name="barcode" id="ren_barcode" class="head-searchbox form-control" accesskey="r" type="text" placeholder="Scan a barcode to renew" size="40">
+            </div>
+            <input type="hidden" name="op" value="cud-renew">
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /renew-search-box.inc -->
+
+
+        
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- catalogue-search-box.inc -->
+
+    
+        <div class="tab-pane" id="catalog_search_panel" role="tabpanel" aria-labelledby="catalog_search-tab" tabindex="0"> 
+    <form action="http://localhost:8080/cgi-bin/koha/catalogue/search.pl" method="get" id="cat-search-block">
+        <div class="form-title">
+            <label class="control-label" for="search-form"><span class="control-text">Search catalog</span> <i class="fa fa-fw fa-search" aria-hidden="true"></i></label>
+        </div>
+
+        <div class="form-content">
+            
+                <input type="text" name="q" id="search-form" size="20" value="" title="Enter the terms you wish to search for." class="query form-text head-searchbox form-control" placeholder="Enter search keywords">
+            
+
+            
+        </div>
+        <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+
+        <div class="form-extra-content">
+            
+
+            
+        </div>
+    </form>
+ </div>
+    
+
+<!-- /catalogue-search-box.inc -->
+
+        
+     </div>
+
+    
+    <ul class="nav nav-tabs" role="tablist">
+        
+        
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link active" href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form#circ_search_panel" id="circ_search-tab" data-tabname="circ_search" aria-controls="circ_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#circ_search_panel" aria-selected="true">
+                    
+                <i class="fa fa-fw fa-upload" aria-hidden="true"></i> <span class="tab-title">Check out</span>
+            
+                </a>
+            
+        
+    </li>
+
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form#checkin_search_panel" id="checkin_search-tab" data-tabname="checkin_search" aria-controls="checkin_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#checkin_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-download" aria-hidden="true"></i> <span class="tab-title">Check in</span>
+            
+                </a>
+            
+        
+    </li>
+
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form#renew_search_panel" id="renew_search-tab" data-tabname="renew_search" aria-controls="renew_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#renew_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-retweet" aria-hidden="true"></i> <span class="tab-title">Renew</span>
+            
+                </a>
+            
+        
+    </li>
+
+        
+        
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form#catalog_search_panel" id="catalog_search-tab" data-tabname="catalog_search" aria-controls="catalog_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#catalog_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-search" aria-hidden="true"></i> <span class="tab-title">Search catalog</span>
+            
+                </a>
+            
+        
+    </li>
+
+        
+    
+    </ul>
+
+ </div>
+    
+
+<!-- /circ-search.inc -->
+
+
+
+
+
+<div id="sub-header">
+    
+    
+    <nav id="breadcrumbs" aria-label="Breadcrumb">
+        <ol class="breadcrumb">
+            
+            
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/mainpage.pl" title="Home"><span class="visually-hidden-focusable">Home</span></a> </li>
+        
+    
+
+            
+        
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/reports/reports-home.pl">Reports</a> </li>
+        
+    
+
+        
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl">Guided reports wizard</a> </li>
+        
+    
+
+        
+        
+            
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form">Build a report</a> </li>
+        
+    
+
+            
+    
+        
+            <li class="breadcrumb-item active" aria-current="page">
+                <a aria-disabled="true" tabindex="-1"> <span>Step 1 of 7: Choose a module</span> </a>
+            </li>
+        
+    
+
+        
+    
+        </ol>
+    </nav>
+
+
+    <nav id="shortcut" class="shortcut" aria-label="Quick shortcuts">
+    
+
+    <div>
+        <a class="" href="http://localhost:8080/cgi-bin/koha/help.pl" id="helper"><i class="fa-solid fa-circle-question"></i> <span>Help</span></a>
+    </div>
+</nav>
+
+</div>
+
+
+<div id="update_sql" class="modal" tabindex="-1" role="dialog" aria-labelledby="update_sql_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="update_sql_label">Update SQL</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="loading"> <img src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/spinner-small.gif" alt=""> Loading </div>
+            </div>
+            <div class="modal-footer">
+                <a href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form#" class="btn btn-default" id="update_sql_button" role="button">Update</a>
+                <button class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- #update_sql -->
+
+<div class="main container-fluid">
+    <div class="row">
+        <div class="col-md-10 order-md-2 order-sm-1">
+            <main>
+                <div id="messages">
+    
+
+    <div id="transient_result"></div>
+</div>
+
+
+                <div id="toolbar" class="btn-toolbar">
+    
+        <div class="btn-group">
+            <button class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i> New report</button>
+            <ul class="dropdown-menu">
+                <li id="newmenuc"><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form">New guided report</a> </li>
+                <li id="newsql"><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=add_form_sql">New SQL report</a> </li>
+                
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+
+
+
+                
+
+                
+
+                
+
+                <div id="mana_share_report" class="modal" tabindex="-1" role="dialog" aria-labelledby="mana_share_modal_label">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form method="post" id="mana_share_form" action="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl">
+                <input type="hidden" name="csrf_token" value="afa9491e1a80843083d1415bfdb507f57f8cf2b4,8a7b1c7ce7aa41d7d6240adb4fb08fc22c4e4b95,1793390471">
+
+                <div class="modal-header">
+                    <h1 class="modal-title" id="mana_share_modal_label">Share with Mana</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    
+                    <div id="note-error" class="alert alert-warning" role="alert"> Please enter a report name and descriptive note before sharing (minimum 20 characters) </div>
+                    <div class="shared_infos rows">
+                        <ul>
+                            <li><span class="label">ID: </span><div id="shared_id"></div></li>
+                            <li><span class="label">Name: </span><div id="shared_name"></div></li>
+                            <li><span class="label">SQL: </span><div id="shared_sql"></div></li>
+                            <li><span class="label">Group: </span><div id="shared_group"></div></li>
+                            <li><span class="label">Type: </span><div id="shared_type"></div></li>
+                            <li><span class="label">Notes: </span><div id="shared_notes"></div></li>
+                            
+                                <li>
+                                    <label for="mana_language">Language:</label>
+                                    <select id="mana_language" name="mana_language">
+                                        
+                                            
+                                                
+                                                    
+                                                        
+                                                            <option value="pt-BR">
+                                                                
+                                                                    Português
+                                                                
+                                                            </option>
+                                                        
+                                                    
+                                                
+                                            
+                                        
+                                            
+                                                
+                                                    
+                                                        
+                                                            <option value="en" selected="selected">
+                                                                
+                                                                    English
+                                                                
+                                                            </option>
+                                                        
+                                                    
+                                                
+                                            
+                                        
+                                    </select>
+                                </li>
+                            
+                        </ul>
+                    </div>
+                    <!-- /.shared_infos rows -->
+                </div>
+                <!-- /.modal-body -->
+                <div class="modal-footer">
+                    <input type="hidden" id="reportid" name="reportid">
+                    <input type="hidden" name="op" value="cud-share">
+                    <button id="ManaShareButton" type="submit" class="btn btn-primary shared_infos">Share</button>
+                    <button type="button" class="btn btn-default" id="ManaCloseButton" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+            <!-- /#mana_share_form -->
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /#mana_share_report -->
+
+
+                
+                    
+
+                    <h1>Build a report</h1>
+                    <form method="post" action="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl">
+                        <input type="hidden" name="csrf_token" value="afa9491e1a80843083d1415bfdb507f57f8cf2b4,8a7b1c7ce7aa41d7d6240adb4fb08fc22c4e4b95,1793390471">
+
+                        <fieldset class="rows">
+                            <legend>Step 1 of 7: Choose a module to report on,Set cache expiry, and choose report visibility </legend>
+                            <ol>
+                                <li>
+                                    <label for="area">Choose: </label>
+                                    <select name="area" id="area">                                            <option value="CIRC">        <span>Circulation</span></option>                                            <option value="CAT">        <span>Catalog</span></option>                                            <option value="PAT">        <span>Patrons</span></option>                                            <option value="ACQ">        <span>Acquisitions</span></option>                                            <option value="ACC">        <span>Accounts</span></option>                                            <option value="SER">        <span>Serials</span></option>                                    </select>
+                                </li>
+                                
+                                    <li>
+                                        <label for="public">Report is public:</label>
+                                        <select id="public" name="public">
+                                            <option value="0" selected="selected">No (default)</option>
+                                            <option value="1">Yes</option>
+                                        </select>
+                                    </li>
+                                
+
+                                
+                                    <li>
+                                        <label for="cache_expiry">Cache expiry:</label>
+                                        <input type="text" id="cache_expiry" name="cache_expiry" value="300">
+                                        <select id="cache_expiry_units" name="cache_expiry_units">
+                                            <option value="seconds">Seconds (default)</option>
+                                            <option value="minutes">Minutes</option>
+                                            <option value="hours">Hours</option>
+                                            <option value="days">Days</option>
+                                        </select>
+                                    </li>
+                                
+                            </ol>
+                        </fieldset>
+                        <!-- /.rows -->
+                        <fieldset class="action">
+                            <input type="hidden" name="op" value="cud-report">
+                            <button type="submit" class="btn btn-primary">Next <i class="fa fa-right-long" aria-hidden="true"></i></button>
+                        </fieldset>
+                    </form>
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+            </main>
+        </div>
+        <!-- /.col-md-10.order-md-2 -->
+
+        <div class="col-md-2 order-sm-2 order-md-1">
+            <aside>
+                
+                
+<div id="guided-reports-view-menu" class="sidebar_menu">
+    <h5>View reports</h5>
+    <ul>
+        
+            <li><a href="http://localhost:8080/cgi-bin/koha/reports/guided_reports.pl?op=list">Saved reports</a></li>
+        
+    </ul>
+    <h5>Reports dictionary</h5>
+    <ul>
+        <li><a href="http://localhost:8080/cgi-bin/koha/reports/dictionary.pl">View dictionary</a></li>
+    </ul>
+    <h5>Useful resources</h5>
+    <ul>
+        <li><a href="https://wiki.koha-community.org/wiki/SQL_Reports_Library" target="blank">Koha report library</a></li>
+        
+        
+            <li><a href="https://schema.koha-community.org/26_05" target="blank">Koha database schema</a></li>
+        
+    </ul>
+</div>
+<!-- /.sidebar_menu -->
+
+            </aside>
+        </div>
+        <!-- /.col-md-2.order-md-1 -->
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /.main.container-fluid -->
+
+<!-- Runtime Parameters Modal -->
+<div class="modal" id="runtime_parameters" tabindex="-1" role="dialog" aria-labelledby="runtime_parametersLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="runtime_parametersLabel">Runtime parameter options</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="get" id="send_runtime_parameter">
+                <input type="hidden" name="param_category" id="param_category">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="paramLabel" class="required">Parameter label: </label>
+                        <input class="form-control required" type="text" name="paramLabel" id="paramLabel" required="required">
+                        <div class="hint">The label for the field shown when the report is run, e.g. "Select a library."</div>
+                    </div>
+                    <div id="authorised_value_category" class="form-group" style="display:none">
+                        <label for="authorised_value">Authorized value category:</label>
+                        <select class="form-select" name="authorised_value" id="authorised_value">
+                            <option value=""></option>
+                            
+    
+        
+            <option value="AR_CANCELLATION">AR_CANCELLATION</option>
+        
+    
+        
+            <option value="BOR_NOTES">BOR_NOTES</option>
+        
+    
+        
+            <option value="CCODE">CCODE</option>
+        
+    
+        
+            <option value="COUNTRY">COUNTRY</option>
+        
+    
+        
+            <option value="CR">CR</option>
+        
+    
+        
+            <option value="DAMAGED">DAMAGED</option>
+        
+    
+        
+            <option value="ERM_AGREEMENT_CLOSURE_REASON">ERM_AGREEMENT_CLOSURE_REASON</option>
+        
+    
+        
+            <option value="ERM_AGREEMENT_LICENSE_LOCATION">ERM_AGREEMENT_LICENSE_LOCATION</option>
+        
+    
+        
+            <option value="ERM_AGREEMENT_LICENSE_STATUS">ERM_AGREEMENT_LICENSE_STATUS</option>
+        
+    
+        
+            <option value="ERM_AGREEMENT_RENEWAL_PRIORITY">ERM_AGREEMENT_RENEWAL_PRIORITY</option>
+        
+    
+        
+            <option value="ERM_AGREEMENT_STATUS">ERM_AGREEMENT_STATUS</option>
+        
+    
+        
+            <option value="ERM_DATABASE_REPORTS_METRICS">ERM_DATABASE_REPORTS_METRICS</option>
+        
+    
+        
+            <option value="ERM_ITEM_REPORTS_METRICS">ERM_ITEM_REPORTS_METRICS</option>
+        
+    
+        
+            <option value="ERM_LICENSE_STATUS">ERM_LICENSE_STATUS</option>
+        
+    
+        
+            <option value="ERM_LICENSE_TYPE">ERM_LICENSE_TYPE</option>
+        
+    
+        
+            <option value="ERM_PACKAGE_CONTENT_TYPE">ERM_PACKAGE_CONTENT_TYPE</option>
+        
+    
+        
+            <option value="ERM_PACKAGE_TYPE">ERM_PACKAGE_TYPE</option>
+        
+    
+        
+            <option value="ERM_PLATFORM_REPORTS_METRICS">ERM_PLATFORM_REPORTS_METRICS</option>
+        
+    
+        
+            <option value="ERM_REPORT_TYPES">ERM_REPORT_TYPES</option>
+        
+    
+        
+            <option value="ERM_TITLE_PUBLICATION_TYPE">ERM_TITLE_PUBLICATION_TYPE</option>
+        
+    
+        
+            <option value="ERM_TITLE_REPORTS_METRICS">ERM_TITLE_REPORTS_METRICS</option>
+        
+    
+        
+            <option value="ERM_USER_ROLES">ERM_USER_ROLES</option>
+        
+    
+        
+            <option value="HINGS_AS">HINGS_AS</option>
+        
+    
+        
+            <option value="HINGS_C">HINGS_C</option>
+        
+    
+        
+            <option value="HINGS_PF">HINGS_PF</option>
+        
+    
+        
+            <option value="HINGS_RD">HINGS_RD</option>
+        
+    
+        
+            <option value="HINGS_UT">HINGS_UT</option>
+        
+    
+        
+            <option value="HOLD_CANCELLATION">HOLD_CANCELLATION</option>
+        
+    
+        
+            <option value="HSBND_FREQ">HSBND_FREQ</option>
+        
+    
+        
+            <option value="LANG">LANG</option>
+        
+    
+        
+            <option value="LOC">LOC</option>
+        
+    
+        
+            <option value="LOST">LOST</option>
+        
+    
+        
+            <option value="NOT_LOAN">NOT_LOAN</option>
+        
+    
+        
+            <option value="OPAC_SUG">OPAC_SUG</option>
+        
+    
+        
+            <option value="ORDER_CANCELLATION_REASON">ORDER_CANCELLATION_REASON</option>
+        
+    
+        
+            <option value="PAYMENT_TYPE">PAYMENT_TYPE</option>
+        
+    
+        
+            <option value="qualif">qualif</option>
+        
+    
+        
+            <option value="RDACARRIER">RDACARRIER</option>
+        
+    
+        
+            <option value="RDACARRIER_CODE">RDACARRIER_CODE</option>
+        
+    
+        
+            <option value="RDACONTENT">RDACONTENT</option>
+        
+    
+        
+            <option value="RDACONTENT_CODE">RDACONTENT_CODE</option>
+        
+    
+        
+            <option value="RDAMEDIA">RDAMEDIA</option>
+        
+    
+        
+            <option value="RDAMEDIA_CODE">RDAMEDIA_CODE</option>
+        
+    
+        
+            <option value="RELTERMS">RELTERMS</option>
+        
+    
+        
+            <option value="REPORT_GROUP">REPORT_GROUP</option>
+        
+    
+        
+            <option value="RESTRICTED">RESTRICTED</option>
+        
+    
+        
+            <option value="RETURN_CLAIM_RESOLUTION">RETURN_CLAIM_RESOLUTION</option>
+        
+    
+        
+            <option value="SIP_MEDIA_TYPE">SIP_MEDIA_TYPE</option>
+        
+    
+        
+            <option value="SUGGEST">SUGGEST</option>
+        
+    
+        
+            <option value="SUGGEST_FORMAT">SUGGEST_FORMAT</option>
+        
+    
+        
+            <option value="VENDOR_INTERFACE_TYPE">VENDOR_INTERFACE_TYPE</option>
+        
+    
+        
+            <option value="VENDOR_ISSUE_TYPE">VENDOR_ISSUE_TYPE</option>
+        
+    
+        
+            <option value="VENDOR_PAYMENT_METHOD">VENDOR_PAYMENT_METHOD</option>
+        
+    
+        
+            <option value="WITHDRAWN">WITHDRAWN</option>
+        
+    
+        
+            <option value="YES_NO">YES_NO</option>
+        
+    
+
+                        </select>
+                        <div class="hint">Select which authorized value category the user will choose from.</div>
+                    </div>
+                    <div id="runtime_param_options" style="display:none">
+                        <h5>Parameter options:</h5>
+                        <div class="radio">
+                            <input type="radio" id="single_param_check" name="param_option" value="" checked="checked">
+                            <label for="single_param_check">Single parameter only</label>
+                            <span class="hint">- Query expression should use =</span>
+                        </div>
+
+                        <div class="radio">
+                            <input type="radio" id="include_all_check" name="param_option" value=":all">
+                            <label for="include_all_check">Include option for all</label>
+                            <span class="hint">- Query expression must use LIKE</span>
+                        </div>
+
+                        <div class="radio">
+                            <input type="radio" id="multi_select_check" name="param_option" value=":in">
+                            <label for="multi_select_check">Allow multiple selections</label>
+                            <span class="hint">- Query expression must use IN</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.modal-body -->
+                <div class="modal-footer">
+                    <button type="submit" id="sendParam" class="btn btn-default approve">Insert parameter</button>
+                    <button type="button" class="btn btn-default deny" data-bs-dismiss="modal">Cancel</button>
+                </div>
+                <!-- /.modal-footer -->
+            </form>
+            <!-- /#send_runtime_parameter -->
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /#runtime_parameters -->
+
+
+
+<template id="preview-sql-modal-template"></template>
+
+
+
+
+
+
+
+
+
+    
+        <div id="changelanguage" class="navbar navbar-expand navbar-light bg-light">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav_lang_menu" aria-controls="nav_lang_menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nav_lang_menu">
+                    <ul id="i18nMenu" class="navbar-nav me-auto">
+                        
+                            
+                                
+                                    
+                                        
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/changelanguage.pl?language=pt-BR">
+                                                    
+                                                        Português
+                                                    
+                                                </a>
+                                            </li>
+                                        
+                                    
+                                
+                            
+                        
+                            
+                                
+                                    
+                                        
+                                            <li class="nav-item">
+                                                <a class="nav-link active currentlanguage" aria-current="page" aria-disabled="true" tabindex="-1">
+                                                    
+                                                        English
+                                                    
+                                                </a>
+                                            </li>
+                                        
+                                    
+                                
+                            
+                        
+                    </ul>
+                    <!-- /#i18nMenu -->
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#changelanguage -->
+    
+
+
+<span id="audio-alert"></span>
+
+<!-- Cookie consent -->
+
+<!-- CookieConsentedJS code that may run -->
+
+
+
+    
+
+
+
+
+
+
+    <script nonce="">
+        if (self === top) {
+            var antiClickjack = document.getElementById("antiClickjack");
+            antiClickjack.parentNode.removeChild(antiClickjack);
+        } else {
+            top.location = self.location;
+        }
+    </script>
+
+
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/jquery-3.6.0.min_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/jquery-migrate-3.3.2.min_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/jquery-ui-1.13.2.min_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/shortcut_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/js.cookie-2.2.1.min_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/jquery.highlight-5_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/bootstrap.bundle.min_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/jquery.validate.min_26.0505000.js.download"></script>
+<!-- koha core js -->
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/patron-format_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/staff-global_26.0505000.js.download"></script>
+<script type="module" src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/form-submit_26.0505000.js.download"></script>
+
+
+
+
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/dayjs.min_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/utc_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/timezone_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/customParseFormat_26.0505000.js.download"></script>
+<script nonce="">
+    dayjs.extend(window.dayjs_plugin_utc);
+    dayjs.extend(window.dayjs_plugin_timezone);
+    dayjs.extend(window.dayjs_plugin_customParseFormat);
+</script>
+<!-- js-date-format.inc -->
+<script nonce="">
+    (function() {
+        var def_date_format = 'metric';
+        var def_time_format = '24hr';
+        var def_tz = 'America/Sao_Paulo';
+
+        var get_date_pattern = function(format) {
+            var date_pattern = 'YYYY-MM-DD';
+            if(format == 'us') date_pattern = 'MM/DD/YYYY';
+            if(format == 'metric') date_pattern = 'DD/MM/YYYY';
+            if(format == 'dmydot') date_pattern = 'DD.MM.YYYY';
+            return date_pattern;
+        };
+
+        var get_time_pattern = function(format) {
+            var time_pattern = 'HH:mm';
+            if(format == '12hr') time_pattern = 'hh:mm a';
+            return time_pattern;
+        };
+
+        /**
+         * A JS equivalent of the KohaDates TT Plugin. Passed an rfc3339 formatted date string,
+         * or JS Date, the function will return a date string formatted as per the koha instance config.
+         * @param {String|Date} value                   rfc3339 formatted date string or a JS Date object.
+         * @param {Object} [options]                    Optional set of switches for changing date handling
+         * @property {String} [options.tz]              String representing the timezone of the passed date
+         * @property {Boolean} [options.no_tz_adjust]   Enable/Disable timezone adjustment
+         * @property {String} [options.dateformat]
+         * @property {Boolean} [options.withtime]       Enable/Disable appearance of time in returned string
+         * @property {String} [options.timeformat]
+         * @property {Boolean} [options.as_due_date]    Enable/Disable due date output format
+         * @returns {String}                            A date string formatted as per the koha instance configuration.
+         */
+        window.$date = function(value, options) {
+            if(!value) return '';
+            let tz = (options&&options.tz)||def_tz;
+            let no_tz_adjust = (options&&options.no_tz_adjust)||false;
+            var m = dayjs(value);
+            if ( !no_tz_adjust && ! value.match(/^\d{4}-\d{2}-\d{2}$/ ) ) {
+                m = m.tz(tz);
+            }
+
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            var withtime = (options&&options.withtime)||false;
+
+            if(dateformat=='rfc3339' && withtime) return m.format();
+
+            var timeformat = (options&&options.timeformat)||def_time_format;
+            var date_pattern = get_date_pattern(dateformat);
+            let as_due_date = (options&&options.as_due_date);
+            if (as_due_date) {
+                withtime = !( m.hour() == 23 && m.minute() == 59 );
+            }
+            var time_pattern = !withtime?'':' '+get_time_pattern(timeformat);
+
+            return m.format(date_pattern+time_pattern);
+        }
+
+        window.$datetime = function(value, options) {
+            options = options||{};
+            options.withtime = true;
+            return $date(value, options);
+        };
+
+        window.$time = function(value, options) {
+            if(!value) return '';
+            var tz = (options&&options.tz)||def_tz;
+            var m = dayjs(value);
+            if(tz) m = m.tz(tz);
+
+            var dateformat = (options&&options.dateformat);
+            var timeformat = (dateformat=='rfc3339'&&'24hr')||(options&&options.timeformat)||def_time_format;
+
+            return m.format(get_time_pattern(timeformat)+(dateformat=='rfc3339'?':ss'+(!m.isUTC()?'Z':''):''))+(dateformat=='rfc3339' && m.isUTC()?'Z':'');
+        }
+
+        window.$date_to_rfc3339 = function(value, options) {
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            let m = dayjs(value, get_date_pattern(dateformat), true);
+            return m.format("YYYY-MM-DD");
+        }
+
+        /**
+        * A JS equivalent of the KohaTimes TT Plugin. Passed a time in HH:MM:SS or HH:MM format
+        * the function will return a time string formatted as per the koha instance config.
+        */
+
+        window.$kohatime = function(value) {
+            if(!value) return 'invalid time';
+            var intime = value.split(':');
+            var hours = intime[0];
+            var minutes = intime[1];
+
+            if ( hours < 0 || hours > 23 || minutes < 0 || minutes > 59 ) { return 'invalid time'; }
+
+            if ( def_time_format == '12hr') {
+                var ampm = ( hours >= 12 ) ? 'pm' : 'am';
+                hours = ( hours == 0 ) ? "12" : hours;
+                hours = ( hours > 12 ) ? ( hours - 12 ) : hours;
+
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0') + " " + ampm;
+            } else {
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0');
+            }
+        }
+
+        /**
+         * Returns the configured Koha server timezone.
+         * Useful for components that need to display dates/times in library timezone.
+         */
+        window.$timezone = function() {
+            return def_tz;
+        }
+
+        /**
+         * Converts a dayjs object to a Date for timeline/calendar display.
+         * Creates a Date that displays these exact values regardless of browser timezone.
+         * (Strips timezone info so JS interprets the values as browser-local time)
+         *
+         * Use this when you need to display a specific date/time from a known timezone
+         * (e.g., library timezone) and want it to appear the same for all users.
+         *
+         * @param {dayjs.Dayjs} dayjsObj - A dayjs object (typically converted to a specific timezone)
+         * @returns {Date} A Date object that will display the dayjs values in the browser
+         */
+        window.$toDisplayDate = function(dayjsObj) {
+            return new Date(dayjsObj.format('YYYY-MM-DDTHH:mm:ss'));
+        }
+
+    })();
+</script>
+<!-- / js-date-format.inc -->
+
+
+
+<!-- js-patron-get-age.inc -->
+
+<script nonce="">
+    (function() {
+
+        const tz = 'America/Sao_Paulo';
+        window.$get_age = function(dob, options) {
+            if(!dob) return '';
+
+            let today = new Date();
+            dob = new Date(dob);
+            if ( tz ) {
+                let today_tz = new Date(today.toLocaleString('en-US', {timeZone: tz}));
+                let diff = today.getTime() - today_tz.getTime();
+                today = new Date(today.getTime() - diff);
+
+                let dob_tz = new Date(dob.toLocaleString('en-US', {timeZone: tz}));
+                diff = dob.getTime() - dob_tz.getTime();
+                dob = new Date(dob.getTime() - diff);
+            }
+            let age = today.getFullYear() - dob.getFullYear();
+            let m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+    })();
+</script>
+<!-- / js-patron-get-age.inc -->
+
+<!-- js-patron-format-address.inc -->
+
+
+
+<script nonce="">
+    (function() {
+
+        const roadtypes = [];
+        let roadtypes_map = roadtypes.reduce((map, r) => {
+            map[r.authorised_value] = r.lib;
+            return map;
+        }, {});
+
+        function member_display_address_style_us(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(data.address) + ' ' + escape_str(roadtype_desc);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.city);
+                if ( data.state ) {
+                    if ( data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.state);
+                }
+                if ( data.postal_code ) {
+                    address += " " + escape_str(data.postal_code);
+                }
+                if ( data.country ) {
+                    if ( data.postal_code || data.state || data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.country)
+                }
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_de(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : ' ';
+                    address += escape_str(data.address) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.street_number);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_fr(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.address);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        window.$format_address = function(data, options) {
+            let line_break = options && options.no_line_break ? ' ' : '<br/>';
+            let include_li = options && options.include_li;return member_display_address_style_us(data, line_break, include_li);}
+
+    })();
+</script>
+<!-- / js-patron-format-address.inc -->
+
+
+
+
+<!-- validator-strings.inc -->
+<script nonce="">
+    $(document).ready(function () {
+        jQuery.extend(jQuery.validator.messages, {
+            required: _("This field is required."),
+            remote: _("Please fix this field."),
+            email: _("Please enter a valid email address."),
+            url: _("Please enter a valid URL."),
+            date: _("Please enter a valid date."),
+            dateISO: _("Please enter a valid date (ISO)."),
+            number: _("Please enter a valid number."),
+            digits: _("Please enter only digits."),
+            equalTo: _("Please enter the same value again."),
+            number: _("Please add amount in valid format: 0.00"),
+            maxlength: $.validator.format(_("Please enter no more than {0} characters.")),
+            minlength: $.validator.format(_("Please enter at least {0} characters.")),
+            rangelength: $.validator.format(_("Please enter a value between {0} and {1} characters long.")),
+            range: $.validator.format(_("Please enter a value between {0} and {1}.")),
+            max: $.validator.format(_("Please enter a value less than or equal to {0}.")),
+            min: $.validator.format(_("Please enter a value greater than or equal to {0}.")),
+            phone: $.validator.format(_("Please enter a valid phone number.")),
+        });
+    });
+</script>
+<!-- / validator-strings.inc -->
+
+
+    <!-- js_includes.inc: IntranetUserJS -->
+    <script nonce="">
+        /* koha-easy-installer ai-assistant begin */
+var KEI_AI_V = "1.5.130";
+$(document).ready(function () {
+    // koha.nexus AI assistant (Library tools > AI assistant on the staff home page).
+    if (!$("#main_intranet-main").length || $("#kei-ai").length) return;
+    var box = $("<div id=\"kei-ai\"></div>"), news = $("#area-news");
+    if (news.length) news.replaceWith(box);
+    else {
+        var col = $("#area-quote").parent();
+        if (!col.length) col = $("#container-main .row").first().children("div").first();
+        if (!col.length) return;
+        col.prepend(box);
+    }
+    var url = "/cgi-bin/koha/tools/ai_assistant.pl?v=" + encodeURIComponent(KEI_AI_V) + "&op=";
+    $("<link rel=\"stylesheet\">").attr("href", url + "css").appendTo("head");
+    $.ajax({ url: url + "js", dataType: "script", cache: true });
+});
+/* koha-easy-installer ai-assistant end */
+    </script>
+    <!-- / js_includes.inc: IntranetUserJS -->
+
+
+<!-- js_includes.inc -->
+
+    <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/basket_26.0505000.js.download"></script>
+
+
+
+
+
+<script nonce="">
+    var defaultPatronSearchFields = "firstname|preferred_name|middle_name|surname|othernames|cardnumber|userid";
+    var defaultPatronSearchMethod = "contains";
+    var extendedPatronAttributes = "1";
+    var loggedInLibrary = 'MAIN';
+    var singleBranchMode = '1';
+    var showPatronFirstnameIfDifferentThanPreferredname = 0;
+</script>
+
+    <script nonce="">
+        // PatronAutoComplete
+        var loggedInClass = "";
+        $(document).ready(function(){
+            
+                if ( $("#findborrower").length ) {
+                    patron_autocomplete($("#findborrower"), { 'link-to': 'circ' });
+                }
+                if ( $("#findborrower_main").length ) {
+                    patron_autocomplete($("#findborrower_main"), { 'link-to': 'circ' });
+                }
+            
+            if ( $("#searchmember").length ) {
+                patron_autocomplete($("#searchmember"), { 'link-to': 'patron' });
+            }
+        });
+    </script>
+
+
+
+
+
+    <script nonce="">
+        (function () {
+            function getURLParams() {
+                const params = new URLSearchParams(window.location.search);
+                return params;
+            }
+
+            function toggleURLParams(paramsToToggle) {
+                const url = new URL(window.location.href);
+                const params = url.searchParams;
+
+                // Check if all params are currently set
+                const allSet = paramsToToggle.every(param => params.get(param) === "yes");
+
+                if (allSet) {
+                    // Remove all params
+                    paramsToToggle.forEach(param => params.delete(param));
+                } else {
+                    // Add all params
+                    paramsToToggle.forEach(param => params.set(param, "yes"));
+                }
+
+                window.location.href = url.toString();
+            }
+
+            function updateButtonText() {
+                const params = getURLParams();
+
+                // User CSS button
+                const cssDisabled = params.get("DISABLE_SYSPREF_IntranetUserCSS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserCSS") === "yes";
+                const cssToggle = document.getElementById("toggleUserCSS");
+                if (cssToggle) {
+                    const cssText = cssToggle.querySelector(".toggle-text");
+                    if (cssText) cssText.textContent = cssDisabled ? _("Enable custom CSS") : _("Disable custom CSS");
+                }
+
+                // User JS button
+                const jsDisabled = params.get("DISABLE_SYSPREF_IntranetUserJS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserJS") === "yes";
+                const jsToggle = document.getElementById("toggleUserJS");
+                if (jsToggle) {
+                    const jsText = jsToggle.querySelector(".toggle-text");
+                    if (jsText) jsText.textContent = jsDisabled ? _("Enable custom JS") : _("Disable custom JS");
+                }
+
+                // Stylesheets button
+                const stylesheetsDisabled =
+                    params.get("DISABLE_SYSPREF_OpacAdditionalStylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_opaclayoutstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetcolorstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetstylesheet") === "yes";
+                const stylesheetsToggle = document.getElementById("toggleStylesheets");
+                if (stylesheetsToggle) {
+                    const stylesheetsText = stylesheetsToggle.querySelector(".toggle-text");
+                    if (stylesheetsText) stylesheetsText.textContent = stylesheetsDisabled ? _("Enable custom stylesheets") : _("Disable custom stylesheets");
+                }
+
+                // Update icon color based on whether any toggles are active
+                const anyDisabled = cssDisabled || jsDisabled || stylesheetsDisabled;
+                const debugIcon = document.getElementById("debug-icon");
+                if (debugIcon) {
+                    if (anyDisabled) {
+                        debugIcon.style.color = "#ffc107"; // Warning/amber color
+                    } else {
+                        debugIcon.style.color = ""; // Default color
+                    }
+                }
+            }
+
+            // Update button text on page load
+            updateButtonText();
+
+            // User CSS toggle
+            const cssToggle = document.getElementById("toggleUserCSS");
+            if (cssToggle) {
+                cssToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserCSS", "DISABLE_SYSPREF_OPACUserCSS"]);
+                });
+            }
+
+            // User JS toggle
+            const jsToggle = document.getElementById("toggleUserJS");
+            if (jsToggle) {
+                jsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserJS", "DISABLE_SYSPREF_OPACUserJS"]);
+                });
+            }
+
+            // Stylesheets toggle
+            const stylesheetsToggle = document.getElementById("toggleStylesheets");
+            if (stylesheetsToggle) {
+                stylesheetsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_OpacAdditionalStylesheet", "DISABLE_SYSPREF_opaclayoutstylesheet", "DISABLE_SYSPREF_intranetcolorstylesheet", "DISABLE_SYSPREF_intranetstylesheet"]);
+                });
+            }
+        })();
+    </script>
+
+<!-- / js_includes.inc -->
+
+    
+    <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/charts_26.0505000.js.download"></script>
+    <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/d3.min_26.0505000.js.download"></script>
+    <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/c3.min_26.0505000.js.download"></script>
+    
+
+
+<!-- calendar.inc -->
+<script nonce=""> var debug = ""; var dateformat_pref = "metric"; var flatpickr_dateformat_string = ""; var delimiter = ""; var altinput_dateformat = ""; switch ( dateformat_pref ){ case "us": flatpickr_dateformat_string = "m/d/Y"; altinput_dateformat = 'mm/dd/yyyy'; delimiter = "/"; break; case "metric": flatpickr_dateformat_string = "d/m/Y"; altinput_dateformat = 'dd/mm/yyyy'; delimiter = "/"; break; case "dmydot": flatpickr_dateformat_string = "d.m.Y"; altinput_dateformat = 'dd/mm/yyyy'; delimiter = "."; break; default: flatpickr_dateformat_string = "Y-m-d"; altinput_dateformat = 'yyyy/mm/dd'; delimiter = "-"; } var sentmsg = 0; var bidi = false; var calendarFirstDayOfWeek = '0'; var flatpickr_timeformat_string = "H:i"; var flatpickr_timeformat = true; </script> <!-- / calendar.inc --> <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/calendar_26.0505000.js.download"></script> <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/flatpickr.min_26.0505000.js.download"></script> <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/shortcut-buttons-flatpickr.min_26.0505000.js.download"></script> <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/maskito.core_26.0505000.js.download"></script> <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/maskito.kit_26.0505000.js.download"></script> <script nonce=""> flatpickr.l10ns.default.weekdays = flatpickr_weekdays; flatpickr.l10ns.default.months = flatpickr_months; flatpickr.l10ns.default.rangeSeparator = flatpickr_rangeSeparator; let flatpickr_defaults = { allowInput: true, dateFormat: "Y-m-d", altInput: true, altFormat: flatpickr_dateformat_string, altInputClass: 'flatpickr-input', nextArrow: '<i class="fa fa-fw fa-arrow-right"></i>', prevArrow: '<i class="fa fa-fw fa-arrow-left"></i>', time_24hr: flatpickr_timeformat, defaultHour: 23, defaultMinute: 59, locale: { "firstDayOfWeek": calendarFirstDayOfWeek }, onReady: function( selectedDates, dateStr, instance ){ /* When onReady is triggered, remove any existing "clear date" link */ $(instance.input).parent().find('.flatpickr_wrapper_' + instance.input.id).remove(); /* When flatpickr instance is created, automatically append a "clear date" link */ $(instance.input).find('~input.flatpickr:first') /* Add a wrapper element so that we can prevent the clear button from wrapping */ .wrap("<span class='flatpickr_wrapper flatpickr_wrapper_"+instance.input.id+"'></span>") .attr("autocomplete", "off") .after( $("<a/>") .attr("href","#") .addClass("clear_date") .on("click", function(e){ e.preventDefault(); instance.clear(); }) .addClass("fa fa-fw fa-times") .attr("aria-hidden", true) .attr("aria-label", _("Clear date") ) ).keydown(function(e) { var key = (event.keyCode ? event.keyCode : event.which); if ( key == 40 ) { instance.set('allowInput',false); } }); /* When flatpickr instance is ready, add maskito input mask */ var thisInput = instance.input; let accepts_time = $(thisInput).data('flatpickr-enable-time'); let accepts_period = $(thisInput).data('flatpickr-period'); let accepts_time_only = $(thisInput).data('flatpickr-time-only'); let maskitoOptions = {}; if ( !accepts_period ) { if ( accepts_time ) { maskitoOptions = maskitoDateTimeOptionsGenerator({ dateMode: altinput_dateformat, timeMode: 'HH:MM', dateSeparator: delimiter, overwiteMode: 'replace', }); } else if ( accepts_time_only ) { maskitoOptions = { mask: [/\d/, /\d/, ':', /\d/, /\d/], }; } else { maskitoOptions = maskitoDateOptionsGenerator({ mode: altinput_dateformat, separator: delimiter, overwiteMode: 'replace', }); } } new Maskito( instance.altInput, maskitoOptions ); /* If there is a node with data-date_to with the id of this node it means we are instantiating a 'from' for a date range */ const toInput = instance.input; const fromInput = document.querySelector(`[data-date_to='${toInput.id}']`); if (fromInput && fromInput._flatpickr) { const fromDate = fromInput._flatpickr.selectedDates[0]; if (fromDate) { instance.set('minDate', fromDate); } } }, onChange: function( selectedDates, dateText, instance) { if (selectedDates.length === 0) { return; } var thisInput = instance.input; let accepts_time = $(thisInput).data('flatpickr-enable-time'); let accepts_time_only = $(thisInput).data('flatpickr-time-only'); let accepts_period = $(thisInput).data('flatpickr-period'); if ( !accepts_period ) { if ( accepts_time ) { let parsedDate = flatpickr.parseDate(dateText, instance.config.dateFormat); if ( Number.isNaN(parsedDate.getHours()) ) { instance.setDate(selectedDates[0].setHours(23, 59, 0, 0)); } } } }, onOpen: function( selectedDates, dateText, instance) { var thisInput = instance.input; let set_to_today = $(thisInput).data('flatpickr-set-to-today'); if ( set_to_today ) { if ( thisInput.value === '' ) { instance.setDate( new Date() ); } } }, onClose: function( selectedDates, dateText, instance) { var thisInput = instance.input; if ( thisInput.hasAttribute('data-date_to') ) { var endPickerEl = document.querySelector("#"+thisInput.dataset.date_to); if (endPickerEl && endPickerEl._flatpickr) { endPickerEl._flatpickr.set('minDate', selectedDates[0]); } } let = on_close_focus = $(thisInput).data('flatpickr-on-close-focus'); if ( on_close_focus ) { $(on_close_focus).focus(); } }, plugins: [ ShortcutButtonsPlugin({ button: [ { label: _("Yesterday") }, { label: _("Today") }, { label: _("Tomorrow") } ], label: _("or"), onClick: (index, fp) => { let date; let hh = 23, mm = 59; switch (index) { case 0: date = new Date().fp_incr(-1); break; case 1: date = new Date(); if ( $(fp.input).data("flatpickr-pastinclusive") === true ) { hh = date.getHours(); mm = date.getMinutes(); } break; case 2: date = new Date().fp_incr(1); break; } date.setHours(hh, mm, 0, 0); fp.setDate(date); } }) ] }; flatpickr.setDefaults(flatpickr_defaults); function apply_flatpickr(input){ let options = {}; let refresh_max_date = 0; let disable_buttons = []; if( $(input).data("flatpickr-futureinclusive") === true || $(input).data("flatpickr-futuredate") === true ) { let original_date = $(input).val(); if ( original_date ) { original_date = flatpickr.parseDate(original_date, 'Y-m-d').getTime(); let tomorrow = new Date().fp_incr(1).getTime(); options['enable'] = [function(date){ date = date.getTime(); if ( date == original_date ) return true; if ( date >= tomorrow) return true; }]; } else { if( $(input).data("flatpickr-futureinclusive") === true ) { options['minDate'] = new Date().setHours(00, 00, 00, 00); } else { options['minDate'] = new Date().fp_incr(1); } } disable_buttons.push(0); /* Yesterday */ if ( $(input).data("flatpickr-futuredate") === true ) { disable_buttons.push(1); /* Today */ } } if( $(input).data("flatpickr-pastinclusive") === true ) { options['maxDate'] = new Date(); /* Not today or hh:mm will be 00:00 */ refresh_max_date = 1; disable_buttons.push(2); /* Tomorrow */ } if( $(input).data("flatpickr-pastdate") === true ) { options['maxDate'] = new Date().fp_incr(-1).setHours(23, 59, 00, 00); disable_buttons.push(1); /* Today */ disable_buttons.push(2); /* Tomorrow */ } if ( $(input).data('flatpickr-enable-time') === true ) { options['enableTime'] = true; options['dateFormat'] = "Y-m-d H:i"; options['altFormat'] = flatpickr_dateformat_string + ", " + flatpickr_timeformat_string; } if ( $(input).data('flatpickr-disable-shortcuts') === true ) { options['plugins'] = []; } let maxDate = $(input).data("flatpickr-maxdate"); if( typeof maxDate !== 'undefined' ) { options['maxDate'] = new Date(maxDate); } if( $(input).data("flatpickr-time-only") === true ) { options['enableTime'] = true; options['noCalendar'] = true; options['dateFormat'] = "H:i"; options['defaultHour'] = "0"; options['defaultMinute'] = "0"; options['altFormat'] = flatpickr_timeformat_string; options['plugins'] = []; } let fp = $(input).flatpickr(options); $(disable_buttons).each(function(index, value){ $(fp.calendarContainer).find(".shortcut-buttons-flatpickr-button[data-index='"+value+"']").prop("disabled", "disabled"); }); if ( refresh_max_date ) { /* Refresh the maxDate every 30 secondes to make sure the user will not be stuck with the minute passed. Adding 1 minute to not introduce a gap. Example: last update at 40s, a new minute passed at 00. Between 00 and 10s the user won't be able click 'Today'. */ setInterval(() => { let now = new Date(); fp.set("maxDate", now.setMinutes(now.getMinutes() + 1)); }, 30000); } } $(document).ready(function(){ $(".flatpickr").each(function(){ apply_flatpickr(this); }); }); </script>
+
+    
+
+
+
+<!-- format-price.inc -->
+<script nonce="">
+    
+    
+        var default_value = {
+            thousands_sep: ',',
+            decimal_point: '.',
+            decimal_digits: 2
+        };
+
+    
+    Number.prototype.format_price = function( value, params ) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+            var re = '\\d(?=(\\d{' + 3 + '})+' + '\\D' + ')', value = this.toFixed(decimal_digits);
+            return value.replace('.', decimal_point).replace(new RegExp(re, 'g'), '$&' + thousands_sep);
+    }
+    String.prototype.unformat_price = function (params) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+        let value = this.valueOf();
+        value = value.replace(thousands_sep, '').replace(decimal_point, '.').replace(new RegExp('[^\\d.]', 'g'), '');
+        return Number(value).toFixed(decimal_digits);
+    }
+</script>
+<!-- / format-price.inc -->
+
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/datatables.min_26.0505000.js.download"></script>
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/datatables_26.0505000.js.download"></script>
+
+    
+    <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/codemirror.min_26.0505000.js.download"></script>
+    <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/overlay.min_26.0505000.js.download"></script>
+    <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/sql_26.0505000.js.download"></script>
+    <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/show-hint_26.0505000.js.download"></script>
+    <link href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/show-hint_26.0505000.css" rel="stylesheet" type="text/css">
+    <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/sql-hint_26.0505000.js.download"></script>
+    <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/highlight_26.0505000.js.download"></script>
+    <link href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/highlight_26.0505000.css" type="text/css" rel="stylesheet">
+    <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/mana_26.0505000.js.download"></script>
+    <script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/throttledButton_26.0505000.js.download"></script>
+    
+
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/select2.min_26.0505000.js.download"></script>
+<link rel="stylesheet" type="text/css" href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/select2.min_26.0505000.css">
+<link href="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/select2_26.0505000.css" rel="stylesheet" type="text/css">
+<script src="./Build a report, step 1 of 7_ Choose a module › Guided reports wizard › Reports › Koha_files/select2_26.0505000.js.download"></script>
+
+    <script nonce="">
+        let op = "";
+        
+
+        let saved1 = 0;
+        const interface = "/intranet-tmpl";
+        const theme = "prog";
+        const has_errors = 0;
+        const original_results = [];
+        const all_results = [];
+        const header_row = [];
+        const unlimited_total = 0;
+
+        var group_subgroups = {};
+        
+
+        var table_settings = {"default_sort_order":0,"default_display_length":20,"columns":[{"is_hidden":0,"columnname":"selection","cannot_be_toggled":1,"cannot_be_modified":1},{"cannot_be_modified":1,"columnname":"report_id","is_hidden":0,"cannot_be_toggled":1},{"cannot_be_modified":0,"columnname":"report_name","is_hidden":0,"cannot_be_toggled":0},{"cannot_be_modified":0,"cannot_be_toggled":0,"columnname":"type","is_hidden":0},{"cannot_be_toggled":0,"is_hidden":0,"columnname":"group","cannot_be_modified":0},{"cannot_be_modified":0,"columnname":"subgroup","is_hidden":0,"cannot_be_toggled":0},{"cannot_be_modified":0,"cannot_be_toggled":0,"is_hidden":0,"columnname":"notes"},{"columnname":"author","is_hidden":0,"cannot_be_toggled":0,"cannot_be_modified":0},{"cannot_be_modified":0,"columnname":"creation_date","is_hidden":0,"cannot_be_toggled":0},{"cannot_be_modified":0,"cannot_be_toggled":0,"columnname":"last_edit","is_hidden":0},{"cannot_be_modified":0,"columnname":"last_run","is_hidden":0,"cannot_be_toggled":0},{"cannot_be_toggled":0,"columnname":"public","is_hidden":0,"cannot_be_modified":0},{"columnname":"json_url","is_hidden":0,"cannot_be_toggled":0,"cannot_be_modified":0},{"cannot_be_modified":0,"cannot_be_toggled":0,"is_hidden":0,"columnname":"cache_expiry"},{"cannot_be_modified":0,"is_hidden":0,"columnname":"saved_results","cannot_be_toggled":0},{"cannot_be_modified":0,"cannot_be_toggled":0,"is_hidden":0,"columnname":"update"},{"cannot_be_toggled":1,"columnname":"actions","is_hidden":0,"cannot_be_modified":1}],"module":"reports","table":"table_reports","default_save_state":1,"default_save_state_search":0,"page":"saved-sql"};
+
+        const tables = [];
+
+        const open_in_dt = 0;
+        const execute = 0;
+        let report_results_dt;
+    </script>
+    <script nonce="">
+        //  if the report param form has multiselects override default form submission
+        if ($("#report_param_form").find("select[multiple]").length) {
+            $("#report_param_form").on("submit", function (e) {
+                $("#report_param_form")
+                    .find("select[multiple]")
+                    .each(function (i) {
+                        $(this).find("option:first").prop("disabled", false);
+                        var selection;
+                        if ($(this).find("option:selected").length === 0) {
+                            selection = $(this).find("option:first").val();
+                            $(this).val(selection);
+                        } else if ($(this).find("option:selected").length > 1) {
+                            selection = $(this).val().join("\n");
+                            $(this).find("option:selected").prop("selected", false);
+                            $(this).find("option:first").val(selection);
+                            $(this).find("option:first").prop("selected", "selected");
+                        }
+                    });
+            });
+        }
+
+        function hide_bar_element() {
+            $("#chart-column-horizontal").hide();
+            $(".chart-column-group").each(function (index) {
+                $(this).hide();
+            });
+            $(".chart-column-line").each(function (index) {
+                $(this).hide();
+            });
+        }
+
+        function show_bar_element() {
+            $("#chart-column-horizontal").show();
+            $(".chart-column-group").each(function (index) {
+                $(this).show();
+            });
+            $(".chart-column-line").each(function (index) {
+                $(this).show();
+            });
+        }
+
+        function removeColumn(id) {
+            $("#" + id).remove();
+
+            if ($(".chart-column-conf").length == 1) {
+                $(".chart-column-delete").remove();
+            }
+        }
+
+        var MSG_CONFIRM_DELETE = _("Are you sure you want to delete this report? This cannot be undone.");
+
+        if (op == "create" || op == "editsql" || op == "save") {
+            var editor = CodeMirror.fromTextArea(sql, {
+                lineNumbers: true,
+                mode: "text/x-sql",
+                lineWrapping: true,
+                smartIndent: false,
+                keyword: {
+                    // Custom highlighting for items bounded in [[ ]] or << >>.
+                    "\\[\\[(.*?)\\]\\]": "style1",
+                    "<<(.*?)>>": "style1",
+                },
+                hint: CodeMirror.hint.sql,
+                hintOptions: {
+                    tables,
+                },
+            });
+            var ExcludedTriggerKeys = {
+                //key-code combinations of keys that will not fire the auto-complete script
+                8: "backspace",
+                9: "tab",
+                13: "enter",
+                16: "shift",
+                17: "ctrl",
+                18: "alt",
+                19: "pause",
+                20: "capslock",
+                27: "escape",
+                33: "pageup",
+                32: "spacebar",
+                34: "pagedown",
+                35: "end",
+                36: "home",
+                37: "left",
+                38: "up",
+                39: "right",
+                40: "down",
+                45: "insert",
+                46: "delete",
+                56: "asterisk",
+                59: "semicolon",
+                91: "left window key",
+                92: "right window key",
+                93: "select",
+                106: "asterisk",
+                107: "add",
+                109: "subtract",
+                110: "decimal point",
+                111: "divide",
+                112: "f1",
+                113: "f2",
+                114: "f3",
+                115: "f4",
+                116: "f5",
+                117: "f6",
+                118: "f7",
+                119: "f8",
+                120: "f9",
+                121: "f10",
+                122: "f11",
+                123: "f12",
+                144: "numlock",
+                145: "scrolllock",
+                186: "semicolon",
+                187: "equalsign",
+                188: "comma",
+                189: "dash",
+                191: "slash",
+                192: "graveaccent",
+                220: "backslash",
+                222: "quote",
+            };
+            //Trigger auto-complete on all keys not in dictionary of exclusions above.
+            editor.on("keyup", function (cm, e) {
+                if (ExcludedTriggerKeys[e.keyCode] == undefined) {
+                    CodeMirror.commands.autocomplete(editor, null, { completeSingle: false });
+                }
+            });
+
+            // https://stackoverflow.com/questions/2086287/how-to-clear-jquery-validation-error-messages#answer-16025232
+            function clearValidation(formElement) {
+                // formElement should be a jQuery object
+                var validator = formElement.validate();
+                // Iterate through named elements inside of the form, and mark them as error free
+                $("[name]", formElement).each(function () {
+                    validator.successList.push(this); //mark as error free
+                    validator.showErrors(); //remove error messages if present
+                });
+                validator.resetForm(); //remove error class on name elements and clear history
+                validator.reset(); //remove all error and success data
+            }
+        }
+
+        if (op == "showsql" || op == "showreport") {
+            var editor = CodeMirror.fromTextArea(sql, {
+                lineNumbers: false,
+                mode: "text/x-sql",
+                lineWrapping: true,
+                readOnly: true,
+                keyword: {
+                    // Custom highlighting for items bounded in [[ ]] or << >>.
+                    "\\[\\[(.*?)\\]\\]": "style2",
+                    "<<(.*?)>>": "style1",
+                },
+            });
+        }
+
+        function showParamModal(category) {
+            var modal = $("#runtime_parameters");
+            var modalTitle = $("#runtime_parametersLabel");
+            switch (category) {
+                case "insertAuthVal":
+                    modalTitle.text(_("Insert authorized value parameter"));
+                    $("#paramLabel").val(_("Authorized value"));
+                    $("#authorised_value_category").show();
+                    $("label[for='authorised_value']").addClass("required");
+                    $("#authorised_value").prop("required", true).attr("required", "required").addClass("required");
+                    $("#runtime_param_options").show();
+                    break;
+                case "insertCnSource":
+                    modalTitle.text(_("Insert classification source parameter"));
+                    $("#paramLabel").val(_("Source of classification or shelving scheme"));
+                    $("#param_category").val("cn_source");
+                    $("#runtime_param_options").show();
+                    break;
+                case "insertFramework":
+                    modalTitle.text(_("Insert bibliographic framework parameter"));
+                    $("#paramLabel").val(_("Framework"));
+                    $("#param_category").val("biblio_framework");
+                    $("#runtime_param_options").show();
+                    break;
+                case "insertDate":
+                    modalTitle.text(_("Insert date parameter"));
+                    $("#paramLabel").val(_("Date"));
+                    $("#param_category").val("date");
+                    break;
+                case "insertItemtypes":
+                    modalTitle.text(_("Insert item types parameter"));
+                    $("#paramLabel").val(_("Item type"));
+                    $("#param_category").val("itemtypes");
+                    $("#runtime_param_options").show();
+                    break;
+                case "insertBranches":
+                    modalTitle.text(_("Insert libraries parameter"));
+                    $("#paramLabel").val(_("Library"));
+                    $("#param_category").val("branches");
+                    $("#runtime_param_options").show();
+                    break;
+                case "insertCategorycode":
+                    modalTitle.text(_("Insert patron category parameter"));
+                    $("#paramLabel").val(_("Patron category"));
+                    $("#param_category").val("categorycode");
+                    $("#runtime_param_options").show();
+                    break;
+                case "insertCashregister":
+                    modalTitle.text(_("Insert cash register parameter"));
+                    $("#paramLabel").val(_("Cash register"));
+                    $("#param_category").val("cash_registers");
+                    $("#runtime_param_options").show();
+                    break;
+                case "insertDebittypes":
+                    modalTitle.text(_("Insert debit type parameter"));
+                    $("#paramLabel").val(_("Debit type"));
+                    $("#param_category").val("debit_types");
+                    $("#runtime_param_options").show();
+                    break;
+                case "insertCredittypes":
+                    modalTitle.text(_("Insert credit type parameter"));
+                    $("#paramLabel").val(_("Credit type"));
+                    $("#param_category").val("credit_types");
+                    $("#runtime_param_options").show();
+                    break;
+                case "insertList":
+                    modalTitle.text(_("Insert list parameter"));
+                    $("#paramLabel").val(_("List of values"));
+                    $("#param_category").val("list");
+                    break;
+                case "insertText":
+                    modalTitle.text(_("Insert text parameter"));
+                    $("#paramLabel").val(_("Text"));
+                    $("#param_category").val("");
+                    break;
+            }
+            $("#paramLabel").select();
+            modal.modal("show");
+        }
+
+        function load_group_subgroups() {
+            var group = $("#group_select").val();
+            var subgroup = $("#subgroup_select").val();
+            var sg = $("#subgroup");
+            $(sg)
+                .find('option[value!=""]')
+                .each(function () {
+                    $(this).remove();
+                });
+            $(sg).hide();
+            if (group) {
+                var select = $(sg).find("select")[0];
+                $.each(group_subgroups[group], function (index, value) {
+                    if (value[0] == subgroup) {
+                        $('<option selected="selected" value="' + value[0] + '">' + value[1] + "</option>").appendTo(select);
+                    } else {
+                        $('<option value="' + value[0] + '">' + value[1] + "</option>").appendTo(select);
+                    }
+                });
+                $("#subgroup, #subgroup *").show();
+            }
+        }
+
+        $(document).ready(function () {
+            var activeTab = localStorage.getItem("sql_reports_activetab");
+            if (activeTab == 0) {
+                $("#subgroup_filter_block").hide();
+            }
+
+            $("body").on("click", ".fetch_chart_data", function () {
+                if (unlimited_total > 1000) {
+                    if (confirm(_("Fetching full chart data for reports with many rows can cause performance issues. Are you sure you want to chart this report?"))) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+
+            var showsql;
+            hide_bar_element();
+
+            if ($(".chart-column-conf").length == 1) {
+                $(".chart-column-delete").remove();
+            }
+
+            $(".chart-column-delete").on("click", function (e) {
+                e.preventDefault();
+                removeColumn("column_" + $(this).data("column"));
+            });
+
+            $("#download-chart").click(function () {
+                var svg = "<svg>" + $("#chart svg").html() + "</svg>";
+                this.href = "data:application/octet-stream;base64," + btoa(svg);
+                this.setAttribute("download", "chart.svg");
+            });
+
+            $("#chart-type").change(function () {
+                if ($(this).val() == "bar") {
+                    show_bar_element();
+                } else {
+                    hide_bar_element();
+                }
+            });
+
+            $("#download-chart").hide();
+            var chart;
+
+            if (original_results.length && !has_errors) {
+                $("#draw-chart").click(function () {
+                    var x_elements = $('select[name="x"]').val();
+                    var y_elements = [];
+                    var groups = [];
+                    var lines = [];
+                    var options = {};
+
+                    headers = header_row;
+
+                    var results;
+                    if (all_results.length) {
+                        if ($('input[name="chart-include-all"]').prop("checked")) {
+                            results = all_results;
+                        } else {
+                            results = original_results;
+                        }
+                    } else {
+                        results = original_results;
+                    }
+
+                    if ($('input[name="chart-exclude-last"]').prop("checked")) {
+                        results.splice(-1, 1);
+                    }
+
+                    $('select[name="y"]').each(function (index) {
+                        y_elements.push($(this).val());
+                    });
+                    $('select[name="group"]').each(function (index) {
+                        groups.push($(this).val());
+                    });
+                    $(".column-line").each(function (index) {
+                        if ($(this).prop("checked")) {
+                            lines.push($(this).attr("name"));
+                        }
+                    });
+
+                    // Remove deleted columns from headers and results.
+                    var deleted_indexes = [];
+                    var kept_headers = [];
+                    $.each(headers, function (index, value) {
+                        if (value.cell != x_elements && $.inArray(value.cell, y_elements) === -1) {
+                            // This header is neither a x element nor in y elements. Don't need it.
+                            deleted_indexes.push(index);
+                        } else {
+                            kept_headers.push({ cell: value.cell });
+                        }
+                    });
+
+                    // Remove corresponding cells.
+                    var kept_results = [];
+                    $.each(results, function (index, value) {
+                        var line = {};
+                        line["cells"] = [];
+                        $.each(value.cells, function (i, val) {
+                            if ($.inArray(i, deleted_indexes) === -1) {
+                                line["cells"].push({ cell: val.cell });
+                            }
+                        });
+                        kept_results.push(line);
+                    });
+
+                    options.type = $('select[name="chart-type"]').val();
+                    options.horizontal = $('input[name="column-horizontal"]').prop("checked");
+                    options.lines = lines;
+
+                    chart = create_chart(kept_headers, kept_results, x_elements, y_elements, groups, options);
+                    $("#download-chart,#toggle_chart_settings_hid,#chart").show();
+                    $("#toggle_chart_settings_vis").hide();
+                    $("#chartModal").modal("hide");
+                });
+            }
+            if (op == "create") {
+                load_group_subgroups();
+            }
+
+            $("#limit").change(function () {
+                $("#limitselect").submit();
+            });
+
+            $(document).click(function () {
+                $("#report_updated").hide();
+            });
+
+            $(".goback").on("click", function (e) {
+                e.preventDefault();
+                window.history.back();
+            });
+
+            $("body").on("click", ".mana_search_button", function () {
+                $("#mana-loading").show();
+                mana_search($("#mana_search_field").val());
+            });
+
+            $(".ShareButton").on("click", function () {
+                $("#note-error").hide();
+                if ($(this).closest("tr").find(".report_notes").text().length < 20 || $(this).closest("tr").find(".report_name").text().length < 20) {
+                    $(".shared_infos").hide();
+                    $("#note-error").show();
+                } else {
+                    $("#reportid").val($(this).closest("tr").find(".report_id").text());
+                    $("#shared_id").html($(this).closest("tr").find(".report_id").text());
+                    $("#shared_name").html($(this).closest("tr").find(".report_name").text());
+                    $("#shared_sql").html($(this).closest("tr").find(".report_sql").val());
+                    $("#shared_type").html($(this).closest("tr").find(".report_type").text());
+                    $("#shared_group").html($(this).closest("tr").find(".report_group").text());
+                    $("#shared_notes").html($(this).closest("tr").find(".report_notes").text());
+                }
+            });
+
+            $("#mana_share_report").on("hidden.bs.modal", function () {
+                $(".shared_infos").show();
+            });
+
+            $("#addColumn").on("click", function () {
+                addColumn();
+            });
+
+            $("#delColumn").on("click", function () {
+                delColumn();
+            });
+
+            if (open_in_dt && execute && !has_errors) {
+                let columns = [];
+                $.each(header_row, function (index, value) {
+                    columns.push({
+                        cannot_be_modified: 0,
+                        cannot_be_toggled: 0,
+                        is_hidden: 0,
+                    });
+                });
+                let report_table_settings = { columns };
+                report_results_dt = $("#report_results").kohaTable({}, report_table_settings).DataTable();
+                syncBatchFormsWithVisibleResults();
+                report_results_dt.on("draw length page search", syncBatchFormsWithVisibleResults);
+            }
+            if (saved1) {
+                var rtable = $("#table_reports").kohaTable(
+                    {
+                        autoWidth: false,
+                        pagingType: "full",
+                        order: [[1, "asc"]],
+                        language: {
+                            zeroRecords: _("No matching reports found"),
+                        },
+                    },
+                    table_settings
+                );
+                let table_dt = rtable?.DataTable();
+
+                $("#tabs a[data-bs-toggle='tab']").on("shown.bs.tab", function (e) {
+                    tabsInit($(e.target).parent(), rtable);
+                });
+
+                if (activeTab) {
+                    $("#tabs li:eq(" + activeTab + ") a").tab("show");
+                }
+
+                $("#subgroup_filter").change(function () {
+                    var selected = $(this).find("option:selected");
+                    var sg_id = $(selected).val();
+                    let col = table_dt.columns(5);
+                    if (sg_id.length > 0) {
+                        col.search(sg_id, { exact: true }).visible(false).draw();
+                    } else {
+                        col.search("").visible(true).draw();
+                    }
+                });
+
+                $("#reports_form").submit(function () {
+                    var checkedItems = $("input[name=id]:checked");
+                    if ($(checkedItems).size() == 0) {
+                        alert(_("You must select one or more reports to delete"));
+                        return false;
+                    }
+                    $(checkedItems).parents("tr").addClass("warn");
+                    if (confirm(_("Are you sure you want to delete the selected reports?"))) {
+                        return true;
+                    } else {
+                        $(checkedItems).parents("tr").removeClass("warn");
+                        return false;
+                    }
+                });
+
+                $("body").on("click", ".update_sql", function (e) {
+                    e.preventDefault();
+                    var ltitle = $(this).text();
+                    var report_id = $(this).data("report_id");
+                    var page = $(this).attr("href");
+                    $("#update_sql .modal-body").load(page + " div", function () {
+                        var diff1 = $("#col1 .show_sql").text();
+                        var diff2 = $("#col2 .show_sql").text();
+                        var diffs = diffString(escape(diff1), escape(diff2));
+                        $("#col1 .show_sql,#col2 .show_sql").html(diffs);
+                    });
+                    $("#update_sql").modal("show");
+                    $("#update_sql_button").attr("href", "/cgi-bin/koha/reports/guided_reports.pl?op=convert&id=" + report_id);
+                });
+
+                $("#update_sql").on("hidden.bs.modal", function () {
+                    $("#update_sql_label").html("");
+                    $("#update_sql .modal-body").html('<div id="loading"><img src="' + interface + "/" + theme + '/img/spinner-small.gif" alt="" /> ' + _("Loading") + "</div>");
+                });
+            }
+
+            if (op == "showsql") {
+                $("#sql").focus(function () {
+                    $(this).select();
+                });
+            }
+
+            $("#toggle_sql").click(function () {
+                var sql_output = $("#sql_output");
+                sql_output.toggle();
+                if (sql_output.is(":visible")) {
+                    $(this).button("complete");
+                } else {
+                    $(this).button("reset");
+                }
+                if (!showsql) {
+                    showsql = CodeMirror.fromTextArea(sql, {
+                        lineNumbers: false,
+                        mode: "text/x-sql",
+                        lineWrapping: true,
+                        readOnly: true,
+                    });
+                }
+            });
+
+            $(".toggle_chart_settings").click(function () {
+                $("#chart, #toggle_chart_settings_hid, #toggle_chart_settings_vis").toggle();
+            });
+
+            if (op == "create" || op == "editsql" || op == "save") {
+                var validated_form = $("#sql_report_form").validate({
+                    reportname: "required",
+                    group_input: {
+                        required: {
+                            depends: function (element) {
+                                return $("#create_group").prop("checked") && $("#groupdesc_input").val() != "";
+                            },
+                        },
+                    },
+                    groupdesc_input: {
+                        required: {
+                            depends: function (element) {
+                                return $("#create_group").prop("checked") && $("#group_input").val() != "";
+                            },
+                        },
+                    },
+                });
+
+                $("#select_group").change(function () {
+                    if ($(this).prop("checked")) {
+                        $("#group_input").attr("class", "").prop("disabled", true).prop("required", false);
+                        $("#groupdesc_input").attr("class", "").prop("disabled", true).prop("required", false);
+                        $("#group_select").prop("disabled", false);
+                        clearValidation($("#sql_report_form"));
+                        if ($("#group_select").val().length > 0) {
+                            $("#select_subgroup").prop("checked", true);
+                            $("#select_subgroup").change();
+                            $("#subgroup, #subgroup *").show();
+                        } else {
+                            $("#subgroup").hide();
+                        }
+                    }
+                });
+                $("#create_group").change(function () {
+                    if ($(this).prop("checked")) {
+                        $("#group_input").prop("disabled", false).prop("required", true);
+                        $("#groupdesc_input").prop("disabled", false).prop("required", true);
+                        $("#group_select").prop("disabled", true);
+                        // $("#create_subgroup").prop('checked', true).change();
+                        $("#subgroup_select").hide();
+                        $("#subgroup input[type='radio']").hide();
+                        $("#subgroup label[for]").hide();
+                        $("#subgroup_input").prop("required", false).prop("disabled", false).show();
+                        $("#subgroupdesc_input").prop("required", false).prop("disabled", false).show();
+                        $("#subgroup").show();
+                        // Add validation rules for fields which were previously hidden
+                        $("#subgroup_input").rules("add", {
+                            required: {
+                                depends: function (element) {
+                                    return $("#create_group").prop("checked") && $("#subgroupdesc_input").val() != "";
+                                },
+                            },
+                        });
+                        $("#subgroupdesc_input").rules("add", {
+                            required: {
+                                depends: function (element) {
+                                    return $("#create_group").prop("checked") && $("#subgroup_input").val() != "";
+                                },
+                            },
+                        });
+                    }
+                });
+                $("#select_subgroup").change(function () {
+                    if ($(this).prop("checked")) {
+                        $("#subgroup_select").prop("disabled", false);
+                        $("#subgroup_input").prop("disabled", true).prop("required", false);
+                        $("#subgroupdesc_input").prop("disabled", true).prop("required", false);
+                        clearValidation($("#sql_report_form"));
+                    }
+                });
+                $("#create_subgroup").change(function () {
+                    if ($(this).prop("checked")) {
+                        $("#subgroup_input").prop("disabled", false).prop("required", true);
+                        $("#subgroupdesc_input").prop("disabled", false).prop("required", true);
+                        $("#subgroup_select").val("").prop("disabled", true);
+                    }
+                });
+                $("#select_group").change();
+                $("#select_subgroup").change();
+                $("#group_select").on("change", function () {
+                    load_group_subgroups();
+                });
+
+                $(".insertParam").on("click", function (e) {
+                    e.preventDefault();
+                    var category = this.id;
+                    showParamModal(category);
+                });
+
+                $("#runtime_parameters").on("shown.bs.modal", function () {
+                    $("#paramLabel").focus();
+                });
+
+                $("#runtime_parameters").on("hide.bs.modal", function () {
+                    $("#send_runtime_parameter")[0].reset();
+                    $("#authorised_value_category").val("").hide();
+                    $("#runtime_param_options").val("").hide();
+                    $("label[for='authorised_value']").removeClass("required");
+                    $("#authorised_value").prop("required", false).removeAttr("required").removeClass("required");
+                });
+
+                $("#send_runtime_parameter").on("submit", function (e) {
+                    e.preventDefault();
+                    /* Get form values */
+                    var paramLabel = $("#paramLabel").val();
+                    var param_category = $("#param_category").val();
+                    var categoryLabel = $("#authorised_value").val();
+                    var param_option = $('#runtime_param_options input[name="param_option"]:checked').val();
+                    // Get CodeMirror environment variables
+                    var selection = editor.getSelection();
+                    var doc = editor.getDoc();
+                    var cursor = doc.getCursor();
+                    var pos = {
+                        line: cursor.line,
+                        ch: cursor.ch,
+                    };
+                    /* Build runtime parameter text string */
+                    var text = "";
+                    if (paramLabel && param_category) {
+                        text += paramLabel + "|" + param_category;
+                    } else if (paramLabel) {
+                        text += paramLabel;
+                    } else if (param_category) {
+                        text += param_category;
+                    }
+                    if (param_option) {
+                        text += param_option;
+                    }
+                    if (text != "") {
+                        text = " <<" + text + ">> ";
+                        if (selection.length > 0) {
+                            editor.replaceSelection(text);
+                        } else {
+                            doc.replaceRange(text, pos);
+                        }
+                    }
+                    $("#runtime_parameters").modal("hide");
+                });
+
+                $("#authorised_value").on("change", function () {
+                    $("#param_category").val($(this).val());
+                });
+            }
+
+            $("#mana_search_form").submit(function (e) {
+                e.preventDefault();
+            });
+
+            $("#column_submit").submit(function () {
+                if ($("#selectedColumns option").size() < 1) {
+                    alert(_("No columns selected!"));
+                    return false;
+                }
+                $("#selectedColumns option").attr("selected", "selected"); // Select everything still in #selectedColumns
+                return true;
+            });
+
+            // Mana KB
+            $("body").on("click", ".mana-use", function (e) {
+                e.preventDefault();
+                $(this).find("i").attr("class", "fa-solid fa-rotate fa-spin");
+                mana_use($(this).data("report_id"));
+            });
+
+            $("#mana_search_result").on("shown.bs.modal", function () {
+                $("#mana_search_field").focus();
+            });
+
+            $("#mana_search_result").on("hide.bs.modal", function () {
+                $("#mana_result_content").html("");
+                $("#mana_search_field").val("");
+            });
+
+            $(".batch_op").on("click", function (e) {
+                e.preventDefault();
+                var target_form = $(this).data("submit");
+                $("#" + target_form).submit();
+            });
+
+            function syncBatchFormsWithVisibleResults() {
+                if (!report_results_dt) return;
+
+                var visible_rows = $(report_results_dt.rows({ page: "current" }).nodes());
+                $("#batch_op_count").text(visible_rows.length);
+
+                function visibleValues(type) {
+                    return visible_rows
+                        .find("td.batch-op[data-number='" + type + "']")
+                        .map(function () {
+                            var plain = $(this).find(".data-plain");
+                            return (plain.length ? plain.text() : $(this).text()).trim();
+                        })
+                        .get()
+                        .filter(function (v) {
+                            return v.length;
+                        });
+                }
+
+                function setTextarea(selector, values) {
+                    $(selector).val(values.join("\n"));
+                }
+
+                function setHiddenInputs(form_selector, name, cls, values) {
+                    var form = $(form_selector);
+                    form.find("input[name='" + name + "']").remove();
+                    values.forEach(function (v) {
+                        $("<input>", {
+                            type: "hidden",
+                            name: name,
+                            class: cls,
+                            value: v,
+                        }).appendTo(form);
+                    });
+                }
+
+                var itemnumbers = visibleValues("itemnumber");
+                setHiddenInputs("#batch_item_modification", "itemnumber", "", itemnumbers);
+                setHiddenInputs("#batch_item_deletion", "itemnumber", "", itemnumbers);
+
+                var biblionumbers = visibleValues("biblionumber");
+                setTextarea("#batch_record_modification textarea[name='recordnumber_list']", biblionumbers);
+                setTextarea("#batch_record_deletion textarea[name='recordnumber_list']", biblionumbers);
+                setHiddenInputs("#batch_add_to_list", "biblionumber", "bib_to_list", biblionumbers);
+
+                var borrowernumbers = visibleValues("borrowernumber");
+                var cardnumbers = visibleValues("cardnumber");
+
+                setTextarea("#bor_num_list", borrowernumbers);
+                if (borrowernumbers.length) {
+                    setTextarea("#borrowernumberlist", borrowernumbers);
+                    setTextarea("#cardnumberlist", []);
+                } else {
+                    setTextarea("#cardnumberlist", cardnumbers);
+                }
+
+                var reserveIds = visibleValues("reserve_id");
+                setTextarea("#reserve_ids_list", reserveIds);
+
+                var has_batchable_values = itemnumbers.length || biblionumbers.length || borrowernumbers.length || cardnumbers.length || reserveIds.length;
+                $("#batch_mod_menu").prop("disabled", !has_batchable_values);
+
+                // Prevent flashing the number of visible records in #batch_mod_menu
+                $("#batch_mod_menu_wrapper").show();
+            }
+
+            $("#batch_add_to_list").on("submit", function (e) {
+                e.preventDefault();
+                addToList();
+            });
+
+            $("body").on("click", ".preview_sql", function (e) {
+                e.preventDefault();
+                var report_data = $(this).data();
+                previewSql(report_data);
+            });
+            $(".limitselect").on("click", function () {
+                var limit = $(this).data("limit");
+                $("#limit").val(limit);
+                $("#limitselect").submit();
+            });
+
+            // Apply select2 to all select fields having a "multiple" attribute
+            let selectFields = document.querySelectorAll("#report_param_form select[multiple]");
+            selectFields.forEach(selectField => {
+                selectField.style.minWidth = "320px";
+                $(selectField).select2();
+            });
+        });
+
+        $("#toggle_auto_links").on("click", function (e) {
+            e.preventDefault();
+            if ($(".data-plain").is(":visible")) {
+                /* if a data-plain element is visible, this click hides it and shows auto-links */
+                localStorage.removeItem("reports_auto_link_off");
+            } else {
+                /* if a data-plain element is hidden, this click shows it  and hides auto-links */
+                localStorage.setItem("reports_auto_link_off", 1);
+            }
+            $(".data-plain,.autolink").toggle();
+        });
+        if (localStorage.getItem("reports_auto_link_off") == 1) {
+            $("#toggle_auto_links").click();
+        }
+
+        function tabsInit(tab, rtable) {
+            var activeTab = tab.index();
+            localStorage.setItem("sql_reports_activetab", activeTab);
+
+            $("#subgroup_filter option").each(function () {
+                if ($(this).val().length > 0) {
+                    $(this).remove();
+                }
+            });
+            let table_dt = rtable.DataTable();
+            let col4 = table_dt.columns(4);
+            col4.search("").visible(true);
+            let col5 = table_dt.columns(5);
+            col5.search("").visible(true);
+
+            var g_id = tab.find("a").data("tabname");
+            if (g_id === "reports") {
+                g_id = "";
+            }
+
+            if (g_id !== null && g_id !== undefined && g_id.toString().length > 0) {
+                col4.search(g_id, { exact: true }).visible(false);
+                if (group_subgroups[g_id] && group_subgroups[g_id].length > 0) {
+                    for (var i in group_subgroups[g_id]) {
+                        $("#subgroup_filter").append('<option value="' + group_subgroups[g_id][i][0] + '">' + group_subgroups[g_id][i][1] + "</option>");
+                    }
+                    $("#subgroup_filter_block").show();
+                } else {
+                    $("#subgroup_filter_block").hide();
+                }
+            } else {
+                $("#subgroup_filter_block").hide();
+            }
+            table_dt.draw();
+        }
+
+        function addColumn() {
+            $("#availableColumns option:selected").clone().appendTo("#selectedColumns").attr("selected", "selected");
+        }
+        function delColumn() {
+            $("#selectedColumns option:selected").remove();
+        }
+
+        // Mana KB
+        function mana_use(mana_id) {
+            $.ajax({
+                type: "POST",
+                url: "/cgi-bin/koha/svc/mana/use",
+                data: { id: mana_id, resource: "report", saveinbase: 1, csrf_token: $('meta[name="csrf-token"]').attr("content") },
+                dataType: "json",
+            })
+                .done(function (result) {
+                    if (result.errmsg) {
+                        alert(result.errmsg);
+                    } else {
+                        window.location = "/cgi-bin/koha/reports/guided_reports.pl?id=".concat(result.id).concat("&op=show&mana_success=1");
+                    }
+                })
+                .fail(function (error) {
+                    $(".mana_use_status").hide();
+                    $("#mana_use_errortext").html(error.status + " " + error.statusText);
+                    $("#mana_use_failed").show();
+                    $(".mana-use i").attr("class", "fa fa-download");
+                });
+        }
+
+        function mana_search(textquery) {
+            $(".mana_search_status").hide();
+            $("#mana_result_content").load("/cgi-bin/koha/svc/mana/search #mana_results", "resource=report&usecomments=1&id=" + textquery, function (response, status, xhr) {
+                if (status == "error") {
+                    $("#mana_search_errortext").html(xhr.status + " " + xhr.statusText);
+                    $("#mana_search_failed").show();
+                    $("#mana-loading").hide();
+                } else {
+                    $(".mana_search_status").hide();
+                    $("#mana_search_result_label").text(_("Results from Mana Knowledge Base"));
+                    $("#mana-loading").hide();
+                    $("#mana_results_datatable").kohaTable({
+                        pagingType: "full",
+                        autoWidth: false,
+                        columnDefs: [{ width: "35%", targets: 1 }],
+                    });
+
+                    $(".showbutton").on("click", function (e) {
+                        e.preventDefault();
+                        $(this).parent().hide();
+                        $(this).parent().next().show();
+                    });
+
+                    $(".hidebutton").on("click", function (e) {
+                        e.preventDefault();
+                        $(this).parent().hide();
+                        $(this).parent().prev().show();
+                    });
+
+                    if ($("td.dataTables_empty").length == 0) {
+                        $("#mana_search_message").show();
+                    }
+                }
+            });
+        }
+
+        function addToList() {
+            var biblionumbers = [];
+            $(".bib_to_list").each(function () {
+                var biblionumber = Number($(this).val());
+                if (biblionumbers.indexOf(biblionumber) < 0) {
+                    biblionumbers.push(biblionumber);
+                }
+            });
+            bibs = biblionumbers.join("/");
+            var url = "/cgi-bin/koha/virtualshelves/addbybiblionumber.pl?biblionumbers=" + bibs;
+            window.open(url, "Add_to_virtualshelf", "width=500, height=400, toolbar=false, scrollbars=yes");
+            return false;
+        }
+
+        // Adapted from https://gist.github.com/jnormore/7418776
+        function previewSql(report_data) {
+            var reportid = report_data.reportid;
+            var can_create = report_data.create;
+            var can_delete = report_data.delete;
+            var can_run = report_data.run;
+            var message = $("#previewSql" + reportid).val();
+            var title = $("#previewSql" + reportid).data("title");
+            if ($("#preview-sql-modal").length > 0) {
+                $("#preview-sql-modal").remove();
+            }
+
+            // Clone the template content
+            var template = document.getElementById("preview-sql-modal-template");
+            var clone = document.importNode(template.content, true);
+
+            // Fill in the placeholders
+            clone.querySelector('[data-placeholder="title"]').textContent = title;
+
+            Object.assign(clone.querySelector('[data-placeholder="code"]'), {
+                id: "code" + reportid,
+                textContent: message,
+            });
+
+            if (can_run) {
+                clone.querySelector('[data-placeholder="run-href"]').href = "/cgi-bin/koha/reports/guided_reports.pl?id=" + encodeURIComponent(reportid) + "&op=run";
+                clone.querySelector('[data-placeholder="schedule-href"]').href = "/cgi-bin/koha/tools/scheduler.pl?id=" + encodeURIComponent(reportid);
+            } else {
+                clone.querySelector("#preview-modal-runreport").remove();
+                clone.querySelector("#preview-modal-schedule").remove();
+            }
+
+            if (can_create) {
+                clone.querySelector('[data-placeholder="edit-href"]').href = "/cgi-bin/koha/reports/guided_reports.pl?id=" + encodeURIComponent(reportid) + "&op=edit_form";
+                clone.querySelector('[data-placeholder="duplicate-href"]').href = "/cgi-bin/koha/reports/guided_reports.pl?op=duplicate&id=" + encodeURIComponent(reportid);
+            } else {
+                clone.querySelector("#preview-modal-editreport").remove();
+                clone.querySelector("#preview-modal-duplicate").remove();
+            }
+
+            if (can_delete) {
+                Object.assign(clone.querySelector('[data-placeholder="delete-attrs"]').dataset, {
+                    id: reportid,
+                    action: "guided_reports.pl",
+                    method: "post",
+                    op: "cud-delete",
+                });
+            } else {
+                clone.querySelector("#preview-modal-delete").remove();
+            }
+
+            document.body.appendChild(clone);
+
+            $("#preview-sql-modal")
+                .on("shown.bs.modal", function () {
+                    CodeMirror.fromTextArea(document.getElementById("code" + reportid), {
+                        lineNumbers: false,
+                        mode: "text/x-sql",
+                        lineWrapping: true,
+                        readOnly: true,
+                    });
+                })
+                .modal("show");
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<button id="backtotop" class="btn btn-default" aria-label="Back to top" style="display: none;"><i class="fa fa-arrow-up" aria-hidden="true"></i></button><ul id="ui-id-1" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" unselectable="on" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div></body><!-- prettier-ignore-start --></html>

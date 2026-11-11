@@ -1,0 +1,2640 @@
+<!DOCTYPE html>
+<!-- saved from url=(0070)http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>System preferences › Administration › Koha</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="ab0a2483c4b8c56acbec0f403a61593d583fdbeb,5e8d9efead394ffde3613de19112d8610012e9c1,1793390552">
+<meta name="generator" content="Koha 26.05.05">
+<script nonce="">
+    window.__CSP_NONCE__ = "";
+</script>
+
+    
+
+
+<link rel="shortcut icon" href="https://i.postimg.cc/rs5nhP5c/cone-Castro-Alves.png" type="image/x-icon">
+
+
+    <link rel="stylesheet" type="text/css" href="./System preferences › Administration › Koha_files/jquery-ui-1.13.2.min_26.0505000.css">
+
+<link href="./System preferences › Administration › Koha_files/fontawesome.min_26.0505000.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="./System preferences › Administration › Koha_files/brands.min_26.0505000.css">
+<link href="./System preferences › Administration › Koha_files/solid.min_26.0505000.css" rel="stylesheet" type="text/css">
+<link type="text/css" rel="stylesheet" href="./System preferences › Administration › Koha_files/datatables.min_26.0505000.css">
+<link rel="stylesheet" type="text/css" href="./System preferences › Administration › Koha_files/print_26.0505000.css" media="print">
+
+
+
+    
+
+
+    <link type="text/css" rel="stylesheet" href="./System preferences › Administration › Koha_files/staff-global_26.0505000.css">
+
+
+<!-- local colors -->
+
+
+<script nonce="" type="module">
+    import { APIClient } from "/intranet-tmpl/prog/js/fetch/api-client.js";
+    window.APIClient = APIClient;
+</script>
+<script nonce="">
+    var Koha = {};
+    
+        var CAN_user_parameters_manage_column_config = 1;
+    
+</script>
+
+<script src="./System preferences › Administration › Koha_files/Gettext_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/i18n_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/stores_26.0505000.js.download"></script>
+
+
+
+
+
+
+
+
+
+<link href="./System preferences › Administration › Koha_files/multiple-select.min_26.0505000.css" rel="stylesheet" type="text/css">
+<link type="text/css" rel="stylesheet" href="./System preferences › Administration › Koha_files/preferences_26.0505000.css">
+<link rel="stylesheet" type="text/css" href="./System preferences › Administration › Koha_files/humanmsg_26.0505000.css">
+<link href="./System preferences › Administration › Koha_files/codemirror.min_26.0505000.css" rel="stylesheet" type="text/css">
+<link type="text/css" rel="stylesheet" href="./System preferences › Administration › Koha_files/lint.min_26.0505000.css">
+</head>
+<body id="admin_preferences" class="admin">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand navbar-dark bg-dark" aria-label="Main">
+    <div class="container-fluid">
+        <a id="logo" class="navbar-brand" href="http://localhost:8080/cgi-bin/koha/mainpage.pl"><img src="./System preferences › Administration › Koha_files/picto-koha.svg" alt="Koha"></a>
+
+        <div class="collapse navbar-collapse" id="header">
+            <ul id="toplevelmenu" class="navbar-nav me-auto">
+                
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:8080/cgi-bin/koha/circ/circulation-home.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-exchange" title="Circulation"></i></span> <span class="nav-link-text">Circulation</span></a></li>
+                
+                
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:8080/cgi-bin/koha/members/members-home.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-id-card" title="Patrons"></i></span> <span class="nav-link-text">Patrons</span></a></li>
+                
+                <li class="nav-item" id="catalog-search-link">
+                    <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-search" title="Search"></i></span> <span class="nav-link-text">Search</span></a>
+                </li>
+                
+                    <li class="nav-item dropdown" id="catalog-search-dropdown">
+                        <a href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl">Advanced search</a></li>
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/itemsearch.pl">Item search</a></li>
+                        </ul>
+                    </li>
+                
+                
+                <li class="nav-item dropdown">
+                    <a href="http://localhost:8080/cgi-bin/koha/mainpage.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="nav-link-icon"><i class="fa fa-fw fa-bars" title="More"></i></span> <span class="nav-link-text">More</span></a>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/virtualshelves/shelves.pl">Lists</a></li>
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/cataloguing/cataloging-home.pl">Cataloging</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/acqui/acqui-home.pl">Acquisitions</a></li>
+                        
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/authorities/authorities-home.pl">Authorities</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/serials/serials-home.pl">Serials</a></li>
+                        
+                        
+                        
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/reports/reports-home.pl">Reports</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/suggestion/suggestion.pl">Suggestions</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/tools-home.pl">Tools</a></li>
+                        
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/admin/admin-home.pl">Administration</a></li>
+                        
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/about.pl">About Koha</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+
+            <ul id="user-menu" class="nav navbar-nav">
+                
+                    <li class="nav-item dropdown" id="logged-in-dropdown">
+                        <a id="logged-in-menu" href="http://localhost:8080/cgi-bin/koha/mainpage.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="logged-in-info-brief">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            <span id="logged-in-info-full">
+                                
+                                <span class="loggedinusername is_superlibrarian" data-loggedinusername="Bibliotecário" data-is-superlibrarian="is_superlibrarian">Bibliotecário</span>
+                                <span class="loggedincategorycode content_hidden" data-loggedincategorycode="B">B</span>
+                                
+                                    <strong>
+                                        <span class="logged-in-branch-name" data-logged-in-branch-name="Castro Alves">Castro Alves</span>
+                                        <span class="logged-in-branch-code content_hidden" data-logged-in-branch-code="MAIN">MAIN</span>
+                                    </strong>
+                                
+                                
+                                
+                            </span>
+                            <b class="caret"></b>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" role="menu" aria-labelledby="logged-in-menu">
+                            <li class="loggedin-menu-label">
+                                Logged in as:<br>
+                                <span class="loggedinusername">Bibliotecário</span>
+                            </li>
+                            <li class="loggedin-menu-label">
+                                
+                                    Location: <br>
+                                    <span class="logged-in-branch-name">Castro Alves</span>
+                                    <span class="logged-in-branch-code content_hidden">MAIN</span>
+                                
+                            </li>
+
+                            
+
+                            
+
+                            
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <div id="set_library_controls">
+                                        <div>
+                                            <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/circ/set-library.pl">
+                                                
+                                                    
+                                                        Set library
+                                                    
+                                                
+                                            </a>
+                                        </div>
+                                        
+                                            <div>
+                                                <a id="branch_select_cog" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting#" role="button" aria-label="Toggle panel for login settings" aria-expanded="false">
+                                                    <i class="fa fa-cog" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        
+                                    </div>
+                                </li>
+
+                                <li id="setlibrary_panel" style="display:none"></li>
+                            
+                            
+
+                            
+                                <li class="nav-item toplinks-myaccount">
+                                    <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/members/moremember.pl?borrowernumber=1">My account</a>
+                                </li>
+                                <li class="nav-item toplinks-mycheckouts">
+                                    <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/circ/circulation.pl?borrowernumber=1">My checkouts</a>
+                                </li>
+                            
+
+                            
+                            <li class="nav-item">
+                                <a id="logout" class="toplinks dropdown-item" href="http://localhost:8080/cgi-bin/koha/mainpage.pl?logout.x=1">Log out</a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                        <li class="nav-item dropdown" id="debug-controls-dropdown">
+                            <a id="debug-controls-menu" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Debug controls">
+                                <i id="debug-icon" class="fa fa-bug"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" role="menu" aria-labelledby="debug-controls-menu">
+                                <li>
+                                    <a id="toggleUserCSS" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting#"> <i class="fa fa-fw fa-brands fa-css3"></i> <span class="toggle-text">Disable custom CSS</span> </a>
+                                </li>
+                                <li>
+                                    <a id="toggleUserJS" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting#"> <i class="fa fa-fw fa-brands fa-square-js"></i> <span class="toggle-text">Disable custom JS</span> </a>
+                                </li>
+                                <li>
+                                    <a id="toggleStylesheets" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting#"> <i class="fa fa-fw fa-file-code"></i> <span class="toggle-text">Disable custom stylesheets</span> </a>
+                                </li>
+                            </ul>
+                        </li>
+                    
+                    
+
+                
+            </ul>
+        </div>
+    </div>
+
+    
+</nav>
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- prefs-admin-search.inc -->
+
+    
+        <div id="header_search" class="toptabs"> 
+    
+    <div class="tab-content"> 
+        
+    
+        <div class="tab-pane show active" id="syspref_search_panel" role="tabpanel" aria-labelledby="syspref_search-tab" tabindex="0"> 
+            <form action="http://localhost:8080/cgi-bin/koha/admin/preferences.pl" method="get">
+                <input type="hidden" name="tab" value="">
+                <input type="hidden" name="op" value="search">
+
+                <div class="form-title">
+                    <label class="control-label" for="searchfield"><span class="control-text">Search system preferences</span> <i class="fa fa-fw fa-cogs" aria-hidden="true"></i></label>
+                </div>
+
+                <div class="form-content">
+                    <input class="head-searchbox form-control" type="text" name="searchfield" id="searchfield" value="" placeholder="System preference search">
+                </div>
+
+                <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+            </form>
+         </div>
+    
+
+
+        
+            
+    <!-- patron-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="circ_search_panel" role="tabpanel" aria-labelledby="circ_search-tab" tabindex="0"> 
+        <form action="http://localhost:8080/cgi-bin/koha/circ/circulation.pl" id="patronsearch" method="get">
+            <div class="form-title">
+                <label class="control-label" for="findborrower"><span class="control-text">Check out</span> <i class="fa fa-fw fa-upload" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input autocomplete="off" id="findborrower" name="findborrower" class="head-searchbox form-control ui-autocomplete-input" type="text" placeholder="Enter patron card number or partial name" size="40">
+
+                
+            </div>
+
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /patron-search-box.inc -->
+
+
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- catalogue-search-box.inc -->
+
+    
+        <div class="tab-pane" id="catalog_search_panel" role="tabpanel" aria-labelledby="catalog_search-tab" tabindex="0"> 
+    <form action="http://localhost:8080/cgi-bin/koha/catalogue/search.pl" method="get" id="cat-search-block">
+        <div class="form-title">
+            <label class="control-label" for="search-form"><span class="control-text">Search catalog</span> <i class="fa fa-fw fa-search" aria-hidden="true"></i></label>
+        </div>
+
+        <div class="form-content">
+            
+                <input type="text" name="q" id="search-form" size="20" value="" title="Enter the terms you wish to search for." class="query form-text head-searchbox form-control" placeholder="Enter search keywords">
+            
+
+            
+        </div>
+        <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+
+        <div class="form-extra-content">
+            
+
+            
+        </div>
+    </form>
+ </div>
+    
+
+<!-- /catalogue-search-box.inc -->
+
+        
+     </div>
+
+
+    
+    <ul class="nav nav-tabs" role="tablist">
+        
+        
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link active" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting#syspref_search_panel" id="syspref_search-tab" data-tabname="syspref_search" aria-controls="syspref_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#syspref_search_panel" aria-selected="true">
+                    
+            <i class="fa fa-fw fa-cogs" aria-hidden="true"></i> <span class="tab-title">Search system preferences</span>
+        
+                </a>
+            
+        
+    </li>
+
+        
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting#circ_search_panel" id="circ_search-tab" data-tabname="circ_search" aria-controls="circ_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#circ_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-upload" aria-hidden="true"></i> <span class="tab-title">Check out</span>
+            
+                </a>
+            
+        
+    </li>
+
+        
+        
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting#catalog_search_panel" id="catalog_search-tab" data-tabname="catalog_search" aria-controls="catalog_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#catalog_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-search" aria-hidden="true"></i> <span class="tab-title">Search catalog</span>
+            
+                </a>
+            
+        
+    </li>
+
+        
+    
+    </ul>
+
+ </div>
+    
+
+<!-- /prefs-admin-search.inc -->
+
+
+
+
+
+<div id="sub-header">
+    
+    
+    <nav id="breadcrumbs" aria-label="Breadcrumb">
+        <ol class="breadcrumb">
+            
+            
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/mainpage.pl" title="Home"><span class="visually-hidden-focusable">Home</span></a> </li>
+        
+    
+
+            
+        
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/admin/admin-home.pl">Administration</a> </li>
+        
+    
+
+        
+    
+        
+            <li class="breadcrumb-item active" aria-current="page">
+                <a aria-disabled="true" tabindex="-1"> <span>System preferences</span> </a>
+            </li>
+        
+    
+
+    
+        </ol>
+    </nav>
+
+
+    <nav id="shortcut" class="shortcut" aria-label="Quick shortcuts">
+    
+
+    <div>
+        <a class="" href="http://localhost:8080/cgi-bin/koha/help.pl" id="helper"><i class="fa-solid fa-circle-question"></i> <span>Help</span></a>
+    </div>
+</nav>
+
+</div>
+
+
+
+
+<div class="main container-fluid">
+    <div class="row">
+        
+            
+        
+        
+            <div class="col-md-10 order-sm-1 order-md-2">
+                <main>
+                    <div id="messages">
+    
+
+    <div id="transient_result"></div>
+</div>
+
+                    
+
+    
+    
+        <h1>System preferences</h1>
+    
+    
+        <div class="prefs-tab">
+            <h2>Accounting preferences</h2>
+            <!-- prettier-ignore-start -->
+    <form action="http://localhost:8080/cgi-bin/koha/admin/preferences.pl" method="post" novalidate="novalidate">
+        <input type="hidden" name="csrf_token" value="ab0a2483c4b8c56acbec0f403a61593d583fdbeb,5e8d9efead394ffde3613de19112d8610012e9c1,1793390552">
+
+        <div id="toolbar" class="sticky"><button class="save-all btn btn-primary" type="submit" disabled="">Save all Accounting preferences</button></div>
+        <input type="hidden" name="op" value="cud-save">
+        <input type="hidden" name="tab" value="accounting">
+
+            
+            
+            
+            <div class="page-section">
+                <div class="category-heading">
+                    <h3 id="accounting_Features" class="expanded" title="Collapse this section"><i class="fa fa-caret-down"></i> Features</h3>
+
+                    
+                </div>
+
+            <div id="collapse_accounting_Features_wrapper" class="dt-container dt-empty-footer"><table class="preferences dataTable" id="collapse_accounting_Features" style="width: 100%;"><colgroup><col data-dt-column="0" style="width: 230.527px;"><col data-dt-column="1" style="width: 1724px;"></colgroup>
+            <thead><tr><th data-dt-column="0" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc dt-ordering-asc" aria-sort="ascending"><div class="dt-column-header"><span class="dt-column-title">Preference</span><span class="dt-column-order" role="button" aria-label="Preference: Activate to invert sorting" tabindex="0"></span></div></th><th data-dt-column="1" rowspan="1" colspan="1" class="dt-orderable-none"><div class="dt-column-header"><span class="dt-column-title">Value</span><span class="dt-column-order"></span></div></th></tr></thead>
+            <tbody><tr class="name-row">
+                <td class="name-cell sorting_1">
+                    <code>
+                        
+                        <label for="pref_AutoCreditNumber" class="nowrap">
+                            <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=AutoCreditNumber">
+                                <i class="fa fa-bookmark" aria-hidden="true"></i></a>
+                            
+                                AutoCreditNumber
+                            
+
+                            
+                        </label>
+                        
+                        
+                    </code>
+                </td>
+                <td><div>
+                    
+                    
+                        
+                        <select name="pref_AutoCreditNumber" id="pref_AutoCreditNumber" class="preference preference-choice">
+                        
+                        
+                        
+                        <option value="" selected="selected">
+                        
+                            Do not automatically generate credit numbers
+                        </option>
+                        
+                        
+                        <option value="annual">
+                        
+                            Automatically generate credit numbers in the form &lt;year&gt;-0001
+                        </option>
+                        
+                        
+                        <option value="branchyyyymmincr">
+                        
+                            Automatically generate credit numbers in the form &lt;branchcode&gt;yyyymm0001
+                        </option>
+                        
+                        
+                        <option value="incremental">
+                        
+                            Automatically generate credit numbers in the form 1, 2, 3
+                        </option>
+                        
+                    </select>
+                    
+                    
+                    
+                    Automatic generation also has to be enabled for each credit type (<a href="http://localhost:8080/cgi-bin/koha/admin/credit_types.pl">Configure credit types</a>).
+                    
+                    
+                    
+                </div></td>
+            </tr><tr class="name-row">
+                <td class="name-cell sorting_1">
+                    <code>
+                        
+                        <label for="pref_EnablePointOfSale" class="nowrap">
+                            <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=EnablePointOfSale">
+                                <i class="fa fa-bookmark" aria-hidden="true"></i></a>
+                            
+                                EnablePointOfSale
+                            
+
+                            
+                        </label>
+                        
+                        
+                    </code>
+                </td>
+                <td><div>
+                    
+                    
+                        
+                        <select name="pref_EnablePointOfSale" id="pref_EnablePointOfSale" class="preference preference-choice">
+                        
+                        
+                        
+                        <option value="0" selected="selected">
+                        
+                            Disable
+                        </option>
+                        
+                        
+                        <option value="1">
+                        
+                            Enable
+                        </option>
+                        
+                    </select>
+                    
+                    
+                    
+                     the point of sale feature to allow anonymous transactions with the accounting system. (Requires <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=UseCashRegisters">UseCashRegisters</a>.)
+                    
+                    
+                    
+                </div></td>
+            </tr><tr class="name-row">
+                <td class="name-cell sorting_1">
+                    <code>
+                        
+                        <label for="pref_RequireCashRegister" class="nowrap">
+                            <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=RequireCashRegister">
+                                <i class="fa fa-bookmark" aria-hidden="true"></i></a>
+                            
+                                RequireCashRegister
+                            
+
+                            
+                        </label>
+                        
+                        
+                    </code>
+                </td>
+                <td><div>
+                    
+                    
+                    When collecting a payment, 
+                    
+                    
+                    
+                        
+                        <select name="pref_RequireCashRegister" id="pref_RequireCashRegister" class="preference preference-choice">
+                        
+                        
+                        
+                        <option value="0" selected="selected">
+                        
+                            require a cash register only when the CASH payment type is selected
+                        </option>
+                        
+                        
+                        <option value="1">
+                        
+                            always require a cash register
+                        </option>
+                        
+                    </select>
+                    
+                    
+                    
+                    . (Requires <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=UseCashRegisters">UseCashRegisters</a>)
+                    
+                    
+                    
+                </div></td>
+            </tr><tr class="name-row">
+                <td class="name-cell sorting_1">
+                    <code>
+                        
+                        <label for="pref_UseCashRegisters" class="nowrap">
+                            <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=UseCashRegisters">
+                                <i class="fa fa-bookmark" aria-hidden="true"></i></a>
+                            
+                                UseCashRegisters
+                            
+
+                            
+                        </label>
+                        
+                        
+                    </code>
+                </td>
+                <td><div>
+                    
+                    
+                        
+                        <select name="pref_UseCashRegisters" id="pref_UseCashRegisters" class="preference preference-choice">
+                        
+                        
+                        
+                        <option value="0" selected="selected">
+                        
+                            Don't use
+                        </option>
+                        
+                        
+                        <option value="1">
+                        
+                            Use
+                        </option>
+                        
+                    </select>
+                    
+                    
+                    
+                     cash registers with the accounting system to track payments.
+                    
+                    
+                    
+                    <p class="text-danger"><strong>Warning:</strong> Enabling this setting will make the register a required field for all CASH type transactions; This includes SIP00 transactions, so please ensure your SIP configurations are updated to map a register to your SIP device.</p>
+                    
+                    
+                    
+                </div></td>
+            </tr></tbody><tfoot></tfoot></table><div class="dt-autosize" style="width: 100%; height: 0px;"></div></div></div>
+            <div class="page-section">
+                <div class="category-heading">
+                    <h3 id="accounting_Policy" class="expanded" title="Collapse this section"><i class="fa fa-caret-down"></i> Policy</h3>
+
+                    
+                </div>
+
+            <div id="collapse_accounting_Policy_wrapper" class="dt-container dt-empty-footer"><table class="preferences dataTable" id="collapse_accounting_Policy" style="width: 100%;"><colgroup><col data-dt-column="0" style="width: 232.852px;"><col data-dt-column="1" style="width: 1706.05px;"></colgroup>
+            <thead><tr><th data-dt-column="0" rowspan="1" colspan="1" class="dt-orderable-asc dt-orderable-desc dt-ordering-asc" aria-sort="ascending"><div class="dt-column-header"><span class="dt-column-title">Preference</span><span class="dt-column-order" role="button" aria-label="Preference: Activate to invert sorting" tabindex="0"></span></div></th><th data-dt-column="1" rowspan="1" colspan="1" class="dt-orderable-none"><div class="dt-column-header"><span class="dt-column-title">Value</span><span class="dt-column-order"></span></div></th></tr></thead>
+            <tbody><tr class="name-row">
+                <td class="name-cell sorting_1">
+                    <code>
+                        
+                        <label for="pref_AccountAutoReconcile" class="nowrap">
+                            <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=AccountAutoReconcile">
+                                <i class="fa fa-bookmark" aria-hidden="true"></i></a>
+                            
+                                AccountAutoReconcile
+                            
+
+                            
+                        </label>
+                        
+                        
+                    </code>
+                </td>
+                <td><div>
+                    
+                    
+                        
+                        <select name="pref_AccountAutoReconcile" id="pref_AccountAutoReconcile" class="preference preference-choice">
+                        
+                        
+                        
+                        <option value="0" selected="selected">
+                        
+                            Don't
+                        </option>
+                        
+                        
+                        <option value="1">
+                        
+                            Do
+                        </option>
+                        
+                    </select>
+                    
+                    
+                    
+                    reconcile patron balances automatically on each transaction adding debits or credits.
+                    
+                    
+                    
+                </div></td>
+            </tr><tr class="name-row">
+                <td class="name-cell sorting_1">
+                    <code>
+                        
+                        <label for="pref_FinePaymentAutoPopup" class="nowrap">
+                            <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=FinePaymentAutoPopup">
+                                <i class="fa fa-bookmark" aria-hidden="true"></i></a>
+                            
+                                FinePaymentAutoPopup
+                            
+
+                            
+                        </label>
+                        
+                        
+                    </code>
+                </td>
+                <td><div>
+                    
+                    
+                        
+                        <select name="pref_FinePaymentAutoPopup" id="pref_FinePaymentAutoPopup" class="preference preference-choice">
+                        
+                        
+                        
+                        <option value="0" selected="selected">
+                        
+                            Don't
+                        </option>
+                        
+                        
+                        <option value="1">
+                        
+                            Do
+                        </option>
+                        
+                    </select>
+                    
+                    
+                    
+                    automatically display a print dialog for a payment receipt when making a payment.
+                    
+                    
+                    
+                </div></td>
+            </tr><tr class="name-row">
+                <td class="name-cell sorting_1">
+                    <code>
+                        
+                        <label for="pref_RequirePaymentType" class="nowrap">
+                            <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=RequirePaymentType">
+                                <i class="fa fa-bookmark" aria-hidden="true"></i></a>
+                            
+                                RequirePaymentType
+                            
+
+                            
+                        </label>
+                        
+                        
+                    </code>
+                </td>
+                <td><div>
+                    
+                    
+                        
+                        <select name="pref_RequirePaymentType" id="pref_RequirePaymentType" class="preference preference-choice">
+                        
+                        
+                        
+                        <option value="0" selected="selected">
+                        
+                            Don't require
+                        </option>
+                        
+                        
+                        <option value="1">
+                        
+                            Require
+                        </option>
+                        
+                    </select>
+                    
+                    
+                    
+                    staff to select a payment type when a payment is made.
+                    
+                    
+                    
+                    This preference has no effect when <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=UseCashRegisters">UseCashRegisters</a> is enabled or when no payment types are defined in the <a href="http://localhost:8080/cgi-bin/koha/admin/authorised_values.pl?searchfield=PAYMENT_TYPE">PAYMENT_TYPE</a> authorized value category.
+                    
+                    
+                    
+                </div></td>
+            </tr><tr class="name-row">
+                <td class="name-cell sorting_1">
+                    <code>
+                        
+                        <label for="pref_RoundFinesAtPayment" class="nowrap">
+                            <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?op=search&amp;searchfield=RoundFinesAtPayment">
+                                <i class="fa fa-bookmark" aria-hidden="true"></i></a>
+                            
+                                RoundFinesAtPayment
+                            
+
+                            
+                        </label>
+                        
+                        
+                    </code>
+                </td>
+                <td><div>
+                    
+                    
+                        
+                        <select name="pref_RoundFinesAtPayment" id="pref_RoundFinesAtPayment" class="preference preference-choice">
+                        
+                        
+                        
+                        <option value="0" selected="selected">
+                        
+                            Don't
+                        </option>
+                        
+                        
+                        <option value="1">
+                        
+                            Do
+                        </option>
+                        
+                    </select>
+                    
+                    
+                    
+                    round fines to the nearest cent when collecting payments. Enabling this preference allows paying fines of partial cents which may not be visible in the interface.
+                    
+                    
+                    
+                </div></td>
+            </tr></tbody><tfoot></tfoot></table><div class="dt-autosize" style="width: 100%; height: 0px;"></div></div></div>
+            
+        
+        <fieldset class="action"><button class="save-all submit btn btn-primary" type="submit" disabled="">Save all Accounting preferences</button> <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl" class="force_reload cancel">Cancel</a></fieldset>
+    </form>
+    <!-- prettier-ignore-end -->
+        </div>
+    
+
+                </main>
+            </div>
+            <div class="col-md-2 order-sm-2 order-md-1">
+                <aside>
+                    
+                        
+                            
+<div id="prefs-menu" class="sidebar_menu">
+    <ul>
+        
+            <li class="active">
+                <a title="Accounting" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting" class="current">Accounting</a>
+                
+    
+        
+            <ul>
+                
+                    
+                        <li><a class="pref_sublink" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting#accounting_Features">Features</a></li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                        <li><a class="pref_sublink" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting#accounting_Policy">Policy</a></li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        
+    
+
+            </li>
+        
+        
+            <li>
+                <a title="Acquisitions" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=acquisitions">Acquisitions</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Administration" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=admin">Administration</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Authority control" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=authorities">Authorities</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Cataloging" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=cataloguing">Cataloging</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Circulation" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=circulation">Circulation</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Enhanced content settings" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=enhanced_content">Enhanced content</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="E-resource management" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=erm">E-resource management</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Internationalization and localization" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=i18n_l10n">I18N/L10N</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Interlibrary loans" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=interlibrary_loans">Interlibrary loans</a>
+            </li>
+        
+
+        
+            <li>
+                <a href="http://localhost:8080/cgi-bin/koha/admin/systempreferences.pl">Local use</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Transaction logs" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=logs">Logs</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Online Public Access Catalog" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=opac">OPAC</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Patrons" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=patrons">Patrons</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Preservation" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=preservation">Preservation</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Searching" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=searching">Searching</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Serials" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=serials">Serials</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Staff interface" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=staff_interface">Staff interface</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Tools" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=tools">Tools</a>
+            </li>
+        
+
+        
+            <li>
+                <a title="Web services" href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=web_services">Web services</a>
+            </li>
+        
+    </ul>
+</div>
+<!-- /.sidebar_menu -->
+
+
+
+                        
+                    
+                </aside>
+            </div>
+        
+    </div>
+</div>
+
+<script nonce="" type="importmap">
+    { "imports": { "vue": "/intranet-tmpl/prog/js/vue/dist/islands.esm_26.0505000.js" } }
+</script>
+<script src="./System preferences › Administration › Koha_files/islands.esm_26.0505000.js.download" type="module">
+</script>
+<script nonce="" type="module">
+    import { hydrate } from "/intranet-tmpl/prog/js/vue/dist/islands.esm_26.0505000.js";
+    hydrate();
+</script>
+
+
+<!-- Modal -->
+<div class="modal" id="prefModal" tabindex="-1" role="dialog" aria-labelledby="prefModalLabel">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="prefModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting#" id="select_all"><i class="fa fa-check"></i> Select all</a>
+                    |
+                    <a href="http://localhost:8080/cgi-bin/koha/admin/preferences.pl?tab=accounting#" id="clear_all"><i class="fa fa-times"></i> Clear all</a>
+                </p>
+                <div id="prefModalBody"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveModalPrefs" type="button" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    
+        <div id="changelanguage" class="navbar navbar-expand navbar-light bg-light">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav_lang_menu" aria-controls="nav_lang_menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nav_lang_menu">
+                    <ul id="i18nMenu" class="navbar-nav me-auto">
+                        
+                            
+                                
+                                    
+                                        
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/changelanguage.pl?language=pt-BR">
+                                                    
+                                                        Português
+                                                    
+                                                </a>
+                                            </li>
+                                        
+                                    
+                                
+                            
+                        
+                            
+                                
+                                    
+                                        
+                                            <li class="nav-item">
+                                                <a class="nav-link active currentlanguage" aria-current="page" aria-disabled="true" tabindex="-1">
+                                                    
+                                                        English
+                                                    
+                                                </a>
+                                            </li>
+                                        
+                                    
+                                
+                            
+                        
+                    </ul>
+                    <!-- /#i18nMenu -->
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#changelanguage -->
+    
+
+
+<span id="audio-alert"></span>
+
+<!-- Cookie consent -->
+
+<!-- CookieConsentedJS code that may run -->
+
+
+
+    
+
+
+
+
+
+
+    <script nonce="">
+        if (self === top) {
+            var antiClickjack = document.getElementById("antiClickjack");
+            antiClickjack.parentNode.removeChild(antiClickjack);
+        } else {
+            top.location = self.location;
+        }
+    </script>
+
+
+<script src="./System preferences › Administration › Koha_files/jquery-3.6.0.min_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/jquery-migrate-3.3.2.min_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/jquery-ui-1.13.2.min_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/shortcut_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/js.cookie-2.2.1.min_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/jquery.highlight-5_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/bootstrap.bundle.min_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/jquery.validate.min_26.0505000.js.download"></script>
+<!-- koha core js -->
+<script src="./System preferences › Administration › Koha_files/patron-format_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/staff-global_26.0505000.js.download"></script>
+<script type="module" src="./System preferences › Administration › Koha_files/form-submit_26.0505000.js.download"></script>
+
+
+
+
+<script src="./System preferences › Administration › Koha_files/dayjs.min_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/utc_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/timezone_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/customParseFormat_26.0505000.js.download"></script>
+<script nonce="">
+    dayjs.extend(window.dayjs_plugin_utc);
+    dayjs.extend(window.dayjs_plugin_timezone);
+    dayjs.extend(window.dayjs_plugin_customParseFormat);
+</script>
+<!-- js-date-format.inc -->
+<script nonce="">
+    (function() {
+        var def_date_format = 'metric';
+        var def_time_format = '24hr';
+        var def_tz = 'America/Sao_Paulo';
+
+        var get_date_pattern = function(format) {
+            var date_pattern = 'YYYY-MM-DD';
+            if(format == 'us') date_pattern = 'MM/DD/YYYY';
+            if(format == 'metric') date_pattern = 'DD/MM/YYYY';
+            if(format == 'dmydot') date_pattern = 'DD.MM.YYYY';
+            return date_pattern;
+        };
+
+        var get_time_pattern = function(format) {
+            var time_pattern = 'HH:mm';
+            if(format == '12hr') time_pattern = 'hh:mm a';
+            return time_pattern;
+        };
+
+        /**
+         * A JS equivalent of the KohaDates TT Plugin. Passed an rfc3339 formatted date string,
+         * or JS Date, the function will return a date string formatted as per the koha instance config.
+         * @param {String|Date} value                   rfc3339 formatted date string or a JS Date object.
+         * @param {Object} [options]                    Optional set of switches for changing date handling
+         * @property {String} [options.tz]              String representing the timezone of the passed date
+         * @property {Boolean} [options.no_tz_adjust]   Enable/Disable timezone adjustment
+         * @property {String} [options.dateformat]
+         * @property {Boolean} [options.withtime]       Enable/Disable appearance of time in returned string
+         * @property {String} [options.timeformat]
+         * @property {Boolean} [options.as_due_date]    Enable/Disable due date output format
+         * @returns {String}                            A date string formatted as per the koha instance configuration.
+         */
+        window.$date = function(value, options) {
+            if(!value) return '';
+            let tz = (options&&options.tz)||def_tz;
+            let no_tz_adjust = (options&&options.no_tz_adjust)||false;
+            var m = dayjs(value);
+            if ( !no_tz_adjust && ! value.match(/^\d{4}-\d{2}-\d{2}$/ ) ) {
+                m = m.tz(tz);
+            }
+
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            var withtime = (options&&options.withtime)||false;
+
+            if(dateformat=='rfc3339' && withtime) return m.format();
+
+            var timeformat = (options&&options.timeformat)||def_time_format;
+            var date_pattern = get_date_pattern(dateformat);
+            let as_due_date = (options&&options.as_due_date);
+            if (as_due_date) {
+                withtime = !( m.hour() == 23 && m.minute() == 59 );
+            }
+            var time_pattern = !withtime?'':' '+get_time_pattern(timeformat);
+
+            return m.format(date_pattern+time_pattern);
+        }
+
+        window.$datetime = function(value, options) {
+            options = options||{};
+            options.withtime = true;
+            return $date(value, options);
+        };
+
+        window.$time = function(value, options) {
+            if(!value) return '';
+            var tz = (options&&options.tz)||def_tz;
+            var m = dayjs(value);
+            if(tz) m = m.tz(tz);
+
+            var dateformat = (options&&options.dateformat);
+            var timeformat = (dateformat=='rfc3339'&&'24hr')||(options&&options.timeformat)||def_time_format;
+
+            return m.format(get_time_pattern(timeformat)+(dateformat=='rfc3339'?':ss'+(!m.isUTC()?'Z':''):''))+(dateformat=='rfc3339' && m.isUTC()?'Z':'');
+        }
+
+        window.$date_to_rfc3339 = function(value, options) {
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            let m = dayjs(value, get_date_pattern(dateformat), true);
+            return m.format("YYYY-MM-DD");
+        }
+
+        /**
+        * A JS equivalent of the KohaTimes TT Plugin. Passed a time in HH:MM:SS or HH:MM format
+        * the function will return a time string formatted as per the koha instance config.
+        */
+
+        window.$kohatime = function(value) {
+            if(!value) return 'invalid time';
+            var intime = value.split(':');
+            var hours = intime[0];
+            var minutes = intime[1];
+
+            if ( hours < 0 || hours > 23 || minutes < 0 || minutes > 59 ) { return 'invalid time'; }
+
+            if ( def_time_format == '12hr') {
+                var ampm = ( hours >= 12 ) ? 'pm' : 'am';
+                hours = ( hours == 0 ) ? "12" : hours;
+                hours = ( hours > 12 ) ? ( hours - 12 ) : hours;
+
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0') + " " + ampm;
+            } else {
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0');
+            }
+        }
+
+        /**
+         * Returns the configured Koha server timezone.
+         * Useful for components that need to display dates/times in library timezone.
+         */
+        window.$timezone = function() {
+            return def_tz;
+        }
+
+        /**
+         * Converts a dayjs object to a Date for timeline/calendar display.
+         * Creates a Date that displays these exact values regardless of browser timezone.
+         * (Strips timezone info so JS interprets the values as browser-local time)
+         *
+         * Use this when you need to display a specific date/time from a known timezone
+         * (e.g., library timezone) and want it to appear the same for all users.
+         *
+         * @param {dayjs.Dayjs} dayjsObj - A dayjs object (typically converted to a specific timezone)
+         * @returns {Date} A Date object that will display the dayjs values in the browser
+         */
+        window.$toDisplayDate = function(dayjsObj) {
+            return new Date(dayjsObj.format('YYYY-MM-DDTHH:mm:ss'));
+        }
+
+    })();
+</script>
+<!-- / js-date-format.inc -->
+
+
+
+<!-- js-patron-get-age.inc -->
+
+<script nonce="">
+    (function() {
+
+        const tz = 'America/Sao_Paulo';
+        window.$get_age = function(dob, options) {
+            if(!dob) return '';
+
+            let today = new Date();
+            dob = new Date(dob);
+            if ( tz ) {
+                let today_tz = new Date(today.toLocaleString('en-US', {timeZone: tz}));
+                let diff = today.getTime() - today_tz.getTime();
+                today = new Date(today.getTime() - diff);
+
+                let dob_tz = new Date(dob.toLocaleString('en-US', {timeZone: tz}));
+                diff = dob.getTime() - dob_tz.getTime();
+                dob = new Date(dob.getTime() - diff);
+            }
+            let age = today.getFullYear() - dob.getFullYear();
+            let m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+    })();
+</script>
+<!-- / js-patron-get-age.inc -->
+
+<!-- js-patron-format-address.inc -->
+
+
+
+<script nonce="">
+    (function() {
+
+        const roadtypes = [];
+        let roadtypes_map = roadtypes.reduce((map, r) => {
+            map[r.authorised_value] = r.lib;
+            return map;
+        }, {});
+
+        function member_display_address_style_us(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(data.address) + ' ' + escape_str(roadtype_desc);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.city);
+                if ( data.state ) {
+                    if ( data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.state);
+                }
+                if ( data.postal_code ) {
+                    address += " " + escape_str(data.postal_code);
+                }
+                if ( data.country ) {
+                    if ( data.postal_code || data.state || data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.country)
+                }
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_de(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : ' ';
+                    address += escape_str(data.address) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.street_number);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_fr(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.address);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        window.$format_address = function(data, options) {
+            let line_break = options && options.no_line_break ? ' ' : '<br/>';
+            let include_li = options && options.include_li;return member_display_address_style_us(data, line_break, include_li);}
+
+    })();
+</script>
+<!-- / js-patron-format-address.inc -->
+
+
+
+
+<!-- validator-strings.inc -->
+<script nonce="">
+    $(document).ready(function () {
+        jQuery.extend(jQuery.validator.messages, {
+            required: _("This field is required."),
+            remote: _("Please fix this field."),
+            email: _("Please enter a valid email address."),
+            url: _("Please enter a valid URL."),
+            date: _("Please enter a valid date."),
+            dateISO: _("Please enter a valid date (ISO)."),
+            number: _("Please enter a valid number."),
+            digits: _("Please enter only digits."),
+            equalTo: _("Please enter the same value again."),
+            number: _("Please add amount in valid format: 0.00"),
+            maxlength: $.validator.format(_("Please enter no more than {0} characters.")),
+            minlength: $.validator.format(_("Please enter at least {0} characters.")),
+            rangelength: $.validator.format(_("Please enter a value between {0} and {1} characters long.")),
+            range: $.validator.format(_("Please enter a value between {0} and {1}.")),
+            max: $.validator.format(_("Please enter a value less than or equal to {0}.")),
+            min: $.validator.format(_("Please enter a value greater than or equal to {0}.")),
+            phone: $.validator.format(_("Please enter a valid phone number.")),
+        });
+    });
+</script>
+<!-- / validator-strings.inc -->
+
+
+    <!-- js_includes.inc: IntranetUserJS -->
+    <script nonce="">
+        /* koha-easy-installer ai-assistant begin */
+var KEI_AI_V = "1.5.130";
+$(document).ready(function () {
+    // koha.nexus AI assistant (Library tools > AI assistant on the staff home page).
+    if (!$("#main_intranet-main").length || $("#kei-ai").length) return;
+    var box = $("<div id=\"kei-ai\"></div>"), news = $("#area-news");
+    if (news.length) news.replaceWith(box);
+    else {
+        var col = $("#area-quote").parent();
+        if (!col.length) col = $("#container-main .row").first().children("div").first();
+        if (!col.length) return;
+        col.prepend(box);
+    }
+    var url = "/cgi-bin/koha/tools/ai_assistant.pl?v=" + encodeURIComponent(KEI_AI_V) + "&op=";
+    $("<link rel=\"stylesheet\">").attr("href", url + "css").appendTo("head");
+    $.ajax({ url: url + "js", dataType: "script", cache: true });
+});
+/* koha-easy-installer ai-assistant end */
+    </script>
+    <!-- / js_includes.inc: IntranetUserJS -->
+
+
+<!-- js_includes.inc -->
+
+    <script src="./System preferences › Administration › Koha_files/basket_26.0505000.js.download"></script>
+
+
+
+
+
+<script nonce="">
+    var defaultPatronSearchFields = "firstname|preferred_name|middle_name|surname|othernames|cardnumber|userid";
+    var defaultPatronSearchMethod = "contains";
+    var extendedPatronAttributes = "1";
+    var loggedInLibrary = 'MAIN';
+    var singleBranchMode = '1';
+    var showPatronFirstnameIfDifferentThanPreferredname = 0;
+</script>
+
+    <script nonce="">
+        // PatronAutoComplete
+        var loggedInClass = "";
+        $(document).ready(function(){
+            
+                if ( $("#findborrower").length ) {
+                    patron_autocomplete($("#findborrower"), { 'link-to': 'circ' });
+                }
+                if ( $("#findborrower_main").length ) {
+                    patron_autocomplete($("#findborrower_main"), { 'link-to': 'circ' });
+                }
+            
+            if ( $("#searchmember").length ) {
+                patron_autocomplete($("#searchmember"), { 'link-to': 'patron' });
+            }
+        });
+    </script>
+
+
+
+
+
+    <script nonce="">
+        (function () {
+            function getURLParams() {
+                const params = new URLSearchParams(window.location.search);
+                return params;
+            }
+
+            function toggleURLParams(paramsToToggle) {
+                const url = new URL(window.location.href);
+                const params = url.searchParams;
+
+                // Check if all params are currently set
+                const allSet = paramsToToggle.every(param => params.get(param) === "yes");
+
+                if (allSet) {
+                    // Remove all params
+                    paramsToToggle.forEach(param => params.delete(param));
+                } else {
+                    // Add all params
+                    paramsToToggle.forEach(param => params.set(param, "yes"));
+                }
+
+                window.location.href = url.toString();
+            }
+
+            function updateButtonText() {
+                const params = getURLParams();
+
+                // User CSS button
+                const cssDisabled = params.get("DISABLE_SYSPREF_IntranetUserCSS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserCSS") === "yes";
+                const cssToggle = document.getElementById("toggleUserCSS");
+                if (cssToggle) {
+                    const cssText = cssToggle.querySelector(".toggle-text");
+                    if (cssText) cssText.textContent = cssDisabled ? _("Enable custom CSS") : _("Disable custom CSS");
+                }
+
+                // User JS button
+                const jsDisabled = params.get("DISABLE_SYSPREF_IntranetUserJS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserJS") === "yes";
+                const jsToggle = document.getElementById("toggleUserJS");
+                if (jsToggle) {
+                    const jsText = jsToggle.querySelector(".toggle-text");
+                    if (jsText) jsText.textContent = jsDisabled ? _("Enable custom JS") : _("Disable custom JS");
+                }
+
+                // Stylesheets button
+                const stylesheetsDisabled =
+                    params.get("DISABLE_SYSPREF_OpacAdditionalStylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_opaclayoutstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetcolorstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetstylesheet") === "yes";
+                const stylesheetsToggle = document.getElementById("toggleStylesheets");
+                if (stylesheetsToggle) {
+                    const stylesheetsText = stylesheetsToggle.querySelector(".toggle-text");
+                    if (stylesheetsText) stylesheetsText.textContent = stylesheetsDisabled ? _("Enable custom stylesheets") : _("Disable custom stylesheets");
+                }
+
+                // Update icon color based on whether any toggles are active
+                const anyDisabled = cssDisabled || jsDisabled || stylesheetsDisabled;
+                const debugIcon = document.getElementById("debug-icon");
+                if (debugIcon) {
+                    if (anyDisabled) {
+                        debugIcon.style.color = "#ffc107"; // Warning/amber color
+                    } else {
+                        debugIcon.style.color = ""; // Default color
+                    }
+                }
+            }
+
+            // Update button text on page load
+            updateButtonText();
+
+            // User CSS toggle
+            const cssToggle = document.getElementById("toggleUserCSS");
+            if (cssToggle) {
+                cssToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserCSS", "DISABLE_SYSPREF_OPACUserCSS"]);
+                });
+            }
+
+            // User JS toggle
+            const jsToggle = document.getElementById("toggleUserJS");
+            if (jsToggle) {
+                jsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserJS", "DISABLE_SYSPREF_OPACUserJS"]);
+                });
+            }
+
+            // Stylesheets toggle
+            const stylesheetsToggle = document.getElementById("toggleStylesheets");
+            if (stylesheetsToggle) {
+                stylesheetsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_OpacAdditionalStylesheet", "DISABLE_SYSPREF_opaclayoutstylesheet", "DISABLE_SYSPREF_intranetcolorstylesheet", "DISABLE_SYSPREF_intranetstylesheet"]);
+                });
+            }
+        })();
+    </script>
+
+<!-- / js_includes.inc -->
+
+    
+    
+
+
+
+<!-- format-price.inc -->
+<script nonce="">
+    
+    
+        var default_value = {
+            thousands_sep: ',',
+            decimal_point: '.',
+            decimal_digits: 2
+        };
+
+    
+    Number.prototype.format_price = function( value, params ) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+            var re = '\\d(?=(\\d{' + 3 + '})+' + '\\D' + ')', value = this.toFixed(decimal_digits);
+            return value.replace('.', decimal_point).replace(new RegExp(re, 'g'), '$&' + thousands_sep);
+    }
+    String.prototype.unformat_price = function (params) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+        let value = this.valueOf();
+        value = value.replace(thousands_sep, '').replace(decimal_point, '.').replace(new RegExp('[^\\d.]', 'g'), '');
+        return Number(value).toFixed(decimal_digits);
+    }
+</script>
+<!-- / format-price.inc -->
+
+<script src="./System preferences › Administration › Koha_files/datatables.min_26.0505000.js.download"></script>
+<script src="./System preferences › Administration › Koha_files/datatables_26.0505000.js.download"></script>
+
+    <script src="./System preferences › Administration › Koha_files/multiple-select.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/codemirror.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/css.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/javascript.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/xml.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/yaml.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/lint.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/jshint.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/htmlhint.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/csslint.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/js-yaml.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/html-lint.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/javascript-lint.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/css-lint.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/yaml-lint.min_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/Sortable.min_26.0505000.js.download"></script>
+    <script nonce="">
+        var themelang = "/intranet-tmpl/prog/en";
+        $(document).ready(function(){
+            $("select[multiple='multiple']").multipleSelect( {
+                placeholder: _("Please select ..."),
+                selectAllText: _("Select all"),
+                allSelected: _("All selected"),
+                countSelected: _("# of % selected"),
+                noMatchesFound: _("No matches found")
+            } );
+            $(".force_reload").on("click",function(e){
+                e.preventDefault();
+                window.location.reload(true);
+            });
+        });
+        // This is here because of its dependence on template variables, everything else should go in js/pages/preferences.js - jpw
+        var to_highlight = "";
+        var search_jumped = false;
+        var db_columns = {"aqorders":{"currency":"Currency","ecost":"Budgeted cost","budgetdate":"Not used (deprecated)","tax_value_bak":"Tax value backup (deprecated)","listprice":"Vendor price","datecancellationprinted":"Cancellation date","quantity":"Quantity","order_internalnote":"Internal note","suppliers_reference_number":"Vendor reference number (EDIFACT)","biblionumber":"Biblio number (internal)","sort1":"Statistic 1","sort2":"Statistic 2","uncertainprice":"Uncertain price","tax_value_on_receiving":"Tax amount on receive","order_vendornote":"Vendor note","rrp":"Retail price","tax_rate_bak":"Tax rate backup (deprecated)","suppliers_reference_qualifier":"Vendor reference qualifier (EDIFACT)","orderstatus":"Order status","datereceived":"Date received","freight":"Not used (deprecated)","suppliers_report":"Vendor report (EDIFACT)","unitprice":"Actual cost","unitprice_tax_included":"Actual cost, tax incl.","estimated_delivery_date":"Estimated delivery date","invoiceid":"Invoice ID (internal)","basketno":"Basket ID (internal)","tax_rate_on_ordering":"Tax rate on order","entrydate":"Creation date","sort2_authcat":"Not used","timestamp":"Timestamp","sort1_authcat":"Not used","budget_id":"Fund ID (internal)","line_item_id":"Line item ID (EDIFACT)","rrp_tax_excluded":"Retail price, tax excl.","tax_value_on_ordering":"Tax amount on order","subscriptionid":"Subscription ID (internal)","created_by":"Borrower number of creator","discount":"Discount","rrp_tax_included":"Retail price, tax incl.","unitprice_tax_excluded":"Actual cost, tax excl.","cancellationreason":"Cancellation reason","tax_rate_on_receiving":"Tax rate on receive","parent_ordernumber":"Parent order number (internal)","ecost_tax_included":"Budgeted cost, tax incl.","replacementprice":"Replacement price","ordernumber":"Order number","ecost_tax_excluded":"Budgeted cost, tax excl.","quantityreceived":"Quantity received"},"items":{"homebranch":"Permanent library","coded_location_qualifier":"Coded location qualifier","damaged_on":"Damaged on","permanent_location":"Permanent shelving location","ccode":"Collection","stocknumber":"Inventory number","enumchron":"Serial enumeraton/chronology","biblionumber":"Biblio number (internal)","more_subfields_xml":"Additional subfields (XML)","cn_sort":"Koha normalized classification for sorting","withdrawn_on":"Withdrawn on","itemnotes":"Public note","bookable":"Bookable","stack":"Shelving control number","itemnumber":"Koha item number (autogenerated)","biblioitemnumber":"Biblio item number (internal)","itype":"Koha item type","dateaccessioned":"Date acquired","uri":"Uniform Resource Identifier","notforloan":"Not for loan","reserves":"Total holds","location":"Shelving location","itemnotes_nonpublic":"Internal note","booksellerid":"Source of acquisition","renewals":"Total renewals","exclude_from_local_holds_priority":"Exclude from local holds priority","materials":"Materials specified","itemcallnumber":"Call number","datelastseen":"Date last seen","withdrawn":"Withdrawn status","holdingbranch":"Current library","itemlost":"Lost status","timestamp":"Modification date","barcode":"Barcode","price":"Price","onloan":"Due date","itemlost_on":"Lost on","cn_source":"Source of classification or shelving scheme","replacementpricedate":"Price effective from","datelastborrowed":"Date last checked out","localuse":"Total local uses","deleted_on":"Deleted on","copynumber":"Copy number","restricted":"Use restrictions","issues":"Total checkouts","replacementprice":"Replacement price","new_status":"New status","damaged":"Damaged status"},"biblioitems":{"pages":"Number of pages","cn_sort":"Koha normalized classification for sorting","url":"URL","biblionumber":"Biblio number (internal)","itemtype":"Biblio-level item type","notes":"Notes","totalissues":"Total checkouts, all items","collectionvolume":"Series volume","issn":"ISSN","collectiontitle":"Series statement","timestamp":"Modification date","cn_class":"Classification part","editionresponsibility":"Edition responsibility","publishercode":"Publisher","editionstatement":"Edition statement","lccn":"LCCN","ean":"EAN","publicationyear":"Publication date","isbn":"ISBN","collectionissn":"Series ISSN","cn_suffix":"Call number suffix","number":"Number","illus":"Other physical details","size":"Size","cn_item":"Item part","place":"Place of publication","volume":"Volume number","volumedesc":"Volume information","biblioitemnumber":"Biblio item number (internal)","volumedate":"Volume date","agerestriction":"Age restriction","cn_source":"Source of classification or shelving scheme"},"subscription":{"periodicity":"Periodicity","startdate":"Start date","location":"Location","enddate":"End date","branchcode":"Library","callnumber":"Call number"},"aqbooksellers":{},"suggestions":{"collectiontitle":"Collection title","quantity":"Quantity","title":"Title","itemtype":"Koha item type","author":"Author","isbn":"ISBN","patronreason":"Patron reason","copyrightdate":"Copyright date","note":"Note","branchcode":"Library","publishercode":"Publisher","place":"Place of publication"},"serialitems":{},"statistics":{"value":"Value","location":"Shelving location","ccode":"Collection","type":"Transaction type","borrowernumber":"Borrower number","other":"SIP mode","itemnumber":"Item number","itemtype":"Koha item type","interface":"Interface","categorycode":"Patron category","branch":"Library","datetime":"Statistics date and time"},"subscriptionhistory":{},"subscriptionroutinglist":{},"serial":{},"biblio":{"copyrightdate":"Copyright date","datecreated":"Creation date","frameworkcode":"Framework code","timestamp":"Modification date","abstract":"Abstract","subtitle":"Remainder of title","part_number":"Number of part/section of a work","seriestitle":"Series title","notes":"Notes","part_name":"Name of part/section of a work","medium":"Medium","unititle":"Uniform title","serial":"Is a serial?","title":"Title","biblionumber":"Biblio number (internal)","author":"Author","opac_suppressed":"Suppressed from OPAC"},"accountlines":{},"borrowers":{"fax":"Fax","middle_name":"Middle name","pronouns":"Pronouns","email":"Primary email","protected":"Protected","auth_method":"Authentication method","userid":"Username","initials":"Initials","privacy":"Privacy settings","password":"Password","B_address":"Alternate address: Address","altcontactaddress3":"Alternate contact: City","lang":"Preferred language for notices","country":"Country","checkprevcheckout":"Check for previous checkouts","B_city":"Alternate address: City","firstname":"First name","login_attempts":"Number of failed login attempts","streetnumber":"Street number","altcontactphone":"Alternate contact: Phone","state":"State","autorenew_checkouts":"Allow auto-renewals","streettype":"Street type","branchcode":"Home library","relationship":"Relationship","borrowernotes":"Circulation note","dateenrolled":"Registration date","dateofbirth":"Date of birth","surname":"Surname","altcontactsurname":"Alternate contact: Surname","privacy_guarantor_checkouts":"Show checkouts to guarantor","contactnote":"Alternate contact: Note","lost":"Lost card flag","sex":"Gender","emailpro":"Secondary email","contactfirstname":"Guarantor first name","anonymized":"Data anonymization flag","sms_provider_id":"SMS provider ID (internal)","sort2":"Sort 2","B_email":"Alternate address: Email","address":"Address","preferred_name":"Preferred name","B_country":"Alternate address: Country","altcontactfirstname":"Alternate contact: First name","sort1":"Sort 1","B_zipcode":"Alternate address: ZIP/Postal code","B_phone":"Alternate address: Phone","opacnote":"OPAC note","zipcode":"ZIP/Postal code","altcontactaddress2":"Alternate contact: Address 2","altcontactzipcode":"Alternate contact: ZIP/Postal code","flags":"System permissions","altcontactstate":"Alternate contact: State","B_address2":"Alternate address: Address 2","B_streettype":"Alternate address: Street type","phone":"Primary phone","city":"City","title":"Salutation","date_renewed":"Account renewal date","gonenoaddress":"Gone no address flag","debarred":"Restricted [until] flag","contacttitle":"Alternate contact: Title","B_state":"Alternate address: State","privacy_guarantor_fines":"Show fines to guarantor","smsalertnumber":"Mobile phone number","othernames":"Other name","debarredcomment":"Comment","lastseen":"Last activity date","B_streetnumber":"Alternate address: Street number","altcontactaddress1":"Alternate contact: Address","password_expiration_date":"Password expiration date","contactname":"Guarantor surname","phonepro":"Secondary phone","updated_on":"Last update date","borrowernumber":"Borrower number","dateexpiry":"Expiry date","cardnumber":"Card number","overdrive_auth_token":"Overdrive auth token","categorycode":"Patron category","address2":"Address 2","mobile":"Other phone","altcontactcountry":"Alternate contact: Country","primary_contact_method":"Primary contact method","secret":"Secret (2FA)"}};
+    </script>
+    <script src="./System preferences › Administration › Koha_files/humanmsg_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/ajax_26.0505000.js.download"></script>
+    <script src="./System preferences › Administration › Koha_files/preferences_26.0505000.js.download"></script>
+    
+    
+
+
+<script src="./System preferences › Administration › Koha_files/tinymce.min_26.0505000.js.download"></script>
+
+
+<!-- str/tinymce_i18n.inc -->
+<script nonce="">
+    /* tinymce considers 'en' to be the default translation.
+       Translating this file will allow us to load the correct language
+       along with the template */
+    tinymce.addI18n("en", {
+        "{0} characters": _("{0} characters"),
+        "{0} words": _("{0} words"),
+        Accessibility: _("Accessibility"),
+        Action: _("Action"),
+        Activity: _("Activity"),
+        "Add to Dictionary": _("Add to Dictionary"),
+        Address: _("Address"),
+        "Advanced sort...": _("Advanced sort..."),
+        "Advanced Sort": _("Advanced Sort"),
+        Advanced: _("Advanced"),
+        "Align center": _("Align center"),
+        "Align left": _("Align left"),
+        "Align right": _("Align right"),
+        Align: _("Align"),
+        alignment: _("alignment"),
+        Alignment: _("Alignment"),
+        All: _("All"),
+        "Alternative description": _("Alternative description"),
+        "Alternative source URL": _("Alternative source URL"),
+        "Alternative source": _("Alternative source"),
+        "Anchor...": _("Anchor..."),
+        Anchor: _("Anchor"),
+        Anchors: _("Anchors"),
+        "Animals and Nature": _("Animals and Nature"),
+        Apply: _("Apply"),
+        Arrows: _("Arrows"),
+        Ascending: _("Ascending"),
+        "austral sign": _("austral sign"),
+        Author: _("Author"),
+        B: _("B"),
+        Back: _("Back"),
+        "Background color": _("Background color"),
+        Black: _("Black"),
+        Block: _("Block"),
+        Blockquote: _("Blockquote"),
+        Blocks: _("Blocks"),
+        Blue: _("Blue"),
+        Body: _("Body"),
+        Bold: _("Bold"),
+        "Border color": _("Border color"),
+        "Border style": _("Border style"),
+        "Border width": _("Border width"),
+        Border: _("Border"),
+        Bottom: _("Bottom"),
+        Brightness: _("Brightness"),
+        "Browse for an image": _("Browse for an image"),
+        "Bullet list": _("Bullet list"),
+        Cancel: _("Cancel"),
+        Capitalization: _("Capitalization"),
+        Caption: _("Caption"),
+        "case change": _("case change"),
+        "cedi sign": _("cedi sign"),
+        "Cell padding": _("Cell padding"),
+        "Cell properties": _("Cell properties"),
+        "Cell spacing": _("Cell spacing"),
+        "Cell type": _("Cell type"),
+        Cell: _("Cell"),
+        Center: _("Center"),
+        Change: _("Change"),
+        "Characters (no spaces)": _("Characters (no spaces)"),
+        Characters: _("Characters"),
+        Checklist: _("Checklist"),
+        Circle: _("Circle"),
+        Class: _("Class"),
+        "Clear formatting": _("Clear formatting"),
+        Close: _("Close"),
+        "Code sample...": _("Code sample..."),
+        "Code sample": _("Code sample"),
+        "Code view": _("Code view"),
+        Code: _("Code"),
+        "colon sign": _("colon sign"),
+        "Color levels": _("Color levels"),
+        "Color Picker": _("Color Picker"),
+        "Color swatch": _("Color swatch"),
+        Color: _("Color"),
+        Cols: _("Cols"),
+        "Column {0}": _("Column {0}"),
+        "Column group": _("Column group"),
+        Column: _("Column"),
+        comments: _("comments"),
+        "Constrain proportions": _("Constrain proportions"),
+        Contrast: _("Contrast"),
+        "Copy row": _("Copy row"),
+        Copy: _("Copy"),
+        "Could not find the specified string.": _("Could not find the specified string."),
+        "Could not load emoticons": _("Could not load emoticons"),
+        Count: _("Count"),
+        Crop: _("Crop"),
+        "cruzeiro sign": _("cruzeiro sign"),
+        "currency sign": _("currency sign"),
+        Currency: _("Currency"),
+        "Current window": _("Current window"),
+        "Custom color": _("Custom color"),
+        "Custom...": _("Custom..."),
+        "Cut row": _("Cut row"),
+        Cut: _("Cut"),
+        "Dark Blue": _("Dark Blue"),
+        "Dark Gray": _("Dark Gray"),
+        "Dark Green": _("Dark Green"),
+        "Dark Orange": _("Dark Orange"),
+        "Dark Purple": _("Dark Purple"),
+        "Dark Red": _("Dark Red"),
+        "Dark Turquoise": _("Dark Turquoise"),
+        "Dark Yellow": _("Dark Yellow"),
+        "Date\/time": _("Date\/time"),
+        "Decrease indent": _("Decrease indent"),
+        Default: _("Default"),
+        "Delete column": _("Delete column"),
+        "Delete row": _("Delete row"),
+        "Delete table": _("Delete table"),
+        Descending: _("Descending"),
+        Description: _("Description"),
+        Dimensions: _("Dimensions"),
+        Disc: _("Disc"),
+        Div: _("Div"),
+        "Document properties": _("Document properties"),
+        Document: _("Document"),
+        "dollar sign": _("dollar sign"),
+        "dong sign": _("dong sign"),
+        "drachma sign": _("drachma sign"),
+        "Drop an image here": _("Drop an image here"),
+        "Edit image": _("Edit image"),
+        Edit: _("Edit"),
+        Embed: _("Embed"),
+        "Emoticons...": _("Emoticons..."),
+        Emoticons: _("Emoticons"),
+        Encoding: _("Encoding"),
+        "Error: Form submit field collision.": _("Error: Form submit field collision."),
+        "Error: No form element found.": _("Error: No form element found."),
+        Error: _("Error"),
+        "euro-currency sign": _("euro-currency sign"),
+        example: _("example"),
+        "Extended Latin": _("Extended Latin"),
+        "Failed to initialize plugin: {0}": _("Failed to initialize plugin: {0}"),
+        "Failed to load plugin URL: {0}": _("Failed to load plugin URL: {0}"),
+        "Failed to load plugin: {0} from URL {1}": _("Failed to load plugin: {0} from URL {1}"),
+        "Failed to upload image: {0}": _("Failed to upload image: {0}"),
+        File: _("File"),
+        "Find (if searchreplace plugin activated)": _("Find (if searchreplace plugin activated)"),
+        "Find and replace...": _("Find and replace..."),
+        "Find and replace": _("Find and replace"),
+        "Find and Replace": _("Find and Replace"),
+        "Find in selection": _("Find in selection"),
+        "Find whole words only": _("Find whole words only"),
+        Find: _("Find"),
+        "Finding word suggestions": _("Finding word suggestions"),
+        Finish: _("Finish"),
+        Flags: _("Flags"),
+        "Flip horizontally": _("Flip horizontally"),
+        "Flip vertically": _("Flip vertically"),
+        "Focus to contextual toolbar": _("Focus to contextual toolbar"),
+        "Focus to element path": _("Focus to element path"),
+        "Focus to menubar": _("Focus to menubar"),
+        "Focus to toolbar": _("Focus to toolbar"),
+        "Font Sizes": _("Font Sizes"),
+        Font: _("Font"),
+        Fonts: _("Fonts"),
+        "Food and Drink": _("Food and Drink"),
+        Footer: _("Footer"),
+        "Format Painter": _("Format Painter"),
+        Format: _("Format"),
+        Formats: _("Formats"),
+        formatting: _("formatting"),
+        "french franc sign": _("french franc sign"),
+        Fullscreen: _("Fullscreen"),
+        G: _("G"),
+        Gamma: _("Gamma"),
+        General: _("General"),
+        "german penny symbol": _("german penny symbol"),
+        Gray: _("Gray"),
+        Green: _("Green"),
+        "guarani sign": _("guarani sign"),
+        "H Align": _("H Align"),
+        "Handy Shortcuts": _("Handy Shortcuts"),
+        "Header 1": _("Header 1"),
+        "Header 2": _("Header 2"),
+        "Header 3": _("Header 3"),
+        "Header 4": _("Header 4"),
+        "Header 5": _("Header 5"),
+        "Header 6": _("Header 6"),
+        "Header cell": _("Header cell"),
+        Header: _("Header"),
+        Headers: _("Headers"),
+        "Heading 1": _("Heading 1"),
+        "Heading 2": _("Heading 2"),
+        "Heading 3": _("Heading 3"),
+        "Heading 4": _("Heading 4"),
+        "Heading 5": _("Heading 5"),
+        "Heading 6": _("Heading 6"),
+        Headings: _("Headings"),
+        Height: _("Height"),
+        Help: _("Help"),
+        history: _("history"),
+        "Horizontal line": _("Horizontal line"),
+        "Horizontal space": _("Horizontal space"),
+        "hryvnia sign": _("hryvnia sign"),
+        "ID attribute must be unique": _("ID attribute must be unique"),
+        "ID should start with a letter, followed only by letters, numbers, dashes, dots, colons or underscores.": _("ID should start with a letter, followed only by letters, numbers, dashes, dots, colons or underscores."),
+        Id: _("ID"),
+        "Ignore all": _("Ignore all"),
+        Ignore: _("Ignore"),
+        "Image description": _("Image description"),
+        "Image is decorative": _("Image is decorative"),
+        "Image list": _("Image list"),
+        "Image options": _("Image options"),
+        "Image title": _("Image title"),
+        "Image...": _("Image..."),
+        Image: _("Image"),
+        "Images must be marked as decorative or have an alternative text description": _("Images must be marked as decorative or have an alternative text description"),
+        "Images must have an alternative text description. Decorative images are not allowed.": _("Images must have an alternative text description. Decorative images are not allowed."),
+        "Increase indent": _("Increase indent"),
+        indentation: _("indentation"),
+        "indian rupee sign": _("indian rupee sign"),
+        Inline: _("Inline"),
+        "Insert column after": _("Insert column after"),
+        "Insert column before": _("Insert column before"),
+        "Insert date\/time": _("Insert date\/time"),
+        "Insert image": _("Insert image"),
+        "Insert link (if link plugin activated)": _("Insert link (if link plugin activated)"),
+        "Insert link": _("Insert link"),
+        "Insert row after": _("Insert row after"),
+        "Insert row before": _("Insert row before"),
+        "Insert table": _("Insert table"),
+        "Insert template...": _("Insert template..."),
+        "Insert template": _("Insert template"),
+        "Insert video": _("Insert video"),
+        Insert: _("Insert"),
+        "Insert\/Edit code sample": _("Insert\/Edit code sample"),
+        "Insert\/edit iframe": _("Insert\/edit iframe"),
+        "Insert\/edit image": _("Insert\/edit image"),
+        "Insert\/edit link": _("Insert\/edit link"),
+        "Insert\/edit media": _("Insert\/edit media"),
+        "Insert\/edit video": _("Insert\/edit video"),
+        Invert: _("Invert"),
+        "Issue {0} of {1}": _("Issue {0} of {1}"),
+        Italic: _("Italic"),
+        Justify: _("Justify"),
+        "Keep this ID and remove all others": _("Keep this ID and remove all others"),
+        "Keyboard Navigation": _("Keyboard Navigation"),
+        Keywords: _("Keywords"),
+        "kip sign": _("kip sign"),
+        Language: _("Language"),
+        "Learn more...": _("Learn more..."),
+        "Left to right": _("Left to right"),
+        Left: _("Left"),
+        "Light Blue": _("Light Blue"),
+        "Light Gray": _("Light Gray"),
+        "Light Green": _("Light Green"),
+        "Light Purple": _("Light Purple"),
+        "Light Red": _("Light Red"),
+        "Light Yellow": _("Light Yellow"),
+        "Line height": _("Line height"),
+        "Link list": _("Link list"),
+        "Link...": _("Link..."),
+        Link: _("Link"),
+        "lira sign": _("lira sign"),
+        "List properties...": _("List properties..."),
+        "List Properties": _("List Properties"),
+        "livre tournois sign": _("livre tournois sign"),
+        "Loading emoticons...": _("Loading emoticons..."),
+        "Lower Alpha": _("Lower Alpha"),
+        "Lower Greek": _("Lower Greek"),
+        "Lower Roman": _("Lower Roman"),
+        lowercase: _("lowercase"),
+        "Make ID unique": _("Make ID unique"),
+        "Make image decorative:": _("Make image decorative:"),
+        "manat sign": _("manat sign"),
+        "Match case": _("Match case"),
+        Mathematical: _("Mathematical"),
+        "Media poster (Image URL)": _("Media poster (Image URL)"),
+        "Media...": _("Media..."),
+        Media: _("Media"),
+        "Medium Blue": _("Medium Blue"),
+        "Medium Gray": _("Medium Gray"),
+        "Medium Purple": _("Medium Purple"),
+        "Merge cells": _("Merge cells"),
+        "Metadata and Document Properties": _("Metadata and Document Properties"),
+        Middle: _("Middle"),
+        "Midnight Blue": _("Midnight Blue"),
+        "mill sign": _("mill sign"),
+        "Misspelled word": _("Misspelled word"),
+        "More...": _("More..."),
+        "naira sign": _("naira sign"),
+        Name: _("Name"),
+        "Navy Blue": _("Navy Blue"),
+        "New document": _("New document"),
+        "new sheqel sign": _("new sheqel sign"),
+        "New window": _("New window"),
+        Next: _("Next"),
+        "No color": _("No color"),
+        "No misspellings found.": _("No misspellings found."),
+        No: _("No"),
+        "Nonbreaking space": _("Nonbreaking space"),
+        None: _("None"),
+        "nordic mark sign": _("nordic mark sign"),
+        "Numbered list": _("Numbered list"),
+        Objects: _("Objects"),
+        Ok: _("Ok"),
+        "Open help dialog": _("Open help dialog"),
+        "Open link in...": _("Open link in..."),
+        "Open link": _("Open link"),
+        "Open popup menu for split buttons": _("Open popup menu for split buttons"),
+        "Or provide alternative text:": _("Or provide alternative text:"),
+        OR: _("OR"),
+        Orange: _("Orange"),
+        Order: _("Order"),
+        Orientation: _("Orientation"),
+        "Page break": _("Page break"),
+        "page embed": _("page embed"),
+        Paragraph: _("Paragraph"),
+        "Paste as text": _("Paste as text"),
+        "Paste is now in plain text mode. Contents will now be pasted as plain text until you toggle this option off.": _("Paste is now in plain text mode. Contents will now be pasted as plain text until you toggle this option off."),
+        "Paste or type a link": _("Paste or type a link"),
+        "Paste row after": _("Paste row after"),
+        "Paste row before": _("Paste row before"),
+        "Paste your embed code below:": _("Paste your embed code below:"),
+        Paste: _("Paste"),
+        People: _("People"),
+        "Permanent pen properties...": _("Permanent pen properties..."),
+        "Permanent Pen Properties": _("Permanent Pen Properties"),
+        "permanent pen": _("permanent pen"),
+        "peseta sign": _("peseta sign"),
+        "peso sign": _("peso sign"),
+        "Plugins installed ({0}):": _("Plugins installed ({0}):"),
+        Plugins: _("Plugins"),
+        Poster: _("Poster"),
+        "Powered by {0}": _("Powered by {0}"),
+        Pre: _("Pre"),
+        Preferences: _("Preferences"),
+        Preformatted: _("Preformatted"),
+        "Premium plugins:": _("Premium plugins:"),
+        Prev: _("Prev"),
+        Preview: _("Preview"),
+        Previous: _("Previous"),
+        "Print...": _("Print..."),
+        Print: _("Print"),
+        Purple: _("Purple"),
+        Quotations: _("Quotations"),
+        R: _("R"),
+        Red: _("Red"),
+        Redo: _("Redo"),
+        "Remove all IDs": _("Remove all IDs"),
+        "Remove color": _("Remove color"),
+        "Remove link": _("Remove link"),
+        "Remove this ID": _("Remove this ID"),
+        Repair: _("Repair"),
+        "Replace all": _("Replace all"),
+        "Replace with": _("Replace with"),
+        Replace: _("Replace"),
+        Resize: _("Resize"),
+        "Restore last draft": _("Restore last draft"),
+        "Rich Text Area. Press ALT-0 for help.": _("Rich Text Area. Press ALT-0 for help."),
+        "Rich Text Area. Press ALT-F9 for menu. Press ALT-F10 for toolbar. Press ALT-0 for help": _("Rich Text Area. Press ALT-F9 for menu. Press ALT-F10 for toolbar. Press ALT-0 for help"),
+        "Right to left": _("Right to left"),
+        Right: _("Right"),
+        Robots: _("Robots"),
+        "Rotate clockwise": _("Rotate clockwise"),
+        "Rotate counterclockwise": _("Rotate counterclockwise"),
+        "Row {0}": _("Row {0}"),
+        "Row group": _("Row group"),
+        "Row properties": _("Row properties"),
+        "Row type": _("Row type"),
+        Row: _("Row"),
+        Rows: _("Rows"),
+        "ruble sign": _("ruble sign"),
+        "rupee sign": _("rupee sign"),
+        "Save (if save plugin activated)": _("Save (if save plugin activated)"),
+        Save: _("Save"),
+        Scope: _("Scope"),
+        Search: _("Search"),
+        "Select all": _("Select all"),
+        "Select...": _("Select..."),
+        Selection: _("Selection"),
+        Sharpen: _("Sharpen"),
+        Shortcut: _("Shortcut"),
+        "Show blocks": _("Show blocks"),
+        "Show caption": _("Show caption"),
+        "Show invisible characters": _("Show invisible characters"),
+        Size: _("Size"),
+        "Sort by": _("Sort by"),
+        "Sort table by column ascending": _("Sort table by column ascending"),
+        "Sort table by column descending": _("Sort table by column descending"),
+        Sort: _("Sort"),
+        "Source code": _("Source code"),
+        Source: _("Source"),
+        "Special character...": _("Special character..."),
+        "Special character": _("Special character"),
+        "Spellcheck Language": _("Spellcheck Language"),
+        "Spellcheck...": _("Spellcheck..."),
+        Spellcheck: _("Spellcheck"),
+        "spesmilo sign": _("spesmilo sign"),
+        "Split cell": _("Split cell"),
+        Square: _("Square"),
+        "Start list at number": _("Start list at number"),
+        Strikethrough: _("Strikethrough"),
+        Style: _("Style"),
+        styles: _("styles"),
+        Subscript: _("Subscript"),
+        Success: _("Success"),
+        Suggestions: _("Suggestions"),
+        Superscript: _("Superscript"),
+        "Switch to or from fullscreen mode": _("Switch to or from fullscreen mode"),
+        Symbols: _("Symbols"),
+        "System Font": _("System Font"),
+        "Table of Contents": _("Table of Contents"),
+        "Table properties": _("Table properties"),
+        Table: _("Table"),
+        Target: _("Target"),
+        Template: _("Template"),
+        Templates: _("Templates"),
+        "tenge sign": _("tenge sign"),
+        "Text color": _("Text color"),
+        "Text to display": _("Text to display"),
+        Text: _("Text"),
+        "The URL you entered seems to be an email address. Do you want to add the required mailto: prefix?": _("The URL you entered seems to be an email address. Do you want to add the required mailto: prefix?"),
+        "The URL you entered seems to be an external link. Do you want to add the required http:\/\/ prefix?": _("The URL you entered seems to be an external link. Do you want to add the required http:\/\/ prefix?"),
+        "The URL you entered seems to be an external link. Do you want to add the required https:\/\/ prefix?": _("The URL you entered seems to be an external link. Do you want to add the required https:\/\/ prefix?"),
+        "Title Case": _("Title Case"),
+        Title: _("Title"),
+        "To open the popup, press Shift+Enter": _("To open the popup, press Shift+Enter"),
+        Tools: _("Tools"),
+        Top: _("Top"),
+        "Travel and Places": _("Travel and Places"),
+        "tugrik sign": _("tugrik sign"),
+        "turkish lira sign": _("turkish lira sign"),
+        Turquoise: _("Turquoise"),
+        Underline: _("Underline"),
+        Undo: _("Undo"),
+        Update: _("Update"),
+        Upload: _("Upload"),
+        "Upper Alpha": _("Upper Alpha"),
+        "Upper Roman": _("Upper Roman"),
+        UPPERCASE: _("UPPERCASE"),
+        Url: _("Url"),
+        "User Defined": _("User Defined"),
+        "V Align": _("V Align"),
+        Valid: _("Valid"),
+        Version: _("Version"),
+        "Vertical space": _("Vertical space"),
+        View: _("View"),
+        "Visual aids": _("Visual aids"),
+        Warn: _("Warn"),
+        White: _("White"),
+        "Whole words": _("Whole words"),
+        Width: _("Width"),
+        "won sign": _("won sign"),
+        "Word count": _("Word count"),
+        "Words: {0}": _("Words: {0}"),
+        Words: _("Words"),
+        Yellow: _("Yellow"),
+        "yen character": _("yen character"),
+        "yen\/yuan character variant one": _("yen\/yuan character variant one"),
+        Yes: _("Yes"),
+        "You are using {0}": _("You are using {0}"),
+        "You have unsaved changes are you sure you want to navigate away?": _("You have unsaved changes are you sure you want to navigate away?"),
+        "Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X\/C\/V keyboard shortcuts instead.": _(
+            "Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X\/C\/V keyboard shortcuts instead."
+        ),
+        "yuan character, in hong kong and taiwan": _("yuan character, in hong kong and taiwan"),
+        "yuan character": _("yuan character"),
+        "Zoom in": _("Zoom in"),
+        "Zoom out": _("Zoom out"),
+    });
+</script>
+<!-- / str/tinymce_i18n.inc -->
+
+<!-- wysiwyg-systempreferences.inc -->
+<script nonce="">
+    // Save TinyMCE content and trigger an event on the original element
+    function wysiwyg_change (ed){
+        ed.save();
+        var original_textarea = ed.getElement();
+        $(original_textarea).trigger("input");
+    }
+
+    tinyMCE.init({
+        verify_html: false,
+        force_br_newlines : false,
+        force_p_newlines : false,
+        forced_root_block : '',
+        extended_valid_elements:"style,link[href|rel]",
+        custom_elements:"style,link,~link",
+        branding : false,
+        relative_urls : false,
+        content_css : "/intranet-tmpl/prog/css/tinymce.css",
+        convert_urls : false,
+        editor_selector : "mce",
+        menubar : "file edit view insert format tools table",
+        mode : "specific_textareas",
+        plugins : "autoresize table hr link image charmap lists code emoticons",
+        toolbar : [
+            "formatselect | bold italic | cut copy paste | alignleft aligncenter alignright | outdent indent | image link unlink anchor cleanup hr",
+            "table | bullist numlist | undo redo | removeformat | emoticons charmap | forecolor backcolor | code"
+        ],
+        init_instance_callback: function (editor) {
+            editor.on('Dirty', function (e) {
+                // When a change has been made to the contents of an editor,
+                // enable the corresponding preference Save button
+                wysiwyg_change( editor );
+            });
+        }
+    });
+</script>
+<!-- / wysiwyg-systempreferences.inc -->
+
+
+
+
+
+
+
+
+
+
+<button id="backtotop" class="btn btn-default" aria-label="Back to top" style="display: none;"><i class="fa fa-arrow-up" aria-hidden="true"></i></button><ul id="ui-id-1" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" unselectable="on" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div id="humanMsg" class="humanMsg"><div id="humanMsg-contents"></div></div> <div id="humanMsgLog"><p class="launcher">Message Log</p><ul></ul></div></body><!-- prettier-ignore-start --></html>

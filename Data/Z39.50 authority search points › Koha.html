@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<!-- saved from url=(0067)http://localhost:8080/cgi-bin/koha/cataloguing/z3950_auth_search.pl -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Z39.50 authority search points › Koha</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="f398d7eb8176c9f9ed74b740b813d5cbd3a248e2,0d502f2f9767f62092e2bcf71a5fdc9ba2b7b58b,1793390399">
+<meta name="generator" content="Koha 26.05.05">
+<script nonce="">
+    window.__CSP_NONCE__ = "";
+</script>
+
+    
+
+
+<link rel="shortcut icon" href="https://i.postimg.cc/rs5nhP5c/cone-Castro-Alves.png" type="image/x-icon">
+
+
+    <link type="text/css" rel="stylesheet" href="./Z39.50 authority search points › Koha_files/jquery-ui-1.13.2.min_26.0505000.css">
+
+<link rel="stylesheet" type="text/css" href="./Z39.50 authority search points › Koha_files/fontawesome.min_26.0505000.css">
+<link href="./Z39.50 authority search points › Koha_files/brands.min_26.0505000.css" type="text/css" rel="stylesheet">
+<link href="./Z39.50 authority search points › Koha_files/solid.min_26.0505000.css" type="text/css" rel="stylesheet">
+<link href="./Z39.50 authority search points › Koha_files/datatables.min_26.0505000.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="./Z39.50 authority search points › Koha_files/print_26.0505000.css" media="print">
+
+
+
+    
+
+
+    <link rel="stylesheet" type="text/css" href="./Z39.50 authority search points › Koha_files/staff-global_26.0505000.css">
+
+
+<!-- local colors -->
+
+
+<script nonce="" type="module">
+    import { APIClient } from "/intranet-tmpl/prog/js/fetch/api-client.js";
+    window.APIClient = APIClient;
+</script>
+<script nonce="">
+    var Koha = {};
+    
+        var CAN_user_parameters_manage_column_config = 1;
+    
+</script>
+
+<script src="./Z39.50 authority search points › Koha_files/Gettext_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/i18n_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/stores_26.0505000.js.download"></script>
+
+
+
+
+
+
+
+
+
+
+</head><body id="cat_z3950_auth_search" class="cat" style="cursor: default;">
+<div class="main container-fluid">
+    
+        <h1>Z39.50 authority search points</h1>
+        <form method="post" action="http://localhost:8080/cgi-bin/koha/cataloguing/z3950_auth_search.pl" name="f" class="checkboxed">
+            <input type="hidden" name="csrf_token" value="f398d7eb8176c9f9ed74b740b813d5cbd3a248e2,0d502f2f9767f62092e2bcf71a5fdc9ba2b7b58b,1793390399">
+
+            <input type="hidden" name="op" id="op" value="cud-do_search">
+            <input type="hidden" name="authid" value="0">
+            <input type="hidden" name="index" value="">
+            <div class="row">
+                <div class="col-6">
+                    <fieldset class="rows">
+                        <ol>
+                            <li><label for="srchany">Keyword (any): </label> <input type="text" id="srchany" name="srchany" value=""></li>
+                            <li><label for="controlnumber">Control number: </label> <input type="text" id="controlnumber" name="controlnumber" value=""></li>
+                            <li><label for="nameany">Name (any): </label> <input type="text" id="nameany" name="nameany" value=""></li>
+                            <li><label for="authorany">Author (any): </label> <input type="text" id="authorany" name="authorany" value=""></li>
+                            <li><label for="authorpersonal">Author (personal): </label> <input type="text" id="authorpersonal" name="authorpersonal" value=""></li>
+                            <li><label for="authorcorp">Author (corporate): </label> <input type="text" id="authorcorp" name="authorcorp" value=""></li>
+                            <li><label for="authormeetingcon">Author (meeting / conference): </label> <input type="text" id="authormeetingcon" name="authormeetingcon" value=""></li>
+                        </ol>
+                    </fieldset>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <fieldset class="rows">
+                            <ol>
+                                <li><label for="subject">Subject heading: </label> <input type="text" id="subject" name="subject" value=""></li>
+                                <li><label for="subjectsubdiv">Subject sub-division: </label> <input type="text" id="subjectsubdiv" name="subjectsubdiv" value=""></li>
+                                <li><label for="title">Title (any): </label> <input type="text" id="title" name="title" value=""></li>
+                                <li><label for="uniformtitle">Title (uniform): </label> <input type="text" id="uniformtitle" name="uniformtitle" value=""></li>
+                                <li><a id="resetZ3950Search" href="http://localhost:8080/cgi-bin/koha/cataloguing/z3950_auth_search.pl#"><i class="fa fa-trash-can"></i> Clear search form</a></li>
+                            </ol>
+                        </fieldset>
+                    </div>
+
+                    <div class="row">
+                        <h2>Search targets</h2>
+                        <div id="z3950_search_targets_auth">
+                            <span class="z3950checks"><span class="checkall"><a id="CheckAll" href="http://localhost:8080/cgi-bin/koha/cataloguing/z3950_auth_search.pl#"><i class="fa fa-check"></i> Select all</a></span>
+                                |
+                                <span class="clearall"><a id="CheckNone" href="http://localhost:8080/cgi-bin/koha/cataloguing/z3950_auth_search.pl#"><i class="fa fa-times"></i> Clear all</a></span></span>
+                            
+                                <p>
+                                    
+                                        <input type="checkbox" name="id" id="z3950_11" value="11" checked="checked">
+                                    
+                                    <label for="z3950_11">BIBLIOTECA NACIONAL (AUTORIDADES)</label>
+                                </p>
+                            
+                                <p>
+                                    
+                                        <input type="checkbox" name="id" id="z3950_2" value="2" checked="checked">
+                                    
+                                    <label for="z3950_2">BIBLIOTECA DOS NOMES DO CONGRESSO</label>
+                                </p>
+                            
+                                <p>
+                                    
+                                        <input type="checkbox" name="id" id="z3950_3" value="3" checked="checked">
+                                    
+                                    <label for="z3950_3">BIBLIOTECA DOS ASSUNTOS DO CONGRESSO</label>
+                                </p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="navbar navbar-default fixed-bottom">
+                <div class="container-fluid">
+                    <fieldset class="action"><input type="submit" id="submit_z3950_search" class="btn btn-primary" value="Search"> <a class="btn btn-default close" href="http://localhost:8080/cgi-bin/koha/cataloguing/z3950_auth_search.pl#">Cancel</a></fieldset>
+                </div>
+            </nav>
+        </form>
+    
+
+    
+</div>
+<!-- /.main.container-fluid -->
+
+
+
+
+
+
+
+
+
+
+
+
+<span id="audio-alert"></span>
+
+<!-- Cookie consent -->
+
+<!-- CookieConsentedJS code that may run -->
+
+
+
+    
+
+
+
+
+
+
+    <script nonce="">
+        if (self === top) {
+            var antiClickjack = document.getElementById("antiClickjack");
+            antiClickjack.parentNode.removeChild(antiClickjack);
+        } else {
+            top.location = self.location;
+        }
+    </script>
+
+
+<script src="./Z39.50 authority search points › Koha_files/jquery-3.6.0.min_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/jquery-migrate-3.3.2.min_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/jquery-ui-1.13.2.min_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/shortcut_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/js.cookie-2.2.1.min_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/jquery.highlight-5_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/bootstrap.bundle.min_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/jquery.validate.min_26.0505000.js.download"></script>
+<!-- koha core js -->
+<script src="./Z39.50 authority search points › Koha_files/patron-format_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/staff-global_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/form-submit_26.0505000.js.download" type="module"></script>
+
+
+
+
+<script src="./Z39.50 authority search points › Koha_files/dayjs.min_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/utc_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/timezone_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/customParseFormat_26.0505000.js.download"></script>
+<script nonce="">
+    dayjs.extend(window.dayjs_plugin_utc);
+    dayjs.extend(window.dayjs_plugin_timezone);
+    dayjs.extend(window.dayjs_plugin_customParseFormat);
+</script>
+<!-- js-date-format.inc -->
+<script nonce="">
+    (function() {
+        var def_date_format = 'metric';
+        var def_time_format = '24hr';
+        var def_tz = 'America/Sao_Paulo';
+
+        var get_date_pattern = function(format) {
+            var date_pattern = 'YYYY-MM-DD';
+            if(format == 'us') date_pattern = 'MM/DD/YYYY';
+            if(format == 'metric') date_pattern = 'DD/MM/YYYY';
+            if(format == 'dmydot') date_pattern = 'DD.MM.YYYY';
+            return date_pattern;
+        };
+
+        var get_time_pattern = function(format) {
+            var time_pattern = 'HH:mm';
+            if(format == '12hr') time_pattern = 'hh:mm a';
+            return time_pattern;
+        };
+
+        /**
+         * A JS equivalent of the KohaDates TT Plugin. Passed an rfc3339 formatted date string,
+         * or JS Date, the function will return a date string formatted as per the koha instance config.
+         * @param {String|Date} value                   rfc3339 formatted date string or a JS Date object.
+         * @param {Object} [options]                    Optional set of switches for changing date handling
+         * @property {String} [options.tz]              String representing the timezone of the passed date
+         * @property {Boolean} [options.no_tz_adjust]   Enable/Disable timezone adjustment
+         * @property {String} [options.dateformat]
+         * @property {Boolean} [options.withtime]       Enable/Disable appearance of time in returned string
+         * @property {String} [options.timeformat]
+         * @property {Boolean} [options.as_due_date]    Enable/Disable due date output format
+         * @returns {String}                            A date string formatted as per the koha instance configuration.
+         */
+        window.$date = function(value, options) {
+            if(!value) return '';
+            let tz = (options&&options.tz)||def_tz;
+            let no_tz_adjust = (options&&options.no_tz_adjust)||false;
+            var m = dayjs(value);
+            if ( !no_tz_adjust && ! value.match(/^\d{4}-\d{2}-\d{2}$/ ) ) {
+                m = m.tz(tz);
+            }
+
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            var withtime = (options&&options.withtime)||false;
+
+            if(dateformat=='rfc3339' && withtime) return m.format();
+
+            var timeformat = (options&&options.timeformat)||def_time_format;
+            var date_pattern = get_date_pattern(dateformat);
+            let as_due_date = (options&&options.as_due_date);
+            if (as_due_date) {
+                withtime = !( m.hour() == 23 && m.minute() == 59 );
+            }
+            var time_pattern = !withtime?'':' '+get_time_pattern(timeformat);
+
+            return m.format(date_pattern+time_pattern);
+        }
+
+        window.$datetime = function(value, options) {
+            options = options||{};
+            options.withtime = true;
+            return $date(value, options);
+        };
+
+        window.$time = function(value, options) {
+            if(!value) return '';
+            var tz = (options&&options.tz)||def_tz;
+            var m = dayjs(value);
+            if(tz) m = m.tz(tz);
+
+            var dateformat = (options&&options.dateformat);
+            var timeformat = (dateformat=='rfc3339'&&'24hr')||(options&&options.timeformat)||def_time_format;
+
+            return m.format(get_time_pattern(timeformat)+(dateformat=='rfc3339'?':ss'+(!m.isUTC()?'Z':''):''))+(dateformat=='rfc3339' && m.isUTC()?'Z':'');
+        }
+
+        window.$date_to_rfc3339 = function(value, options) {
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            let m = dayjs(value, get_date_pattern(dateformat), true);
+            return m.format("YYYY-MM-DD");
+        }
+
+        /**
+        * A JS equivalent of the KohaTimes TT Plugin. Passed a time in HH:MM:SS or HH:MM format
+        * the function will return a time string formatted as per the koha instance config.
+        */
+
+        window.$kohatime = function(value) {
+            if(!value) return 'invalid time';
+            var intime = value.split(':');
+            var hours = intime[0];
+            var minutes = intime[1];
+
+            if ( hours < 0 || hours > 23 || minutes < 0 || minutes > 59 ) { return 'invalid time'; }
+
+            if ( def_time_format == '12hr') {
+                var ampm = ( hours >= 12 ) ? 'pm' : 'am';
+                hours = ( hours == 0 ) ? "12" : hours;
+                hours = ( hours > 12 ) ? ( hours - 12 ) : hours;
+
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0') + " " + ampm;
+            } else {
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0');
+            }
+        }
+
+        /**
+         * Returns the configured Koha server timezone.
+         * Useful for components that need to display dates/times in library timezone.
+         */
+        window.$timezone = function() {
+            return def_tz;
+        }
+
+        /**
+         * Converts a dayjs object to a Date for timeline/calendar display.
+         * Creates a Date that displays these exact values regardless of browser timezone.
+         * (Strips timezone info so JS interprets the values as browser-local time)
+         *
+         * Use this when you need to display a specific date/time from a known timezone
+         * (e.g., library timezone) and want it to appear the same for all users.
+         *
+         * @param {dayjs.Dayjs} dayjsObj - A dayjs object (typically converted to a specific timezone)
+         * @returns {Date} A Date object that will display the dayjs values in the browser
+         */
+        window.$toDisplayDate = function(dayjsObj) {
+            return new Date(dayjsObj.format('YYYY-MM-DDTHH:mm:ss'));
+        }
+
+    })();
+</script>
+<!-- / js-date-format.inc -->
+
+
+
+<!-- js-patron-get-age.inc -->
+
+<script nonce="">
+    (function() {
+
+        const tz = 'America/Sao_Paulo';
+        window.$get_age = function(dob, options) {
+            if(!dob) return '';
+
+            let today = new Date();
+            dob = new Date(dob);
+            if ( tz ) {
+                let today_tz = new Date(today.toLocaleString('en-US', {timeZone: tz}));
+                let diff = today.getTime() - today_tz.getTime();
+                today = new Date(today.getTime() - diff);
+
+                let dob_tz = new Date(dob.toLocaleString('en-US', {timeZone: tz}));
+                diff = dob.getTime() - dob_tz.getTime();
+                dob = new Date(dob.getTime() - diff);
+            }
+            let age = today.getFullYear() - dob.getFullYear();
+            let m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+    })();
+</script>
+<!-- / js-patron-get-age.inc -->
+
+<!-- js-patron-format-address.inc -->
+
+
+
+<script nonce="">
+    (function() {
+
+        const roadtypes = [];
+        let roadtypes_map = roadtypes.reduce((map, r) => {
+            map[r.authorised_value] = r.lib;
+            return map;
+        }, {});
+
+        function member_display_address_style_us(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(data.address) + ' ' + escape_str(roadtype_desc);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.city);
+                if ( data.state ) {
+                    if ( data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.state);
+                }
+                if ( data.postal_code ) {
+                    address += " " + escape_str(data.postal_code);
+                }
+                if ( data.country ) {
+                    if ( data.postal_code || data.state || data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.country)
+                }
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_de(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : ' ';
+                    address += escape_str(data.address) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.street_number);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_fr(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.address);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        window.$format_address = function(data, options) {
+            let line_break = options && options.no_line_break ? ' ' : '<br/>';
+            let include_li = options && options.include_li;return member_display_address_style_us(data, line_break, include_li);}
+
+    })();
+</script>
+<!-- / js-patron-format-address.inc -->
+
+
+
+
+<!-- validator-strings.inc -->
+<script nonce="">
+    $(document).ready(function () {
+        jQuery.extend(jQuery.validator.messages, {
+            required: _("This field is required."),
+            remote: _("Please fix this field."),
+            email: _("Please enter a valid email address."),
+            url: _("Please enter a valid URL."),
+            date: _("Please enter a valid date."),
+            dateISO: _("Please enter a valid date (ISO)."),
+            number: _("Please enter a valid number."),
+            digits: _("Please enter only digits."),
+            equalTo: _("Please enter the same value again."),
+            number: _("Please add amount in valid format: 0.00"),
+            maxlength: $.validator.format(_("Please enter no more than {0} characters.")),
+            minlength: $.validator.format(_("Please enter at least {0} characters.")),
+            rangelength: $.validator.format(_("Please enter a value between {0} and {1} characters long.")),
+            range: $.validator.format(_("Please enter a value between {0} and {1}.")),
+            max: $.validator.format(_("Please enter a value less than or equal to {0}.")),
+            min: $.validator.format(_("Please enter a value greater than or equal to {0}.")),
+            phone: $.validator.format(_("Please enter a valid phone number.")),
+        });
+    });
+</script>
+<!-- / validator-strings.inc -->
+
+
+    <!-- js_includes.inc: IntranetUserJS -->
+    <script nonce="">
+        /* koha-easy-installer ai-assistant begin */
+var KEI_AI_V = "1.5.130";
+$(document).ready(function () {
+    // koha.nexus AI assistant (Library tools > AI assistant on the staff home page).
+    if (!$("#main_intranet-main").length || $("#kei-ai").length) return;
+    var box = $("<div id=\"kei-ai\"></div>"), news = $("#area-news");
+    if (news.length) news.replaceWith(box);
+    else {
+        var col = $("#area-quote").parent();
+        if (!col.length) col = $("#container-main .row").first().children("div").first();
+        if (!col.length) return;
+        col.prepend(box);
+    }
+    var url = "/cgi-bin/koha/tools/ai_assistant.pl?v=" + encodeURIComponent(KEI_AI_V) + "&op=";
+    $("<link rel=\"stylesheet\">").attr("href", url + "css").appendTo("head");
+    $.ajax({ url: url + "js", dataType: "script", cache: true });
+});
+/* koha-easy-installer ai-assistant end */
+    </script>
+    <!-- / js_includes.inc: IntranetUserJS -->
+
+
+<!-- js_includes.inc -->
+
+    <script src="./Z39.50 authority search points › Koha_files/basket_26.0505000.js.download"></script>
+
+
+
+
+
+<script nonce="">
+    var defaultPatronSearchFields = "firstname|preferred_name|middle_name|surname|othernames|cardnumber|userid";
+    var defaultPatronSearchMethod = "contains";
+    var extendedPatronAttributes = "1";
+    var loggedInLibrary = 'MAIN';
+    var singleBranchMode = '1';
+    var showPatronFirstnameIfDifferentThanPreferredname = 0;
+</script>
+
+    <script nonce="">
+        // PatronAutoComplete
+        var loggedInClass = "";
+        $(document).ready(function(){
+            
+                if ( $("#findborrower").length ) {
+                    patron_autocomplete($("#findborrower"), { 'link-to': 'circ' });
+                }
+                if ( $("#findborrower_main").length ) {
+                    patron_autocomplete($("#findborrower_main"), { 'link-to': 'circ' });
+                }
+            
+            if ( $("#searchmember").length ) {
+                patron_autocomplete($("#searchmember"), { 'link-to': 'patron' });
+            }
+        });
+    </script>
+
+
+
+
+
+    <script nonce="">
+        (function () {
+            function getURLParams() {
+                const params = new URLSearchParams(window.location.search);
+                return params;
+            }
+
+            function toggleURLParams(paramsToToggle) {
+                const url = new URL(window.location.href);
+                const params = url.searchParams;
+
+                // Check if all params are currently set
+                const allSet = paramsToToggle.every(param => params.get(param) === "yes");
+
+                if (allSet) {
+                    // Remove all params
+                    paramsToToggle.forEach(param => params.delete(param));
+                } else {
+                    // Add all params
+                    paramsToToggle.forEach(param => params.set(param, "yes"));
+                }
+
+                window.location.href = url.toString();
+            }
+
+            function updateButtonText() {
+                const params = getURLParams();
+
+                // User CSS button
+                const cssDisabled = params.get("DISABLE_SYSPREF_IntranetUserCSS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserCSS") === "yes";
+                const cssToggle = document.getElementById("toggleUserCSS");
+                if (cssToggle) {
+                    const cssText = cssToggle.querySelector(".toggle-text");
+                    if (cssText) cssText.textContent = cssDisabled ? _("Enable custom CSS") : _("Disable custom CSS");
+                }
+
+                // User JS button
+                const jsDisabled = params.get("DISABLE_SYSPREF_IntranetUserJS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserJS") === "yes";
+                const jsToggle = document.getElementById("toggleUserJS");
+                if (jsToggle) {
+                    const jsText = jsToggle.querySelector(".toggle-text");
+                    if (jsText) jsText.textContent = jsDisabled ? _("Enable custom JS") : _("Disable custom JS");
+                }
+
+                // Stylesheets button
+                const stylesheetsDisabled =
+                    params.get("DISABLE_SYSPREF_OpacAdditionalStylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_opaclayoutstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetcolorstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetstylesheet") === "yes";
+                const stylesheetsToggle = document.getElementById("toggleStylesheets");
+                if (stylesheetsToggle) {
+                    const stylesheetsText = stylesheetsToggle.querySelector(".toggle-text");
+                    if (stylesheetsText) stylesheetsText.textContent = stylesheetsDisabled ? _("Enable custom stylesheets") : _("Disable custom stylesheets");
+                }
+
+                // Update icon color based on whether any toggles are active
+                const anyDisabled = cssDisabled || jsDisabled || stylesheetsDisabled;
+                const debugIcon = document.getElementById("debug-icon");
+                if (debugIcon) {
+                    if (anyDisabled) {
+                        debugIcon.style.color = "#ffc107"; // Warning/amber color
+                    } else {
+                        debugIcon.style.color = ""; // Default color
+                    }
+                }
+            }
+
+            // Update button text on page load
+            updateButtonText();
+
+            // User CSS toggle
+            const cssToggle = document.getElementById("toggleUserCSS");
+            if (cssToggle) {
+                cssToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserCSS", "DISABLE_SYSPREF_OPACUserCSS"]);
+                });
+            }
+
+            // User JS toggle
+            const jsToggle = document.getElementById("toggleUserJS");
+            if (jsToggle) {
+                jsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserJS", "DISABLE_SYSPREF_OPACUserJS"]);
+                });
+            }
+
+            // Stylesheets toggle
+            const stylesheetsToggle = document.getElementById("toggleStylesheets");
+            if (stylesheetsToggle) {
+                stylesheetsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_OpacAdditionalStylesheet", "DISABLE_SYSPREF_opaclayoutstylesheet", "DISABLE_SYSPREF_intranetcolorstylesheet", "DISABLE_SYSPREF_intranetstylesheet"]);
+                });
+            }
+        })();
+    </script>
+
+<!-- / js_includes.inc -->
+
+    
+    
+
+
+
+<!-- format-price.inc -->
+<script nonce="">
+    
+    
+        var default_value = {
+            thousands_sep: ',',
+            decimal_point: '.',
+            decimal_digits: 2
+        };
+
+    
+    Number.prototype.format_price = function( value, params ) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+            var re = '\\d(?=(\\d{' + 3 + '})+' + '\\D' + ')', value = this.toFixed(decimal_digits);
+            return value.replace('.', decimal_point).replace(new RegExp(re, 'g'), '$&' + thousands_sep);
+    }
+    String.prototype.unformat_price = function (params) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+        let value = this.valueOf();
+        value = value.replace(thousands_sep, '').replace(decimal_point, '.').replace(new RegExp('[^\\d.]', 'g'), '');
+        return Number(value).toFixed(decimal_digits);
+    }
+</script>
+<!-- / format-price.inc -->
+
+<script src="./Z39.50 authority search points › Koha_files/datatables.min_26.0505000.js.download"></script>
+<script src="./Z39.50 authority search points › Koha_files/datatables_26.0505000.js.download"></script>
+
+    
+
+<!-- z3950_search.inc -->
+<script nonce="">
+    var interface = "/intranet-tmpl";
+    var theme = "prog";
+    var total_pages = new Number("");
+</script>
+<!-- / z3950_search.inc -->
+
+    <script src="./Z39.50 authority search points › Koha_files/z3950_search_26.0505000.js.download"></script>
+    <script nonce="">
+        $(document).ready(function () {
+            $("#resultst").kohaTable({
+                dom: "t",
+                order: [[1, "asc"]],
+                paging: false,
+            });
+            InitLastAction();
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+<button id="backtotop" class="btn btn-default" aria-label="Back to top" style="display: none;"><i class="fa fa-arrow-up" aria-hidden="true"></i></button></body><!-- prettier-ignore-start --></html>

@@ -1,0 +1,3376 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Import patrons › Tools › Koha</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="69eea7e93970e158229781be726a9a18e0906e52,ab1b062cc9b3650ac3c758bf5a1fc5b505cae827,1793390627">
+<meta name="generator" content="Koha 26.05.05">
+<script nonce="">
+    window.__CSP_NONCE__ = "";
+</script>
+
+    
+
+
+<link rel="shortcut icon" href="https://i.postimg.cc/rs5nhP5c/cone-Castro-Alves.png" type="image/x-icon">
+
+
+    <link type="text/css" rel="stylesheet" href="./Import patrons › Tools › Koha_files/jquery-ui-1.13.2.min_26.0505000.css">
+
+<link href="./Import patrons › Tools › Koha_files/fontawesome.min_26.0505000.css" type="text/css" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="./Import patrons › Tools › Koha_files/brands.min_26.0505000.css">
+<link href="./Import patrons › Tools › Koha_files/solid.min_26.0505000.css" rel="stylesheet" type="text/css">
+<link href="./Import patrons › Tools › Koha_files/datatables.min_26.0505000.css" rel="stylesheet" type="text/css">
+<link type="text/css" rel="stylesheet" media="print" href="./Import patrons › Tools › Koha_files/print_26.0505000.css">
+
+
+
+    
+
+
+    <link href="./Import patrons › Tools › Koha_files/staff-global_26.0505000.css" type="text/css" rel="stylesheet">
+
+
+<!-- local colors -->
+
+
+<script nonce="" type="module">
+    import { APIClient } from "/intranet-tmpl/prog/js/fetch/api-client.js";
+    window.APIClient = APIClient;
+</script>
+<script nonce="">
+    var Koha = {};
+    
+        var CAN_user_parameters_manage_column_config = 1;
+    
+</script>
+
+<script src="./Import patrons › Tools › Koha_files/Gettext_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/i18n_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/stores_26.0505000.js.download"></script>
+
+
+
+
+
+
+
+
+
+<style nonce="">
+    label.description {
+        width: 20em;
+    }
+    .line_error {
+        width: 100%;
+    }
+    code {
+        background-color: yellow;
+    }
+</style>
+</head>
+
+<body id="tools_import_borrowers" class="tools">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand navbar-dark bg-dark" aria-label="Main">
+    <div class="container-fluid">
+        <a id="logo" class="navbar-brand" href="http://localhost:8080/cgi-bin/koha/mainpage.pl"><img src="./Import patrons › Tools › Koha_files/picto-koha.svg" alt="Koha"></a>
+
+        <div class="collapse navbar-collapse" id="header">
+            <ul id="toplevelmenu" class="navbar-nav me-auto">
+                
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:8080/cgi-bin/koha/circ/circulation-home.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-exchange" title="Circulation"></i></span> <span class="nav-link-text">Circulation</span></a></li>
+                
+                
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:8080/cgi-bin/koha/members/members-home.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-id-card" title="Patrons"></i></span> <span class="nav-link-text">Patrons</span></a></li>
+                
+                <li class="nav-item" id="catalog-search-link">
+                    <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-search" title="Search"></i></span> <span class="nav-link-text">Search</span></a>
+                </li>
+                
+                    <li class="nav-item dropdown" id="catalog-search-dropdown">
+                        <a href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl">Advanced search</a></li>
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/itemsearch.pl">Item search</a></li>
+                        </ul>
+                    </li>
+                
+                
+                <li class="nav-item dropdown">
+                    <a href="http://localhost:8080/cgi-bin/koha/mainpage.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="nav-link-icon"><i class="fa fa-fw fa-bars" title="More"></i></span> <span class="nav-link-text">More</span></a>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/virtualshelves/shelves.pl">Lists</a></li>
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/cataloguing/cataloging-home.pl">Cataloging</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/acqui/acqui-home.pl">Acquisitions</a></li>
+                        
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/authorities/authorities-home.pl">Authorities</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/serials/serials-home.pl">Serials</a></li>
+                        
+                        
+                        
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/reports/reports-home.pl">Reports</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/suggestion/suggestion.pl">Suggestions</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/tools-home.pl">Tools</a></li>
+                        
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/admin/admin-home.pl">Administration</a></li>
+                        
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/about.pl">About Koha</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+
+            <ul id="user-menu" class="nav navbar-nav">
+                
+                    <li class="nav-item dropdown" id="logged-in-dropdown">
+                        <a id="logged-in-menu" href="http://localhost:8080/cgi-bin/koha/mainpage.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="logged-in-info-brief">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            <span id="logged-in-info-full">
+                                
+                                <span class="loggedinusername is_superlibrarian" data-loggedinusername="Bibliotecário" data-is-superlibrarian="is_superlibrarian">Bibliotecário</span>
+                                <span class="loggedincategorycode content_hidden" data-loggedincategorycode="B">B</span>
+                                
+                                    <strong>
+                                        <span class="logged-in-branch-name" data-logged-in-branch-name="Castro Alves">Castro Alves</span>
+                                        <span class="logged-in-branch-code content_hidden" data-logged-in-branch-code="MAIN">MAIN</span>
+                                    </strong>
+                                
+                                
+                                
+                            </span>
+                            <b class="caret"></b>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" role="menu" aria-labelledby="logged-in-menu">
+                            <li class="loggedin-menu-label">
+                                Logged in as:<br>
+                                <span class="loggedinusername">Bibliotecário</span>
+                            </li>
+                            <li class="loggedin-menu-label">
+                                
+                                    Location: <br>
+                                    <span class="logged-in-branch-name">Castro Alves</span>
+                                    <span class="logged-in-branch-code content_hidden">MAIN</span>
+                                
+                            </li>
+
+                            
+
+                            
+
+                            
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <div id="set_library_controls">
+                                        <div>
+                                            <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/circ/set-library.pl">
+                                                
+                                                    
+                                                        Set library
+                                                    
+                                                
+                                            </a>
+                                        </div>
+                                        
+                                            <div>
+                                                <a id="branch_select_cog" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#" role="button" aria-label="Toggle panel for login settings" aria-expanded="false">
+                                                    <i class="fa fa-cog" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        
+                                    </div>
+                                </li>
+
+                                <li id="setlibrary_panel" style="display:none"></li>
+                            
+                            
+
+                            
+                                <li class="nav-item toplinks-myaccount">
+                                    <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/members/moremember.pl?borrowernumber=1">My account</a>
+                                </li>
+                                <li class="nav-item toplinks-mycheckouts">
+                                    <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/circ/circulation.pl?borrowernumber=1">My checkouts</a>
+                                </li>
+                            
+
+                            
+                            <li class="nav-item">
+                                <a id="logout" class="toplinks dropdown-item" href="http://localhost:8080/cgi-bin/koha/mainpage.pl?logout.x=1">Log out</a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                        <li class="nav-item dropdown" id="debug-controls-dropdown">
+                            <a id="debug-controls-menu" href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Debug controls">
+                                <i id="debug-icon" class="fa fa-bug"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" role="menu" aria-labelledby="debug-controls-menu">
+                                <li>
+                                    <a id="toggleUserCSS" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#"> <i class="fa fa-fw fa-brands fa-css3"></i> <span class="toggle-text">Disable custom CSS</span> </a>
+                                </li>
+                                <li>
+                                    <a id="toggleUserJS" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#"> <i class="fa fa-fw fa-brands fa-square-js"></i> <span class="toggle-text">Disable custom JS</span> </a>
+                                </li>
+                                <li>
+                                    <a id="toggleStylesheets" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#"> <i class="fa fa-fw fa-file-code"></i> <span class="toggle-text">Disable custom stylesheets</span> </a>
+                                </li>
+                            </ul>
+                        </li>
+                    
+                    
+
+                
+            </ul>
+        </div>
+    </div>
+
+    
+</nav>
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- patron-search-header.inc -->
+
+    
+        <div id="header_search" class="toptabs"> 
+    
+    <div class="tab-content"> 
+        <!-- member-search-box.inc -->
+
+
+
+
+    
+    
+        <div class="tab-pane show active" id="patron_search_panel" role="tabpanel" aria-labelledby="patron_search-tab" tabindex="0"> 
+        <form id="patron_header_search" method="get" action="http://localhost:8080/cgi-bin/koha/members/member.pl">
+            <input type="hidden" name="quicksearch" value="1">
+
+            <div class="form-title">
+                <label class="control-label" for="searchmember"><span class="control-text">Search patrons</span> <i class="fa fa-fw fa-id-card" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                
+                    <input name="searchmember" id="searchmember" class="head-searchbox form-control ui-autocomplete-input" type="text" placeholder="Enter patron card number or partial name" size="25" value="" autocomplete="off">
+                
+
+                <button type="button" class="form-extra-content-toggle" title="More options"><i class="form-extra-content-icon fa-solid fa-sliders" aria-hidden="true"></i></button>
+            </div>
+
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+
+            <div class="form-extra-content">
+                <div>     
+        
+        
+        
+        
+    
+    <label for="searchfieldstype">Search field:</label>
+    <select name="searchfieldstype" class="form-select" id="searchfieldstype">
+        
+        
+        
+        
+        
+            
+            
+            
+                <option value="standard">        Standard</option>
+            
+        
+            
+            
+            
+                <option value="surname">        Surname</option>
+            
+        
+            
+            
+            
+                <option value="cardnumber">        Card number</option>
+            
+        
+            
+            
+            
+                <option value="all_emails">        All emails</option>
+            
+        
+            
+            
+            
+                <option value="borrowernumber">        Borrowernumber</option>
+            
+        
+            
+            
+            
+                <option value="userid">        Username</option>
+            
+        
+            
+            
+            
+                <option value="all_phones">        All phones</option>
+            
+        
+            
+            
+            
+                <option value="full_address">        Full address</option>
+            
+        
+            
+            
+            
+                <option value="dateofbirth">        Date of birth</option>
+            
+        
+            
+            
+            
+                <option value="sort1">        Sort 1</option>
+            
+        
+            
+            
+            
+                <option value="sort2">        Sort 2</option>
+            
+        
+            
+            
+            
+                <option value="firstname">        First name</option>
+            
+        
+            
+            
+            
+                <option value="preferred_name">        Preferred name</option>
+            
+        
+            
+            
+            
+                <option value="middle_name">        Middle name</option>
+            
+        
+            
+            
+            
+                <option value="othernames">        Other name</option>
+            
+        
+        
+            
+        
+    </select> </div>
+
+                <div>
+                    <label for="searchtype" class="control-label">Search type</label>
+                    <select name="searchtype" id="searchtype" class="form-select">
+                        
+                            <option value="starts_with">Starts with</option>
+                            <option value="contains" selected="selected">Contains</option>
+                        
+                    </select>
+                </div>
+
+                <div>
+                    
+                    <label for="branchcode" class="control-label">Library</label>
+                    <select name="branchcode_filter" id="branchcode" class="form-select">
+                        
+                        
+    
+        
+            <option value="MAIN">Castro Alves</option>
+        
+    
+
+                    </select>
+                </div>
+
+                <div>
+                    
+                    <label for="categorycode" class="control-label">Category</label>
+                    <select name="categorycode_filter" id="categorycode" class="form-select">
+                        <option value="">Any</option>
+                        
+                            
+                                <option value="B">Bibliotecário</option>
+                            
+                        
+                            
+                                <option value="COM">Leitor</option>
+                            
+                        
+                    </select>
+                </div>
+            </div>
+        </form>
+     </div>
+    
+
+
+<!-- /member-search-box.inc -->
+
+
+        
+            
+    <!-- patron-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="circ_search_panel" role="tabpanel" aria-labelledby="circ_search-tab" tabindex="0"> 
+        <form action="http://localhost:8080/cgi-bin/koha/circ/circulation.pl" id="patronsearch" method="get">
+            <div class="form-title">
+                <label class="control-label" for="findborrower"><span class="control-text">Check out</span> <i class="fa fa-fw fa-upload" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input autocomplete="off" id="findborrower" name="findborrower" class="head-searchbox form-control ui-autocomplete-input" type="text" placeholder="Enter patron card number or partial name" size="40">
+
+                
+            </div>
+
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /patron-search-box.inc -->
+
+
+            
+    <!-- checkin-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="checkin_search_panel" role="tabpanel" aria-labelledby="checkin_search-tab" tabindex="0"> 
+        <form method="post" action="http://localhost:8080/cgi-bin/koha/circ/returns.pl" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="69eea7e93970e158229781be726a9a18e0906e52,ab1b062cc9b3650ac3c758bf5a1fc5b505cae827,1793390627">
+
+            <div class="form-title">
+                <label class="control-label" for="ret_barcode"><span class="control-text">Check in</span> <i class="fa fa-fw fa-download" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input name="barcode" id="ret_barcode" class="head-searchbox form-control" accesskey="r" type="text" placeholder="Scan a barcode to check in" size="40">
+                <input type="hidden" name="op" value="cud-checkin">
+            </div>
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /checkin-search-box.inc -->
+
+
+            
+    <!-- renew-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="renew_search_panel" role="tabpanel" aria-labelledby="renew_search-tab" tabindex="0"> 
+        <form method="post" action="http://localhost:8080/cgi-bin/koha/circ/renew.pl" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="69eea7e93970e158229781be726a9a18e0906e52,ab1b062cc9b3650ac3c758bf5a1fc5b505cae827,1793390627">
+
+
+            <div class="form-title">
+                <label class="control-label" for="ren_barcode"><span class="control-text">Renew</span> <i class="fa fa-fw fa-retweet" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input name="barcode" id="ren_barcode" class="head-searchbox form-control" accesskey="r" type="text" placeholder="Scan a barcode to renew" size="40">
+            </div>
+            <input type="hidden" name="op" value="cud-renew">
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /renew-search-box.inc -->
+
+
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- catalogue-search-box.inc -->
+
+    
+        <div class="tab-pane" id="catalog_search_panel" role="tabpanel" aria-labelledby="catalog_search-tab" tabindex="0"> 
+    <form action="http://localhost:8080/cgi-bin/koha/catalogue/search.pl" method="get" id="cat-search-block">
+        <div class="form-title">
+            <label class="control-label" for="search-form"><span class="control-text">Search catalog</span> <i class="fa fa-fw fa-search" aria-hidden="true"></i></label>
+        </div>
+
+        <div class="form-content">
+            
+                <input type="text" name="q" id="search-form" size="20" value="" title="Enter the terms you wish to search for." class="query form-text head-searchbox form-control" placeholder="Enter search keywords">
+            
+
+            
+        </div>
+        <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+
+        <div class="form-extra-content">
+            
+
+            
+        </div>
+    </form>
+ </div>
+    
+
+<!-- /catalogue-search-box.inc -->
+
+        
+     </div>
+
+
+    
+    <ul class="nav nav-tabs" role="tablist">
+        
+        
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link active" href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#patron_search_panel" id="patron_search-tab" data-tabname="patron_search" aria-controls="patron_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#patron_search_panel" aria-selected="true">
+                    
+            <i class="fa fa-fw fa-id-card" aria-hidden="true"></i> <span class="tab-title">Search patrons</span>
+        
+                </a>
+            
+        
+    </li>
+
+        
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#circ_search_panel" id="circ_search-tab" data-tabname="circ_search" aria-controls="circ_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#circ_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-upload" aria-hidden="true"></i> <span class="tab-title"><span class="tab-title">Check out</span></span>
+            
+                </a>
+            
+        
+    </li>
+
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#checkin_search_panel" id="checkin_search-tab" data-tabname="checkin_search" aria-controls="checkin_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#checkin_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-download" aria-hidden="true"></i> <span class="tab-title"><span class="tab-title">Check in</span></span>
+            
+                </a>
+            
+        
+    </li>
+
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#renew_search_panel" id="renew_search-tab" data-tabname="renew_search" aria-controls="renew_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#renew_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-retweet" aria-hidden="true"></i> <span class="tab-title"><span class="tab-title">Renew</span></span>
+            
+                </a>
+            
+        
+    </li>
+
+        
+
+        
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#catalog_search_panel" id="catalog_search-tab" data-tabname="catalog_search" aria-controls="catalog_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#catalog_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-search" aria-hidden="true"></i> <span class="tab-title"><span class="tab-title">Search catalog</span></span>
+            
+                </a>
+            
+        
+    </li>
+
+        
+    
+    </ul>
+
+ </div>
+    
+
+<!-- /patron-search-header.inc -->
+
+
+
+
+
+<div id="sub-header">
+    
+    
+    <nav id="breadcrumbs" aria-label="Breadcrumb">
+        <ol class="breadcrumb">
+            
+            
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/mainpage.pl" title="Home"><span class="visually-hidden-focusable">Home</span></a> </li>
+        
+    
+
+            
+        
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/tools/tools-home.pl">Tools</a> </li>
+        
+    
+
+        
+            
+    
+        
+            <li class="breadcrumb-item active" aria-current="page">
+                <a aria-disabled="true" tabindex="-1"> <span>Import patrons</span> </a>
+            </li>
+        
+    
+
+        
+    
+        </ol>
+    </nav>
+
+
+    <nav id="shortcut" class="shortcut" aria-label="Quick shortcuts">
+    
+
+    <div>
+        <a class="" href="http://localhost:8080/cgi-bin/koha/help.pl" id="helper"><i class="fa-solid fa-circle-question"></i> <span>Help</span></a>
+    </div>
+</nav>
+
+</div>
+
+
+
+
+<div class="main container-fluid">
+    <div class="row">
+        
+            
+        
+        
+            <div class="col-md-10 order-sm-1 order-md-2">
+                <main>
+                    <div id="messages">
+    
+
+    <div id="transient_result"></div>
+</div>
+
+                    
+    <h1>Import patrons</h1>
+    <div class="row">
+        
+            <div class="col-sm-6">
+                <ul>
+                    <li>Select a file to import into the borrowers table</li>
+                    <li>If a card number exists in the table, you can choose whether to ignore the new one or overwrite the old one.</li>
+                </ul>
+
+                <form method="post" action="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="69eea7e93970e158229781be726a9a18e0906e52,ab1b062cc9b3650ac3c758bf5a1fc5b505cae827,1793390627">
+
+                    <input type="hidden" name="op" value="cud-import">
+                    <fieldset class="rows">
+                        <legend>Import into the borrowers table</legend>
+
+                        <ol>
+                            <li>
+                                <label for="uploadborrowers">Select the file to import: </label>
+                                <input type="file" id="uploadborrowers" name="uploadborrowers">
+                            </li>
+
+                            <li>
+                                <label for="createpatronlist">Create patron list: </label>
+                                <input name="createpatronlist" id="createpatronlist" value="1" type="checkbox">
+                                <span class="hint">List name will be file name with timestamp</span>
+                            </li>
+                        </ol>
+                    </fieldset>
+
+                    <fieldset class="rows">
+                        <legend>Field to use for record matching</legend>
+                        <ol>
+                            <li class="radio">
+                                <select name="matchpoint" id="matchpoint">
+                                    <option value="cardnumber">Card number</option>
+                                    <option value="userid">Username</option>
+                                    
+                                        <option value="patron_attribute_CPF">CPF</option>
+                                    
+                                        <option value="patron_attribute_RG">RG</option>
+                                    
+                                </select>
+                            </li>
+                        </ol>
+                    </fieldset>
+
+                    <fieldset class="rows">
+                        <legend>
+                            <a href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#" class="expand_defaults"><i class="fa fa-plus-square"></i> Enter default values</a>
+                            <a href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#" class="expand_defaults" style="display:none;"><i class="fa fa-minus-square"></i> Hide default value fields</a>
+                        </legend>
+
+                        <ol class="default_values" style="display:none;">
+                            
+                                
+                                    <li>
+                                        <label class="description" for="address">Address: </label>
+                                        <input id="address" name="address" type="text">
+                                        <span class="field_hint">address</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="address2">Address 2: </label>
+                                        <input id="address2" name="address2" type="text">
+                                        <span class="field_hint">address2</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="altcontactaddress1">Alternate contact: Address: </label>
+                                        <input id="altcontactaddress1" name="altcontactaddress1" type="text">
+                                        <span class="field_hint">altcontactaddress1</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="altcontactaddress2">Alternate contact: Address 2: </label>
+                                        <input id="altcontactaddress2" name="altcontactaddress2" type="text">
+                                        <span class="field_hint">altcontactaddress2</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="altcontactaddress3">Alternate contact: City: </label>
+                                        <input id="altcontactaddress3" name="altcontactaddress3" type="text">
+                                        <span class="field_hint">altcontactaddress3</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="altcontactcountry">Alternate contact: Country: </label>
+                                        <input id="altcontactcountry" name="altcontactcountry" type="text">
+                                        <span class="field_hint">altcontactcountry</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="altcontactfirstname">Alternate contact: First name: </label>
+                                        <input id="altcontactfirstname" name="altcontactfirstname" type="text">
+                                        <span class="field_hint">altcontactfirstname</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="altcontactphone">Alternate contact: Phone: </label>
+                                        <input id="altcontactphone" name="altcontactphone" type="text">
+                                        <span class="field_hint">altcontactphone</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="altcontactstate">Alternate contact: State: </label>
+                                        <input id="altcontactstate" name="altcontactstate" type="text">
+                                        <span class="field_hint">altcontactstate</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="altcontactsurname">Alternate contact: Surname: </label>
+                                        <input id="altcontactsurname" name="altcontactsurname" type="text">
+                                        <span class="field_hint">altcontactsurname</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="altcontactzipcode">Alternate contact: ZIP/Postal code: </label>
+                                        <input id="altcontactzipcode" name="altcontactzipcode" type="text">
+                                        <span class="field_hint">altcontactzipcode</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="anonymized">Data anonymization flag: </label>
+                                        <input id="anonymized" name="anonymized" type="text">
+                                        <span class="field_hint">anonymized</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="auth_method">Authentication method: </label>
+                                        <input id="auth_method" name="auth_method" type="text">
+                                        <span class="field_hint">auth_method</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="autorenew_checkouts">Allow auto-renewals: </label>
+                                        <input id="autorenew_checkouts" name="autorenew_checkouts" type="text">
+                                        <span class="field_hint">autorenew_checkouts</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="B_address">Alternate address: Address: </label>
+                                        <input id="B_address" name="B_address" type="text">
+                                        <span class="field_hint">B_address</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="B_address2">Alternate address: Address 2: </label>
+                                        <input id="B_address2" name="B_address2" type="text">
+                                        <span class="field_hint">B_address2</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="B_city">Alternate address: City: </label>
+                                        <input id="B_city" name="B_city" type="text">
+                                        <span class="field_hint">B_city</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="B_country">Alternate address: Country: </label>
+                                        <input id="B_country" name="B_country" type="text">
+                                        <span class="field_hint">B_country</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="B_email">Alternate address: Email: </label>
+                                        <input id="B_email" name="B_email" type="text">
+                                        <span class="field_hint">B_email</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="B_phone">Alternate address: Phone: </label>
+                                        <input id="B_phone" name="B_phone" type="text">
+                                        <span class="field_hint">B_phone</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="B_state">Alternate address: State: </label>
+                                        <input id="B_state" name="B_state" type="text">
+                                        <span class="field_hint">B_state</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="B_streetnumber">Alternate address: Street number: </label>
+                                        <input id="B_streetnumber" name="B_streetnumber" type="text">
+                                        <span class="field_hint">B_streetnumber</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="B_streettype">Alternate address: Street type: </label>
+                                        <input id="B_streettype" name="B_streettype" type="text">
+                                        <span class="field_hint">B_streettype</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="B_zipcode">Alternate address: ZIP/Postal code: </label>
+                                        <input id="B_zipcode" name="B_zipcode" type="text">
+                                        <span class="field_hint">B_zipcode</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="borrowernotes">Circulation note: </label>
+                                        <input id="borrowernotes" name="borrowernotes" type="text">
+                                        <span class="field_hint">borrowernotes</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="borrowernumber">Borrower number: </label>
+                                        <input id="borrowernumber" name="borrowernumber" type="text">
+                                        <span class="field_hint">borrowernumber</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="branchcode_default">Home library: </label>
+                                        <select id="branchcode_default" name="branchcode">
+                                            <option value="" selected="selected"></option>
+                                            
+                                                <option value="MAIN">Castro Alves</option>
+                                            
+                                        </select>
+                                        <span class="field_hint">branchcode</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="cardnumber">Card number: </label>
+                                        <input id="cardnumber" name="cardnumber" type="text">
+                                        <span class="field_hint">cardnumber</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="categorycode_default">Patron category: </label>
+                                        <select id="categorycode_default" name="categorycode">
+                                            <option value="" selected="selected"></option>
+                                            
+                                                <option value="B">Bibliotecário</option>
+                                            
+                                                <option value="COM">Leitor</option>
+                                            
+                                        </select>
+                                        <span class="field_hint">categorycode</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="checkprevcheckout">Check for previous checkouts: </label>
+                                        <input id="checkprevcheckout" name="checkprevcheckout" type="text">
+                                        <span class="field_hint">checkprevcheckout</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="city">City: </label>
+                                        <input id="city" name="city" type="text">
+                                        <span class="field_hint">city</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="contactfirstname">Guarantor first name: </label>
+                                        <input id="contactfirstname" name="contactfirstname" type="text">
+                                        <span class="field_hint">contactfirstname</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="contactname">Guarantor surname: </label>
+                                        <input id="contactname" name="contactname" type="text">
+                                        <span class="field_hint">contactname</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="contactnote">Alternate contact: Note: </label>
+                                        <input id="contactnote" name="contactnote" type="text">
+                                        <span class="field_hint">contactnote</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="contacttitle">Alternate contact: Title: </label>
+                                        <input id="contacttitle" name="contacttitle" type="text">
+                                        <span class="field_hint">contacttitle</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="country">Country: </label>
+                                        <input id="country" name="country" type="text">
+                                        <span class="field_hint">country</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="date_renewed">Account renewal date: </label>
+                                        <input id="date_renewed" name="date_renewed" type="text">
+                                        <span class="field_hint">date_renewed</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="dateenrolled">Registration date: </label>
+                                        <input id="dateenrolled" name="dateenrolled" type="hidden" class="flatpickr-input"><input class="flatpickr-input" placeholder="" tabindex="0" type="text">
+                                        <span class="field_hint">dateenrolled</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="dateexpiry">Expiry date: </label>
+                                        <input id="dateexpiry" name="dateexpiry" type="hidden" class="flatpickr-input"><input class="flatpickr-input" placeholder="" tabindex="0" type="text">
+                                        <span class="field_hint">dateexpiry</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="dateofbirth">Date of birth: </label>
+                                        <input id="dateofbirth" name="dateofbirth" type="hidden" class="flatpickr-input"><input class="flatpickr-input" placeholder="" tabindex="0" type="text">
+                                        <span class="field_hint">dateofbirth</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="debarred">Restricted [until] flag: </label>
+                                        <input id="debarred" name="debarred" type="text">
+                                        <span class="field_hint">debarred</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="debarredcomment">Comment: </label>
+                                        <input id="debarredcomment" name="debarredcomment" type="text">
+                                        <span class="field_hint">debarredcomment</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="email">Primary email: </label>
+                                        <input id="email" name="email" type="text">
+                                        <span class="field_hint">email</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="emailpro">Secondary email: </label>
+                                        <input id="emailpro" name="emailpro" type="text">
+                                        <span class="field_hint">emailpro</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="fax">Fax: </label>
+                                        <input id="fax" name="fax" type="text">
+                                        <span class="field_hint">fax</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="firstname">First name: </label>
+                                        <input id="firstname" name="firstname" type="text">
+                                        <span class="field_hint">firstname</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="flags">System permissions: </label>
+                                        <input id="flags" name="flags" type="text">
+                                        <span class="field_hint">flags</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="gonenoaddress">Gone no address flag: </label>
+                                        <input id="gonenoaddress" name="gonenoaddress" type="text">
+                                        <span class="field_hint">gonenoaddress</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="initials">Initials: </label>
+                                        <input id="initials" name="initials" type="text">
+                                        <span class="field_hint">initials</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="lang">Preferred language for notices: </label>
+                                        <input id="lang" name="lang" type="text">
+                                        <span class="field_hint">lang</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="lastseen">Last activity date: </label>
+                                        <input id="lastseen" name="lastseen" type="text">
+                                        <span class="field_hint">lastseen</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="login_attempts">Number of failed login attempts: </label>
+                                        <input id="login_attempts" name="login_attempts" type="text">
+                                        <span class="field_hint">login_attempts</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="lost">Lost card flag: </label>
+                                        <input id="lost" name="lost" type="text">
+                                        <span class="field_hint">lost</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="middle_name">Middle name: </label>
+                                        <input id="middle_name" name="middle_name" type="text">
+                                        <span class="field_hint">middle_name</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="mobile">Other phone: </label>
+                                        <input id="mobile" name="mobile" type="text">
+                                        <span class="field_hint">mobile</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="opacnote">OPAC note: </label>
+                                        <input id="opacnote" name="opacnote" type="text">
+                                        <span class="field_hint">opacnote</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="othernames">Other name: </label>
+                                        <input id="othernames" name="othernames" type="text">
+                                        <span class="field_hint">othernames</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="overdrive_auth_token">Overdrive auth token: </label>
+                                        <input id="overdrive_auth_token" name="overdrive_auth_token" type="text">
+                                        <span class="field_hint">overdrive_auth_token</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="password">Password: </label>
+                                        <input id="password" name="password" type="text">
+                                        <span class="field_hint">password</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="password_expiration_date">Password expiration date: </label>
+                                        <input id="password_expiration_date" name="password_expiration_date" type="text">
+                                        <span class="field_hint">password_expiration_date</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="phone">Primary phone: </label>
+                                        <input id="phone" name="phone" type="text">
+                                        <span class="field_hint">phone</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="phonepro">Secondary phone: </label>
+                                        <input id="phonepro" name="phonepro" type="text">
+                                        <span class="field_hint">phonepro</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="preferred_name">Preferred name: </label>
+                                        <input id="preferred_name" name="preferred_name" type="text">
+                                        <span class="field_hint">preferred_name</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="primary_contact_method">Primary contact method: </label>
+                                        <input id="primary_contact_method" name="primary_contact_method" type="text">
+                                        <span class="field_hint">primary_contact_method</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="privacy">Privacy settings: </label>
+                                        <input id="privacy" name="privacy" type="text">
+                                        <span class="field_hint">privacy</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="privacy_guarantor_checkouts">Show checkouts to guarantor: </label>
+                                        <input id="privacy_guarantor_checkouts" name="privacy_guarantor_checkouts" type="text">
+                                        <span class="field_hint">privacy_guarantor_checkouts</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="privacy_guarantor_fines">Show fines to guarantor: </label>
+                                        <input id="privacy_guarantor_fines" name="privacy_guarantor_fines" type="text">
+                                        <span class="field_hint">privacy_guarantor_fines</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="pronouns">Pronouns: </label>
+                                        <input id="pronouns" name="pronouns" type="text">
+                                        <span class="field_hint">pronouns</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="protected">Protected: </label>
+                                        <input id="protected" name="protected" type="text">
+                                        <span class="field_hint">protected</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="relationship">Relationship: </label>
+                                        <input id="relationship" name="relationship" type="text">
+                                        <span class="field_hint">relationship</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="secret">Secret (2FA): </label>
+                                        <input id="secret" name="secret" type="text">
+                                        <span class="field_hint">secret</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="sex">Gender: </label>
+                                        <input id="sex" name="sex" type="text">
+                                        <span class="field_hint">sex</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="sms_provider_id">SMS provider ID (internal): </label>
+                                        <input id="sms_provider_id" name="sms_provider_id" type="text">
+                                        <span class="field_hint">sms_provider_id</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="smsalertnumber">Mobile phone number: </label>
+                                        <input id="smsalertnumber" name="smsalertnumber" type="text">
+                                        <span class="field_hint">smsalertnumber</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="sort1">Sort 1: </label>
+                                        <input id="sort1" name="sort1" type="text">
+                                        <span class="field_hint">sort1</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="sort2">Sort 2: </label>
+                                        <input id="sort2" name="sort2" type="text">
+                                        <span class="field_hint">sort2</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="state">State: </label>
+                                        <input id="state" name="state" type="text">
+                                        <span class="field_hint">state</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="streetnumber">Street number: </label>
+                                        <input id="streetnumber" name="streetnumber" type="text">
+                                        <span class="field_hint">streetnumber</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="streettype">Street type: </label>
+                                        <input id="streettype" name="streettype" type="text">
+                                        <span class="field_hint">streettype</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="surname">Surname: </label>
+                                        <input id="surname" name="surname" type="text">
+                                        <span class="field_hint">surname</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="title">Salutation: </label>
+                                        <input id="title" name="title" type="text">
+                                        <span class="field_hint">title</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="updated_on">Last update date: </label>
+                                        <input id="updated_on" name="updated_on" type="text">
+                                        <span class="field_hint">updated_on</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="userid">Username: </label>
+                                        <input id="userid" name="userid" type="text">
+                                        <span class="field_hint">userid</span>
+                                    </li>
+                                
+                            
+                                
+                                    <li>
+                                        <label class="description" for="zipcode">ZIP/Postal code: </label>
+                                        <input id="zipcode" name="zipcode" type="text">
+                                        <span class="field_hint">zipcode</span>
+                                    </li>
+                                
+                            
+
+                            
+                                <li>
+                                    <label class="description" for="patron_attributes">Patron attributes: </label>
+                                    <input id="patron_attributes" name="patron_attributes" type="text">
+                                    <span class="field_hint">patron_attributes</span>
+                                </li>
+                            
+                        </ol>
+                    </fieldset>
+                    <fieldset class="rows">
+                        <legend>
+                            <a href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#" class="expand_preserves"><i class="fa fa-plus-square"></i> Preserve existing values</a>
+                            <a href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl#" class="expand_preserves" style="display:none;"><i class="fa fa-minus-square"></i> Hide preserve value fields</a>
+                        </legend>
+
+                        <ol class="preserve_values" style="display:none;">
+                            <li>
+                                <div class="hint">Selected fields will be preserved from original patron record when overwriting existing patron.</div>
+                            </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_address">Address: </label>
+                                    <input name="preserve_existing" id="preserve_existing_address" value="address" type="checkbox">
+                                    <span class="field_hint">address</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_address2">Address 2: </label>
+                                    <input name="preserve_existing" id="preserve_existing_address2" value="address2" type="checkbox">
+                                    <span class="field_hint">address2</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_altcontactaddress1">Alternate contact: Address: </label>
+                                    <input name="preserve_existing" id="preserve_existing_altcontactaddress1" value="altcontactaddress1" type="checkbox">
+                                    <span class="field_hint">altcontactaddress1</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_altcontactaddress2">Alternate contact: Address 2: </label>
+                                    <input name="preserve_existing" id="preserve_existing_altcontactaddress2" value="altcontactaddress2" type="checkbox">
+                                    <span class="field_hint">altcontactaddress2</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_altcontactaddress3">Alternate contact: City: </label>
+                                    <input name="preserve_existing" id="preserve_existing_altcontactaddress3" value="altcontactaddress3" type="checkbox">
+                                    <span class="field_hint">altcontactaddress3</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_altcontactcountry">Alternate contact: Country: </label>
+                                    <input name="preserve_existing" id="preserve_existing_altcontactcountry" value="altcontactcountry" type="checkbox">
+                                    <span class="field_hint">altcontactcountry</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_altcontactfirstname">Alternate contact: First name: </label>
+                                    <input name="preserve_existing" id="preserve_existing_altcontactfirstname" value="altcontactfirstname" type="checkbox">
+                                    <span class="field_hint">altcontactfirstname</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_altcontactphone">Alternate contact: Phone: </label>
+                                    <input name="preserve_existing" id="preserve_existing_altcontactphone" value="altcontactphone" type="checkbox">
+                                    <span class="field_hint">altcontactphone</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_altcontactstate">Alternate contact: State: </label>
+                                    <input name="preserve_existing" id="preserve_existing_altcontactstate" value="altcontactstate" type="checkbox">
+                                    <span class="field_hint">altcontactstate</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_altcontactsurname">Alternate contact: Surname: </label>
+                                    <input name="preserve_existing" id="preserve_existing_altcontactsurname" value="altcontactsurname" type="checkbox">
+                                    <span class="field_hint">altcontactsurname</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_altcontactzipcode">Alternate contact: ZIP/Postal code: </label>
+                                    <input name="preserve_existing" id="preserve_existing_altcontactzipcode" value="altcontactzipcode" type="checkbox">
+                                    <span class="field_hint">altcontactzipcode</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_anonymized">Data anonymization flag: </label>
+                                    <input name="preserve_existing" id="preserve_existing_anonymized" value="anonymized" type="checkbox">
+                                    <span class="field_hint">anonymized</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_auth_method">Authentication method: </label>
+                                    <input name="preserve_existing" id="preserve_existing_auth_method" value="auth_method" type="checkbox">
+                                    <span class="field_hint">auth_method</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_autorenew_checkouts">Allow auto-renewals: </label>
+                                    <input name="preserve_existing" id="preserve_existing_autorenew_checkouts" value="autorenew_checkouts" type="checkbox">
+                                    <span class="field_hint">autorenew_checkouts</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_B_address">Alternate address: Address: </label>
+                                    <input name="preserve_existing" id="preserve_existing_B_address" value="B_address" type="checkbox">
+                                    <span class="field_hint">B_address</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_B_address2">Alternate address: Address 2: </label>
+                                    <input name="preserve_existing" id="preserve_existing_B_address2" value="B_address2" type="checkbox">
+                                    <span class="field_hint">B_address2</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_B_city">Alternate address: City: </label>
+                                    <input name="preserve_existing" id="preserve_existing_B_city" value="B_city" type="checkbox">
+                                    <span class="field_hint">B_city</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_B_country">Alternate address: Country: </label>
+                                    <input name="preserve_existing" id="preserve_existing_B_country" value="B_country" type="checkbox">
+                                    <span class="field_hint">B_country</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_B_email">Alternate address: Email: </label>
+                                    <input name="preserve_existing" id="preserve_existing_B_email" value="B_email" type="checkbox">
+                                    <span class="field_hint">B_email</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_B_phone">Alternate address: Phone: </label>
+                                    <input name="preserve_existing" id="preserve_existing_B_phone" value="B_phone" type="checkbox">
+                                    <span class="field_hint">B_phone</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_B_state">Alternate address: State: </label>
+                                    <input name="preserve_existing" id="preserve_existing_B_state" value="B_state" type="checkbox">
+                                    <span class="field_hint">B_state</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_B_streetnumber">Alternate address: Street number: </label>
+                                    <input name="preserve_existing" id="preserve_existing_B_streetnumber" value="B_streetnumber" type="checkbox">
+                                    <span class="field_hint">B_streetnumber</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_B_streettype">Alternate address: Street type: </label>
+                                    <input name="preserve_existing" id="preserve_existing_B_streettype" value="B_streettype" type="checkbox">
+                                    <span class="field_hint">B_streettype</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_B_zipcode">Alternate address: ZIP/Postal code: </label>
+                                    <input name="preserve_existing" id="preserve_existing_B_zipcode" value="B_zipcode" type="checkbox">
+                                    <span class="field_hint">B_zipcode</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_borrowernotes">Circulation note: </label>
+                                    <input name="preserve_existing" id="preserve_existing_borrowernotes" value="borrowernotes" type="checkbox">
+                                    <span class="field_hint">borrowernotes</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_borrowernumber">Borrower number: </label>
+                                    <input name="preserve_existing" id="preserve_existing_borrowernumber" value="borrowernumber" type="checkbox">
+                                    <span class="field_hint">borrowernumber</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_branchcode">Home library: </label>
+                                    <input name="preserve_existing" id="preserve_existing_branchcode" value="branchcode" type="checkbox">
+                                    <span class="field_hint">branchcode</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_cardnumber">Card number: </label>
+                                    <input name="preserve_existing" id="preserve_existing_cardnumber" value="cardnumber" type="checkbox">
+                                    <span class="field_hint">cardnumber</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_categorycode">Patron category: </label>
+                                    <input name="preserve_existing" id="preserve_existing_categorycode" value="categorycode" type="checkbox">
+                                    <span class="field_hint">categorycode</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_checkprevcheckout">Check for previous checkouts: </label>
+                                    <input name="preserve_existing" id="preserve_existing_checkprevcheckout" value="checkprevcheckout" type="checkbox">
+                                    <span class="field_hint">checkprevcheckout</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_city">City: </label>
+                                    <input name="preserve_existing" id="preserve_existing_city" value="city" type="checkbox">
+                                    <span class="field_hint">city</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_contactfirstname">Guarantor first name: </label>
+                                    <input name="preserve_existing" id="preserve_existing_contactfirstname" value="contactfirstname" type="checkbox">
+                                    <span class="field_hint">contactfirstname</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_contactname">Guarantor surname: </label>
+                                    <input name="preserve_existing" id="preserve_existing_contactname" value="contactname" type="checkbox">
+                                    <span class="field_hint">contactname</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_contactnote">Alternate contact: Note: </label>
+                                    <input name="preserve_existing" id="preserve_existing_contactnote" value="contactnote" type="checkbox">
+                                    <span class="field_hint">contactnote</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_contacttitle">Alternate contact: Title: </label>
+                                    <input name="preserve_existing" id="preserve_existing_contacttitle" value="contacttitle" type="checkbox">
+                                    <span class="field_hint">contacttitle</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_country">Country: </label>
+                                    <input name="preserve_existing" id="preserve_existing_country" value="country" type="checkbox">
+                                    <span class="field_hint">country</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_date_renewed">Account renewal date: </label>
+                                    <input name="preserve_existing" id="preserve_existing_date_renewed" value="date_renewed" type="checkbox">
+                                    <span class="field_hint">date_renewed</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_dateenrolled">Registration date: </label>
+                                    <input name="preserve_existing" id="preserve_existing_dateenrolled" value="dateenrolled" type="checkbox">
+                                    <span class="field_hint">dateenrolled</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_dateexpiry">Expiry date: </label>
+                                    <input name="preserve_existing" id="preserve_existing_dateexpiry" value="dateexpiry" type="checkbox">
+                                    <span class="field_hint">dateexpiry</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_dateofbirth">Date of birth: </label>
+                                    <input name="preserve_existing" id="preserve_existing_dateofbirth" value="dateofbirth" type="checkbox">
+                                    <span class="field_hint">dateofbirth</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_debarred">Restricted [until] flag: </label>
+                                    <input name="preserve_existing" id="preserve_existing_debarred" value="debarred" type="checkbox">
+                                    <span class="field_hint">debarred</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_debarredcomment">Comment: </label>
+                                    <input name="preserve_existing" id="preserve_existing_debarredcomment" value="debarredcomment" type="checkbox">
+                                    <span class="field_hint">debarredcomment</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_email">Primary email: </label>
+                                    <input name="preserve_existing" id="preserve_existing_email" value="email" type="checkbox">
+                                    <span class="field_hint">email</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_emailpro">Secondary email: </label>
+                                    <input name="preserve_existing" id="preserve_existing_emailpro" value="emailpro" type="checkbox">
+                                    <span class="field_hint">emailpro</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_fax">Fax: </label>
+                                    <input name="preserve_existing" id="preserve_existing_fax" value="fax" type="checkbox">
+                                    <span class="field_hint">fax</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_firstname">First name: </label>
+                                    <input name="preserve_existing" id="preserve_existing_firstname" value="firstname" type="checkbox">
+                                    <span class="field_hint">firstname</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_flags">System permissions: </label>
+                                    <input name="preserve_existing" id="preserve_existing_flags" value="flags" type="checkbox">
+                                    <span class="field_hint">flags</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_gonenoaddress">Gone no address flag: </label>
+                                    <input name="preserve_existing" id="preserve_existing_gonenoaddress" value="gonenoaddress" type="checkbox">
+                                    <span class="field_hint">gonenoaddress</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_initials">Initials: </label>
+                                    <input name="preserve_existing" id="preserve_existing_initials" value="initials" type="checkbox">
+                                    <span class="field_hint">initials</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_lang">Preferred language for notices: </label>
+                                    <input name="preserve_existing" id="preserve_existing_lang" value="lang" type="checkbox">
+                                    <span class="field_hint">lang</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_lastseen">Last activity date: </label>
+                                    <input name="preserve_existing" id="preserve_existing_lastseen" value="lastseen" type="checkbox">
+                                    <span class="field_hint">lastseen</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_login_attempts">Number of failed login attempts: </label>
+                                    <input name="preserve_existing" id="preserve_existing_login_attempts" value="login_attempts" type="checkbox">
+                                    <span class="field_hint">login_attempts</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_lost">Lost card flag: </label>
+                                    <input name="preserve_existing" id="preserve_existing_lost" value="lost" type="checkbox">
+                                    <span class="field_hint">lost</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_middle_name">Middle name: </label>
+                                    <input name="preserve_existing" id="preserve_existing_middle_name" value="middle_name" type="checkbox">
+                                    <span class="field_hint">middle_name</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_mobile">Other phone: </label>
+                                    <input name="preserve_existing" id="preserve_existing_mobile" value="mobile" type="checkbox">
+                                    <span class="field_hint">mobile</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_opacnote">OPAC note: </label>
+                                    <input name="preserve_existing" id="preserve_existing_opacnote" value="opacnote" type="checkbox">
+                                    <span class="field_hint">opacnote</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_othernames">Other name: </label>
+                                    <input name="preserve_existing" id="preserve_existing_othernames" value="othernames" type="checkbox">
+                                    <span class="field_hint">othernames</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_overdrive_auth_token">Overdrive auth token: </label>
+                                    <input name="preserve_existing" id="preserve_existing_overdrive_auth_token" value="overdrive_auth_token" type="checkbox">
+                                    <span class="field_hint">overdrive_auth_token</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_password">Password: </label>
+                                    <input name="preserve_existing" id="preserve_existing_password" value="password" type="checkbox">
+                                    <span class="field_hint">password</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_password_expiration_date">Password expiration date: </label>
+                                    <input name="preserve_existing" id="preserve_existing_password_expiration_date" value="password_expiration_date" type="checkbox">
+                                    <span class="field_hint">password_expiration_date</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_phone">Primary phone: </label>
+                                    <input name="preserve_existing" id="preserve_existing_phone" value="phone" type="checkbox">
+                                    <span class="field_hint">phone</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_phonepro">Secondary phone: </label>
+                                    <input name="preserve_existing" id="preserve_existing_phonepro" value="phonepro" type="checkbox">
+                                    <span class="field_hint">phonepro</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_preferred_name">Preferred name: </label>
+                                    <input name="preserve_existing" id="preserve_existing_preferred_name" value="preferred_name" type="checkbox">
+                                    <span class="field_hint">preferred_name</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_primary_contact_method">Primary contact method: </label>
+                                    <input name="preserve_existing" id="preserve_existing_primary_contact_method" value="primary_contact_method" type="checkbox">
+                                    <span class="field_hint">primary_contact_method</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_privacy">Privacy settings: </label>
+                                    <input name="preserve_existing" id="preserve_existing_privacy" value="privacy" type="checkbox">
+                                    <span class="field_hint">privacy</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_privacy_guarantor_checkouts">Show checkouts to guarantor: </label>
+                                    <input name="preserve_existing" id="preserve_existing_privacy_guarantor_checkouts" value="privacy_guarantor_checkouts" type="checkbox">
+                                    <span class="field_hint">privacy_guarantor_checkouts</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_privacy_guarantor_fines">Show fines to guarantor: </label>
+                                    <input name="preserve_existing" id="preserve_existing_privacy_guarantor_fines" value="privacy_guarantor_fines" type="checkbox">
+                                    <span class="field_hint">privacy_guarantor_fines</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_pronouns">Pronouns: </label>
+                                    <input name="preserve_existing" id="preserve_existing_pronouns" value="pronouns" type="checkbox">
+                                    <span class="field_hint">pronouns</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_protected">Protected: </label>
+                                    <input name="preserve_existing" id="preserve_existing_protected" value="protected" type="checkbox">
+                                    <span class="field_hint">protected</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_relationship">Relationship: </label>
+                                    <input name="preserve_existing" id="preserve_existing_relationship" value="relationship" type="checkbox">
+                                    <span class="field_hint">relationship</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_secret">Secret (2FA): </label>
+                                    <input name="preserve_existing" id="preserve_existing_secret" value="secret" type="checkbox">
+                                    <span class="field_hint">secret</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_sex">Gender: </label>
+                                    <input name="preserve_existing" id="preserve_existing_sex" value="sex" type="checkbox">
+                                    <span class="field_hint">sex</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_sms_provider_id">SMS provider ID (internal): </label>
+                                    <input name="preserve_existing" id="preserve_existing_sms_provider_id" value="sms_provider_id" type="checkbox">
+                                    <span class="field_hint">sms_provider_id</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_smsalertnumber">Mobile phone number: </label>
+                                    <input name="preserve_existing" id="preserve_existing_smsalertnumber" value="smsalertnumber" type="checkbox">
+                                    <span class="field_hint">smsalertnumber</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_sort1">Sort 1: </label>
+                                    <input name="preserve_existing" id="preserve_existing_sort1" value="sort1" type="checkbox">
+                                    <span class="field_hint">sort1</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_sort2">Sort 2: </label>
+                                    <input name="preserve_existing" id="preserve_existing_sort2" value="sort2" type="checkbox">
+                                    <span class="field_hint">sort2</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_state">State: </label>
+                                    <input name="preserve_existing" id="preserve_existing_state" value="state" type="checkbox">
+                                    <span class="field_hint">state</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_streetnumber">Street number: </label>
+                                    <input name="preserve_existing" id="preserve_existing_streetnumber" value="streetnumber" type="checkbox">
+                                    <span class="field_hint">streetnumber</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_streettype">Street type: </label>
+                                    <input name="preserve_existing" id="preserve_existing_streettype" value="streettype" type="checkbox">
+                                    <span class="field_hint">streettype</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_surname">Surname: </label>
+                                    <input name="preserve_existing" id="preserve_existing_surname" value="surname" type="checkbox">
+                                    <span class="field_hint">surname</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_title">Salutation: </label>
+                                    <input name="preserve_existing" id="preserve_existing_title" value="title" type="checkbox">
+                                    <span class="field_hint">title</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_updated_on">Last update date: </label>
+                                    <input name="preserve_existing" id="preserve_existing_updated_on" value="updated_on" type="checkbox">
+                                    <span class="field_hint">updated_on</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_userid">Username: </label>
+                                    <input name="preserve_existing" id="preserve_existing_userid" value="userid" type="checkbox">
+                                    <span class="field_hint">userid</span>
+                                </li>
+                            
+                                <li>
+                                    <label class="description" for="preserve_existing_zipcode">ZIP/Postal code: </label>
+                                    <input name="preserve_existing" id="preserve_existing_zipcode" value="zipcode" type="checkbox">
+                                    <span class="field_hint">zipcode</span>
+                                </li>
+                            
+                        </ol>
+                    </fieldset>
+
+                    <fieldset class="brief">
+                        <legend>If matching record is already in the borrowers table:</legend>
+
+                        <ol>
+                            <li class="radio">
+                                <input type="radio" id="overwrite_cardnumberno" name="overwrite_cardnumber" value="0" checked="checked"><label for="overwrite_cardnumberno">Ignore this one, keep the existing one</label>
+                            </li>
+
+                            <li class="radio">
+                                <input type="radio" id="overwrite_cardnumberyes" name="overwrite_cardnumber" value="1"><label for="overwrite_cardnumberyes">Overwrite the existing one with this</label>
+                                <ol>
+                                    <li>
+                                        <label class="update_dateexpiry" for="update_dateexpiry">Renew existing patrons</label>
+                                        <select class="update_dateexpiry" id="update_dateexpiry" name="update_dateexpiry" disabled="disabled">
+                                            <option value="">using the dateexpiry value in the file, if present</option>
+                                            <option value="dateexpiry">from the current membership expiry date</option>
+                                            <option value="now">from the current date</option>
+                                        </select>
+                                    </li>
+                                    <li>
+                                        <input class="overwrite_passwords" type="checkbox" id="overwrite_passwords" name="overwrite_passwords" disabled="disabled">
+                                        <label class="overwrite_passwords" for="overwrite_passwords">Replace patron passwords with those in the file (blank passwords will be ignored)</label>
+                                    </li>
+                                </ol>
+                            </li>
+                        </ol>
+                    </fieldset>
+
+                    
+                        <fieldset class="brief">
+                            <legend>Patron attributes</legend>
+
+                            <ol>
+                                <li class="radio"> <input type="radio" id="ext_preserve_0" name="ext_preserve" value="0"><label for="ext_preserve_0">Replace all patron attributes</label> </li>
+
+                                <li class="radio"> <input type="radio" id="ext_preserve_1" name="ext_preserve" value="1" checked="checked"><label for="ext_preserve_1">Replace only included patron attributes</label> </li>
+                            </ol>
+                        </fieldset>
+                    
+
+                    <fieldset class="rows">
+                        <legend>Welcome email</legend>
+                        <ol>
+                            <li>
+                                <input class="welcome_new" type="checkbox" id="welcome_new" name="welcome_new">
+                                <label class="welcome_new" for="welcome_new">Send email to new patrons</label>
+                                <span class="hint"> WELCOME notice is used</span>
+                            </li>
+                        </ol>
+                    </fieldset>
+
+                    <fieldset class="action">
+                        <input type="submit" class="btn btn-primary" value="Import">
+                    </fieldset>
+                </form>
+            </div>
+        
+
+        <div class="col-sm-6">
+            <div class="page-section bg-info-subtle">
+                <h2>Notes:</h2>
+                <ul>
+                    <li>The first line in the file must be a header row defining which columns you are supplying in the import file.</li>
+
+                    <li>
+                        <strong>
+                            <a href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl?sample=1">Download a Starter CSV file with all the columns.</a>
+                        </strong>
+                        Values are comma-separated.
+                    </li>
+
+                    <li>
+                        OR choose which fields you want to supply from the following list:
+                        <ul>
+                            <li>
+                                
+                                    'address',
+                                
+                                    'address2',
+                                
+                                    'altcontactaddress1',
+                                
+                                    'altcontactaddress2',
+                                
+                                    'altcontactaddress3',
+                                
+                                    'altcontactcountry',
+                                
+                                    'altcontactfirstname',
+                                
+                                    'altcontactphone',
+                                
+                                    'altcontactstate',
+                                
+                                    'altcontactsurname',
+                                
+                                    'altcontactzipcode',
+                                
+                                    'anonymized',
+                                
+                                    'auth_method',
+                                
+                                    'autorenew_checkouts',
+                                
+                                    'B_address',
+                                
+                                    'B_address2',
+                                
+                                    'B_city',
+                                
+                                    'B_country',
+                                
+                                    'B_email',
+                                
+                                    'B_phone',
+                                
+                                    'B_state',
+                                
+                                    'B_streetnumber',
+                                
+                                    'B_streettype',
+                                
+                                    'B_zipcode',
+                                
+                                    'borrowernotes',
+                                
+                                    'borrowernumber',
+                                
+                                    'branchcode',
+                                
+                                    'cardnumber',
+                                
+                                    'categorycode',
+                                
+                                    'checkprevcheckout',
+                                
+                                    'city',
+                                
+                                    'contactfirstname',
+                                
+                                    'contactname',
+                                
+                                    'contactnote',
+                                
+                                    'contacttitle',
+                                
+                                    'country',
+                                
+                                    'date_renewed',
+                                
+                                    'dateenrolled',
+                                
+                                    'dateexpiry',
+                                
+                                    'dateofbirth',
+                                
+                                    'debarred',
+                                
+                                    'debarredcomment',
+                                
+                                    'email',
+                                
+                                    'emailpro',
+                                
+                                    'fax',
+                                
+                                    'firstname',
+                                
+                                    'flags',
+                                
+                                    'gonenoaddress',
+                                
+                                    'initials',
+                                
+                                    'lang',
+                                
+                                    'lastseen',
+                                
+                                    'login_attempts',
+                                
+                                    'lost',
+                                
+                                    'middle_name',
+                                
+                                    'mobile',
+                                
+                                    'opacnote',
+                                
+                                    'othernames',
+                                
+                                    'overdrive_auth_token',
+                                
+                                    'password',
+                                
+                                    'password_expiration_date',
+                                
+                                    'phone',
+                                
+                                    'phonepro',
+                                
+                                    'preferred_name',
+                                
+                                    'primary_contact_method',
+                                
+                                    'privacy',
+                                
+                                    'privacy_guarantor_checkouts',
+                                
+                                    'privacy_guarantor_fines',
+                                
+                                    'pronouns',
+                                
+                                    'protected',
+                                
+                                    'relationship',
+                                
+                                    'secret',
+                                
+                                    'sex',
+                                
+                                    'sms_provider_id',
+                                
+                                    'smsalertnumber',
+                                
+                                    'sort1',
+                                
+                                    'sort2',
+                                
+                                    'state',
+                                
+                                    'streetnumber',
+                                
+                                    'streettype',
+                                
+                                    'surname',
+                                
+                                    'title',
+                                
+                                    'updated_on',
+                                
+                                    'userid',
+                                
+                                    'zipcode',
+                                
+                            </li>
+                        </ul>
+                    </li>
+
+                    
+                        <li>
+                            If loading patron attributes, the 'patron_attributes' field should contain a comma-separated list of attribute types and values. The attribute type code and a colon should precede each value. For example:
+                            <strong>INSTID:12345,LANG:fr</strong> or <strong>STARTDATE:January 1 2010,TRACK:Day</strong>. If an input record has more than one attribute, the fields should either be entered as an unquoted string (previous
+                            examples), or with each field wrapped in separate double quotes and delimited by a comma: <strong>"STARTDATE:January 1, 2010","TRACK:Day"</strong>. The second syntax would be required if the
+                            data might have a comma in it, like a date string.
+                        </li>
+                    
+
+                    <li> <strong>Required fields:</strong> The fields 'surname', 'branchcode', and 'categorycode' are <em>required</em> and 'branchcode' and 'categorycode' <strong>must match</strong> valid entries in your database. </li>
+
+                    <li>
+                        'password' should be stored in plaintext, and will be converted to a Bcrypt hash (if your passwords are already encrypted, talk to your system administrator about options). Passwords will not be updated on overwrite
+                        unless replace passwords option is checked.
+                    </li>
+
+                    <li> Date formats should match your system preference, and <strong>must</strong> be zero-padded, e.g. '01/02/2008'. Alternatively, you can supply dates in ISO format (e.g., '2010-10-28'). </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+                </main>
+            </div>
+            <div class="col-md-2 order-sm-2 order-md-1">
+                <aside>
+                    
+                        
+                            
+
+
+
+<div id="tools-menu" class="sidebar_menu">
+    <ul>
+        <li><a href="http://localhost:8080/cgi-bin/koha/tools/tools-home.pl">Tools home</a></li>
+    </ul>
+    
+        <h5>Patrons and circulation</h5>
+        <ul>
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/patron_lists/lists.pl">Patron lists</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/clubs/clubs.pl">Patron clubs</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/reviews/reviewswaiting.pl">Comments</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/import_borrowers.pl" class="current">Import patrons</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/letter.pl">Notices and slips</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/overduerules.pl">Overdue notice/status triggers</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/patroncards/home.pl">Patron card creator</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/cleanborrowers.pl">Batch patron deletion and anonymization</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/modborrowers.pl">Batch patron modification</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/batch_extend_due_dates.pl">Batch extend due dates</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/batch_modify_holds.pl">Batch modify holds</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tags/review.pl">Tags</a></li>
+            
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/rotating_collections/rotatingCollections.pl">Rotating collections</a></li>
+            
+        </ul>
+    
+
+    
+        <h5>Additional tools</h5>
+        <ul>
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/holidays.pl">Calendar</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/csv-profiles.pl">CSV profiles</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/viewlog.pl">Log viewer</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/additional-contents.pl?category=news">News</a></li>
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/additional-contents.pl?category=html_customizations">HTML customizations</a></li>
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/additional-contents.pl?category=pages">Pages</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/scheduler.pl">Task scheduler</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/quotes.pl">Quote editor</a></li>
+            
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/upload.pl">Uploads</a></li>
+            
+            
+                <li><a href="http://localhost:8080/cgi-bin/koha/tools/access_files.pl">Access files</a></li>
+            
+            
+        </ul>
+    
+    
+</div>
+<!-- /.sidebar_menu -->
+
+                        
+                    
+                </aside>
+            </div>
+        
+    </div>
+</div>
+
+<script nonce="" type="importmap">
+    { "imports": { "vue": "/intranet-tmpl/prog/js/vue/dist/islands.esm_26.0505000.js" } }
+</script>
+<script src="./Import patrons › Tools › Koha_files/islands.esm_26.0505000.js.download" type="module">
+</script>
+<script nonce="" type="module">
+    import { hydrate } from "/intranet-tmpl/prog/js/vue/dist/islands.esm_26.0505000.js";
+    hydrate();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+    
+        <div id="changelanguage" class="navbar navbar-expand navbar-light bg-light">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav_lang_menu" aria-controls="nav_lang_menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nav_lang_menu">
+                    <ul id="i18nMenu" class="navbar-nav me-auto">
+                        
+                            
+                                
+                                    
+                                        
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/changelanguage.pl?language=pt-BR">
+                                                    
+                                                        Português
+                                                    
+                                                </a>
+                                            </li>
+                                        
+                                    
+                                
+                            
+                        
+                            
+                                
+                                    
+                                        
+                                            <li class="nav-item">
+                                                <a class="nav-link active currentlanguage" aria-current="page" aria-disabled="true" tabindex="-1">
+                                                    
+                                                        English
+                                                    
+                                                </a>
+                                            </li>
+                                        
+                                    
+                                
+                            
+                        
+                    </ul>
+                    <!-- /#i18nMenu -->
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#changelanguage -->
+    
+
+
+<span id="audio-alert"></span>
+
+<!-- Cookie consent -->
+
+<!-- CookieConsentedJS code that may run -->
+
+
+
+    
+
+
+
+
+
+
+    <script nonce="">
+        if (self === top) {
+            var antiClickjack = document.getElementById("antiClickjack");
+            antiClickjack.parentNode.removeChild(antiClickjack);
+        } else {
+            top.location = self.location;
+        }
+    </script>
+
+
+<script src="./Import patrons › Tools › Koha_files/jquery-3.6.0.min_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/jquery-migrate-3.3.2.min_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/jquery-ui-1.13.2.min_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/shortcut_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/js.cookie-2.2.1.min_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/jquery.highlight-5_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/bootstrap.bundle.min_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/jquery.validate.min_26.0505000.js.download"></script>
+<!-- koha core js -->
+<script src="./Import patrons › Tools › Koha_files/patron-format_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/staff-global_26.0505000.js.download"></script>
+<script type="module" src="./Import patrons › Tools › Koha_files/form-submit_26.0505000.js.download"></script>
+
+
+
+
+<script src="./Import patrons › Tools › Koha_files/dayjs.min_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/utc_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/timezone_26.0505000.js.download"></script>
+<script src="./Import patrons › Tools › Koha_files/customParseFormat_26.0505000.js.download"></script>
+<script nonce="">
+    dayjs.extend(window.dayjs_plugin_utc);
+    dayjs.extend(window.dayjs_plugin_timezone);
+    dayjs.extend(window.dayjs_plugin_customParseFormat);
+</script>
+<!-- js-date-format.inc -->
+<script nonce="">
+    (function() {
+        var def_date_format = 'metric';
+        var def_time_format = '24hr';
+        var def_tz = 'America/Sao_Paulo';
+
+        var get_date_pattern = function(format) {
+            var date_pattern = 'YYYY-MM-DD';
+            if(format == 'us') date_pattern = 'MM/DD/YYYY';
+            if(format == 'metric') date_pattern = 'DD/MM/YYYY';
+            if(format == 'dmydot') date_pattern = 'DD.MM.YYYY';
+            return date_pattern;
+        };
+
+        var get_time_pattern = function(format) {
+            var time_pattern = 'HH:mm';
+            if(format == '12hr') time_pattern = 'hh:mm a';
+            return time_pattern;
+        };
+
+        /**
+         * A JS equivalent of the KohaDates TT Plugin. Passed an rfc3339 formatted date string,
+         * or JS Date, the function will return a date string formatted as per the koha instance config.
+         * @param {String|Date} value                   rfc3339 formatted date string or a JS Date object.
+         * @param {Object} [options]                    Optional set of switches for changing date handling
+         * @property {String} [options.tz]              String representing the timezone of the passed date
+         * @property {Boolean} [options.no_tz_adjust]   Enable/Disable timezone adjustment
+         * @property {String} [options.dateformat]
+         * @property {Boolean} [options.withtime]       Enable/Disable appearance of time in returned string
+         * @property {String} [options.timeformat]
+         * @property {Boolean} [options.as_due_date]    Enable/Disable due date output format
+         * @returns {String}                            A date string formatted as per the koha instance configuration.
+         */
+        window.$date = function(value, options) {
+            if(!value) return '';
+            let tz = (options&&options.tz)||def_tz;
+            let no_tz_adjust = (options&&options.no_tz_adjust)||false;
+            var m = dayjs(value);
+            if ( !no_tz_adjust && ! value.match(/^\d{4}-\d{2}-\d{2}$/ ) ) {
+                m = m.tz(tz);
+            }
+
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            var withtime = (options&&options.withtime)||false;
+
+            if(dateformat=='rfc3339' && withtime) return m.format();
+
+            var timeformat = (options&&options.timeformat)||def_time_format;
+            var date_pattern = get_date_pattern(dateformat);
+            let as_due_date = (options&&options.as_due_date);
+            if (as_due_date) {
+                withtime = !( m.hour() == 23 && m.minute() == 59 );
+            }
+            var time_pattern = !withtime?'':' '+get_time_pattern(timeformat);
+
+            return m.format(date_pattern+time_pattern);
+        }
+
+        window.$datetime = function(value, options) {
+            options = options||{};
+            options.withtime = true;
+            return $date(value, options);
+        };
+
+        window.$time = function(value, options) {
+            if(!value) return '';
+            var tz = (options&&options.tz)||def_tz;
+            var m = dayjs(value);
+            if(tz) m = m.tz(tz);
+
+            var dateformat = (options&&options.dateformat);
+            var timeformat = (dateformat=='rfc3339'&&'24hr')||(options&&options.timeformat)||def_time_format;
+
+            return m.format(get_time_pattern(timeformat)+(dateformat=='rfc3339'?':ss'+(!m.isUTC()?'Z':''):''))+(dateformat=='rfc3339' && m.isUTC()?'Z':'');
+        }
+
+        window.$date_to_rfc3339 = function(value, options) {
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            let m = dayjs(value, get_date_pattern(dateformat), true);
+            return m.format("YYYY-MM-DD");
+        }
+
+        /**
+        * A JS equivalent of the KohaTimes TT Plugin. Passed a time in HH:MM:SS or HH:MM format
+        * the function will return a time string formatted as per the koha instance config.
+        */
+
+        window.$kohatime = function(value) {
+            if(!value) return 'invalid time';
+            var intime = value.split(':');
+            var hours = intime[0];
+            var minutes = intime[1];
+
+            if ( hours < 0 || hours > 23 || minutes < 0 || minutes > 59 ) { return 'invalid time'; }
+
+            if ( def_time_format == '12hr') {
+                var ampm = ( hours >= 12 ) ? 'pm' : 'am';
+                hours = ( hours == 0 ) ? "12" : hours;
+                hours = ( hours > 12 ) ? ( hours - 12 ) : hours;
+
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0') + " " + ampm;
+            } else {
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0');
+            }
+        }
+
+        /**
+         * Returns the configured Koha server timezone.
+         * Useful for components that need to display dates/times in library timezone.
+         */
+        window.$timezone = function() {
+            return def_tz;
+        }
+
+        /**
+         * Converts a dayjs object to a Date for timeline/calendar display.
+         * Creates a Date that displays these exact values regardless of browser timezone.
+         * (Strips timezone info so JS interprets the values as browser-local time)
+         *
+         * Use this when you need to display a specific date/time from a known timezone
+         * (e.g., library timezone) and want it to appear the same for all users.
+         *
+         * @param {dayjs.Dayjs} dayjsObj - A dayjs object (typically converted to a specific timezone)
+         * @returns {Date} A Date object that will display the dayjs values in the browser
+         */
+        window.$toDisplayDate = function(dayjsObj) {
+            return new Date(dayjsObj.format('YYYY-MM-DDTHH:mm:ss'));
+        }
+
+    })();
+</script>
+<!-- / js-date-format.inc -->
+
+
+
+<!-- js-patron-get-age.inc -->
+
+<script nonce="">
+    (function() {
+
+        const tz = 'America/Sao_Paulo';
+        window.$get_age = function(dob, options) {
+            if(!dob) return '';
+
+            let today = new Date();
+            dob = new Date(dob);
+            if ( tz ) {
+                let today_tz = new Date(today.toLocaleString('en-US', {timeZone: tz}));
+                let diff = today.getTime() - today_tz.getTime();
+                today = new Date(today.getTime() - diff);
+
+                let dob_tz = new Date(dob.toLocaleString('en-US', {timeZone: tz}));
+                diff = dob.getTime() - dob_tz.getTime();
+                dob = new Date(dob.getTime() - diff);
+            }
+            let age = today.getFullYear() - dob.getFullYear();
+            let m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+    })();
+</script>
+<!-- / js-patron-get-age.inc -->
+
+<!-- js-patron-format-address.inc -->
+
+
+
+<script nonce="">
+    (function() {
+
+        const roadtypes = [];
+        let roadtypes_map = roadtypes.reduce((map, r) => {
+            map[r.authorised_value] = r.lib;
+            return map;
+        }, {});
+
+        function member_display_address_style_us(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(data.address) + ' ' + escape_str(roadtype_desc);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.city);
+                if ( data.state ) {
+                    if ( data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.state);
+                }
+                if ( data.postal_code ) {
+                    address += " " + escape_str(data.postal_code);
+                }
+                if ( data.country ) {
+                    if ( data.postal_code || data.state || data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.country)
+                }
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_de(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : ' ';
+                    address += escape_str(data.address) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.street_number);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_fr(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.address);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        window.$format_address = function(data, options) {
+            let line_break = options && options.no_line_break ? ' ' : '<br/>';
+            let include_li = options && options.include_li;return member_display_address_style_us(data, line_break, include_li);}
+
+    })();
+</script>
+<!-- / js-patron-format-address.inc -->
+
+
+
+
+<!-- validator-strings.inc -->
+<script nonce="">
+    $(document).ready(function () {
+        jQuery.extend(jQuery.validator.messages, {
+            required: _("This field is required."),
+            remote: _("Please fix this field."),
+            email: _("Please enter a valid email address."),
+            url: _("Please enter a valid URL."),
+            date: _("Please enter a valid date."),
+            dateISO: _("Please enter a valid date (ISO)."),
+            number: _("Please enter a valid number."),
+            digits: _("Please enter only digits."),
+            equalTo: _("Please enter the same value again."),
+            number: _("Please add amount in valid format: 0.00"),
+            maxlength: $.validator.format(_("Please enter no more than {0} characters.")),
+            minlength: $.validator.format(_("Please enter at least {0} characters.")),
+            rangelength: $.validator.format(_("Please enter a value between {0} and {1} characters long.")),
+            range: $.validator.format(_("Please enter a value between {0} and {1}.")),
+            max: $.validator.format(_("Please enter a value less than or equal to {0}.")),
+            min: $.validator.format(_("Please enter a value greater than or equal to {0}.")),
+            phone: $.validator.format(_("Please enter a valid phone number.")),
+        });
+    });
+</script>
+<!-- / validator-strings.inc -->
+
+
+    <!-- js_includes.inc: IntranetUserJS -->
+    <script nonce="">
+        /* koha-easy-installer ai-assistant begin */
+var KEI_AI_V = "1.5.130";
+$(document).ready(function () {
+    // koha.nexus AI assistant (Library tools > AI assistant on the staff home page).
+    if (!$("#main_intranet-main").length || $("#kei-ai").length) return;
+    var box = $("<div id=\"kei-ai\"></div>"), news = $("#area-news");
+    if (news.length) news.replaceWith(box);
+    else {
+        var col = $("#area-quote").parent();
+        if (!col.length) col = $("#container-main .row").first().children("div").first();
+        if (!col.length) return;
+        col.prepend(box);
+    }
+    var url = "/cgi-bin/koha/tools/ai_assistant.pl?v=" + encodeURIComponent(KEI_AI_V) + "&op=";
+    $("<link rel=\"stylesheet\">").attr("href", url + "css").appendTo("head");
+    $.ajax({ url: url + "js", dataType: "script", cache: true });
+});
+/* koha-easy-installer ai-assistant end */
+    </script>
+    <!-- / js_includes.inc: IntranetUserJS -->
+
+
+<!-- js_includes.inc -->
+
+    <script src="./Import patrons › Tools › Koha_files/basket_26.0505000.js.download"></script>
+
+
+
+
+
+<script nonce="">
+    var defaultPatronSearchFields = "firstname|preferred_name|middle_name|surname|othernames|cardnumber|userid";
+    var defaultPatronSearchMethod = "contains";
+    var extendedPatronAttributes = "1";
+    var loggedInLibrary = 'MAIN';
+    var singleBranchMode = '1';
+    var showPatronFirstnameIfDifferentThanPreferredname = 0;
+</script>
+
+    <script nonce="">
+        // PatronAutoComplete
+        var loggedInClass = "";
+        $(document).ready(function(){
+            
+                if ( $("#findborrower").length ) {
+                    patron_autocomplete($("#findborrower"), { 'link-to': 'circ' });
+                }
+                if ( $("#findborrower_main").length ) {
+                    patron_autocomplete($("#findborrower_main"), { 'link-to': 'circ' });
+                }
+            
+            if ( $("#searchmember").length ) {
+                patron_autocomplete($("#searchmember"), { 'link-to': 'patron' });
+            }
+        });
+    </script>
+
+
+
+
+
+    <script nonce="">
+        (function () {
+            function getURLParams() {
+                const params = new URLSearchParams(window.location.search);
+                return params;
+            }
+
+            function toggleURLParams(paramsToToggle) {
+                const url = new URL(window.location.href);
+                const params = url.searchParams;
+
+                // Check if all params are currently set
+                const allSet = paramsToToggle.every(param => params.get(param) === "yes");
+
+                if (allSet) {
+                    // Remove all params
+                    paramsToToggle.forEach(param => params.delete(param));
+                } else {
+                    // Add all params
+                    paramsToToggle.forEach(param => params.set(param, "yes"));
+                }
+
+                window.location.href = url.toString();
+            }
+
+            function updateButtonText() {
+                const params = getURLParams();
+
+                // User CSS button
+                const cssDisabled = params.get("DISABLE_SYSPREF_IntranetUserCSS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserCSS") === "yes";
+                const cssToggle = document.getElementById("toggleUserCSS");
+                if (cssToggle) {
+                    const cssText = cssToggle.querySelector(".toggle-text");
+                    if (cssText) cssText.textContent = cssDisabled ? _("Enable custom CSS") : _("Disable custom CSS");
+                }
+
+                // User JS button
+                const jsDisabled = params.get("DISABLE_SYSPREF_IntranetUserJS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserJS") === "yes";
+                const jsToggle = document.getElementById("toggleUserJS");
+                if (jsToggle) {
+                    const jsText = jsToggle.querySelector(".toggle-text");
+                    if (jsText) jsText.textContent = jsDisabled ? _("Enable custom JS") : _("Disable custom JS");
+                }
+
+                // Stylesheets button
+                const stylesheetsDisabled =
+                    params.get("DISABLE_SYSPREF_OpacAdditionalStylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_opaclayoutstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetcolorstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetstylesheet") === "yes";
+                const stylesheetsToggle = document.getElementById("toggleStylesheets");
+                if (stylesheetsToggle) {
+                    const stylesheetsText = stylesheetsToggle.querySelector(".toggle-text");
+                    if (stylesheetsText) stylesheetsText.textContent = stylesheetsDisabled ? _("Enable custom stylesheets") : _("Disable custom stylesheets");
+                }
+
+                // Update icon color based on whether any toggles are active
+                const anyDisabled = cssDisabled || jsDisabled || stylesheetsDisabled;
+                const debugIcon = document.getElementById("debug-icon");
+                if (debugIcon) {
+                    if (anyDisabled) {
+                        debugIcon.style.color = "#ffc107"; // Warning/amber color
+                    } else {
+                        debugIcon.style.color = ""; // Default color
+                    }
+                }
+            }
+
+            // Update button text on page load
+            updateButtonText();
+
+            // User CSS toggle
+            const cssToggle = document.getElementById("toggleUserCSS");
+            if (cssToggle) {
+                cssToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserCSS", "DISABLE_SYSPREF_OPACUserCSS"]);
+                });
+            }
+
+            // User JS toggle
+            const jsToggle = document.getElementById("toggleUserJS");
+            if (jsToggle) {
+                jsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserJS", "DISABLE_SYSPREF_OPACUserJS"]);
+                });
+            }
+
+            // Stylesheets toggle
+            const stylesheetsToggle = document.getElementById("toggleStylesheets");
+            if (stylesheetsToggle) {
+                stylesheetsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_OpacAdditionalStylesheet", "DISABLE_SYSPREF_opaclayoutstylesheet", "DISABLE_SYSPREF_intranetcolorstylesheet", "DISABLE_SYSPREF_intranetstylesheet"]);
+                });
+            }
+        })();
+    </script>
+
+<!-- / js_includes.inc -->
+
+    
+    
+
+
+<!-- calendar.inc -->
+<script nonce=""> var debug = ""; var dateformat_pref = "metric"; var flatpickr_dateformat_string = ""; var delimiter = ""; var altinput_dateformat = ""; switch ( dateformat_pref ){ case "us": flatpickr_dateformat_string = "m/d/Y"; altinput_dateformat = 'mm/dd/yyyy'; delimiter = "/"; break; case "metric": flatpickr_dateformat_string = "d/m/Y"; altinput_dateformat = 'dd/mm/yyyy'; delimiter = "/"; break; case "dmydot": flatpickr_dateformat_string = "d.m.Y"; altinput_dateformat = 'dd/mm/yyyy'; delimiter = "."; break; default: flatpickr_dateformat_string = "Y-m-d"; altinput_dateformat = 'yyyy/mm/dd'; delimiter = "-"; } var sentmsg = 0; var bidi = false; var calendarFirstDayOfWeek = '0'; var flatpickr_timeformat_string = "H:i"; var flatpickr_timeformat = true; </script> <!-- / calendar.inc --> <script src="./Import patrons › Tools › Koha_files/calendar_26.0505000.js.download"></script> <script src="./Import patrons › Tools › Koha_files/flatpickr.min_26.0505000.js.download"></script> <script src="./Import patrons › Tools › Koha_files/shortcut-buttons-flatpickr.min_26.0505000.js.download"></script> <script src="./Import patrons › Tools › Koha_files/maskito.core_26.0505000.js.download"></script> <script src="./Import patrons › Tools › Koha_files/maskito.kit_26.0505000.js.download"></script> <script nonce=""> flatpickr.l10ns.default.weekdays = flatpickr_weekdays; flatpickr.l10ns.default.months = flatpickr_months; flatpickr.l10ns.default.rangeSeparator = flatpickr_rangeSeparator; let flatpickr_defaults = { allowInput: true, dateFormat: "Y-m-d", altInput: true, altFormat: flatpickr_dateformat_string, altInputClass: 'flatpickr-input', nextArrow: '<i class="fa fa-fw fa-arrow-right"></i>', prevArrow: '<i class="fa fa-fw fa-arrow-left"></i>', time_24hr: flatpickr_timeformat, defaultHour: 23, defaultMinute: 59, locale: { "firstDayOfWeek": calendarFirstDayOfWeek }, onReady: function( selectedDates, dateStr, instance ){ /* When onReady is triggered, remove any existing "clear date" link */ $(instance.input).parent().find('.flatpickr_wrapper_' + instance.input.id).remove(); /* When flatpickr instance is created, automatically append a "clear date" link */ $(instance.input).find('~input.flatpickr:first') /* Add a wrapper element so that we can prevent the clear button from wrapping */ .wrap("<span class='flatpickr_wrapper flatpickr_wrapper_"+instance.input.id+"'></span>") .attr("autocomplete", "off") .after( $("<a/>") .attr("href","#") .addClass("clear_date") .on("click", function(e){ e.preventDefault(); instance.clear(); }) .addClass("fa fa-fw fa-times") .attr("aria-hidden", true) .attr("aria-label", _("Clear date") ) ).keydown(function(e) { var key = (event.keyCode ? event.keyCode : event.which); if ( key == 40 ) { instance.set('allowInput',false); } }); /* When flatpickr instance is ready, add maskito input mask */ var thisInput = instance.input; let accepts_time = $(thisInput).data('flatpickr-enable-time'); let accepts_period = $(thisInput).data('flatpickr-period'); let accepts_time_only = $(thisInput).data('flatpickr-time-only'); let maskitoOptions = {}; if ( !accepts_period ) { if ( accepts_time ) { maskitoOptions = maskitoDateTimeOptionsGenerator({ dateMode: altinput_dateformat, timeMode: 'HH:MM', dateSeparator: delimiter, overwiteMode: 'replace', }); } else if ( accepts_time_only ) { maskitoOptions = { mask: [/\d/, /\d/, ':', /\d/, /\d/], }; } else { maskitoOptions = maskitoDateOptionsGenerator({ mode: altinput_dateformat, separator: delimiter, overwiteMode: 'replace', }); } } new Maskito( instance.altInput, maskitoOptions ); /* If there is a node with data-date_to with the id of this node it means we are instantiating a 'from' for a date range */ const toInput = instance.input; const fromInput = document.querySelector(`[data-date_to='${toInput.id}']`); if (fromInput && fromInput._flatpickr) { const fromDate = fromInput._flatpickr.selectedDates[0]; if (fromDate) { instance.set('minDate', fromDate); } } }, onChange: function( selectedDates, dateText, instance) { if (selectedDates.length === 0) { return; } var thisInput = instance.input; let accepts_time = $(thisInput).data('flatpickr-enable-time'); let accepts_time_only = $(thisInput).data('flatpickr-time-only'); let accepts_period = $(thisInput).data('flatpickr-period'); if ( !accepts_period ) { if ( accepts_time ) { let parsedDate = flatpickr.parseDate(dateText, instance.config.dateFormat); if ( Number.isNaN(parsedDate.getHours()) ) { instance.setDate(selectedDates[0].setHours(23, 59, 0, 0)); } } } }, onOpen: function( selectedDates, dateText, instance) { var thisInput = instance.input; let set_to_today = $(thisInput).data('flatpickr-set-to-today'); if ( set_to_today ) { if ( thisInput.value === '' ) { instance.setDate( new Date() ); } } }, onClose: function( selectedDates, dateText, instance) { var thisInput = instance.input; if ( thisInput.hasAttribute('data-date_to') ) { var endPickerEl = document.querySelector("#"+thisInput.dataset.date_to); if (endPickerEl && endPickerEl._flatpickr) { endPickerEl._flatpickr.set('minDate', selectedDates[0]); } } let = on_close_focus = $(thisInput).data('flatpickr-on-close-focus'); if ( on_close_focus ) { $(on_close_focus).focus(); } }, plugins: [ ShortcutButtonsPlugin({ button: [ { label: _("Yesterday") }, { label: _("Today") }, { label: _("Tomorrow") } ], label: _("or"), onClick: (index, fp) => { let date; let hh = 23, mm = 59; switch (index) { case 0: date = new Date().fp_incr(-1); break; case 1: date = new Date(); if ( $(fp.input).data("flatpickr-pastinclusive") === true ) { hh = date.getHours(); mm = date.getMinutes(); } break; case 2: date = new Date().fp_incr(1); break; } date.setHours(hh, mm, 0, 0); fp.setDate(date); } }) ] }; flatpickr.setDefaults(flatpickr_defaults); function apply_flatpickr(input){ let options = {}; let refresh_max_date = 0; let disable_buttons = []; if( $(input).data("flatpickr-futureinclusive") === true || $(input).data("flatpickr-futuredate") === true ) { let original_date = $(input).val(); if ( original_date ) { original_date = flatpickr.parseDate(original_date, 'Y-m-d').getTime(); let tomorrow = new Date().fp_incr(1).getTime(); options['enable'] = [function(date){ date = date.getTime(); if ( date == original_date ) return true; if ( date >= tomorrow) return true; }]; } else { if( $(input).data("flatpickr-futureinclusive") === true ) { options['minDate'] = new Date().setHours(00, 00, 00, 00); } else { options['minDate'] = new Date().fp_incr(1); } } disable_buttons.push(0); /* Yesterday */ if ( $(input).data("flatpickr-futuredate") === true ) { disable_buttons.push(1); /* Today */ } } if( $(input).data("flatpickr-pastinclusive") === true ) { options['maxDate'] = new Date(); /* Not today or hh:mm will be 00:00 */ refresh_max_date = 1; disable_buttons.push(2); /* Tomorrow */ } if( $(input).data("flatpickr-pastdate") === true ) { options['maxDate'] = new Date().fp_incr(-1).setHours(23, 59, 00, 00); disable_buttons.push(1); /* Today */ disable_buttons.push(2); /* Tomorrow */ } if ( $(input).data('flatpickr-enable-time') === true ) { options['enableTime'] = true; options['dateFormat'] = "Y-m-d H:i"; options['altFormat'] = flatpickr_dateformat_string + ", " + flatpickr_timeformat_string; } if ( $(input).data('flatpickr-disable-shortcuts') === true ) { options['plugins'] = []; } let maxDate = $(input).data("flatpickr-maxdate"); if( typeof maxDate !== 'undefined' ) { options['maxDate'] = new Date(maxDate); } if( $(input).data("flatpickr-time-only") === true ) { options['enableTime'] = true; options['noCalendar'] = true; options['dateFormat'] = "H:i"; options['defaultHour'] = "0"; options['defaultMinute'] = "0"; options['altFormat'] = flatpickr_timeformat_string; options['plugins'] = []; } let fp = $(input).flatpickr(options); $(disable_buttons).each(function(index, value){ $(fp.calendarContainer).find(".shortcut-buttons-flatpickr-button[data-index='"+value+"']").prop("disabled", "disabled"); }); if ( refresh_max_date ) { /* Refresh the maxDate every 30 secondes to make sure the user will not be stuck with the minute passed. Adding 1 minute to not introduce a gap. Example: last update at 40s, a new minute passed at 00. Between 00 and 10s the user won't be able click 'Today'. */ setInterval(() => { let now = new Date(); fp.set("maxDate", now.setMinutes(now.getMinutes() + 1)); }, 30000); } } $(document).ready(function(){ $(".flatpickr").each(function(){ apply_flatpickr(this); }); }); </script>
+
+    <script src="./Import patrons › Tools › Koha_files/tools-menu_26.0505000.js.download"></script>
+    
+
+
+
+<!-- str/members-menu.inc -->
+
+<script nonce="">
+    var advsearch = "";
+    var destination = "";
+
+    var CAN_user_borrowers_edit_borrowers = "1";
+    var CAN_user_borrowers_delete_borrowers = "1";
+
+    var dateformat = "metric";
+
+    var borrowernumber;
+    var number_of_adult_categories = 0;
+    
+
+    
+</script>
+<!-- / str/members-menu.inc -->
+
+    <script src="./Import patrons › Tools › Koha_files/members-menu_26.0505000.js.download"></script>
+    <script nonce="">
+        $(document).ready(function () {
+            // Make date fields have the datepicker
+            $("#dateenrolled, #dateexpiry, #dateofbirth").flatpickr({
+                altInput: true,
+                altFormat: flatpickr_dateformat_string,
+                altInputClass: "flatpickr-input",
+                dateFormat: "Y-m-d",
+            });
+
+            $(".expand_defaults").click(function (e) {
+                e.preventDefault();
+                $(".default_values").toggle();
+                $(".expand_defaults").toggle();
+            });
+
+            $(".expand_preserves").click(function (e) {
+                e.preventDefault();
+                $(".preserve_values").toggle();
+                $(".expand_preserves").toggle();
+            });
+        });
+
+        $("#overwrite_cardnumberno").click(function () {
+            $("#overwrite_passwords").prop("checked", false).prop("disabled", true);
+            $("#update_dateexpiry").prop("checked", false).prop("disabled", true);
+        });
+        $("#overwrite_cardnumberyes").click(function () {
+            $("#overwrite_passwords").prop("disabled", false);
+            $("#update_dateexpiry").prop("disabled", false);
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+<button id="backtotop" class="btn btn-default" aria-label="Back to top" style="display: none;"><i class="fa fa-arrow-up" aria-hidden="true"></i></button><ul id="ui-id-1" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" unselectable="on" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><ul id="ui-id-2" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" unselectable="on" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div class="flatpickr-calendar animate" tabindex="-1"><div class="flatpickr-months"><span class="flatpickr-prev-month"><i class="fa fa-fw fa-arrow-left"></i></span><div class="flatpickr-month"><div class="flatpickr-current-month"><select class="flatpickr-monthDropdown-months" aria-label="Month" tabindex="-1"><option class="flatpickr-monthDropdown-month" value="0" tabindex="-1">January</option><option class="flatpickr-monthDropdown-month" value="1" tabindex="-1">February</option><option class="flatpickr-monthDropdown-month" value="2" tabindex="-1">March</option><option class="flatpickr-monthDropdown-month" value="3" tabindex="-1">April</option><option class="flatpickr-monthDropdown-month" value="4" tabindex="-1">May</option><option class="flatpickr-monthDropdown-month" value="5" tabindex="-1">June</option><option class="flatpickr-monthDropdown-month" value="6" tabindex="-1">July</option><option class="flatpickr-monthDropdown-month" value="7" tabindex="-1">August</option><option class="flatpickr-monthDropdown-month" value="8" tabindex="-1">September</option><option class="flatpickr-monthDropdown-month" value="9" tabindex="-1">October</option><option class="flatpickr-monthDropdown-month" value="10" tabindex="-1">November</option><option class="flatpickr-monthDropdown-month" value="11" tabindex="-1">December</option></select><div class="numInputWrapper"><input class="numInput cur-year" type="number" tabindex="-1" aria-label="Year"><span class="arrowUp"></span><span class="arrowDown"></span></div></div></div><span class="flatpickr-next-month"><i class="fa fa-fw fa-arrow-right"></i></span></div><div class="flatpickr-innerContainer"><div class="flatpickr-rContainer"><div class="flatpickr-weekdays"><div class="flatpickr-weekdaycontainer">
+      <span class="flatpickr-weekday">
+        Sun</span><span class="flatpickr-weekday">Mon</span><span class="flatpickr-weekday">Tue</span><span class="flatpickr-weekday">Wed</span><span class="flatpickr-weekday">Thu</span><span class="flatpickr-weekday">Fri</span><span class="flatpickr-weekday">Sat
+      </span>
+      </div></div><div class="flatpickr-days" tabindex="-1"><div class="dayContainer"><span class="flatpickr-day prevMonthDay" aria-label="September 27, 2026" tabindex="-1">27</span><span class="flatpickr-day prevMonthDay" aria-label="September 28, 2026" tabindex="-1">28</span><span class="flatpickr-day prevMonthDay" aria-label="September 29, 2026" tabindex="-1">29</span><span class="flatpickr-day prevMonthDay" aria-label="September 30, 2026" tabindex="-1">30</span><span class="flatpickr-day " aria-label="October 1, 2026" tabindex="-1">1</span><span class="flatpickr-day " aria-label="October 2, 2026" tabindex="-1">2</span><span class="flatpickr-day " aria-label="October 3, 2026" tabindex="-1">3</span><span class="flatpickr-day " aria-label="October 4, 2026" tabindex="-1">4</span><span class="flatpickr-day " aria-label="October 5, 2026" tabindex="-1">5</span><span class="flatpickr-day " aria-label="October 6, 2026" tabindex="-1">6</span><span class="flatpickr-day " aria-label="October 7, 2026" tabindex="-1">7</span><span class="flatpickr-day " aria-label="October 8, 2026" tabindex="-1">8</span><span class="flatpickr-day " aria-label="October 9, 2026" tabindex="-1">9</span><span class="flatpickr-day " aria-label="October 10, 2026" tabindex="-1">10</span><span class="flatpickr-day " aria-label="October 11, 2026" tabindex="-1">11</span><span class="flatpickr-day " aria-label="October 12, 2026" tabindex="-1">12</span><span class="flatpickr-day " aria-label="October 13, 2026" tabindex="-1">13</span><span class="flatpickr-day " aria-label="October 14, 2026" tabindex="-1">14</span><span class="flatpickr-day " aria-label="October 15, 2026" tabindex="-1">15</span><span class="flatpickr-day " aria-label="October 16, 2026" tabindex="-1">16</span><span class="flatpickr-day " aria-label="October 17, 2026" tabindex="-1">17</span><span class="flatpickr-day " aria-label="October 18, 2026" tabindex="-1">18</span><span class="flatpickr-day " aria-label="October 19, 2026" tabindex="-1">19</span><span class="flatpickr-day " aria-label="October 20, 2026" tabindex="-1">20</span><span class="flatpickr-day " aria-label="October 21, 2026" tabindex="-1">21</span><span class="flatpickr-day " aria-label="October 22, 2026" tabindex="-1">22</span><span class="flatpickr-day " aria-label="October 23, 2026" tabindex="-1">23</span><span class="flatpickr-day " aria-label="October 24, 2026" tabindex="-1">24</span><span class="flatpickr-day " aria-label="October 25, 2026" tabindex="-1">25</span><span class="flatpickr-day " aria-label="October 26, 2026" tabindex="-1">26</span><span class="flatpickr-day " aria-label="October 27, 2026" tabindex="-1">27</span><span class="flatpickr-day " aria-label="October 28, 2026" tabindex="-1">28</span><span class="flatpickr-day " aria-label="October 29, 2026" tabindex="-1">29</span><span class="flatpickr-day today" aria-label="October 30, 2026" aria-current="date" tabindex="-1">30</span><span class="flatpickr-day " aria-label="October 31, 2026" tabindex="-1">31</span><span class="flatpickr-day nextMonthDay" aria-label="November 1, 2026" tabindex="-1">1</span><span class="flatpickr-day nextMonthDay" aria-label="November 2, 2026" tabindex="-1">2</span><span class="flatpickr-day nextMonthDay" aria-label="November 3, 2026" tabindex="-1">3</span><span class="flatpickr-day nextMonthDay" aria-label="November 4, 2026" tabindex="-1">4</span><span class="flatpickr-day nextMonthDay" aria-label="November 5, 2026" tabindex="-1">5</span><span class="flatpickr-day nextMonthDay" aria-label="November 6, 2026" tabindex="-1">6</span><span class="flatpickr-day nextMonthDay" aria-label="November 7, 2026" tabindex="-1">7</span></div></div></div></div><div class="shortcut-buttons-flatpickr-wrapper light"><div class="shortcut-buttons-flatpickr-label">or</div><div class="shortcut-buttons-flatpickr-buttons"><button type="button" class="shortcut-buttons-flatpickr-button" data-index="0">Yesterday</button><button type="button" class="shortcut-buttons-flatpickr-button" data-index="1">Today</button><button type="button" class="shortcut-buttons-flatpickr-button" data-index="2">Tomorrow</button></div></div></div><div class="flatpickr-calendar animate" tabindex="-1"><div class="flatpickr-months"><span class="flatpickr-prev-month"><i class="fa fa-fw fa-arrow-left"></i></span><div class="flatpickr-month"><div class="flatpickr-current-month"><select class="flatpickr-monthDropdown-months" aria-label="Month" tabindex="-1"><option class="flatpickr-monthDropdown-month" value="0" tabindex="-1">January</option><option class="flatpickr-monthDropdown-month" value="1" tabindex="-1">February</option><option class="flatpickr-monthDropdown-month" value="2" tabindex="-1">March</option><option class="flatpickr-monthDropdown-month" value="3" tabindex="-1">April</option><option class="flatpickr-monthDropdown-month" value="4" tabindex="-1">May</option><option class="flatpickr-monthDropdown-month" value="5" tabindex="-1">June</option><option class="flatpickr-monthDropdown-month" value="6" tabindex="-1">July</option><option class="flatpickr-monthDropdown-month" value="7" tabindex="-1">August</option><option class="flatpickr-monthDropdown-month" value="8" tabindex="-1">September</option><option class="flatpickr-monthDropdown-month" value="9" tabindex="-1">October</option><option class="flatpickr-monthDropdown-month" value="10" tabindex="-1">November</option><option class="flatpickr-monthDropdown-month" value="11" tabindex="-1">December</option></select><div class="numInputWrapper"><input class="numInput cur-year" type="number" tabindex="-1" aria-label="Year"><span class="arrowUp"></span><span class="arrowDown"></span></div></div></div><span class="flatpickr-next-month"><i class="fa fa-fw fa-arrow-right"></i></span></div><div class="flatpickr-innerContainer"><div class="flatpickr-rContainer"><div class="flatpickr-weekdays"><div class="flatpickr-weekdaycontainer">
+      <span class="flatpickr-weekday">
+        Sun</span><span class="flatpickr-weekday">Mon</span><span class="flatpickr-weekday">Tue</span><span class="flatpickr-weekday">Wed</span><span class="flatpickr-weekday">Thu</span><span class="flatpickr-weekday">Fri</span><span class="flatpickr-weekday">Sat
+      </span>
+      </div></div><div class="flatpickr-days" tabindex="-1"><div class="dayContainer"><span class="flatpickr-day prevMonthDay" aria-label="September 27, 2026" tabindex="-1">27</span><span class="flatpickr-day prevMonthDay" aria-label="September 28, 2026" tabindex="-1">28</span><span class="flatpickr-day prevMonthDay" aria-label="September 29, 2026" tabindex="-1">29</span><span class="flatpickr-day prevMonthDay" aria-label="September 30, 2026" tabindex="-1">30</span><span class="flatpickr-day " aria-label="October 1, 2026" tabindex="-1">1</span><span class="flatpickr-day " aria-label="October 2, 2026" tabindex="-1">2</span><span class="flatpickr-day " aria-label="October 3, 2026" tabindex="-1">3</span><span class="flatpickr-day " aria-label="October 4, 2026" tabindex="-1">4</span><span class="flatpickr-day " aria-label="October 5, 2026" tabindex="-1">5</span><span class="flatpickr-day " aria-label="October 6, 2026" tabindex="-1">6</span><span class="flatpickr-day " aria-label="October 7, 2026" tabindex="-1">7</span><span class="flatpickr-day " aria-label="October 8, 2026" tabindex="-1">8</span><span class="flatpickr-day " aria-label="October 9, 2026" tabindex="-1">9</span><span class="flatpickr-day " aria-label="October 10, 2026" tabindex="-1">10</span><span class="flatpickr-day " aria-label="October 11, 2026" tabindex="-1">11</span><span class="flatpickr-day " aria-label="October 12, 2026" tabindex="-1">12</span><span class="flatpickr-day " aria-label="October 13, 2026" tabindex="-1">13</span><span class="flatpickr-day " aria-label="October 14, 2026" tabindex="-1">14</span><span class="flatpickr-day " aria-label="October 15, 2026" tabindex="-1">15</span><span class="flatpickr-day " aria-label="October 16, 2026" tabindex="-1">16</span><span class="flatpickr-day " aria-label="October 17, 2026" tabindex="-1">17</span><span class="flatpickr-day " aria-label="October 18, 2026" tabindex="-1">18</span><span class="flatpickr-day " aria-label="October 19, 2026" tabindex="-1">19</span><span class="flatpickr-day " aria-label="October 20, 2026" tabindex="-1">20</span><span class="flatpickr-day " aria-label="October 21, 2026" tabindex="-1">21</span><span class="flatpickr-day " aria-label="October 22, 2026" tabindex="-1">22</span><span class="flatpickr-day " aria-label="October 23, 2026" tabindex="-1">23</span><span class="flatpickr-day " aria-label="October 24, 2026" tabindex="-1">24</span><span class="flatpickr-day " aria-label="October 25, 2026" tabindex="-1">25</span><span class="flatpickr-day " aria-label="October 26, 2026" tabindex="-1">26</span><span class="flatpickr-day " aria-label="October 27, 2026" tabindex="-1">27</span><span class="flatpickr-day " aria-label="October 28, 2026" tabindex="-1">28</span><span class="flatpickr-day " aria-label="October 29, 2026" tabindex="-1">29</span><span class="flatpickr-day today" aria-label="October 30, 2026" aria-current="date" tabindex="-1">30</span><span class="flatpickr-day " aria-label="October 31, 2026" tabindex="-1">31</span><span class="flatpickr-day nextMonthDay" aria-label="November 1, 2026" tabindex="-1">1</span><span class="flatpickr-day nextMonthDay" aria-label="November 2, 2026" tabindex="-1">2</span><span class="flatpickr-day nextMonthDay" aria-label="November 3, 2026" tabindex="-1">3</span><span class="flatpickr-day nextMonthDay" aria-label="November 4, 2026" tabindex="-1">4</span><span class="flatpickr-day nextMonthDay" aria-label="November 5, 2026" tabindex="-1">5</span><span class="flatpickr-day nextMonthDay" aria-label="November 6, 2026" tabindex="-1">6</span><span class="flatpickr-day nextMonthDay" aria-label="November 7, 2026" tabindex="-1">7</span></div></div></div></div><div class="shortcut-buttons-flatpickr-wrapper light"><div class="shortcut-buttons-flatpickr-label">or</div><div class="shortcut-buttons-flatpickr-buttons"><button type="button" class="shortcut-buttons-flatpickr-button" data-index="0">Yesterday</button><button type="button" class="shortcut-buttons-flatpickr-button" data-index="1">Today</button><button type="button" class="shortcut-buttons-flatpickr-button" data-index="2">Tomorrow</button></div></div></div><div class="flatpickr-calendar animate" tabindex="-1"><div class="flatpickr-months"><span class="flatpickr-prev-month"><i class="fa fa-fw fa-arrow-left"></i></span><div class="flatpickr-month"><div class="flatpickr-current-month"><select class="flatpickr-monthDropdown-months" aria-label="Month" tabindex="-1"><option class="flatpickr-monthDropdown-month" value="0" tabindex="-1">January</option><option class="flatpickr-monthDropdown-month" value="1" tabindex="-1">February</option><option class="flatpickr-monthDropdown-month" value="2" tabindex="-1">March</option><option class="flatpickr-monthDropdown-month" value="3" tabindex="-1">April</option><option class="flatpickr-monthDropdown-month" value="4" tabindex="-1">May</option><option class="flatpickr-monthDropdown-month" value="5" tabindex="-1">June</option><option class="flatpickr-monthDropdown-month" value="6" tabindex="-1">July</option><option class="flatpickr-monthDropdown-month" value="7" tabindex="-1">August</option><option class="flatpickr-monthDropdown-month" value="8" tabindex="-1">September</option><option class="flatpickr-monthDropdown-month" value="9" tabindex="-1">October</option><option class="flatpickr-monthDropdown-month" value="10" tabindex="-1">November</option><option class="flatpickr-monthDropdown-month" value="11" tabindex="-1">December</option></select><div class="numInputWrapper"><input class="numInput cur-year" type="number" tabindex="-1" aria-label="Year"><span class="arrowUp"></span><span class="arrowDown"></span></div></div></div><span class="flatpickr-next-month"><i class="fa fa-fw fa-arrow-right"></i></span></div><div class="flatpickr-innerContainer"><div class="flatpickr-rContainer"><div class="flatpickr-weekdays"><div class="flatpickr-weekdaycontainer">
+      <span class="flatpickr-weekday">
+        Sun</span><span class="flatpickr-weekday">Mon</span><span class="flatpickr-weekday">Tue</span><span class="flatpickr-weekday">Wed</span><span class="flatpickr-weekday">Thu</span><span class="flatpickr-weekday">Fri</span><span class="flatpickr-weekday">Sat
+      </span>
+      </div></div><div class="flatpickr-days" tabindex="-1"><div class="dayContainer"><span class="flatpickr-day prevMonthDay" aria-label="September 27, 2026" tabindex="-1">27</span><span class="flatpickr-day prevMonthDay" aria-label="September 28, 2026" tabindex="-1">28</span><span class="flatpickr-day prevMonthDay" aria-label="September 29, 2026" tabindex="-1">29</span><span class="flatpickr-day prevMonthDay" aria-label="September 30, 2026" tabindex="-1">30</span><span class="flatpickr-day " aria-label="October 1, 2026" tabindex="-1">1</span><span class="flatpickr-day " aria-label="October 2, 2026" tabindex="-1">2</span><span class="flatpickr-day " aria-label="October 3, 2026" tabindex="-1">3</span><span class="flatpickr-day " aria-label="October 4, 2026" tabindex="-1">4</span><span class="flatpickr-day " aria-label="October 5, 2026" tabindex="-1">5</span><span class="flatpickr-day " aria-label="October 6, 2026" tabindex="-1">6</span><span class="flatpickr-day " aria-label="October 7, 2026" tabindex="-1">7</span><span class="flatpickr-day " aria-label="October 8, 2026" tabindex="-1">8</span><span class="flatpickr-day " aria-label="October 9, 2026" tabindex="-1">9</span><span class="flatpickr-day " aria-label="October 10, 2026" tabindex="-1">10</span><span class="flatpickr-day " aria-label="October 11, 2026" tabindex="-1">11</span><span class="flatpickr-day " aria-label="October 12, 2026" tabindex="-1">12</span><span class="flatpickr-day " aria-label="October 13, 2026" tabindex="-1">13</span><span class="flatpickr-day " aria-label="October 14, 2026" tabindex="-1">14</span><span class="flatpickr-day " aria-label="October 15, 2026" tabindex="-1">15</span><span class="flatpickr-day " aria-label="October 16, 2026" tabindex="-1">16</span><span class="flatpickr-day " aria-label="October 17, 2026" tabindex="-1">17</span><span class="flatpickr-day " aria-label="October 18, 2026" tabindex="-1">18</span><span class="flatpickr-day " aria-label="October 19, 2026" tabindex="-1">19</span><span class="flatpickr-day " aria-label="October 20, 2026" tabindex="-1">20</span><span class="flatpickr-day " aria-label="October 21, 2026" tabindex="-1">21</span><span class="flatpickr-day " aria-label="October 22, 2026" tabindex="-1">22</span><span class="flatpickr-day " aria-label="October 23, 2026" tabindex="-1">23</span><span class="flatpickr-day " aria-label="October 24, 2026" tabindex="-1">24</span><span class="flatpickr-day " aria-label="October 25, 2026" tabindex="-1">25</span><span class="flatpickr-day " aria-label="October 26, 2026" tabindex="-1">26</span><span class="flatpickr-day " aria-label="October 27, 2026" tabindex="-1">27</span><span class="flatpickr-day " aria-label="October 28, 2026" tabindex="-1">28</span><span class="flatpickr-day " aria-label="October 29, 2026" tabindex="-1">29</span><span class="flatpickr-day today" aria-label="October 30, 2026" aria-current="date" tabindex="-1">30</span><span class="flatpickr-day " aria-label="October 31, 2026" tabindex="-1">31</span><span class="flatpickr-day nextMonthDay" aria-label="November 1, 2026" tabindex="-1">1</span><span class="flatpickr-day nextMonthDay" aria-label="November 2, 2026" tabindex="-1">2</span><span class="flatpickr-day nextMonthDay" aria-label="November 3, 2026" tabindex="-1">3</span><span class="flatpickr-day nextMonthDay" aria-label="November 4, 2026" tabindex="-1">4</span><span class="flatpickr-day nextMonthDay" aria-label="November 5, 2026" tabindex="-1">5</span><span class="flatpickr-day nextMonthDay" aria-label="November 6, 2026" tabindex="-1">6</span><span class="flatpickr-day nextMonthDay" aria-label="November 7, 2026" tabindex="-1">7</span></div></div></div></div><div class="shortcut-buttons-flatpickr-wrapper light"><div class="shortcut-buttons-flatpickr-label">or</div><div class="shortcut-buttons-flatpickr-buttons"><button type="button" class="shortcut-buttons-flatpickr-button" data-index="0">Yesterday</button><button type="button" class="shortcut-buttons-flatpickr-button" data-index="1">Today</button><button type="button" class="shortcut-buttons-flatpickr-button" data-index="2">Tomorrow</button></div></div></div></body><!-- prettier-ignore-start --></html>

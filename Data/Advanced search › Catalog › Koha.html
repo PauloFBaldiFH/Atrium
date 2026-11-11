@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)http://localhost:8080/cgi-bin/koha/catalogue/search.pl -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Advanced search › Catalog › Koha</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="7943f6f53b1ed9f4d155396756ffcbb4bd97f937,c7d68bbf62f7e1f2419454ab959cfbdb4d2b454a,1793390224">
+<meta name="generator" content="Koha 26.05.05">
+<script nonce="">
+    window.__CSP_NONCE__ = "";
+</script>
+
+    
+
+
+<link rel="shortcut icon" href="https://i.postimg.cc/rs5nhP5c/cone-Castro-Alves.png" type="image/x-icon">
+
+
+    <link type="text/css" rel="stylesheet" href="./Advanced search › Catalog › Koha_files/jquery-ui-1.13.2.min_26.0505000.css">
+
+<link rel="stylesheet" type="text/css" href="./Advanced search › Catalog › Koha_files/fontawesome.min_26.0505000.css">
+<link type="text/css" rel="stylesheet" href="./Advanced search › Catalog › Koha_files/brands.min_26.0505000.css">
+<link rel="stylesheet" type="text/css" href="./Advanced search › Catalog › Koha_files/solid.min_26.0505000.css">
+<link rel="stylesheet" type="text/css" href="./Advanced search › Catalog › Koha_files/datatables.min_26.0505000.css">
+<link href="./Advanced search › Catalog › Koha_files/print_26.0505000.css" media="print" rel="stylesheet" type="text/css">
+
+
+
+    
+
+
+    <link href="./Advanced search › Catalog › Koha_files/staff-global_26.0505000.css" rel="stylesheet" type="text/css">
+
+
+<!-- local colors -->
+
+
+<script nonce="" type="module">
+    import { APIClient } from "/intranet-tmpl/prog/js/fetch/api-client.js";
+    window.APIClient = APIClient;
+</script>
+<script nonce="">
+    var Koha = {};
+    
+        var CAN_user_parameters_manage_column_config = 1;
+    
+</script>
+
+<script src="./Advanced search › Catalog › Koha_files/Gettext_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/i18n_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/stores_26.0505000.js.download"></script>
+
+
+
+
+
+
+
+
+
+</head>
+
+<body id="catalog_advsearch" class="catalog">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand navbar-dark bg-dark" aria-label="Main">
+    <div class="container-fluid">
+        <a id="logo" class="navbar-brand" href="http://localhost:8080/cgi-bin/koha/mainpage.pl"><img src="./Advanced search › Catalog › Koha_files/picto-koha.svg" alt="Koha"></a>
+
+        <div class="collapse navbar-collapse" id="header">
+            <ul id="toplevelmenu" class="navbar-nav me-auto">
+                
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:8080/cgi-bin/koha/circ/circulation-home.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-exchange" title="Circulation"></i></span> <span class="nav-link-text">Circulation</span></a></li>
+                
+                
+                    <li class="nav-item"><a class="nav-link" href="http://localhost:8080/cgi-bin/koha/members/members-home.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-id-card" title="Patrons"></i></span> <span class="nav-link-text">Patrons</span></a></li>
+                
+                <li class="nav-item" id="catalog-search-link">
+                    <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl"><span class="nav-link-icon"><i class="fa fa-fw fa-search" title="Search"></i></span> <span class="nav-link-text">Search</span></a>
+                </li>
+                
+                    <li class="nav-item dropdown" id="catalog-search-dropdown">
+                        <a href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl">Advanced search</a></li>
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/itemsearch.pl">Item search</a></li>
+                        </ul>
+                    </li>
+                
+                
+                <li class="nav-item dropdown">
+                    <a href="http://localhost:8080/cgi-bin/koha/mainpage.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="nav-link-icon"><i class="fa fa-fw fa-bars" title="More"></i></span> <span class="nav-link-text">More</span></a>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/virtualshelves/shelves.pl">Lists</a></li>
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/cataloguing/cataloging-home.pl">Cataloging</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/acqui/acqui-home.pl">Acquisitions</a></li>
+                        
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/authorities/authorities-home.pl">Authorities</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/serials/serials-home.pl">Serials</a></li>
+                        
+                        
+                        
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/reports/reports-home.pl">Reports</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/suggestion/suggestion.pl">Suggestions</a></li>
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/tools/tools-home.pl">Tools</a></li>
+                        
+                        
+                        
+                            <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/admin/admin-home.pl">Administration</a></li>
+                        
+                        <li><a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/about.pl">About Koha</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+
+            <ul id="user-menu" class="nav navbar-nav">
+                
+                    <li class="nav-item dropdown" id="logged-in-dropdown">
+                        <a id="logged-in-menu" href="http://localhost:8080/cgi-bin/koha/mainpage.pl" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="logged-in-info-brief">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            <span id="logged-in-info-full">
+                                
+                                <span class="loggedinusername is_superlibrarian" data-loggedinusername="Bibliotecário" data-is-superlibrarian="is_superlibrarian">Bibliotecário</span>
+                                <span class="loggedincategorycode content_hidden" data-loggedincategorycode="B">B</span>
+                                
+                                    <strong>
+                                        <span class="logged-in-branch-name" data-logged-in-branch-name="Castro Alves">Castro Alves</span>
+                                        <span class="logged-in-branch-code content_hidden" data-logged-in-branch-code="MAIN">MAIN</span>
+                                    </strong>
+                                
+                                
+                                
+                            </span>
+                            <b class="caret"></b>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" role="menu" aria-labelledby="logged-in-menu">
+                            <li class="loggedin-menu-label">
+                                Logged in as:<br>
+                                <span class="loggedinusername">Bibliotecário</span>
+                            </li>
+                            <li class="loggedin-menu-label">
+                                
+                                    Location: <br>
+                                    <span class="logged-in-branch-name">Castro Alves</span>
+                                    <span class="logged-in-branch-code content_hidden">MAIN</span>
+                                
+                            </li>
+
+                            
+
+                            
+
+                            
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <div id="set_library_controls">
+                                        <div>
+                                            <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/circ/set-library.pl">
+                                                
+                                                    
+                                                        Set library
+                                                    
+                                                
+                                            </a>
+                                        </div>
+                                        
+                                            <div>
+                                                <a id="branch_select_cog" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl#" role="button" aria-label="Toggle panel for login settings" aria-expanded="false">
+                                                    <i class="fa fa-cog" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        
+                                    </div>
+                                </li>
+
+                                <li id="setlibrary_panel" style="display:none"></li>
+                            
+                            
+
+                            
+                                <li class="nav-item toplinks-myaccount">
+                                    <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/members/moremember.pl?borrowernumber=1">My account</a>
+                                </li>
+                                <li class="nav-item toplinks-mycheckouts">
+                                    <a class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/circ/circulation.pl?borrowernumber=1">My checkouts</a>
+                                </li>
+                            
+
+                            
+                            <li class="nav-item">
+                                <a id="logout" class="toplinks dropdown-item" href="http://localhost:8080/cgi-bin/koha/mainpage.pl?logout.x=1">Log out</a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                        <li class="nav-item dropdown" id="debug-controls-dropdown">
+                            <a id="debug-controls-menu" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Debug controls">
+                                <i id="debug-icon" class="fa fa-bug"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" role="menu" aria-labelledby="debug-controls-menu">
+                                <li>
+                                    <a id="toggleUserCSS" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl#"> <i class="fa fa-fw fa-brands fa-css3"></i> <span class="toggle-text">Disable custom CSS</span> </a>
+                                </li>
+                                <li>
+                                    <a id="toggleUserJS" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl#"> <i class="fa fa-fw fa-brands fa-square-js"></i> <span class="toggle-text">Disable custom JS</span> </a>
+                                </li>
+                                <li>
+                                    <a id="toggleStylesheets" class="dropdown-item" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl#"> <i class="fa fa-fw fa-file-code"></i> <span class="toggle-text">Disable custom stylesheets</span> </a>
+                                </li>
+                            </ul>
+                        </li>
+                    
+                    
+
+                
+            </ul>
+        </div>
+    </div>
+
+    
+</nav>
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- adv-search.inc -->
+
+    
+        <div id="header_search" class="toptabs"> 
+    
+    <div class="tab-content"> 
+        
+            
+    <!-- patron-search-box.inc -->
+    
+    
+        <div class="tab-pane show active" id="circ_search_panel" role="tabpanel" aria-labelledby="circ_search-tab" tabindex="0"> 
+        <form action="http://localhost:8080/cgi-bin/koha/circ/circulation.pl" id="patronsearch" method="get">
+            <div class="form-title">
+                <label class="control-label" for="findborrower"><span class="control-text">Check out</span> <i class="fa fa-fw fa-upload" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input autocomplete="off" id="findborrower" name="findborrower" class="head-searchbox form-control ui-autocomplete-input" type="text" placeholder="Enter patron card number or partial name" size="40">
+
+                
+            </div>
+
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /patron-search-box.inc -->
+
+
+            
+    <!-- checkin-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="checkin_search_panel" role="tabpanel" aria-labelledby="checkin_search-tab" tabindex="0"> 
+        <form method="post" action="http://localhost:8080/cgi-bin/koha/circ/returns.pl" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="7943f6f53b1ed9f4d155396756ffcbb4bd97f937,c7d68bbf62f7e1f2419454ab959cfbdb4d2b454a,1793390224">
+
+            <div class="form-title">
+                <label class="control-label" for="ret_barcode"><span class="control-text">Check in</span> <i class="fa fa-fw fa-download" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input name="barcode" id="ret_barcode" class="head-searchbox form-control" accesskey="r" type="text" placeholder="Scan a barcode to check in" size="40">
+                <input type="hidden" name="op" value="cud-checkin">
+            </div>
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /checkin-search-box.inc -->
+
+
+            
+    <!-- renew-search-box.inc -->
+    
+    
+        <div class="tab-pane" id="renew_search_panel" role="tabpanel" aria-labelledby="renew_search-tab" tabindex="0"> 
+        <form method="post" action="http://localhost:8080/cgi-bin/koha/circ/renew.pl" autocomplete="off">
+            <input type="hidden" name="csrf_token" value="7943f6f53b1ed9f4d155396756ffcbb4bd97f937,c7d68bbf62f7e1f2419454ab959cfbdb4d2b454a,1793390224">
+
+
+            <div class="form-title">
+                <label class="control-label" for="ren_barcode"><span class="control-text">Renew</span> <i class="fa fa-fw fa-retweet" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                <input name="barcode" id="ren_barcode" class="head-searchbox form-control" accesskey="r" type="text" placeholder="Scan a barcode to renew" size="40">
+            </div>
+            <input type="hidden" name="op" value="cud-renew">
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+        </form>
+     </div>
+    
+
+    <!-- /renew-search-box.inc -->
+
+
+        
+        
+            <!-- member-search-box.inc -->
+
+
+
+
+    
+    
+        <div class="tab-pane" id="patron_search_panel" role="tabpanel" aria-labelledby="patron_search-tab" tabindex="0"> 
+        <form id="patron_header_search" method="get" action="http://localhost:8080/cgi-bin/koha/members/member.pl">
+            <input type="hidden" name="quicksearch" value="1">
+
+            <div class="form-title">
+                <label class="control-label" for="searchmember"><span class="control-text">Search patrons</span> <i class="fa fa-fw fa-id-card" aria-hidden="true"></i></label>
+            </div>
+
+            <div class="form-content">
+                
+                    <input name="searchmember" id="searchmember" class="head-searchbox form-control ui-autocomplete-input" type="text" placeholder="Enter patron card number or partial name" size="25" value="" autocomplete="off">
+                
+
+                <button type="button" class="form-extra-content-toggle" title="More options"><i class="form-extra-content-icon fa-solid fa-sliders" aria-hidden="true"></i></button>
+            </div>
+
+            <button type="submit" aria-label="Search"><i class="fa fa-arrow-right"></i></button>
+
+            <div class="form-extra-content">
+                <div>     
+        
+        
+        
+        
+    
+    <label for="searchfieldstype">Search field:</label>
+    <select name="searchfieldstype" class="form-select" id="searchfieldstype">
+        
+        
+        
+        
+        
+            
+            
+            
+                <option value="standard">        Standard</option>
+            
+        
+            
+            
+            
+                <option value="surname">        Surname</option>
+            
+        
+            
+            
+            
+                <option value="cardnumber">        Card number</option>
+            
+        
+            
+            
+            
+                <option value="all_emails">        All emails</option>
+            
+        
+            
+            
+            
+                <option value="borrowernumber">        Borrowernumber</option>
+            
+        
+            
+            
+            
+                <option value="userid">        Username</option>
+            
+        
+            
+            
+            
+                <option value="all_phones">        All phones</option>
+            
+        
+            
+            
+            
+                <option value="full_address">        Full address</option>
+            
+        
+            
+            
+            
+                <option value="dateofbirth">        Date of birth</option>
+            
+        
+            
+            
+            
+                <option value="sort1">        Sort 1</option>
+            
+        
+            
+            
+            
+                <option value="sort2">        Sort 2</option>
+            
+        
+            
+            
+            
+                <option value="firstname">        First name</option>
+            
+        
+            
+            
+            
+                <option value="preferred_name">        Preferred name</option>
+            
+        
+            
+            
+            
+                <option value="middle_name">        Middle name</option>
+            
+        
+            
+            
+            
+                <option value="othernames">        Other name</option>
+            
+        
+        
+            
+        
+    </select> </div>
+
+                <div>
+                    <label for="searchtype" class="control-label">Search type</label>
+                    <select name="searchtype" id="searchtype" class="form-select">
+                        
+                            <option value="starts_with">Starts with</option>
+                            <option value="contains" selected="selected">Contains</option>
+                        
+                    </select>
+                </div>
+
+                <div>
+                    
+                    <label for="branchcode" class="control-label">Library</label>
+                    <select name="branchcode_filter" id="branchcode" class="form-select">
+                        
+                        
+    
+        
+            <option value="MAIN">Castro Alves</option>
+        
+    
+
+                    </select>
+                </div>
+
+                <div>
+                    
+                    <label for="categorycode" class="control-label">Category</label>
+                    <select name="categorycode_filter" id="categorycode" class="form-select">
+                        <option value="">Any</option>
+                        
+                            
+                                <option value="B">Bibliotecário</option>
+                            
+                        
+                            
+                                <option value="COM">Leitor</option>
+                            
+                        
+                    </select>
+                </div>
+            </div>
+        </form>
+     </div>
+    
+
+
+<!-- /member-search-box.inc -->
+
+        
+     </div>
+
+
+    
+    <ul class="nav nav-tabs" role="tablist">
+        
+        
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link active" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl#circ_search_panel" id="circ_search-tab" data-tabname="circ_search" aria-controls="circ_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#circ_search_panel" aria-selected="true">
+                    
+                <i class="fa fa-fw fa-upload" aria-hidden="true"></i> <span class="tab-title">Check out</span>
+            
+                </a>
+            
+        
+    </li>
+
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl#checkin_search_panel" id="checkin_search-tab" data-tabname="checkin_search" aria-controls="checkin_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#checkin_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-download" aria-hidden="true"></i> <span class="tab-title">Check in</span>
+            
+                </a>
+            
+        
+    </li>
+
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl#renew_search_panel" id="renew_search-tab" data-tabname="renew_search" aria-controls="renew_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#renew_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-retweet" aria-hidden="true"></i> <span class="tab-title">Renew</span>
+            
+                </a>
+            
+        
+    </li>
+
+        
+        
+            
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl#patron_search_panel" id="patron_search-tab" data-tabname="patron_search" aria-controls="patron_search_panel" role="tab" data-bs-toggle="tab" data-bs-target="#patron_search_panel" aria-selected="false" tabindex="-1">
+                    
+                <i class="fa fa-fw fa-id-card" aria-hidden="true"></i> <span class="tab-title">Search patrons</span>
+            
+                </a>
+            
+        
+    </li>
+
+        
+    
+    </ul>
+
+ </div>
+    
+
+<!-- adv-search.inc -->
+
+
+
+
+
+<div id="sub-header">
+    
+    
+    <nav id="breadcrumbs" aria-label="Breadcrumb">
+        <ol class="breadcrumb">
+            
+            
+    
+        
+            <li class="breadcrumb-item"> <a href="http://localhost:8080/cgi-bin/koha/mainpage.pl" title="Home"><span class="visually-hidden-focusable">Home</span></a> </li>
+        
+    
+
+            
+        
+    
+        
+            <li class="breadcrumb-item active" aria-current="page">
+                <a aria-disabled="true" tabindex="-1"> <span>Advanced search</span> </a>
+            </li>
+        
+    
+
+    
+        </ol>
+    </nav>
+
+
+    <nav id="shortcut" class="shortcut" aria-label="Quick shortcuts">
+    
+
+    <div>
+        <a class="" href="http://localhost:8080/cgi-bin/koha/help.pl" id="helper"><i class="fa-solid fa-circle-question"></i> <span>Help</span></a>
+    </div>
+</nav>
+
+</div>
+
+
+
+
+<div class="main container-fluid">
+    <div class="row">
+        
+        
+            <div class="col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+                <main>
+                    <div id="messages">
+    
+
+    <div id="transient_result"></div>
+</div>
+
+                    
+    <form action="http://localhost:8080/cgi-bin/koha/catalogue/search.pl" method="get">
+        <div id="advanced-search">
+                
+                
+            
+                <input type="hidden" name="advsearch" value="1">
+                <h1>Advanced search</h1>
+
+                <!-- SEARCH BUTTONS -->
+                <div id="toolbar" class="btn-toolbar sticky">
+                    <div class="btn-group">
+                        <button class="btn btn-primary" type="submit" accesskey="s"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                    <div class="btn-group">
+                        
+                            <a href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl?expanded_options=1" class="btn btn-link"><i class="fa fa-search-plus"></i> More options</a>
+                        
+                    </div>
+                    <div class="btn-group">
+                        <a href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl?do=Clear&amp;expanded_options=0" class="btn btn-link"><i class="fa fa-trash-can"></i> Clear fields</a>
+                    </div>
+                    <div class="btn-group">
+                        <a href="http://localhost:8080/cgi-bin/koha/catalogue/itemsearch.pl" class="btn btn-link"><i class="fa fa-search"></i> Go to item search</a>
+                    </div>
+
+                    
+                </div>
+                <!-- /#toolbar -->
+                <!-- /SEARCH BUTTONS -->
+            
+
+            <!-- BOOLEAN SEARCH OPTIONS -->
+            <fieldset id="searchterms">
+                <legend>Search for </legend>
+                
+                    
+                    
+                    
+                    
+
+                    <div class="" style="">
+                        
+                        
+                        
+
+    
+
+
+<select class="advsearch" name="idx" id="idx_0">
+    
+        <option value="kw">Keyword</option>
+    
+    
+        <option value="kw,phr">&nbsp;&nbsp;&nbsp;&nbsp; Keyword as phrase</option>
+    
+    
+        <option value="au">Author</option>
+    
+    
+        <option value="au,phr">&nbsp;&nbsp;&nbsp;&nbsp; Author as phrase</option>
+    
+    
+        <option value="cpn">&nbsp;&nbsp;&nbsp;&nbsp; Corporate name</option>
+    
+    
+        <option value="cfn">&nbsp;&nbsp;&nbsp;&nbsp; Conference name</option>
+    
+    
+        <option value="cpn,phr">&nbsp;&nbsp;&nbsp;&nbsp; Corporate name as phrase</option>
+    
+    
+        <option value="cfn,phr">&nbsp;&nbsp;&nbsp;&nbsp; Conference name as phrase</option>
+    
+    
+        <option value="pn">&nbsp;&nbsp;&nbsp;&nbsp; Personal name</option>
+    
+    
+        <option value="pn,phr">&nbsp;&nbsp;&nbsp;&nbsp; Personal name as phrase</option>
+    
+    
+        <option value="ti">Title</option>
+    
+    
+        <option value="ti,phr">&nbsp;&nbsp;&nbsp;&nbsp; Title as phrase</option>
+    
+    
+        <option value="se">&nbsp;&nbsp;&nbsp;&nbsp; Series title</option>
+    
+    
+        <option value="su">Subject</option>
+    
+    
+        <option value="su,phr">&nbsp;&nbsp;&nbsp;&nbsp; Subject as phrase</option>
+    
+    
+    
+        <option value="bc">Barcode</option>
+    
+    
+        <option value="location,wrdl" title="Enter location code value for search">Shelving location (code)</option>
+    
+    
+        
+            <option value="ident">Standard number</option>
+        
+    
+    
+        <option value="nb">&nbsp;&nbsp;&nbsp;&nbsp; ISBN</option>
+    
+    
+        <option value="ns">&nbsp;&nbsp;&nbsp;&nbsp; ISSN</option>
+    
+    
+        
+            <option value="callnum">&nbsp;&nbsp;&nbsp;&nbsp; Call number</option>
+        
+    
+    
+        <option value="ln,rtrn">Language</option>
+    
+    
+        <option value="nt">Notes/Comments</option>
+    
+    
+        
+            <option value="curriculum">Curriculum</option>
+        
+    
+    
+        <option value="pb">Publisher</option>
+    
+    
+        <option value="pl">Publisher location</option>
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <option value="yr,st-year">Publication date (yyyy-yyyy)</option>
+    
+    
+        <option value="acqdate,st-date-normalized">Acquisition date (yyyy-mm-dd)</option>
+    
+</select>
+
+                        <input type="text" size="30" name="q" title="Enter search terms" value="">
+                        
+                    </div>
+                
+                    
+                    
+                    
+                    
+
+                    <div class="" style="">
+                        
+                        
+                        
+
+
+<select class="advsearch" name="idx" id="idx_1">
+    
+        <option value="kw">Keyword</option>
+    
+    
+        <option value="kw,phr">&nbsp;&nbsp;&nbsp;&nbsp; Keyword as phrase</option>
+    
+    
+        <option value="au">Author</option>
+    
+    
+        <option value="au,phr">&nbsp;&nbsp;&nbsp;&nbsp; Author as phrase</option>
+    
+    
+        <option value="cpn">&nbsp;&nbsp;&nbsp;&nbsp; Corporate name</option>
+    
+    
+        <option value="cfn">&nbsp;&nbsp;&nbsp;&nbsp; Conference name</option>
+    
+    
+        <option value="cpn,phr">&nbsp;&nbsp;&nbsp;&nbsp; Corporate name as phrase</option>
+    
+    
+        <option value="cfn,phr">&nbsp;&nbsp;&nbsp;&nbsp; Conference name as phrase</option>
+    
+    
+        <option value="pn">&nbsp;&nbsp;&nbsp;&nbsp; Personal name</option>
+    
+    
+        <option value="pn,phr">&nbsp;&nbsp;&nbsp;&nbsp; Personal name as phrase</option>
+    
+    
+        <option value="ti">Title</option>
+    
+    
+        <option value="ti,phr">&nbsp;&nbsp;&nbsp;&nbsp; Title as phrase</option>
+    
+    
+        <option value="se">&nbsp;&nbsp;&nbsp;&nbsp; Series title</option>
+    
+    
+        <option value="su">Subject</option>
+    
+    
+        <option value="su,phr">&nbsp;&nbsp;&nbsp;&nbsp; Subject as phrase</option>
+    
+    
+    
+        <option value="bc">Barcode</option>
+    
+    
+        <option value="location,wrdl" title="Enter location code value for search">Shelving location (code)</option>
+    
+    
+        
+            <option value="ident">Standard number</option>
+        
+    
+    
+        <option value="nb">&nbsp;&nbsp;&nbsp;&nbsp; ISBN</option>
+    
+    
+        <option value="ns">&nbsp;&nbsp;&nbsp;&nbsp; ISSN</option>
+    
+    
+        
+            <option value="callnum">&nbsp;&nbsp;&nbsp;&nbsp; Call number</option>
+        
+    
+    
+        <option value="ln,rtrn">Language</option>
+    
+    
+        <option value="nt">Notes/Comments</option>
+    
+    
+        
+            <option value="curriculum">Curriculum</option>
+        
+    
+    
+        <option value="pb">Publisher</option>
+    
+    
+        <option value="pl">Publisher location</option>
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <option value="yr,st-year">Publication date (yyyy-yyyy)</option>
+    
+    
+        <option value="acqdate,st-date-normalized">Acquisition date (yyyy-mm-dd)</option>
+    
+</select>
+
+                        <input type="text" size="30" name="q" title="Enter search terms" value="">
+                        
+                    </div>
+                
+                    
+                    
+                    
+                    
+
+                    <div class="" style="">
+                        
+                        
+                        
+
+
+<select class="advsearch" name="idx" id="idx_2">
+    
+        <option value="kw">Keyword</option>
+    
+    
+        <option value="kw,phr">&nbsp;&nbsp;&nbsp;&nbsp; Keyword as phrase</option>
+    
+    
+        <option value="au">Author</option>
+    
+    
+        <option value="au,phr">&nbsp;&nbsp;&nbsp;&nbsp; Author as phrase</option>
+    
+    
+        <option value="cpn">&nbsp;&nbsp;&nbsp;&nbsp; Corporate name</option>
+    
+    
+        <option value="cfn">&nbsp;&nbsp;&nbsp;&nbsp; Conference name</option>
+    
+    
+        <option value="cpn,phr">&nbsp;&nbsp;&nbsp;&nbsp; Corporate name as phrase</option>
+    
+    
+        <option value="cfn,phr">&nbsp;&nbsp;&nbsp;&nbsp; Conference name as phrase</option>
+    
+    
+        <option value="pn">&nbsp;&nbsp;&nbsp;&nbsp; Personal name</option>
+    
+    
+        <option value="pn,phr">&nbsp;&nbsp;&nbsp;&nbsp; Personal name as phrase</option>
+    
+    
+        <option value="ti">Title</option>
+    
+    
+        <option value="ti,phr">&nbsp;&nbsp;&nbsp;&nbsp; Title as phrase</option>
+    
+    
+        <option value="se">&nbsp;&nbsp;&nbsp;&nbsp; Series title</option>
+    
+    
+        <option value="su">Subject</option>
+    
+    
+        <option value="su,phr">&nbsp;&nbsp;&nbsp;&nbsp; Subject as phrase</option>
+    
+    
+    
+        <option value="bc">Barcode</option>
+    
+    
+        <option value="location,wrdl" title="Enter location code value for search">Shelving location (code)</option>
+    
+    
+        
+            <option value="ident">Standard number</option>
+        
+    
+    
+        <option value="nb">&nbsp;&nbsp;&nbsp;&nbsp; ISBN</option>
+    
+    
+        <option value="ns">&nbsp;&nbsp;&nbsp;&nbsp; ISSN</option>
+    
+    
+        
+            <option value="callnum">&nbsp;&nbsp;&nbsp;&nbsp; Call number</option>
+        
+    
+    
+        <option value="ln,rtrn">Language</option>
+    
+    
+        <option value="nt">Notes/Comments</option>
+    
+    
+        
+            <option value="curriculum">Curriculum</option>
+        
+    
+    
+        <option value="pb">Publisher</option>
+    
+    
+        <option value="pl">Publisher location</option>
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <option value="yr,st-year">Publication date (yyyy-yyyy)</option>
+    
+    
+        <option value="acqdate,st-date-normalized">Acquisition date (yyyy-mm-dd)</option>
+    
+</select>
+
+                        <input type="text" size="30" name="q" title="Enter search terms" value="">
+                        
+                    </div>
+                
+                
+                
+            </fieldset>
+            <!-- /BOOLEAN SEARCH OPTIONS -->
+
+            <!-- MC-TYPE LIMITS -->
+            
+    
+        <div id="advsearches" class="toptabs"> 
+                
+    <ul class="nav nav-tabs" role="tablist">
+        
+                    
+                        
+    <li class="nav-item" role="presentation">
+        
+            
+                <a class="nav-link active" href="http://localhost:8080/cgi-bin/koha/catalogue/search.pl#advsearch-tab-itemtypes_panel" id="advsearch-tab-itemtypes-tab" data-tabname="advsearch-tab-itemtypes" aria-controls="advsearch-tab-itemtypes_panel" role="tab" data-bs-toggle="tab" data-bs-target="#advsearch-tab-itemtypes_panel" aria-selected="true">
+                    
+                            
+                                <span>Item type</span>
+                            
+                        
+                </a>
+            
+        
+    </li>
+
+                    
+                
+    </ul>
+
+                <!-- prettier-ignore-start -->
+                    
+    <div class="tab-content"> 
+                        
+                            
+    
+        <div class="tab-pane active show" id="advsearch-tab-itemtypes_panel" role="tabpanel" aria-labelledby="advsearch-tab-itemtypes-tab" tabindex="0"> 
+                                <h4>Limit to any of the following:</h4>
+                                <table>
+                                    <tbody><tr>
+                                        
+                                            <td>
+                                                
+                                                
+                                                    <input type="checkbox" id="itypephr-0" name="limit" value="mc-itype,phr:AL">
+                                                
+                                                <label for="itypephr-0">
+                                                    
+                                                        
+                                                            <img class="itemtype-image" src="./Advanced search › Catalog › Koha_files/BookOnTape.png" alt="">
+                                                        
+                                                            &nbsp;
+                                                    
+                                                    <span class="itypetext">Audiolivros</span>
+                                                </label>
+                                            </td>
+                                            
+                                                
+                                            
+                                        
+                                            <td>
+                                                
+                                                
+                                                    <input type="checkbox" id="itypephr-1" name="limit" value="mc-itype,phr:DV">
+                                                
+                                                <label for="itypephr-1">
+                                                    
+                                                        
+                                                            <img class="itemtype-image" src="./Advanced search › Catalog › Koha_files/DVD.png" alt="">
+                                                        
+                                                            &nbsp;
+                                                    
+                                                    <span class="itypetext">DVDs</span>
+                                                </label>
+                                            </td>
+                                            
+                                                
+                                            
+                                        
+                                            <td>
+                                                
+                                                
+                                                    <input type="checkbox" id="itypephr-2" name="limit" value="mc-itype,phr:GB">
+                                                
+                                                <label for="itypephr-2">
+                                                    
+                                                        
+                                                            <img class="itemtype-image" src="./Advanced search › Catalog › Koha_files/quadrinhos.png" alt="">
+                                                        
+                                                            &nbsp;
+                                                    
+                                                    <span class="itypetext">Gibis</span>
+                                                </label>
+                                            </td>
+                                            
+                                                
+                                            
+                                        
+                                            <td>
+                                                
+                                                
+                                                    <input type="checkbox" id="itypephr-3" name="limit" value="mc-itype,phr:BK">
+                                                
+                                                <label for="itypephr-3">
+                                                    
+                                                        
+                                                            <img class="itemtype-image" src="./Advanced search › Catalog › Koha_files/book.gif" alt="">
+                                                        
+                                                            &nbsp;
+                                                    
+                                                    <span class="itypetext">Livros</span>
+                                                </label>
+                                            </td>
+                                            
+                                                
+                                            
+                                        
+                                            <td>
+                                                
+                                                
+                                                    <input type="checkbox" id="itypephr-4" name="limit" value="mc-itype,phr:LB">
+                                                
+                                                <label for="itypephr-4">
+                                                    
+                                                        
+                                                            <img class="itemtype-image" src="./Advanced search › Catalog › Koha_files/open-braille-book-providing-accessible-reading-experience-vector-removebg-preview2.png" alt="">
+                                                        
+                                                            &nbsp;
+                                                    
+                                                    <span class="itypetext">Livros em braille</span>
+                                                </label>
+                                            </td>
+                                            
+                                                
+                                                    </tr>
+                                                    <tr>
+                                                
+                                            
+                                        
+                                            <td>
+                                                
+                                                
+                                                    <input type="checkbox" id="itypephr-5" name="limit" value="mc-itype,phr:LI">
+                                                
+                                                <label for="itypephr-5">
+                                                    
+                                                        
+                                                            <img class="itemtype-image" src="./Advanced search › Catalog › Koha_files/beginner-reader-book.gif" alt="">
+                                                        
+                                                            &nbsp;
+                                                    
+                                                    <span class="itypetext">Livros infantis</span>
+                                                </label>
+                                            </td>
+                                            
+                                                
+                                            
+                                        
+                                            <td>
+                                                
+                                                
+                                                    <input type="checkbox" id="itypephr-6" name="limit" value="mc-itype,phr:JV">
+                                                
+                                                <label for="itypephr-6">
+                                                    
+                                                        
+                                                            <img class="itemtype-image" src="./Advanced search › Catalog › Koha_files/big-book-icon.gif" alt="">
+                                                        
+                                                            &nbsp;
+                                                    
+                                                    <span class="itypetext">Livros juvenis</span>
+                                                </label>
+                                            </td>
+                                            
+                                                
+                                            
+                                        
+                                            <td>
+                                                
+                                                
+                                                    <input type="checkbox" id="itypephr-7" name="limit" value="mc-itype,phr:RO">
+                                                
+                                                <label for="itypephr-7">
+                                                    
+                                                        
+                                                            <img class="itemtype-image" src="./Advanced search › Catalog › Koha_files/romance.png" alt="">
+                                                        
+                                                            &nbsp;
+                                                    
+                                                    <span class="itypetext">Romances</span>
+                                                </label>
+                                            </td>
+                                            
+                                                </tr>
+                                            
+                                        
+                                </tbody></table>
+                             </div>
+    
+
+                        
+                     </div>
+
+                    <!-- prettier-ignore-end -->
+             </div>
+    
+
+            <!-- /MC-TYPE LIMIT -->
+
+            
+
+            
+                
+                <!-- SUBTYPE LIMITS -->
+                <fieldset id="subtype">
+                    <legend>Subtype limits</legend><p>     <select name="limit" class="subtype">
+        
+            <option value="" selected="selected" class="menuheader">Any audience</option>
+        
+        
+            <option value="aud:a">Preschool</option>
+        
+        
+            <option value="aud:b">Primary</option>
+        
+        
+            <option value="aud:c">Pre-adolescent</option>
+        
+        
+            <option value="aud:d">Adolescent</option>
+        
+        
+            <option value="aud:e">Adult</option>
+        
+        
+            <option value="aud:f">Specialized</option>
+        
+        
+            <option value="aud:g">General</option>
+        
+        
+            <option value="aud:j">Juvenile</option>
+        
+        
+    </select>
+
+    <select name="limit" class="subtype">
+        
+            <option value="" selected="selected" class="menuheader">Any content</option>
+        
+        
+            <option value="fic:1">Fiction</option>
+        
+        
+            <option value="fic:0">Non-fiction</option>
+        
+        
+            <option value="bio:b">Biography</option>
+        
+        
+            <option value="mus:j">Musical recording</option>
+        
+        
+            <option value="mus:i">Non-musical recording</option>
+        
+        
+        
+        
+    </select>
+
+    
+    <select name="limit" class="subtype">
+        
+            <option value="" selected="selected" class="menuheader">Any format</option>
+        
+        
+            <option value="l-format:ta">Regular print</option>
+        
+        
+            <option value="l-format:tb">Large print</option>
+        
+        
+            <option value="l-format:tc or fb">Braille</option>
+        
+        <option value="">-----------</option>
+        
+            <option value="l-format:sd">CD audio</option>
+        
+        
+            <option value="l-format:ss">Cassette recording</option>
+        
+        
+            <option value="l-format:vf">VHS tape / Videocassette</option>
+        
+        
+            <option value="l-format:vd">DVD video / Videodisc</option>
+        
+        
+            <option value="l-format:co">CD software</option>
+        
+        
+            <option value="l-format:cr">Website</option>
+        
+        
+    </select>
+
+    <select name="limit" class="subtype">
+        
+            <option value="" selected="selected">Additional content types</option>
+        
+        
+            <option value="ctype:a">Abstracts / Summaries</option>
+        
+        
+            <option value="ctype:b">Bibliographies</option>
+        
+        
+            <option value="ctype:c">Catalogs</option>
+        
+        
+            <option value="ctype:e">Encyclopedias </option>
+        
+        
+            <option value="ctype:f">Handbooks</option>
+        
+        
+            <option value="ctype:g">Legal articles</option>
+        
+        
+            <option value="ctype:i">Indexes</option>
+        
+        
+            <option value="ctype:j">Patent document</option>
+        
+        
+            <option value="ctype:k">Discographies</option>
+        
+        
+            <option value="ctype:l">Legislation</option>
+        
+        
+            <option value="ctype:m">Theses</option>
+        
+        
+            <option value="ctype:n">Surveys</option>
+        
+        
+            <option value="ctype:o">Reviews</option>
+        
+        
+            <option value="ctype:p">Programmed texts</option>
+        
+        
+            <option value="ctype:q">Filmographies</option>
+        
+        
+            <option value="ctype:r">Directories</option>
+        
+        
+            <option value="ctype:s">Statistics</option>
+        
+        
+            <option value="ctype:t">Technical reports</option>
+        
+        
+            <option value="ctype:v">Legal cases and case notes</option>
+        
+        
+            <option value="ctype:w">Law reports and digests</option>
+        
+        
+            <option value="ctype:z">Treaties </option>
+        
+        
+    </select> </p><fieldset id="current_subtype_limits" style="display: none;">
+                        <legend>Current subtype limits</legend>
+                        
+                            
+                            
+                        
+                            
+                            
+                        
+                            
+                            
+                        
+                            
+                            
+                        
+                            
+                            
+                        
+                    </fieldset>
+                    <!-- #current_subtype_limits -->
+                </fieldset>
+                <!-- /#subtype -->
+            
+
+            <!-- AVAILABILITY LIMITS -->
+            <fieldset id="availability">
+                <legend>Location and availability</legend>
+                <fieldset id="currently-avail">
+                    
+                        <p><label for="available-items">Only items currently available:</label> <input type="checkbox" id="available-items" name="limit" value="available"></p>
+                    
+                </fieldset>
+                <!-- /#currently-avail -->
+
+                <fieldset id="select-libs">
+                    <p>
+                        <label for="branchloop">Individual libraries:</label>
+                        <select name="limit" id="branchloop">
+                            <option value="">All libraries</option>
+                            
+                            
+    
+        
+            <option value="branch:MAIN">Castro Alves</option>
+        
+    
+
+                            
+                        </select>
+                        <!-- /#branchloop -->
+                    </p>
+                    
+                </fieldset>
+                <!-- /#select-libs -->
+            </fieldset>
+            <!-- /#availability -->
+            <!-- /AVAILABILITY LIMITS -->
+
+            <!-- OTHER LIMITS (facets, etc.) -->
+            
+            <!-- /OTHER LIMITS (facets, etc.) -->
+
+            <!-- RANK LIMITS -->
+            <fieldset id="sortby">
+                <legend>Sorting</legend>
+                <p>
+                    <label for="sort_by">Sort by: </label>
+                    <select id="sort_by" name="sort_by">
+                        <option value="relevance">Relevance</option>
+
+<optgroup label="Popularity">
+    
+        <option value="popularity_dsc">Popularity (most to least)</option>
+    
+    
+        <option value="popularity_asc">Popularity (least to most)</option>
+    
+</optgroup>
+
+<optgroup label="Author">
+    
+        <option value="author_az">Author (A-Z)</option>
+    
+    
+        <option value="author_za">Author (Z-A)</option>
+    
+</optgroup>
+
+<optgroup label="Call number">
+    
+        <option value="call_number_asc">Call number (0-9 to A-Z)</option>
+    
+
+    
+        <option value="call_number_dsc">Call number (Z-A to 9-0)</option>
+    
+</optgroup>
+
+<optgroup label="Dates">
+    
+        <option value="pubdate_dsc">Publication/Copyright date: newest to oldest</option>
+    
+
+    
+        <option value="pubdate_asc">Publication/Copyright date: oldest to newest</option>
+    
+
+    
+        <option value="acqdate_dsc" selected="selected">Acquisition date: newest to oldest</option>
+    
+
+    
+        <option value="acqdate_asc">Acquisition date: oldest to newest</option>
+    
+</optgroup>
+
+<optgroup label="Title">
+    
+        <option value="title_az">Title (A-Z)</option>
+    
+    
+        <option value="title_za">Title (Z-A)</option>
+    
+</optgroup>
+
+                    </select>
+                </p>
+            </fieldset>
+            <!-- /#sortby -->
+            <!-- /RANK LIMITS -->
+        </div>
+        <!-- /#advanced-search -->
+    </form>
+
+                </main>
+            </div>
+        
+    </div>
+</div>
+
+<script nonce="" type="importmap">
+    { "imports": { "vue": "/intranet-tmpl/prog/js/vue/dist/islands.esm_26.0505000.js" } }
+</script>
+<script src="./Advanced search › Catalog › Koha_files/islands.esm_26.0505000.js.download" type="module">
+</script>
+<script nonce="" type="module">
+    import { hydrate } from "/intranet-tmpl/prog/js/vue/dist/islands.esm_26.0505000.js";
+    hydrate();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+        <div id="changelanguage" class="navbar navbar-expand navbar-light bg-light">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav_lang_menu" aria-controls="nav_lang_menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nav_lang_menu">
+                    <ul id="i18nMenu" class="navbar-nav me-auto">
+                        
+                            
+                                
+                                    
+                                        
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="http://localhost:8080/cgi-bin/koha/changelanguage.pl?language=pt-BR">
+                                                    
+                                                        Português
+                                                    
+                                                </a>
+                                            </li>
+                                        
+                                    
+                                
+                            
+                        
+                            
+                                
+                                    
+                                        
+                                            <li class="nav-item">
+                                                <a class="nav-link active currentlanguage" aria-current="page" aria-disabled="true" tabindex="-1">
+                                                    
+                                                        English
+                                                    
+                                                </a>
+                                            </li>
+                                        
+                                    
+                                
+                            
+                        
+                    </ul>
+                    <!-- /#i18nMenu -->
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#changelanguage -->
+    
+
+
+<span id="audio-alert"></span>
+
+<!-- Cookie consent -->
+
+<!-- CookieConsentedJS code that may run -->
+
+
+
+    
+
+
+
+
+
+
+    <script nonce="">
+        if (self === top) {
+            var antiClickjack = document.getElementById("antiClickjack");
+            antiClickjack.parentNode.removeChild(antiClickjack);
+        } else {
+            top.location = self.location;
+        }
+    </script>
+
+
+<script src="./Advanced search › Catalog › Koha_files/jquery-3.6.0.min_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/jquery-migrate-3.3.2.min_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/jquery-ui-1.13.2.min_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/shortcut_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/js.cookie-2.2.1.min_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/jquery.highlight-5_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/bootstrap.bundle.min_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/jquery.validate.min_26.0505000.js.download"></script>
+<!-- koha core js -->
+<script src="./Advanced search › Catalog › Koha_files/patron-format_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/staff-global_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/form-submit_26.0505000.js.download" type="module"></script>
+
+
+
+
+<script src="./Advanced search › Catalog › Koha_files/dayjs.min_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/utc_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/timezone_26.0505000.js.download"></script>
+<script src="./Advanced search › Catalog › Koha_files/customParseFormat_26.0505000.js.download"></script>
+<script nonce="">
+    dayjs.extend(window.dayjs_plugin_utc);
+    dayjs.extend(window.dayjs_plugin_timezone);
+    dayjs.extend(window.dayjs_plugin_customParseFormat);
+</script>
+<!-- js-date-format.inc -->
+<script nonce="">
+    (function() {
+        var def_date_format = 'metric';
+        var def_time_format = '24hr';
+        var def_tz = 'America/Sao_Paulo';
+
+        var get_date_pattern = function(format) {
+            var date_pattern = 'YYYY-MM-DD';
+            if(format == 'us') date_pattern = 'MM/DD/YYYY';
+            if(format == 'metric') date_pattern = 'DD/MM/YYYY';
+            if(format == 'dmydot') date_pattern = 'DD.MM.YYYY';
+            return date_pattern;
+        };
+
+        var get_time_pattern = function(format) {
+            var time_pattern = 'HH:mm';
+            if(format == '12hr') time_pattern = 'hh:mm a';
+            return time_pattern;
+        };
+
+        /**
+         * A JS equivalent of the KohaDates TT Plugin. Passed an rfc3339 formatted date string,
+         * or JS Date, the function will return a date string formatted as per the koha instance config.
+         * @param {String|Date} value                   rfc3339 formatted date string or a JS Date object.
+         * @param {Object} [options]                    Optional set of switches for changing date handling
+         * @property {String} [options.tz]              String representing the timezone of the passed date
+         * @property {Boolean} [options.no_tz_adjust]   Enable/Disable timezone adjustment
+         * @property {String} [options.dateformat]
+         * @property {Boolean} [options.withtime]       Enable/Disable appearance of time in returned string
+         * @property {String} [options.timeformat]
+         * @property {Boolean} [options.as_due_date]    Enable/Disable due date output format
+         * @returns {String}                            A date string formatted as per the koha instance configuration.
+         */
+        window.$date = function(value, options) {
+            if(!value) return '';
+            let tz = (options&&options.tz)||def_tz;
+            let no_tz_adjust = (options&&options.no_tz_adjust)||false;
+            var m = dayjs(value);
+            if ( !no_tz_adjust && ! value.match(/^\d{4}-\d{2}-\d{2}$/ ) ) {
+                m = m.tz(tz);
+            }
+
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            var withtime = (options&&options.withtime)||false;
+
+            if(dateformat=='rfc3339' && withtime) return m.format();
+
+            var timeformat = (options&&options.timeformat)||def_time_format;
+            var date_pattern = get_date_pattern(dateformat);
+            let as_due_date = (options&&options.as_due_date);
+            if (as_due_date) {
+                withtime = !( m.hour() == 23 && m.minute() == 59 );
+            }
+            var time_pattern = !withtime?'':' '+get_time_pattern(timeformat);
+
+            return m.format(date_pattern+time_pattern);
+        }
+
+        window.$datetime = function(value, options) {
+            options = options||{};
+            options.withtime = true;
+            return $date(value, options);
+        };
+
+        window.$time = function(value, options) {
+            if(!value) return '';
+            var tz = (options&&options.tz)||def_tz;
+            var m = dayjs(value);
+            if(tz) m = m.tz(tz);
+
+            var dateformat = (options&&options.dateformat);
+            var timeformat = (dateformat=='rfc3339'&&'24hr')||(options&&options.timeformat)||def_time_format;
+
+            return m.format(get_time_pattern(timeformat)+(dateformat=='rfc3339'?':ss'+(!m.isUTC()?'Z':''):''))+(dateformat=='rfc3339' && m.isUTC()?'Z':'');
+        }
+
+        window.$date_to_rfc3339 = function(value, options) {
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            let m = dayjs(value, get_date_pattern(dateformat), true);
+            return m.format("YYYY-MM-DD");
+        }
+
+        /**
+        * A JS equivalent of the KohaTimes TT Plugin. Passed a time in HH:MM:SS or HH:MM format
+        * the function will return a time string formatted as per the koha instance config.
+        */
+
+        window.$kohatime = function(value) {
+            if(!value) return 'invalid time';
+            var intime = value.split(':');
+            var hours = intime[0];
+            var minutes = intime[1];
+
+            if ( hours < 0 || hours > 23 || minutes < 0 || minutes > 59 ) { return 'invalid time'; }
+
+            if ( def_time_format == '12hr') {
+                var ampm = ( hours >= 12 ) ? 'pm' : 'am';
+                hours = ( hours == 0 ) ? "12" : hours;
+                hours = ( hours > 12 ) ? ( hours - 12 ) : hours;
+
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0') + " " + ampm;
+            } else {
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0');
+            }
+        }
+
+        /**
+         * Returns the configured Koha server timezone.
+         * Useful for components that need to display dates/times in library timezone.
+         */
+        window.$timezone = function() {
+            return def_tz;
+        }
+
+        /**
+         * Converts a dayjs object to a Date for timeline/calendar display.
+         * Creates a Date that displays these exact values regardless of browser timezone.
+         * (Strips timezone info so JS interprets the values as browser-local time)
+         *
+         * Use this when you need to display a specific date/time from a known timezone
+         * (e.g., library timezone) and want it to appear the same for all users.
+         *
+         * @param {dayjs.Dayjs} dayjsObj - A dayjs object (typically converted to a specific timezone)
+         * @returns {Date} A Date object that will display the dayjs values in the browser
+         */
+        window.$toDisplayDate = function(dayjsObj) {
+            return new Date(dayjsObj.format('YYYY-MM-DDTHH:mm:ss'));
+        }
+
+    })();
+</script>
+<!-- / js-date-format.inc -->
+
+
+
+<!-- js-patron-get-age.inc -->
+
+<script nonce="">
+    (function() {
+
+        const tz = 'America/Sao_Paulo';
+        window.$get_age = function(dob, options) {
+            if(!dob) return '';
+
+            let today = new Date();
+            dob = new Date(dob);
+            if ( tz ) {
+                let today_tz = new Date(today.toLocaleString('en-US', {timeZone: tz}));
+                let diff = today.getTime() - today_tz.getTime();
+                today = new Date(today.getTime() - diff);
+
+                let dob_tz = new Date(dob.toLocaleString('en-US', {timeZone: tz}));
+                diff = dob.getTime() - dob_tz.getTime();
+                dob = new Date(dob.getTime() - diff);
+            }
+            let age = today.getFullYear() - dob.getFullYear();
+            let m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+    })();
+</script>
+<!-- / js-patron-get-age.inc -->
+
+<!-- js-patron-format-address.inc -->
+
+
+
+<script nonce="">
+    (function() {
+
+        const roadtypes = [];
+        let roadtypes_map = roadtypes.reduce((map, r) => {
+            map[r.authorised_value] = r.lib;
+            return map;
+        }, {});
+
+        function member_display_address_style_us(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(data.address) + ' ' + escape_str(roadtype_desc);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.city);
+                if ( data.state ) {
+                    if ( data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.state);
+                }
+                if ( data.postal_code ) {
+                    address += " " + escape_str(data.postal_code);
+                }
+                if ( data.country ) {
+                    if ( data.postal_code || data.state || data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.country)
+                }
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_de(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : ' ';
+                    address += escape_str(data.address) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.street_number);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_fr(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.address);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        window.$format_address = function(data, options) {
+            let line_break = options && options.no_line_break ? ' ' : '<br/>';
+            let include_li = options && options.include_li;return member_display_address_style_us(data, line_break, include_li);}
+
+    })();
+</script>
+<!-- / js-patron-format-address.inc -->
+
+
+
+
+<!-- validator-strings.inc -->
+<script nonce="">
+    $(document).ready(function () {
+        jQuery.extend(jQuery.validator.messages, {
+            required: _("This field is required."),
+            remote: _("Please fix this field."),
+            email: _("Please enter a valid email address."),
+            url: _("Please enter a valid URL."),
+            date: _("Please enter a valid date."),
+            dateISO: _("Please enter a valid date (ISO)."),
+            number: _("Please enter a valid number."),
+            digits: _("Please enter only digits."),
+            equalTo: _("Please enter the same value again."),
+            number: _("Please add amount in valid format: 0.00"),
+            maxlength: $.validator.format(_("Please enter no more than {0} characters.")),
+            minlength: $.validator.format(_("Please enter at least {0} characters.")),
+            rangelength: $.validator.format(_("Please enter a value between {0} and {1} characters long.")),
+            range: $.validator.format(_("Please enter a value between {0} and {1}.")),
+            max: $.validator.format(_("Please enter a value less than or equal to {0}.")),
+            min: $.validator.format(_("Please enter a value greater than or equal to {0}.")),
+            phone: $.validator.format(_("Please enter a valid phone number.")),
+        });
+    });
+</script>
+<!-- / validator-strings.inc -->
+
+
+    <!-- js_includes.inc: IntranetUserJS -->
+    <script nonce="">
+        /* koha-easy-installer ai-assistant begin */
+var KEI_AI_V = "1.5.130";
+$(document).ready(function () {
+    // koha.nexus AI assistant (Library tools > AI assistant on the staff home page).
+    if (!$("#main_intranet-main").length || $("#kei-ai").length) return;
+    var box = $("<div id=\"kei-ai\"></div>"), news = $("#area-news");
+    if (news.length) news.replaceWith(box);
+    else {
+        var col = $("#area-quote").parent();
+        if (!col.length) col = $("#container-main .row").first().children("div").first();
+        if (!col.length) return;
+        col.prepend(box);
+    }
+    var url = "/cgi-bin/koha/tools/ai_assistant.pl?v=" + encodeURIComponent(KEI_AI_V) + "&op=";
+    $("<link rel=\"stylesheet\">").attr("href", url + "css").appendTo("head");
+    $.ajax({ url: url + "js", dataType: "script", cache: true });
+});
+/* koha-easy-installer ai-assistant end */
+    </script>
+    <!-- / js_includes.inc: IntranetUserJS -->
+
+
+<!-- js_includes.inc -->
+
+    <script src="./Advanced search › Catalog › Koha_files/basket_26.0505000.js.download"></script>
+
+
+
+
+
+<script nonce="">
+    var defaultPatronSearchFields = "firstname|preferred_name|middle_name|surname|othernames|cardnumber|userid";
+    var defaultPatronSearchMethod = "contains";
+    var extendedPatronAttributes = "1";
+    var loggedInLibrary = 'MAIN';
+    var singleBranchMode = '1';
+    var showPatronFirstnameIfDifferentThanPreferredname = 0;
+</script>
+
+    <script nonce="">
+        // PatronAutoComplete
+        var loggedInClass = "";
+        $(document).ready(function(){
+            
+                if ( $("#findborrower").length ) {
+                    patron_autocomplete($("#findborrower"), { 'link-to': 'circ' });
+                }
+                if ( $("#findborrower_main").length ) {
+                    patron_autocomplete($("#findborrower_main"), { 'link-to': 'circ' });
+                }
+            
+            if ( $("#searchmember").length ) {
+                patron_autocomplete($("#searchmember"), { 'link-to': 'patron' });
+            }
+        });
+    </script>
+
+
+
+
+
+    <script nonce="">
+        (function () {
+            function getURLParams() {
+                const params = new URLSearchParams(window.location.search);
+                return params;
+            }
+
+            function toggleURLParams(paramsToToggle) {
+                const url = new URL(window.location.href);
+                const params = url.searchParams;
+
+                // Check if all params are currently set
+                const allSet = paramsToToggle.every(param => params.get(param) === "yes");
+
+                if (allSet) {
+                    // Remove all params
+                    paramsToToggle.forEach(param => params.delete(param));
+                } else {
+                    // Add all params
+                    paramsToToggle.forEach(param => params.set(param, "yes"));
+                }
+
+                window.location.href = url.toString();
+            }
+
+            function updateButtonText() {
+                const params = getURLParams();
+
+                // User CSS button
+                const cssDisabled = params.get("DISABLE_SYSPREF_IntranetUserCSS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserCSS") === "yes";
+                const cssToggle = document.getElementById("toggleUserCSS");
+                if (cssToggle) {
+                    const cssText = cssToggle.querySelector(".toggle-text");
+                    if (cssText) cssText.textContent = cssDisabled ? _("Enable custom CSS") : _("Disable custom CSS");
+                }
+
+                // User JS button
+                const jsDisabled = params.get("DISABLE_SYSPREF_IntranetUserJS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserJS") === "yes";
+                const jsToggle = document.getElementById("toggleUserJS");
+                if (jsToggle) {
+                    const jsText = jsToggle.querySelector(".toggle-text");
+                    if (jsText) jsText.textContent = jsDisabled ? _("Enable custom JS") : _("Disable custom JS");
+                }
+
+                // Stylesheets button
+                const stylesheetsDisabled =
+                    params.get("DISABLE_SYSPREF_OpacAdditionalStylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_opaclayoutstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetcolorstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetstylesheet") === "yes";
+                const stylesheetsToggle = document.getElementById("toggleStylesheets");
+                if (stylesheetsToggle) {
+                    const stylesheetsText = stylesheetsToggle.querySelector(".toggle-text");
+                    if (stylesheetsText) stylesheetsText.textContent = stylesheetsDisabled ? _("Enable custom stylesheets") : _("Disable custom stylesheets");
+                }
+
+                // Update icon color based on whether any toggles are active
+                const anyDisabled = cssDisabled || jsDisabled || stylesheetsDisabled;
+                const debugIcon = document.getElementById("debug-icon");
+                if (debugIcon) {
+                    if (anyDisabled) {
+                        debugIcon.style.color = "#ffc107"; // Warning/amber color
+                    } else {
+                        debugIcon.style.color = ""; // Default color
+                    }
+                }
+            }
+
+            // Update button text on page load
+            updateButtonText();
+
+            // User CSS toggle
+            const cssToggle = document.getElementById("toggleUserCSS");
+            if (cssToggle) {
+                cssToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserCSS", "DISABLE_SYSPREF_OPACUserCSS"]);
+                });
+            }
+
+            // User JS toggle
+            const jsToggle = document.getElementById("toggleUserJS");
+            if (jsToggle) {
+                jsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserJS", "DISABLE_SYSPREF_OPACUserJS"]);
+                });
+            }
+
+            // Stylesheets toggle
+            const stylesheetsToggle = document.getElementById("toggleStylesheets");
+            if (stylesheetsToggle) {
+                stylesheetsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_OpacAdditionalStylesheet", "DISABLE_SYSPREF_opaclayoutstylesheet", "DISABLE_SYSPREF_intranetcolorstylesheet", "DISABLE_SYSPREF_intranetstylesheet"]);
+                });
+            }
+        })();
+    </script>
+
+<!-- / js_includes.inc -->
+
+    
+    <script src="./Advanced search › Catalog › Koha_files/browser_26.0505000.js.download"></script>
+    <link href="./Advanced search › Catalog › Koha_files/humanmsg_26.0505000.css" type="text/css" rel="stylesheet">
+    <script src="./Advanced search › Catalog › Koha_files/humanmsg_26.0505000.js.download"></script>
+    <script nonce="">
+        /**
+         *  Function add_field();
+         *  This function allows to display a new field to search.
+         */
+        function add_field() {
+            var ButtonPlus = document.getElementById("ButtonPlus");
+            var line = ButtonPlus.parentNode;
+            var dad  = line.parentNode;
+            dad.appendChild(line.cloneNode(true));
+            line.removeChild(ButtonPlus);
+        }
+
+        $(document).ready(function() {
+            $("input[name=q]:eq(0)").focus();
+            if( $("#advsearches .tab-pane.active").length < 1 ){
+                $("#advsearches a:first").tab("show");
+            }
+            
+
+            if( $("#current_subtype_limits input").length == 0 ){
+                $("#current_subtype_limits").hide();
+            }
+            $(".toggle_limit").on('click',function(){
+                $(this).siblings("[type='hidden']").prop('disabled', !this.checked);
+            });
+
+            
+
+            
+
+
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+<button id="backtotop" class="btn btn-default" aria-label="Back to top" style="display: none;"><i class="fa fa-arrow-up" aria-hidden="true"></i></button><ul id="ui-id-1" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" unselectable="on" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><ul id="ui-id-2" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" unselectable="on" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div id="humanMsg" class="humanMsg"><div id="humanMsg-contents"></div></div> <div id="humanMsgLog"><p class="launcher">Message Log</p><ul></ul></div></body><!-- prettier-ignore-start --></html>

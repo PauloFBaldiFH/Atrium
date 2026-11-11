@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<!-- saved from url=(0098)http://localhost:8080/cgi-bin/koha/cataloguing/z3950_search.pl?biblionumber=&frameworkcode=Default -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Z39.50/SRU search results › Koha</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="b59deed37aece8b12b0e73f52ed2f5b7bbd6b534,545df2c923163d41a972c632934a26224fdce9e5,1793389785">
+<meta name="generator" content="Koha 26.05.05">
+<script nonce="">
+    window.__CSP_NONCE__ = "";
+</script>
+
+    
+
+
+<link rel="shortcut icon" href="https://i.postimg.cc/rs5nhP5c/cone-Castro-Alves.png" type="image/x-icon">
+
+
+    <link type="text/css" rel="stylesheet" href="./Z39.50_SRU search results › Koha_files/jquery-ui-1.13.2.min_26.0505000.css">
+
+<link rel="stylesheet" type="text/css" href="./Z39.50_SRU search results › Koha_files/fontawesome.min_26.0505000.css">
+<link type="text/css" rel="stylesheet" href="./Z39.50_SRU search results › Koha_files/brands.min_26.0505000.css">
+<link href="./Z39.50_SRU search results › Koha_files/solid.min_26.0505000.css" type="text/css" rel="stylesheet">
+<link href="./Z39.50_SRU search results › Koha_files/datatables.min_26.0505000.css" rel="stylesheet" type="text/css">
+<link href="./Z39.50_SRU search results › Koha_files/print_26.0505000.css" media="print" rel="stylesheet" type="text/css">
+
+
+
+    
+
+
+    <link type="text/css" rel="stylesheet" href="./Z39.50_SRU search results › Koha_files/staff-global_26.0505000.css">
+
+
+<!-- local colors -->
+
+
+<script nonce="" type="module">
+    import { APIClient } from "/intranet-tmpl/prog/js/fetch/api-client.js";
+    window.APIClient = APIClient;
+</script>
+<script nonce="">
+    var Koha = {};
+    
+        var CAN_user_parameters_manage_column_config = 1;
+    
+</script>
+
+<script src="./Z39.50_SRU search results › Koha_files/Gettext_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/i18n_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/stores_26.0505000.js.download"></script>
+
+
+
+
+
+
+
+
+
+</head>
+
+<body id="cat_z3950_search" class="cat" style="cursor: default;">
+<div class="main container-fluid">
+    
+        <h1>Z39.50/SRU search</h1>
+        <form method="post" action="http://localhost:8080/cgi-bin/koha/cataloguing/z3950_search.pl" name="f" class="checkboxed">
+            <input type="hidden" name="csrf_token" value="b59deed37aece8b12b0e73f52ed2f5b7bbd6b534,545df2c923163d41a972c632934a26224fdce9e5,1793389785">
+
+            <div class="row">
+                <div class="col-6">
+                    <input type="hidden" name="op" id="op" value="cud-do_search">
+                    <fieldset class="rows">
+                        <ol>
+                            <li> <label for="isbn">ISBN: </label> <input type="text" id="isbn" name="isbn" value="" class="focus"> </li>
+                            <li> <label for="issn">ISSN: </label> <input type="text" id="issn" name="issn" value=""> </li>
+                            <li> <label for="title">Title: </label> <input type="text" id="title" name="title" value=""> </li>
+                            <li> <label for="author">Author: </label> <input type="text" id="author" name="author" value=""> </li>
+                            <li> <label for="publicationyear">Publication year: </label> <input type="text" id="publicationyear" name="publicationyear" value=""> </li>
+                            <li> <label for="subject">Subject heading: </label> <input type="text" id="subject" name="subject" value=""> </li>
+                            <li> <label for="srchany">Keyword (any): </label> <input type="text" id="srchany" name="srchany" value=""> </li>
+                            <li> <label for="lccall">LC call number: </label> <input type="text" id="lccall" name="lccall" value=""> </li>
+                            <li> <label for="controlnumber">Control no.: </label> <input type="text" id="controlnumber" name="controlnumber" value=""> </li>
+                            <li> <label for="dewey">Dewey: </label> <input type="text" id="dewey" name="dewey" value=""> </li>
+                            <li> <label for="stdid">Standard ID: </label> <input type="text" id="stdid" name="stdid" value=""> </li>
+                            <li>
+                                <a id="resetZ3950Search" href="http://localhost:8080/cgi-bin/koha/cataloguing/z3950_search.pl?biblionumber=&amp;frameworkcode=Default#"><i class="fa fa-trash-can"></i> Clear search form</a>
+                            </li>
+                        </ol>
+                        <input type="hidden" name="biblionumber" value="0">
+                        <input type="hidden" name="frameworkcode" value="Default">
+                    </fieldset>
+                    <!-- /.rows -->
+                </div>
+                <!-- /.col-6 -->
+
+                <div class="col-6">
+                    <h2>Search targets</h2>
+                    <div id="z3950_search_targets">
+                        <span class="z3950checks">
+                            <span class="checkall"><a id="CheckAll" href="http://localhost:8080/cgi-bin/koha/cataloguing/z3950_search.pl?biblionumber=&amp;frameworkcode=Default#"><i class="fa fa-check"></i> Select all</a></span>
+                            |
+                            <span class="clearall"><a id="CheckNone" href="http://localhost:8080/cgi-bin/koha/cataloguing/z3950_search.pl?biblionumber=&amp;frameworkcode=Default#"><i class="fa fa-times"></i> Clear all</a></span>
+                        </span>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_20" value="20">
+                                
+                                <label for="z3950_20">BIBLIOTECA  NACIONAL 2</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_8" value="8">
+                                
+                                <label for="z3950_8">BIBLIOTECA NACIONAL</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_14" value="14">
+                                
+                                <label for="z3950_14">BIBLIOTECA NACIONAL DA ALEMANHA</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_13" value="13">
+                                
+                                <label for="z3950_13">BRITISH LIBRARY</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_15" value="15">
+                                
+                                <label for="z3950_15">LIBRARY AND ARCHIVES CANADA</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_10" value="10" checked="checked">
+                                
+                                <label for="z3950_10">LIBRARY OF CONGRESS</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_19" value="19">
+                                
+                                <label for="z3950_19">NLM (MEDICINA/SAÚDE)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_12" value="12" checked="checked">
+                                
+                                <label for="z3950_12">UNESP</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_16" value="16">
+                                
+                                <label for="z3950_16">UNIV. OF CALIFORNIA</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_9" value="9" checked="checked">
+                                
+                                <label for="z3950_9">UNIVERSIDADE FEDERAL DE SANTA CATARINA (UFSC)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_18" value="18">
+                                
+                                <label for="z3950_18">USDA (AGRICULTURA/BIOLOGIA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_33" value="33" checked="checked">
+                                
+                                <label for="z3950_33">UTFPR</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_1" value="1">
+                                
+                                <label for="z3950_1">BIBLIOTECA DO CONGRESSO</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_21" value="21">
+                                
+                                <label for="z3950_21">Biblioteca Nacional (Brasil)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_35" value="35" checked="checked">
+                                
+                                <label for="z3950_35">Catálogo Rede Pergamum (CRP bridge, SRU)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_44" value="44" checked="checked">
+                                
+                                <label for="z3950_44">Fundação Biblioteca Nacional (FBN)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_26" value="26">
+                                
+                                <label for="z3950_26">Biblioteca Nacional de España</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_45" value="45">
+                                
+                                <label for="z3950_45">Fundacentro</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_5" value="5">
+                                
+                                <label for="z3950_5">NATIONAL LIBRARY OF FRANCE</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_25" value="25">
+                                
+                                <label for="z3950_25">Biblioteca Nacional de Portugal</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_46" value="46" checked="checked">
+                                
+                                <label for="z3950_46">Senado Federal (Aleph)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_24" value="24">
+                                
+                                <label for="z3950_24">Bibliothèque nationale de France</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_47" value="47">
+                                
+                                <label for="z3950_47">Senado Federal (FOLIO)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_48" value="48" checked="checked">
+                                
+                                <label for="z3950_48">Universidade de São Paulo (USP)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_27" value="27">
+                                
+                                <label for="z3950_27">CSIC Libraries (Spain)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_49" value="49" checked="checked">
+                                
+                                <label for="z3950_49">Universidade Estadual de Campinas (UNICAMP)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_50" value="50">
+                                
+                                <label for="z3950_50">Universidade Estadual Paulista (UNESP)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_29" value="29">
+                                
+                                <label for="z3950_29">K10plus (GBV/SWB)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_51" value="51">
+                                
+                                <label for="z3950_51">Universidade do Estado do Rio de Janeiro (UERJ)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_52" value="52">
+                                
+                                <label for="z3950_52">Universidade Federal de Goiás (UFG)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_22" value="22">
+                                
+                                <label for="z3950_22">Library of Congress (Voyager)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_53" value="53" checked="checked">
+                                
+                                <label for="z3950_53">Universidade Federal de Minas Gerais (UFMG)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_31" value="31">
+                                
+                                <label for="z3950_31">LIBRIS (Sweden)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_54" value="54">
+                                
+                                <label for="z3950_54">Universidade Federal de Pernambuco (UFPE)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_55" value="55">
+                                
+                                <label for="z3950_55">Universidade Federal de Santa Catarina (UFSC)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_30" value="30">
+                                
+                                <label for="z3950_30">Servizio Bibliotecario Nazionale (Italy)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_56" value="56">
+                                
+                                <label for="z3950_56">Universidade Federal de São Carlos (UFSCar)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_57" value="57">
+                                
+                                <label for="z3950_57">Universidade Federal de São Paulo (UNIFESP)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_58" value="58">
+                                
+                                <label for="z3950_58">Universidade Federal de Uberlândia (UFU)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_59" value="59">
+                                
+                                <label for="z3950_59">Universidade Federal do Paraná (UFPR)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_60" value="60" checked="checked">
+                                
+                                <label for="z3950_60">Universidade Federal do Rio Grande do Sul (UFRGS)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_61" value="61">
+                                
+                                <label for="z3950_61">Universidade Federal Fluminense (UFF)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_62" value="62">
+                                
+                                <label for="z3950_62">Universidade Tecnológica Federal do Paraná (UTFPR)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_63" value="63">
+                                
+                                <label for="z3950_63">Universidade de Coimbra (Portugal)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_64" value="64">
+                                
+                                <label for="z3950_64">Universidade do Porto (Portugal)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_65" value="65">
+                                
+                                <label for="z3950_65">Biblioteca Nacional de Portugal</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_66" value="66" checked="checked">
+                                
+                                <label for="z3950_66">Porbase - Base Nacional de Dados Bibliográficos (Portugal)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_67" value="67">
+                                
+                                <label for="z3950_67">Universidade de Macau</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_68" value="68">
+                                
+                                <label for="z3950_68">Library of Congress (EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_69" value="69">
+                                
+                                <label for="z3950_69">National Library of Medicine (NLM - EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_70" value="70" checked="checked">
+                                
+                                <label for="z3950_70">Harvard University (EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_71" value="71">
+                                
+                                <label for="z3950_71">Yale University (EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_72" value="72">
+                                
+                                <label for="z3950_72">University of Wisconsin-Madison (EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_73" value="73">
+                                
+                                <label for="z3950_73">Massachusetts Institute of Technology (MIT - EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_74" value="74">
+                                
+                                <label for="z3950_74">Southern University at New Orleans (EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_75" value="75">
+                                
+                                <label for="z3950_75">Penn State University (EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_76" value="76">
+                                
+                                <label for="z3950_76">University of Pennsylvania (UPenn - EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_77" value="77">
+                                
+                                <label for="z3950_77">New York State Library (EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_78" value="78">
+                                
+                                <label for="z3950_78">Tufts University (EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_79" value="79">
+                                
+                                <label for="z3950_79">Art Institute of Chicago (EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_80" value="80">
+                                
+                                <label for="z3950_80">Florida State University (EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_81" value="81">
+                                
+                                <label for="z3950_81">National Gallery of Art (EUA)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_82" value="82">
+                                
+                                <label for="z3950_82">University of British Columbia (Canadá)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_83" value="83">
+                                
+                                <label for="z3950_83">Trent University (Canadá)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_84" value="84">
+                                
+                                <label for="z3950_84">Memorial University of Newfoundland (Canadá)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_85" value="85">
+                                
+                                <label for="z3950_85">Simon Fraser University (Canadá)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_86" value="86">
+                                
+                                <label for="z3950_86">University of Toronto (Canadá)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_87" value="87" checked="checked">
+                                
+                                <label for="z3950_87">British Library (Reino Unido)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_88" value="88">
+                                
+                                <label for="z3950_88">University of Oxford - Bodleian (Reino Unido)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_89" value="89">
+                                
+                                <label for="z3950_89">Christchurch City Libraries (Nova Zelândia)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_90" value="90">
+                                
+                                <label for="z3950_90">Biblioteca Nacional de España</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_91" value="91">
+                                
+                                <label for="z3950_91">Biblioteca de Castilla y León (Espanha)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_92" value="92">
+                                
+                                <label for="z3950_92">Diputación Foral de Bizkaia (Espanha)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_93" value="93">
+                                
+                                <label for="z3950_93">Universitat de Barcelona (Espanha)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_94" value="94">
+                                
+                                <label for="z3950_94">Biblioteca Nacional Mariano Moreno (Argentina)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_95" value="95">
+                                
+                                <label for="z3950_95">Biblioteca Nacional de Colombia</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_96" value="96">
+                                
+                                <label for="z3950_96">Benemérita Universidad Autónoma de Puebla (México)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_97" value="97">
+                                
+                                <label for="z3950_97">Pontificia Universidad Católica del Perú</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_98" value="98">
+                                
+                                <label for="z3950_98">Universidad Peruana de Ciencias Aplicadas</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_99" value="99">
+                                
+                                <label for="z3950_99">Istituto Centrale per il Catalogo Unico (ICCU - Itália)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_100" value="100">
+                                
+                                <label for="z3950_100">ABES / Sudoc (França)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_101" value="101">
+                                
+                                <label for="z3950_101">Universiteit Gent (Bélgica)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_102" value="102">
+                                
+                                <label for="z3950_102">Kooperativer Bibliotheksverbund Berlin-Brandenburg (Alemanha)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_103" value="103">
+                                
+                                <label for="z3950_103">Technische Universität Hamburg (Alemanha)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_104" value="104">
+                                
+                                <label for="z3950_104">Südwestdeutscher Bibliotheksverbund (SWB - Alemanha)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_105" value="105">
+                                
+                                <label for="z3950_105">Biblioteka Narodowa (Polônia)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_106" value="106">
+                                
+                                <label for="z3950_106">Biblioteca Nacional da Suíça</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_107" value="107">
+                                
+                                <label for="z3950_107">Kungliga Biblioteket - LIBRIS (Suécia)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_108" value="108">
+                                
+                                <label for="z3950_108">Národní Knihovna České Republiky (República Tcheca)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_109" value="109">
+                                
+                                <label for="z3950_109">Biblioteca Nacional da Grécia</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_110" value="110">
+                                
+                                <label for="z3950_110">Russian State Library</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_111" value="111">
+                                
+                                <label for="z3950_111">National Library of Bashkortostan (Rússia)</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_112" value="112">
+                                
+                                <label for="z3950_112">National Library of South Africa</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_113" value="113">
+                                
+                                <label for="z3950_113">Hong Kong Public Libraries</label>
+                            </p>
+                        
+                            <p>
+                                
+                                    <input type="checkbox" name="id" id="z3950_114" value="114">
+                                
+                                <label for="z3950_114">National Central Library (Taiwan)</label>
+                            </p>
+                        
+                    </div>
+                    <!-- /#z3950_search_targets -->
+                </div>
+                <!-- /.col-6 -->
+            </div>
+            <!-- /.row -->
+
+            <nav class="navbar navbar-default fixed-bottom">
+                <div class="container-fluid">
+                    <fieldset class="action">
+                        <input type="submit" id="submit_z3950_search" class="btn btn-primary" value="Search">
+                        <a class="btn btn-default close" href="http://localhost:8080/cgi-bin/koha/cataloguing/z3950_search.pl?biblionumber=&amp;frameworkcode=Default#">Cancel</a>
+                    </fieldset>
+                </div>
+            </nav>
+        </form>
+        <!-- /.checkboxed -->
+    
+</div>
+<!-- /.main.container-fluid -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span id="audio-alert"></span>
+
+<!-- Cookie consent -->
+
+<!-- CookieConsentedJS code that may run -->
+
+
+
+    
+
+
+
+
+
+
+    <script nonce="">
+        if (self === top) {
+            var antiClickjack = document.getElementById("antiClickjack");
+            antiClickjack.parentNode.removeChild(antiClickjack);
+        } else {
+            top.location = self.location;
+        }
+    </script>
+
+
+<script src="./Z39.50_SRU search results › Koha_files/jquery-3.6.0.min_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/jquery-migrate-3.3.2.min_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/jquery-ui-1.13.2.min_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/shortcut_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/js.cookie-2.2.1.min_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/jquery.highlight-5_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/bootstrap.bundle.min_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/jquery.validate.min_26.0505000.js.download"></script>
+<!-- koha core js -->
+<script src="./Z39.50_SRU search results › Koha_files/patron-format_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/staff-global_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/form-submit_26.0505000.js.download" type="module"></script>
+
+
+
+
+<script src="./Z39.50_SRU search results › Koha_files/dayjs.min_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/utc_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/timezone_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/customParseFormat_26.0505000.js.download"></script>
+<script nonce="">
+    dayjs.extend(window.dayjs_plugin_utc);
+    dayjs.extend(window.dayjs_plugin_timezone);
+    dayjs.extend(window.dayjs_plugin_customParseFormat);
+</script>
+<!-- js-date-format.inc -->
+<script nonce="">
+    (function() {
+        var def_date_format = 'metric';
+        var def_time_format = '24hr';
+        var def_tz = 'America/Sao_Paulo';
+
+        var get_date_pattern = function(format) {
+            var date_pattern = 'YYYY-MM-DD';
+            if(format == 'us') date_pattern = 'MM/DD/YYYY';
+            if(format == 'metric') date_pattern = 'DD/MM/YYYY';
+            if(format == 'dmydot') date_pattern = 'DD.MM.YYYY';
+            return date_pattern;
+        };
+
+        var get_time_pattern = function(format) {
+            var time_pattern = 'HH:mm';
+            if(format == '12hr') time_pattern = 'hh:mm a';
+            return time_pattern;
+        };
+
+        /**
+         * A JS equivalent of the KohaDates TT Plugin. Passed an rfc3339 formatted date string,
+         * or JS Date, the function will return a date string formatted as per the koha instance config.
+         * @param {String|Date} value                   rfc3339 formatted date string or a JS Date object.
+         * @param {Object} [options]                    Optional set of switches for changing date handling
+         * @property {String} [options.tz]              String representing the timezone of the passed date
+         * @property {Boolean} [options.no_tz_adjust]   Enable/Disable timezone adjustment
+         * @property {String} [options.dateformat]
+         * @property {Boolean} [options.withtime]       Enable/Disable appearance of time in returned string
+         * @property {String} [options.timeformat]
+         * @property {Boolean} [options.as_due_date]    Enable/Disable due date output format
+         * @returns {String}                            A date string formatted as per the koha instance configuration.
+         */
+        window.$date = function(value, options) {
+            if(!value) return '';
+            let tz = (options&&options.tz)||def_tz;
+            let no_tz_adjust = (options&&options.no_tz_adjust)||false;
+            var m = dayjs(value);
+            if ( !no_tz_adjust && ! value.match(/^\d{4}-\d{2}-\d{2}$/ ) ) {
+                m = m.tz(tz);
+            }
+
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            var withtime = (options&&options.withtime)||false;
+
+            if(dateformat=='rfc3339' && withtime) return m.format();
+
+            var timeformat = (options&&options.timeformat)||def_time_format;
+            var date_pattern = get_date_pattern(dateformat);
+            let as_due_date = (options&&options.as_due_date);
+            if (as_due_date) {
+                withtime = !( m.hour() == 23 && m.minute() == 59 );
+            }
+            var time_pattern = !withtime?'':' '+get_time_pattern(timeformat);
+
+            return m.format(date_pattern+time_pattern);
+        }
+
+        window.$datetime = function(value, options) {
+            options = options||{};
+            options.withtime = true;
+            return $date(value, options);
+        };
+
+        window.$time = function(value, options) {
+            if(!value) return '';
+            var tz = (options&&options.tz)||def_tz;
+            var m = dayjs(value);
+            if(tz) m = m.tz(tz);
+
+            var dateformat = (options&&options.dateformat);
+            var timeformat = (dateformat=='rfc3339'&&'24hr')||(options&&options.timeformat)||def_time_format;
+
+            return m.format(get_time_pattern(timeformat)+(dateformat=='rfc3339'?':ss'+(!m.isUTC()?'Z':''):''))+(dateformat=='rfc3339' && m.isUTC()?'Z':'');
+        }
+
+        window.$date_to_rfc3339 = function(value, options) {
+            var dateformat = (options&&options.dateformat)||def_date_format;
+            let m = dayjs(value, get_date_pattern(dateformat), true);
+            return m.format("YYYY-MM-DD");
+        }
+
+        /**
+        * A JS equivalent of the KohaTimes TT Plugin. Passed a time in HH:MM:SS or HH:MM format
+        * the function will return a time string formatted as per the koha instance config.
+        */
+
+        window.$kohatime = function(value) {
+            if(!value) return 'invalid time';
+            var intime = value.split(':');
+            var hours = intime[0];
+            var minutes = intime[1];
+
+            if ( hours < 0 || hours > 23 || minutes < 0 || minutes > 59 ) { return 'invalid time'; }
+
+            if ( def_time_format == '12hr') {
+                var ampm = ( hours >= 12 ) ? 'pm' : 'am';
+                hours = ( hours == 0 ) ? "12" : hours;
+                hours = ( hours > 12 ) ? ( hours - 12 ) : hours;
+
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0') + " " + ampm;
+            } else {
+                return hours.toString().padStart(2,'0') + ':' + minutes.toString().padStart(2,'0');
+            }
+        }
+
+        /**
+         * Returns the configured Koha server timezone.
+         * Useful for components that need to display dates/times in library timezone.
+         */
+        window.$timezone = function() {
+            return def_tz;
+        }
+
+        /**
+         * Converts a dayjs object to a Date for timeline/calendar display.
+         * Creates a Date that displays these exact values regardless of browser timezone.
+         * (Strips timezone info so JS interprets the values as browser-local time)
+         *
+         * Use this when you need to display a specific date/time from a known timezone
+         * (e.g., library timezone) and want it to appear the same for all users.
+         *
+         * @param {dayjs.Dayjs} dayjsObj - A dayjs object (typically converted to a specific timezone)
+         * @returns {Date} A Date object that will display the dayjs values in the browser
+         */
+        window.$toDisplayDate = function(dayjsObj) {
+            return new Date(dayjsObj.format('YYYY-MM-DDTHH:mm:ss'));
+        }
+
+    })();
+</script>
+<!-- / js-date-format.inc -->
+
+
+
+<!-- js-patron-get-age.inc -->
+
+<script nonce="">
+    (function() {
+
+        const tz = 'America/Sao_Paulo';
+        window.$get_age = function(dob, options) {
+            if(!dob) return '';
+
+            let today = new Date();
+            dob = new Date(dob);
+            if ( tz ) {
+                let today_tz = new Date(today.toLocaleString('en-US', {timeZone: tz}));
+                let diff = today.getTime() - today_tz.getTime();
+                today = new Date(today.getTime() - diff);
+
+                let dob_tz = new Date(dob.toLocaleString('en-US', {timeZone: tz}));
+                diff = dob.getTime() - dob_tz.getTime();
+                dob = new Date(dob.getTime() - diff);
+            }
+            let age = today.getFullYear() - dob.getFullYear();
+            let m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+    })();
+</script>
+<!-- / js-patron-get-age.inc -->
+
+<!-- js-patron-format-address.inc -->
+
+
+
+<script nonce="">
+    (function() {
+
+        const roadtypes = [];
+        let roadtypes_map = roadtypes.reduce((map, r) => {
+            map[r.authorised_value] = r.lib;
+            return map;
+        }, {});
+
+        function member_display_address_style_us(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(data.address) + ' ' + escape_str(roadtype_desc);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.city);
+                if ( data.state ) {
+                    if ( data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.state);
+                }
+                if ( data.postal_code ) {
+                    address += " " + escape_str(data.postal_code);
+                }
+                if ( data.country ) {
+                    if ( data.postal_code || data.state || data.city ) {
+                        address += ', ';
+                    }
+                    address += escape_str(data.country)
+                }
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_de(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : ' ';
+                    address += escape_str(data.address) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.street_number);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        function member_display_address_style_fr(data, line_break, include_li) {
+            let address = "";
+            if ( data.address || data.address2 ) {
+                if ( data.address ) {
+                    let roadtype_desc = '';
+                    if ( data.street_type ) {
+                        roadtype_desc = roadtypes_map[data.street_type] ? roadtypes_map[data.street_type] : data.street_type;
+                    }
+                    address += include_li ? '<li class="patronaddress1">' : '';
+                    address += escape_str(data.street_number) + ' ' + escape_str(roadtype_desc) + ' ' + escape_str(data.address);
+                    address += include_li ? '</li>' : '';
+                }
+            }
+            if ( data.address2 ) {
+                address += include_li ? '<li class="patronaddress2">' : ' ';
+                address += escape_str(data.address2);
+                address += include_li ? '</li>' : '';
+            }
+            if ( data.city || data.postal_code || data.state || data.country ) {
+                address += include_li ? '<li class="patroncity">' : ' ';
+                address += escape_str(data.postal_code) + ' ' + escape_str(data.city);
+                address += data.state   ? line_break + escape_str(data.state)   : '';
+                address += data.country ? line_break + escape_str(data.country) : '';
+                address += include_li ? '</li>' : '';
+            }
+
+            return address;
+        }
+
+        window.$format_address = function(data, options) {
+            let line_break = options && options.no_line_break ? ' ' : '<br/>';
+            let include_li = options && options.include_li;return member_display_address_style_us(data, line_break, include_li);}
+
+    })();
+</script>
+<!-- / js-patron-format-address.inc -->
+
+
+
+
+<!-- validator-strings.inc -->
+<script nonce="">
+    $(document).ready(function () {
+        jQuery.extend(jQuery.validator.messages, {
+            required: _("This field is required."),
+            remote: _("Please fix this field."),
+            email: _("Please enter a valid email address."),
+            url: _("Please enter a valid URL."),
+            date: _("Please enter a valid date."),
+            dateISO: _("Please enter a valid date (ISO)."),
+            number: _("Please enter a valid number."),
+            digits: _("Please enter only digits."),
+            equalTo: _("Please enter the same value again."),
+            number: _("Please add amount in valid format: 0.00"),
+            maxlength: $.validator.format(_("Please enter no more than {0} characters.")),
+            minlength: $.validator.format(_("Please enter at least {0} characters.")),
+            rangelength: $.validator.format(_("Please enter a value between {0} and {1} characters long.")),
+            range: $.validator.format(_("Please enter a value between {0} and {1}.")),
+            max: $.validator.format(_("Please enter a value less than or equal to {0}.")),
+            min: $.validator.format(_("Please enter a value greater than or equal to {0}.")),
+            phone: $.validator.format(_("Please enter a valid phone number.")),
+        });
+    });
+</script>
+<!-- / validator-strings.inc -->
+
+
+    <!-- js_includes.inc: IntranetUserJS -->
+    <script nonce="">
+        /* koha-easy-installer ai-assistant begin */
+var KEI_AI_V = "1.5.130";
+$(document).ready(function () {
+    // koha.nexus AI assistant (Library tools > AI assistant on the staff home page).
+    if (!$("#main_intranet-main").length || $("#kei-ai").length) return;
+    var box = $("<div id=\"kei-ai\"></div>"), news = $("#area-news");
+    if (news.length) news.replaceWith(box);
+    else {
+        var col = $("#area-quote").parent();
+        if (!col.length) col = $("#container-main .row").first().children("div").first();
+        if (!col.length) return;
+        col.prepend(box);
+    }
+    var url = "/cgi-bin/koha/tools/ai_assistant.pl?v=" + encodeURIComponent(KEI_AI_V) + "&op=";
+    $("<link rel=\"stylesheet\">").attr("href", url + "css").appendTo("head");
+    $.ajax({ url: url + "js", dataType: "script", cache: true });
+});
+/* koha-easy-installer ai-assistant end */
+    </script>
+    <!-- / js_includes.inc: IntranetUserJS -->
+
+
+<!-- js_includes.inc -->
+
+    <script src="./Z39.50_SRU search results › Koha_files/basket_26.0505000.js.download"></script>
+
+
+
+
+
+<script nonce="">
+    var defaultPatronSearchFields = "firstname|preferred_name|middle_name|surname|othernames|cardnumber|userid";
+    var defaultPatronSearchMethod = "contains";
+    var extendedPatronAttributes = "1";
+    var loggedInLibrary = 'MAIN';
+    var singleBranchMode = '1';
+    var showPatronFirstnameIfDifferentThanPreferredname = 0;
+</script>
+
+    <script nonce="">
+        // PatronAutoComplete
+        var loggedInClass = "";
+        $(document).ready(function(){
+            
+                if ( $("#findborrower").length ) {
+                    patron_autocomplete($("#findborrower"), { 'link-to': 'circ' });
+                }
+                if ( $("#findborrower_main").length ) {
+                    patron_autocomplete($("#findborrower_main"), { 'link-to': 'circ' });
+                }
+            
+            if ( $("#searchmember").length ) {
+                patron_autocomplete($("#searchmember"), { 'link-to': 'patron' });
+            }
+        });
+    </script>
+
+
+
+
+
+    <script nonce="">
+        (function () {
+            function getURLParams() {
+                const params = new URLSearchParams(window.location.search);
+                return params;
+            }
+
+            function toggleURLParams(paramsToToggle) {
+                const url = new URL(window.location.href);
+                const params = url.searchParams;
+
+                // Check if all params are currently set
+                const allSet = paramsToToggle.every(param => params.get(param) === "yes");
+
+                if (allSet) {
+                    // Remove all params
+                    paramsToToggle.forEach(param => params.delete(param));
+                } else {
+                    // Add all params
+                    paramsToToggle.forEach(param => params.set(param, "yes"));
+                }
+
+                window.location.href = url.toString();
+            }
+
+            function updateButtonText() {
+                const params = getURLParams();
+
+                // User CSS button
+                const cssDisabled = params.get("DISABLE_SYSPREF_IntranetUserCSS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserCSS") === "yes";
+                const cssToggle = document.getElementById("toggleUserCSS");
+                if (cssToggle) {
+                    const cssText = cssToggle.querySelector(".toggle-text");
+                    if (cssText) cssText.textContent = cssDisabled ? _("Enable custom CSS") : _("Disable custom CSS");
+                }
+
+                // User JS button
+                const jsDisabled = params.get("DISABLE_SYSPREF_IntranetUserJS") === "yes" && params.get("DISABLE_SYSPREF_OPACUserJS") === "yes";
+                const jsToggle = document.getElementById("toggleUserJS");
+                if (jsToggle) {
+                    const jsText = jsToggle.querySelector(".toggle-text");
+                    if (jsText) jsText.textContent = jsDisabled ? _("Enable custom JS") : _("Disable custom JS");
+                }
+
+                // Stylesheets button
+                const stylesheetsDisabled =
+                    params.get("DISABLE_SYSPREF_OpacAdditionalStylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_opaclayoutstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetcolorstylesheet") === "yes" &&
+                    params.get("DISABLE_SYSPREF_intranetstylesheet") === "yes";
+                const stylesheetsToggle = document.getElementById("toggleStylesheets");
+                if (stylesheetsToggle) {
+                    const stylesheetsText = stylesheetsToggle.querySelector(".toggle-text");
+                    if (stylesheetsText) stylesheetsText.textContent = stylesheetsDisabled ? _("Enable custom stylesheets") : _("Disable custom stylesheets");
+                }
+
+                // Update icon color based on whether any toggles are active
+                const anyDisabled = cssDisabled || jsDisabled || stylesheetsDisabled;
+                const debugIcon = document.getElementById("debug-icon");
+                if (debugIcon) {
+                    if (anyDisabled) {
+                        debugIcon.style.color = "#ffc107"; // Warning/amber color
+                    } else {
+                        debugIcon.style.color = ""; // Default color
+                    }
+                }
+            }
+
+            // Update button text on page load
+            updateButtonText();
+
+            // User CSS toggle
+            const cssToggle = document.getElementById("toggleUserCSS");
+            if (cssToggle) {
+                cssToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserCSS", "DISABLE_SYSPREF_OPACUserCSS"]);
+                });
+            }
+
+            // User JS toggle
+            const jsToggle = document.getElementById("toggleUserJS");
+            if (jsToggle) {
+                jsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_IntranetUserJS", "DISABLE_SYSPREF_OPACUserJS"]);
+                });
+            }
+
+            // Stylesheets toggle
+            const stylesheetsToggle = document.getElementById("toggleStylesheets");
+            if (stylesheetsToggle) {
+                stylesheetsToggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    toggleURLParams(["DISABLE_SYSPREF_OpacAdditionalStylesheet", "DISABLE_SYSPREF_opaclayoutstylesheet", "DISABLE_SYSPREF_intranetcolorstylesheet", "DISABLE_SYSPREF_intranetstylesheet"]);
+                });
+            }
+        })();
+    </script>
+
+<!-- / js_includes.inc -->
+
+    
+    
+
+
+
+<!-- format-price.inc -->
+<script nonce="">
+    
+    
+        var default_value = {
+            thousands_sep: ',',
+            decimal_point: '.',
+            decimal_digits: 2
+        };
+
+    
+    Number.prototype.format_price = function( value, params ) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+            var re = '\\d(?=(\\d{' + 3 + '})+' + '\\D' + ')', value = this.toFixed(decimal_digits);
+            return value.replace('.', decimal_point).replace(new RegExp(re, 'g'), '$&' + thousands_sep);
+    }
+    String.prototype.unformat_price = function (params) {
+        params = params == undefined ? {} : params;
+        var thousands_sep = params.thousands_sep == undefined ? default_value.thousands_sep : params.thousands_sep,
+            decimal_point = params.decimal_point == undefined ? default_value.decimal_point : params.decimal_point,
+            //symbol = params.symbol == undefined ? '$' : params.symbol, // Not implemented yet
+            decimal_digits = params.decimal_digits == undefined ? default_value.decimal_digits : params.decimal_digits;
+
+        let value = this.valueOf();
+        value = value.replace(thousands_sep, '').replace(decimal_point, '.').replace(new RegExp('[^\\d.]', 'g'), '');
+        return Number(value).toFixed(decimal_digits);
+    }
+</script>
+<!-- / format-price.inc -->
+
+<script src="./Z39.50_SRU search results › Koha_files/datatables.min_26.0505000.js.download"></script>
+<script src="./Z39.50_SRU search results › Koha_files/datatables_26.0505000.js.download"></script>
+
+    
+
+<!-- z3950_search.inc -->
+<script nonce="">
+    var interface = "/intranet-tmpl";
+    var theme = "prog";
+    var total_pages = new Number("");
+</script>
+<!-- / z3950_search.inc -->
+
+    <script src="./Z39.50_SRU search results › Koha_files/z3950_search_26.0505000.js.download"></script>
+    <script nonce="">
+        var table_settings = {"default_display_length":null,"default_sort_order":1,"table":"resultst","columns":[{"cannot_be_modified":0,"cannot_be_toggled":0,"columnname":"server","is_hidden":0},{"columnname":"title","is_hidden":0,"cannot_be_toggled":0,"cannot_be_modified":0},{"cannot_be_modified":0,"cannot_be_toggled":0,"is_hidden":0,"columnname":"author"},{"cannot_be_toggled":0,"is_hidden":0,"columnname":"date","cannot_be_modified":0},{"is_hidden":0,"columnname":"edition","cannot_be_toggled":0,"cannot_be_modified":0},{"is_hidden":0,"columnname":"isbn","cannot_be_toggled":0,"cannot_be_modified":0},{"cannot_be_modified":0,"columnname":"lccn","is_hidden":0,"cannot_be_toggled":0},{"cannot_be_modified":1,"is_hidden":0,"columnname":"actions","cannot_be_toggled":1}],"module":"cataloguing","default_save_state":1,"default_save_state_search":0,"page":"z3950_search"};
+    </script>
+    <script nonce="">
+        $(document).ready(function () {
+            var thetable = $("#resultst").kohaTable(
+                {
+                    columnDefs: [{ targets: [1], type: "nsb-nse" }],
+                    paging: false,
+                    searching: false,
+                    info: false,
+                },
+                table_settings
+            );
+            InitLastAction();
+        });
+
+        function columnsInit() {
+            $(".dataTables_info").text($("#result_pagenumbers").text());
+            $("#result_pagenumbers").hide();
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+<button id="backtotop" class="btn btn-default" aria-label="Back to top" style="display: none;"><i class="fa fa-arrow-up" aria-hidden="true"></i></button></body><!-- prettier-ignore-start --></html>
