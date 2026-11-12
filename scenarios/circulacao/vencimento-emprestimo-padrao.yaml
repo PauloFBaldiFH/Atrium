@@ -1,0 +1,11 @@
+# Empréstimo de um livro com a regra e o calendário reais da biblioteca.
+id: vencimento-emprestimo-padrao
+spec: docs/specs/circulacao/vencimento.md
+parity: required
+given:
+  patron: { category: B }
+  item: { itemtype: BK, branch: MAIN }
+when:
+  - checkout: { branch: MAIN }
+then:
+  - loan: { due: recorded }

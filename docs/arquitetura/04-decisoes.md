@@ -46,9 +46,9 @@ O Horizon reconstrói o Minecraft quase 1 para 1, porque qualquer diferença que
 
 ## 3. Koha de referência e oráculo
 
-- **Versão-alvo: a estável mais recente, Koha 26.05.05**, a mesma da instância de testes. O código em `koha/` hoje é a linha de desenvolvimento 26.06.00.052; ele será trocado pela 26.05.05 e movido para `reference/` (§1 item 3). O `koha-lock.json` fixa essa versão.
-- **Oráculo:** o Koha roda em container descartável (koha-testing-docker) no GitHub Actions; as saídas ficam gravadas no repositório e o CI comum compara contra elas sem subir o Koha. Rodar localmente com docker compose é opcional.
-- **Instância de testes:** cópia descartável e separada da produção, com os leitores removidos (só fica o cadastro de exemplo). Usada para conferir dados reais de catálogo e configuração. O backup nunca entra no repositório git, e credenciais nunca vão para documentos ou para o repositório.
+- **Versão-alvo: a estável mais recente, Koha 26.05.05**, a mesma da instância de testes. O código fica em `reference/koha` (submódulo, §1 item 3) e o `koha-lock.json` fixa essa versão.
+- **Oráculo:** a instância de testes de Paulo (decisão de 2026-11-12, que substitui o koha-testing-docker no GitHub Actions). Um gravador roda contra ela só quando alguém o chama, com as credenciais em variáveis de ambiente; as saídas ficam gravadas no repositório e o CI compara contra a gravação, sem acessar a instância. Formato e regras em 05, §4.
+- **Instância de testes:** cópia descartável e separada da produção, com os leitores removidos (só fica o cadastro de exemplo, que Paulo autorizou usar). Tem o acervo, as regras de circulação e o calendário reais da biblioteca. O backup nunca entra no repositório git, e credenciais nunca vão para documentos ou para o repositório.
 
 ## 4. Bibliotecas, redes e instituições
 

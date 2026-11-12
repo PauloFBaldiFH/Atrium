@@ -9,6 +9,7 @@
     "atrium-web-templates": ["atrium-domain"],
     "atrium-web": ["atrium-app", "atrium-domain", "atrium-data", "atrium-web-templates"],
     "atrium-sip2": ["atrium-app", "atrium-domain"],
+    "atrium-scenarios": ["atrium-domain", "atrium-data"],
     "atrium": [
       "atrium-app", "atrium-data", "atrium-domain", "atrium-marc", "atrium-sip2",
       "atrium-store", "atrium-web", "atrium-web-templates"

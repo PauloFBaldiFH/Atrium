@@ -1,0 +1,21 @@
+[package]
+name = "atrium-scenarios"
+description = "Differential scenarios: replays the Koha oracle's recorded inputs through the Atrium domain and compares outputs."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+atrium-domain.workspace = true
+jiff.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_norway.workspace = true
+tempfile.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true
