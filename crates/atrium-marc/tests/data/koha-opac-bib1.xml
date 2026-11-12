@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd"
+    xmlns="http://www.loc.gov/MARC21/slim">
+
+  <leader>00555nam a2200205Ia 4500</leader>
+  <controlfield tag="001">1</controlfield>
+  <controlfield tag="005">20260823192913.0</controlfield>
+  <controlfield tag="008">250321s1995||||xx |||||||||||||| ||por||</controlfield>
+  <datafield tag="041" ind1=" " ind2=" ">
+    <subfield code="a">por</subfield>
+  </datafield>
+  <datafield tag="082" ind1=" " ind2=" ">
+    <subfield code="a">310.62</subfield>
+  </datafield>
+  <datafield tag="110" ind1=" " ind2=" ">
+    <subfield code="a">PREFEITURA MUNICIPAL DE FOZ DO IGUACU</subfield>
+  </datafield>
+  <datafield tag="245" ind1=" " ind2="0">
+    <subfield code="a">Perfil - Anu&#xE1;rio Estat&#xED;stico</subfield>
+  </datafield>
+  <datafield tag="250" ind1=" " ind2=" ">
+    <subfield code="a">1. ed</subfield>
+  </datafield>
+  <datafield tag="260" ind1=" " ind2=" ">
+    <subfield code="a">Foz do IGUA&#xC7;U :</subfield>
+    <subfield code="b">Secretaria Municipal da Coordenacao e Planejamento,</subfield>
+    <subfield code="c">1995.</subfield>
+  </datafield>
+  <datafield tag="300" ind1=" " ind2=" ">
+    <subfield code="a">178 p</subfield>
+  </datafield>
+  <datafield tag="490" ind1=" " ind2=" ">
+    <subfield code="a">Parana</subfield>
+  </datafield>
+  <datafield tag="650" ind1=" " ind2=" ">
+    <subfield code="a">ESTAT&#xCD;STICA FOZ DO IGUA&#xC7;U</subfield>
+  </datafield>
+  <datafield tag="650" ind1=" " ind2=" ">
+    <subfield code="a">PARAN&#xC1; ESTAT&#xCD;STICA</subfield>
+  </datafield>
+  <datafield tag="942" ind1=" " ind2=" ">
+    <subfield code="c">BK</subfield>
+    <subfield code="2">ddc</subfield>
+    <subfield code="n">0</subfield>
+  </datafield>
+  <datafield tag="999" ind1=" " ind2=" ">
+    <subfield code="c">1</subfield>
+    <subfield code="d">1</subfield>
+  </datafield>
+  <datafield tag="952" ind1=" " ind2=" ">
+    <subfield code="0">0</subfield>
+    <subfield code="1">0</subfield>
+    <subfield code="4">0</subfield>
+    <subfield code="7">0</subfield>
+    <subfield code="a">MAIN</subfield>
+    <subfield code="b">MAIN</subfield>
+    <subfield code="c">GEN</subfield>
+    <subfield code="d">2025-03-24</subfield>
+    <subfield code="l">2</subfield>
+    <subfield code="o">310.62 P94</subfield>
+    <subfield code="p">1511</subfield>
+    <subfield code="r">2026-11-12 17:00:28</subfield>
+    <subfield code="s">2026-11-12</subfield>
+    <subfield code="w">2025-03-24</subfield>
+    <subfield code="y">BK</subfield>
+  </datafield>
+</record>

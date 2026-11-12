@@ -10,16 +10,26 @@
 //! offending record and the reader resynchronizes on the next record terminator.
 
 mod error;
+mod iso2709_writer;
 mod limits;
+mod marcxml;
+mod owned;
+mod publish;
 mod reader;
 mod record;
 mod tag;
 
-pub use error::{ReadError, RecordError};
+pub use error::{ReadError, RecordError, WriteError};
 pub use limits::Limits;
+pub use marcxml::{MARCXML_COLLECTION_FOOTER, MARCXML_COLLECTION_HEADER};
+pub use owned::{Field, Record, Subfield};
+pub use publish::publish_atomically;
 pub use reader::MarcReader;
 pub use record::{Encoding, FieldRef, RecordRef, Subfields};
 pub use tag::Tag;
+
+/// Length of the leader.
+pub const LEADER_LEN: usize = 24;
 
 /// ISO 2709 record terminator.
 pub const RECORD_TERMINATOR: u8 = 0x1D;
