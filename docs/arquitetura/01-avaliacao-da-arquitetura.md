@@ -10,7 +10,7 @@ A stack escolhida (Rust, tokio, axum, Askama + HTMX, SQLite em WAL, Tantivy) é 
 
 Os riscos reais do projeto **não estão na stack**, e sim em quatro pontos:
 
-1. **Licença e "clean room".** O repositório já contém o código-fonte completo do Koha 26.06 (GPLv3). Com o código Perl lado a lado, não existe clean room de verdade. A saída mais simples é licenciar o Atrium como **GPLv3** (ou AGPLv3). Se a intenção for licença permissiva (MIT/Apache), o processo precisa ser bem mais rígido (ver §3).
+1. **Licença e "clean room".** O Atrium será licenciado sob **FSL-1.1** (Functional Source License). O Koha é **GPLv3**, e as duas licenças são incompatíveis: nenhum trecho de código, template, texto de interface ou arquivo de dados do Koha pode entrar no Atrium. Hoje o repositório contém o código-fonte completo do Koha 26.06, e isso precisa mudar antes da primeira linha de Rust. O processo de clean room do §3 passa a ser obrigatório, não apenas uma boa prática.
 2. **BIBFRAME 2.0 como núcleo.** É uma ótima direção, mas BIBFRAME é um vocabulário RDF (grafo), e a conversão MARC → BIBFRAME → MARC **perde informação**. Proponho um modelo de domínio *tipado e relacional inspirado em BIBFRAME*, com o registro MARC de origem preservado para garantir exportação fiel (ver §2.5).
 3. **Escopo.** O Koha tem 303 tabelas, ~935 preferências de sistema e ~110 grupos de endpoints REST. Reescrever tudo é um projeto de anos. É preciso um MVP fechado e fases bem definidas (ver §5).
 4. **Ecossistema MARC em Rust é fino.** Não há crate madura para UNIMARC, e MARC-8 / ISO 5426 (codificações legadas) são armadilhas clássicas. Vamos precisar de uma crate própria `atrium-marc`, com fuzzing e testes de ida e volta.
@@ -29,7 +29,9 @@ Também proponho três adições que não estavam no plano e que, na minha avali
 | `Data/mandatory/sysprefs.sql` | ~935 preferências de sistema | A maior fonte de complexidade acidental do Koha. |
 | `Data/localization/` | Dados de localização | |
 
-Recomendação: mover `koha/` e `Data/` para um repositório separado de referência (por exemplo `atrium-reference`) ou para uma pasta `reference/` claramente fora do workspace Cargo. Isso reduz o tamanho do repositório (168 MB hoje), separa o que é "nosso" do que é "deles" e facilita a disciplina descrita em §3.
+**Ação obrigatória com a FSL-1.1:** retirar `koha/` e os arquivos derivados do Koha em `Data/` (`kohastructure.sql`, `mandatory/`, `localization/`, scripts `.pl`) deste repositório e movê-los para um repositório separado de referência (por exemplo `atrium-reference`), com licença GPLv3 própria. Assim, o repositório do Atrium contém só código FSL, o tamanho cai de 168 MB, e fica claro o que é "nosso" e o que é "deles". As capturas de tela podem ir junto, já que reproduzem textos da interface do Koha.
+
+Observação: apagar os arquivos num commit novo não os remove do histórico do Git. Se o repositório for público, o histórico continuará distribuindo o código do Koha. Isso é permitido pela GPL (o código veio com a licença), mas mistura as duas licenças no mesmo repositório. A opção mais limpa é reescrever o histórico ou recriar o repositório antes de abri-lo ao público.
 
 ---
 
@@ -138,12 +140,23 @@ A ideia está certa: **não traduzir Perl para Rust**. Traduzir carregaria junto
 3. **O Koha como oráculo.** Subir um Koha real (por exemplo, `koha-testing-docker`) e rodar **testes diferenciais**: mesma entrada nos dois sistemas, comparar a saída (data de vencimento, multa calculada, posição na fila de reservas, MARC exportado). Isso substitui "achismo" por evidência e é a melhor defesa contra alucinação.
 4. **Simplificar de propósito.** Cada preferência de sistema do Koha (~935) precisa justificar sua existência. A maioria vira um padrão sensato fixo, configuração tipada ou é descartada.
 
-### 3.2 Licença (decisão necessária)
+### 3.2 Licença: FSL-1.1 e o que isso exige
 
-O Koha é **GPLv3**. O código está neste repositório e será lido durante o trabalho. Na prática:
+**Decisão:** o Atrium usa a **FSL-1.1** (Functional Source License). Ela permite qualquer uso, exceto oferecer um produto concorrente com o próprio Atrium. Cada versão se converte automaticamente em **Apache-2.0 ou MIT dois anos** após a publicação.
 
-- **Se o Atrium for GPLv3 (ou AGPLv3):** não há problema jurídico em estudar o Koha, reaproveitar ideias, mapeamentos, textos de mensagens e até trechos. O método do §3.1 continua valendo por qualidade técnica, não por exigência legal. **Esta é a minha recomendação.** AGPLv3 fecha também o caso de quem oferece o sistema como serviço sem publicar as modificações.
-- **Se o Atrium for permissivo (MIT/Apache-2.0):** é preciso clean room de verdade: quem lê o código do Koha escreve especificações e não implementa; quem implementa nunca abre o Perl; o código do Koha sai do repositório; e cada especificação registra suas fontes. Isso é caro e frágil, ainda mais com assistentes de IA lendo o repositório inteiro.
+Consequências práticas:
+
+- **FSL e GPLv3 são incompatíveis.** O Atrium não pode conter código, templates, textos de interface, mensagens, arquivos SQL, preferências ou traduções do Koha, nem trechos "adaptados" deles. Isso vale também para código gerado por IA a partir do Perl.
+- **Clean room obrigatório**, com papéis separados:
+  - *Analista*: lê o Koha (manual, interface, testes, código quando preciso) e escreve a spec **em nossas palavras**, descrevendo comportamento, nunca estrutura de código. Toda spec registra suas fontes.
+  - *Implementador*: trabalha só com a spec, os cenários de aceitação e os dados-oráculo. Nunca abre o Perl do Koha.
+  - Quando a mesma pessoa faz os dois papéis, as etapas acontecem em momentos separados, e a implementação usa só a spec.
+- **Assistentes de IA:** sessões de implementação rodam num repositório **sem** o código do Koha. Sessões de análise podem ler o repositório de referência, mas só produzem specs.
+- **O que continua livre:** padrões e normas (MARC21, UNIMARC, BIBFRAME, SIP2, Z39.50, OAI-PMH, regras de classificação), comportamento observável, ideias e fluxos de trabalho. Comportamento não é protegido por direito autoral; código e textos são.
+- **Testes diferenciais (§3.1, item 3) continuam permitidos:** rodar o Koha como caixa-preta e comparar saídas não copia código.
+- **Dependências:** a FSL não impede usar crates com licenças permissivas (MIT, Apache, BSD). Crates GPL/AGPL ficam de fora. O `cargo-deny` no CI deve bloquear licenças incompatíveis.
+- **Adoção:** a FSL não é aprovada pela OSI como código aberto. Alguns órgãos públicos e universidades exigem software "open source" em editais. Vale preparar um texto explicando a conversão para Apache/MIT em dois anos.
+- **Pendências para o arquivo `LICENSE`:** escolher a licença futura (Apache-2.0 ou MIT) e o nome do licenciante (pessoa ou empresa).
 
 ---
 
@@ -301,7 +314,7 @@ flowchart TB
         S2["Usar o módulo no Koha de referência e nas capturas de tela"]
         S3["Ler os testes do Koha do módulo: casos-limite"]
         S4{"Ainda há dúvida de comportamento?"}
-        S5["Consulta pontual ao código Perl, registrando a dúvida"]
+        S5["Analista consulta o código Perl no repo de referência, registrando a dúvida"]
         S1 --> S2 --> S3 --> S4
         S4 -- sim --> S5 --> S4
     end
@@ -309,7 +322,7 @@ flowchart TB
     S4 -- não --> E1
 
     subgraph Especificacao["2. Especificação"]
-        E1["Escrever spec em docs/specs/: regras, estados, casos-limite, em nossas palavras"]
+        E1["Escrever spec em docs/specs/: regras, estados, casos-limite, em nossas palavras, com fontes"]
         E2["Decidir o que simplificar ou descartar: preferências, exceções históricas"]
         E3["Escrever cenários de aceitação: dado / quando / então"]
         E4["Gerar dados-oráculo: rodar os cenários no Koha e gravar as saídas"]
@@ -318,7 +331,8 @@ flowchart TB
         E5 -- não --> E1
     end
 
-    E5 -- sim --> D1
+    E5 -- sim --> CR["Barreira clean room: implementador recebe só spec, cenários e oráculo"]
+    CR --> D1
 
     subgraph Implementacao["3. Implementação"]
         D1["Modelar tipos e regras em atrium-domain, sem I/O"]
@@ -356,7 +370,8 @@ flowchart TB
 
 - **Nada de implementação sem spec aprovada.** A spec é o contrato; o código Perl não é.
 - **Toda diferença em relação ao Koha é intencional e documentada** na spec (seção "Diferenças em relação ao Koha").
-- **Uso de IA:** assistentes recebem a spec e os cenários como contexto, não o código Perl. Isso reduz drasticamente a chance de "tradução disfarçada" e de comportamento inventado.
+- **Uso de IA:** assistentes de implementação recebem a spec e os cenários como contexto, nunca o código Perl, e trabalham num repositório sem o Koha. Com a FSL-1.1, isso é exigência de licença (§3.2), além de reduzir comportamento inventado.
+- **Fonte registrada:** cada spec lista de onde veio cada regra (página do manual, tela, teste do Koha, observação no oráculo).
 - **Decisões de arquitetura viram ADRs** curtos em `docs/adr/` (contexto, decisão, consequências).
 
 ---
@@ -365,9 +380,9 @@ flowchart TB
 
 | # | Decisão | Recomendação |
 |---|---|---|
-| 1 | Licença do Atrium | GPLv3 ou AGPLv3 (ver §3.2) |
+| 1 | Licença do Atrium | **Decidido:** FSL-1.1. Falta definir a licença futura (Apache-2.0 ou MIT) e o licenciante |
 | 2 | Porte-alvo da v1 | Biblioteca única até rede pequena (≤ 20 bibliotecas, ≤ 2 milhões de itens) em SQLite |
-| 3 | Onde fica o código do Koha | Repositório de referência separado ou `reference/` fora do workspace |
+| 3 | Onde fica o código do Koha | **Obrigatório com FSL:** repositório de referência separado; avaliar limpar o histórico antes de tornar o Atrium público |
 | 4 | Formato prioritário | MARC21 primeiro, UNIMARC na Fase 4 |
 | 5 | Profundidade do BIBFRAME | Modelo relacional inspirado em BF + MARC de origem preservado; sem triple store |
 | 6 | Driver SQLite | `rusqlite` com ator de escrita única |
@@ -375,7 +390,8 @@ flowchart TB
 
 ## 8. Próximos passos sugeridos
 
-1. Fechar as decisões do §7 (principalmente a licença).
-2. Registrar cada decisão como ADR em `docs/adr/`.
-3. Escrever a primeira spec pelo fluxo do §6: **`atrium-marc` (leitura e escrita MARC21)**, que não depende de nada e destrava todo o resto.
-4. Fase 0: criar o workspace Cargo, CI e o esqueleto do servidor.
+1. Mover o código e os dados do Koha para um repositório de referência e adicionar o `LICENSE` FSL-1.1.
+2. Fechar as decisões restantes do §7.
+3. Registrar cada decisão como ADR em `docs/adr/`.
+4. Escrever a primeira spec pelo fluxo do §6: **`atrium-marc` (leitura e escrita MARC21)**, que não depende de nada e destrava todo o resto.
+5. Fase 0: criar o workspace Cargo, CI e o esqueleto do servidor.
