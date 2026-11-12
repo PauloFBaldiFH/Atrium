@@ -24,6 +24,11 @@ pub(crate) enum Mode {
     Check,
 }
 
+/// Path of an extracted data file, relative to the repository root.
+fn data_path(series: &str, name: &str) -> String {
+    format!("data/koha-{series}/{name}")
+}
+
 /// One generated file: path relative to [`OUT_DIR`] and its unformatted contents.
 struct Generated {
     name: String,
@@ -34,26 +39,11 @@ struct Generated {
 pub(crate) fn run(root: &Path, mode: Mode) -> Result<(), String> {
     let lock = read_json(&root.join("koha-lock.json"))?;
     let series = str_field(&lock, "series")?;
-    let rule_kinds = read_json(
-        &root
-            .join("data")
-            .join(format!("koha-{series}"))
-            .join("circulation_rule_kinds.json"),
-    )?;
-
-    let framework = read_json(
-        &root
-            .join("data")
-            .join(format!("koha-{series}"))
-            .join("marc21_framework.json"),
-    )?;
-
-    let iso5426 = read_json(
-        &root
-            .join("data")
-            .join(format!("koha-{series}"))
-            .join("iso5426.json"),
-    )?;
+    let data = |name: &str| read_json(&root.join(data_path(series, name)));
+    let rule_kinds = data("circulation_rule_kinds.json")?;
+    let framework = data("marc21_framework.json")?;
+    let iso5426 = data("iso5426.json")?;
+    let search_fields = data("search_fields.json")?;
 
     let mut files = vec![
         Generated {
@@ -72,15 +62,23 @@ pub(crate) fn run(root: &Path, mode: Mode) -> Result<(), String> {
             name: "iso5426.rs".to_owned(),
             source: crate::charsets::iso5426(
                 &iso5426,
-                &format!("data/koha-{series}/iso5426.json"),
-                &header(&format!("data/koha-{series}/iso5426.json")),
+                &data_path(series, "iso5426.json"),
+                &header(&data_path(series, "iso5426.json")),
+            )?,
+        },
+        Generated {
+            name: "search_fields.rs".to_owned(),
+            source: crate::search_fields::generate(
+                &search_fields,
+                &data_path(series, "search_fields.json"),
+                &header(&data_path(series, "search_fields.json")),
             )?,
         },
     ];
     files.extend(
         crate::marc_framework::files(
             &framework,
-            &format!("data/koha-{series}/marc21_framework.json"),
+            &data_path(series, "marc21_framework.json"),
             &header,
         )?
         .into_iter()
@@ -154,7 +152,8 @@ fn module_index() -> String {
          pub(crate) mod marc21_framework_6xx;\n\
          pub(crate) mod marc21_framework_7xx;\n\
          pub(crate) mod marc21_framework_8xx;\n\
-         pub(crate) mod marc21_framework_9xx;\n",
+         pub(crate) mod marc21_framework_9xx;\n\
+         pub(crate) mod search_fields;\n",
     );
     out
 }

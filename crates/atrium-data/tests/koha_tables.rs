@@ -68,3 +68,23 @@ fn iso5426_table() {
     assert_eq!(iso5426_char(0x0097), Some('<'));
     assert_eq!(iso5426_char(0x0041), None);
 }
+
+#[test]
+fn search_fields() {
+    use atrium_data::{SearchFieldKind, authority_search_fields, biblio_search_fields};
+    assert_eq!(biblio_search_fields().len(), 155);
+    assert_eq!(authority_search_fields().len(), 30);
+    let title = biblio_search_fields()
+        .iter()
+        .find(|field| field.name == "title")
+        .unwrap();
+    assert_eq!(title.kind, SearchFieldKind::String);
+    assert!(title.mappings.iter().any(|m| m.marc_field == "245abp"));
+    let holding = biblio_search_fields()
+        .iter()
+        .find(|field| field.name == "holdingbranch")
+        .unwrap();
+    assert_eq!(holding.facet_order, Some(8));
+    assert_eq!(holding.mappings.len(), 1);
+    assert!(holding.mappings[0].facet);
+}
