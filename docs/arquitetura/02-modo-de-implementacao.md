@@ -93,7 +93,7 @@ Mesmo que o primeiro cliente seja uma única biblioteca, `branch_id` entra no mo
 
 São o coração funcional do Koha e onde mora a maioria dos bugs dele. Proposta:
 
-**Resolução de regras de circulação.** As regras são definidas sobre a combinação biblioteca × categoria de leitor × tipo de item, com curingas (`*`). A resolução segue uma ordem de precedência explícita e documentada (da mais específica para a mais genérica), implementada em **uma única função pura**:
+**Resolução de regras de circulação.** As regras são definidas sobre a combinação biblioteca × categoria de leitor × tipo de item, com curingas (`*`). Atenção: no Koha 26.06 cada um dos 57 tipos de regra (`$RULE_KINDS` em `Koha/CirculationRules.pm`) declara o próprio escopo; `max_holds` usa só biblioteca × categoria, `holdallowed` só biblioteca × tipo. Esse inventário será extraído automaticamente (ver [03-estrategia-reconstrucao.md](03-estrategia-reconstrucao.md), §1). A resolução segue uma ordem de precedência explícita e documentada (da mais específica para a mais genérica), implementada em **uma única função pura**:
 
 ```text
 (biblioteca, categoria, tipo)  >  (biblioteca, categoria, *)  >  (biblioteca, *, tipo)  >  (biblioteca, *, *)
