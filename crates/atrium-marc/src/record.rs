@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //! A validated ISO 2709 record that borrows its bytes.
 
-use crate::{FIELD_TERMINATOR, Limits, RECORD_TERMINATOR, RecordError, SUBFIELD_DELIMITER, Tag};
-
-/// Length of the leader.
-const LEADER_LEN: usize = 24;
+use crate::{
+    FIELD_TERMINATOR, LEADER_LEN, Limits, RECORD_TERMINATOR, RecordError, SUBFIELD_DELIMITER, Tag,
+};
 /// Length of one directory entry: tag (3), field length (4), start position (5).
 const ENTRY_LEN: usize = 12;
 

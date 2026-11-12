@@ -94,3 +94,35 @@ pub enum ReadError {
         error: RecordError,
     },
 }
+
+/// Why a record could not be written. Koha's `MARC::Record` would write a corrupt record
+/// in these cases; its staff export then drops it, so callers skip the record too.
+#[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+pub enum WriteError {
+    /// A field is longer than the four digits of a directory entry allow.
+    #[error("field {tag} is {len} bytes, more than ISO 2709 allows (9999)")]
+    FieldTooLong {
+        /// The field's tag.
+        tag: Tag,
+        /// Its length with the field terminator.
+        len: usize,
+    },
+    /// The record is longer than the five digits of the leader allow.
+    #[error("record is {len} bytes, more than ISO 2709 allows (99999)")]
+    RecordTooLong {
+        /// Its length with the record terminator.
+        len: usize,
+    },
+    /// A value, code or indicator holds an ISO 2709 delimiter byte.
+    #[error("field {tag} contains an ISO 2709 delimiter byte")]
+    DelimiterInData {
+        /// The field's tag.
+        tag: Tag,
+    },
+    /// MARCXML needs UTF-8 text, and this record is not (leader position 9 or the bytes).
+    #[error("{tag} is not UTF-8, which MARCXML requires")]
+    NotUtf8 {
+        /// The offending field, or [`Tag::LEADER`].
+        tag: Tag,
+    },
+}
