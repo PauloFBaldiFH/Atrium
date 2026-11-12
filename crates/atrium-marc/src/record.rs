@@ -12,8 +12,8 @@ const ENTRY_LEN: usize = 12;
 pub enum Encoding {
     /// `a`: UCS/Unicode, stored as UTF-8.
     Utf8,
-    /// Blank or anything else: MARC-8 in MARC21, ISO 5426 and friends in UNIMARC. Decoding
-    /// these is task 1.4.
+    /// Blank or anything else: MARC-8 in MARC21, ISO 5426 and friends in UNIMARC. Koha does
+    /// not trust this position; see [`crate::Record::marc21_to_utf8`].
     Legacy,
 }
 

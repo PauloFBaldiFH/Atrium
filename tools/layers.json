@@ -3,7 +3,7 @@
   "crates": {
     "atrium-data": [],
     "atrium-domain": ["atrium-data"],
-    "atrium-marc": [],
+    "atrium-marc": ["atrium-data"],
     "atrium-app": ["atrium-domain", "atrium-data", "atrium-marc"],
     "atrium-store": ["atrium-app", "atrium-domain", "atrium-data", "atrium-marc"],
     "atrium-web-templates": ["atrium-domain"],
