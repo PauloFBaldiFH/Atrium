@@ -26,7 +26,7 @@ pub(crate) enum Mode {
 
 /// One generated file: path relative to [`OUT_DIR`] and its unformatted contents.
 struct Generated {
-    name: &'static str,
+    name: String,
     source: String,
 }
 
@@ -41,25 +41,44 @@ pub(crate) fn run(root: &Path, mode: Mode) -> Result<(), String> {
             .join("circulation_rule_kinds.json"),
     )?;
 
-    let files = [
+    let framework = read_json(
+        &root
+            .join("data")
+            .join(format!("koha-{series}"))
+            .join("marc21_framework.json"),
+    )?;
+
+    let mut files = vec![
         Generated {
-            name: "mod.rs",
+            name: "mod.rs".to_owned(),
             source: module_index(),
         },
         Generated {
-            name: "koha_version.rs",
+            name: "koha_version.rs".to_owned(),
             source: koha_version(&lock)?,
         },
         Generated {
-            name: "circulation_rule_kinds.rs",
+            name: "circulation_rule_kinds.rs".to_owned(),
             source: circulation_rule_kinds(&rule_kinds)?,
         },
     ];
+    files.extend(
+        crate::marc_framework::files(
+            &framework,
+            &format!("data/koha-{series}/marc21_framework.json"),
+            &header,
+        )?
+        .into_iter()
+        .map(|file| Generated {
+            name: file.name,
+            source: file.source,
+        }),
+    );
 
     let out_dir = root.join(OUT_DIR);
     let mut stale = Vec::new();
     for file in &files {
-        let path = out_dir.join(file.name);
+        let path = out_dir.join(&file.name);
         let text = rustfmt(&file.source)?;
         match mode {
             Mode::Write => {
@@ -109,7 +128,17 @@ fn module_index() -> String {
         "//! Tables generated from the pinned Koha reference.\n\n\
          #[expect(clippy::too_many_lines, reason = \"one match arm per Koha rule kind\")]\n\
          pub(crate) mod circulation_rule_kinds;\n\
-         pub(crate) mod koha_version;\n",
+         pub(crate) mod koha_version;\n\
+         pub(crate) mod marc21_framework_0xx;\n\
+         pub(crate) mod marc21_framework_1xx;\n\
+         pub(crate) mod marc21_framework_2xx;\n\
+         pub(crate) mod marc21_framework_3xx;\n\
+         pub(crate) mod marc21_framework_4xx;\n\
+         pub(crate) mod marc21_framework_5xx;\n\
+         pub(crate) mod marc21_framework_6xx;\n\
+         pub(crate) mod marc21_framework_7xx;\n\
+         pub(crate) mod marc21_framework_8xx;\n\
+         pub(crate) mod marc21_framework_9xx;\n",
     );
     out
 }

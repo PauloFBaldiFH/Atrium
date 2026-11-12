@@ -22,6 +22,7 @@ mod deviations;
 mod file_size;
 mod layers;
 mod ledger;
+mod marc_framework;
 mod sysprefs;
 
 use std::path::{Path, PathBuf};

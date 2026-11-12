@@ -33,6 +33,7 @@ verify_pinned_version( $lock, $koha_dir );
 my %outputs = (
     'circulation_rule_kinds.json' => circulation_rule_kinds($koha_dir),
     'sysprefs.json'               => sysprefs($koha_dir),
+    'marc21_framework.json'       => marc21_framework($koha_dir),
 );
 
 my $stale = 0;
@@ -125,6 +126,109 @@ sub sysprefs {
         },
         sysprefs => \@prefs,
     };
+}
+
+# Koha: the default MARC21 bibliographic framework, as the installer loads it into
+# marc_tag_structure and marc_subfield_structure (frameworkcode ''), plus the maxlength
+# updates in its sql_statements. The ACQ copy is left out.
+sub marc21_framework {
+    my ($dir) = @_;
+    my $file = 'installer/data/mysql/en/marcflavour/marc21/mandatory/marc21_framework_DEFAULT.yml';
+    my $source = slurp("$dir/$file");
+
+    my ( %tags, %subfields, $table, $row );
+    my $finish = sub {
+        return unless $row && $table;
+        return if ( $row->{frameworkcode} // '' ) ne '';
+        if ( $table eq 'marc_tag_structure' ) {
+            $tags{ $row->{tagfield} } = $row;
+        } elsif ( $table eq 'marc_subfield_structure' ) {
+            $subfields{ $row->{tagfield} }{ $row->{tagsubfield} } = $row;
+        }
+        undef $row;
+    };
+    my ($tables) = $source =~ /^tables:\n(.*?)^\S/ms or die "no tables in $file\n";
+    for my $line ( split /\n/, $tables ) {
+        next if $line =~ /^\s*(#.*)?$/;
+        if ( $line =~ /^  - (\w+):\s*$/ ) {
+            $finish->();
+            $table = $1;
+        } elsif ( $line =~ /^\s+(- )?(\w+):\s*(.*?)\s*$/ ) {
+            my ( $starts_row, $key, $value ) = ( $1, $2, $3 );
+            next if $key eq 'rows' || $key eq 'translatable' || $key eq 'multiline';
+            if ($starts_row) { $finish->(); $row = {} }
+            die "value outside a row in $file: $line\n" unless $row;
+            $row->{$key} = yaml_scalar($value);
+        } else {
+            die "unexpected line in $file: $line\n";
+        }
+    }
+    $finish->();
+
+    my %maxlength;
+    while ( $source =~ /UPDATE marc_subfield_structure SET maxlength=(\d+) WHERE tagfield='(\d{3})';/g ) {
+        $maxlength{$2} = 0 + $1;
+    }
+
+    my $int  = sub { defined $_[0] && $_[0] ne '' ? 0 + $_[0] : undef };
+    my $text = sub { defined $_[0] && $_[0] ne '' ? $_[0] : undef };
+    my @fields;
+    for my $tag ( sort keys %tags ) {
+        my $t = $tags{$tag};
+        my @codes = sort { ( $a =~ /\d/ ) <=> ( $b =~ /\d/ ) or $a cmp $b } keys %{ $subfields{$tag} // {} };
+        push @fields, {
+            tag              => $tag,
+            label            => $t->{liblibrarian},
+            label_opac       => $t->{libopac},
+            repeatable       => JSON::PP::true_or_false( $t->{repeatable} ),
+            mandatory        => JSON::PP::true_or_false( $t->{mandatory} ),
+            authorised_value => $text->( $t->{authorised_value} ),
+            subfields        => [
+                map {
+                    my $s = $subfields{$tag}{$_};
+                    {
+                        code             => $_,
+                        label            => $s->{liblibrarian},
+                        label_opac       => $s->{libopac},
+                        repeatable       => JSON::PP::true_or_false( $s->{repeatable} ),
+                        mandatory        => JSON::PP::true_or_false( $s->{mandatory} ),
+                        kohafield        => $text->( $s->{kohafield} ),
+                        tab              => $int->( $s->{tab} ),
+                        hidden           => $int->( $s->{hidden} ),
+                        authorised_value => $text->( $s->{authorised_value} ),
+                        authtypecode     => $text->( $s->{authtypecode} ),
+                        value_builder    => $text->( $s->{value_builder} ),
+                        isurl            => JSON::PP::true_or_false( $s->{isurl} ),
+                        maxlength        => $maxlength{$tag} // 9999,
+                    }
+                } @codes
+            ],
+        };
+    }
+    my @orphans = grep { !$tags{$_} } sort keys %subfields;
+    die "subfields without a tag in $file: @orphans\n" if @orphans;
+    return {
+        source => { file => $file, sha256 => sha256_hex($source) },
+        fields => \@fields,
+    };
+}
+
+# A YAML scalar as the framework files write them: empty, bare or double-quoted.
+sub yaml_scalar {
+    my ($value) = @_;
+    return undef if $value eq '' || $value eq '~' || $value eq 'null';
+    if ( $value =~ /^"(.*)"$/ ) {
+        my $inner = $1;
+        $inner =~ s/\\(["\\])/$1/g;
+        return $inner;
+    }
+    if ( $value =~ /^'(.*)'$/ ) {
+        my $inner = $1;
+        $inner =~ s/''/'/g;
+        return $inner;
+    }
+    die "unsupported YAML scalar: $value\n" if $value =~ /^[\[{&*!|>]/;
+    return $value;
 }
 
 sub verify_pinned_version {
