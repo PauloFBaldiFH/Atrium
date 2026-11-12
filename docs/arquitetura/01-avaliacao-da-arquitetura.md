@@ -384,3 +384,5 @@ flowchart TB
 2. Registrar cada decisão como ADR em `docs/adr/`.
 3. Escrever a primeira spec pelo fluxo do §6: **`atrium-marc` (leitura e escrita MARC21)**, que não depende de nada e destrava todo o resto.
 4. Fase 0: criar o workspace Cargo, CI e o esqueleto do servidor.
+
+O modo de implementação detalhado (regras de código, modelagem, transações, testes, primeiras tarefas e melhorias adicionais) está em [02-modo-de-implementacao.md](02-modo-de-implementacao.md).
