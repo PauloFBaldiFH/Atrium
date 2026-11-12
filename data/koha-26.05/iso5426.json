@@ -1,0 +1,1428 @@
+{
+  "chars" : [
+    {
+      "iso5426" : "0097",
+      "unicode" : "003c"
+    },
+    {
+      "iso5426" : "0098",
+      "unicode" : "003e"
+    },
+    {
+      "iso5426" : "00b0",
+      "unicode" : "0101"
+    },
+    {
+      "iso5426" : "00b1",
+      "unicode" : "0623"
+    },
+    {
+      "iso5426" : "00b2",
+      "unicode" : "00e0"
+    },
+    {
+      "iso5426" : "00b3",
+      "unicode" : "00e7"
+    },
+    {
+      "iso5426" : "00b4",
+      "unicode" : "00e8"
+    },
+    {
+      "iso5426" : "00b5",
+      "unicode" : "00e9"
+    },
+    {
+      "iso5426" : "00b6",
+      "unicode" : "2021"
+    },
+    {
+      "iso5426" : "00b7",
+      "unicode" : "00b7"
+    },
+    {
+      "iso5426" : "00b8",
+      "unicode" : "2033"
+    },
+    {
+      "iso5426" : "00b9",
+      "unicode" : "2019"
+    },
+    {
+      "iso5426" : "00ba",
+      "unicode" : "201d"
+    },
+    {
+      "iso5426" : "00bb",
+      "unicode" : "00bb"
+    },
+    {
+      "iso5426" : "00bc",
+      "unicode" : "266f"
+    },
+    {
+      "iso5426" : "00bd",
+      "unicode" : "02b9"
+    },
+    {
+      "iso5426" : "00be",
+      "unicode" : "02ba"
+    },
+    {
+      "iso5426" : "00bf",
+      "unicode" : "00bf"
+    },
+    {
+      "iso5426" : "00e1",
+      "unicode" : "00c6"
+    },
+    {
+      "iso5426" : "00e2",
+      "unicode" : "0110"
+    },
+    {
+      "iso5426" : "00e6",
+      "unicode" : "0132"
+    },
+    {
+      "iso5426" : "00e8",
+      "unicode" : "0141"
+    },
+    {
+      "iso5426" : "00e9",
+      "unicode" : "00d8"
+    },
+    {
+      "iso5426" : "00ea",
+      "unicode" : "0152"
+    },
+    {
+      "iso5426" : "00ec",
+      "unicode" : "00de"
+    },
+    {
+      "iso5426" : "00f1",
+      "unicode" : "00e6"
+    },
+    {
+      "iso5426" : "00f2",
+      "unicode" : "0111"
+    },
+    {
+      "iso5426" : "00f3",
+      "unicode" : "00f0"
+    },
+    {
+      "iso5426" : "00f5",
+      "unicode" : "0131"
+    },
+    {
+      "iso5426" : "00f6",
+      "unicode" : "0133"
+    },
+    {
+      "iso5426" : "00f8",
+      "unicode" : "0142"
+    },
+    {
+      "iso5426" : "00f9",
+      "unicode" : "00f8"
+    },
+    {
+      "iso5426" : "00fa",
+      "unicode" : "0153"
+    },
+    {
+      "iso5426" : "00fb",
+      "unicode" : "00df"
+    },
+    {
+      "iso5426" : "00fc",
+      "unicode" : "00fe"
+    },
+    {
+      "iso5426" : "c041",
+      "unicode" : "1ea2"
+    },
+    {
+      "iso5426" : "c045",
+      "unicode" : "1eba"
+    },
+    {
+      "iso5426" : "c049",
+      "unicode" : "1ec8"
+    },
+    {
+      "iso5426" : "c04f",
+      "unicode" : "1ece"
+    },
+    {
+      "iso5426" : "c055",
+      "unicode" : "1ee6"
+    },
+    {
+      "iso5426" : "c059",
+      "unicode" : "1ef6"
+    },
+    {
+      "iso5426" : "c061",
+      "unicode" : "1ea3"
+    },
+    {
+      "iso5426" : "c065",
+      "unicode" : "1ebb"
+    },
+    {
+      "iso5426" : "c069",
+      "unicode" : "1ec9"
+    },
+    {
+      "iso5426" : "c06f",
+      "unicode" : "1ecf"
+    },
+    {
+      "iso5426" : "c075",
+      "unicode" : "1ee7"
+    },
+    {
+      "iso5426" : "c079",
+      "unicode" : "1ef7"
+    },
+    {
+      "iso5426" : "c141",
+      "unicode" : "00c0"
+    },
+    {
+      "iso5426" : "c145",
+      "unicode" : "00c8"
+    },
+    {
+      "iso5426" : "c149",
+      "unicode" : "00cc"
+    },
+    {
+      "iso5426" : "c14f",
+      "unicode" : "00d2"
+    },
+    {
+      "iso5426" : "c155",
+      "unicode" : "00d9"
+    },
+    {
+      "iso5426" : "c157",
+      "unicode" : "1e80"
+    },
+    {
+      "iso5426" : "c159",
+      "unicode" : "1ef2"
+    },
+    {
+      "iso5426" : "c161",
+      "unicode" : "00e0"
+    },
+    {
+      "iso5426" : "c165",
+      "unicode" : "00e8"
+    },
+    {
+      "iso5426" : "c169",
+      "unicode" : "00ec"
+    },
+    {
+      "iso5426" : "c16f",
+      "unicode" : "00f2"
+    },
+    {
+      "iso5426" : "c175",
+      "unicode" : "00f9"
+    },
+    {
+      "iso5426" : "c177",
+      "unicode" : "1e81"
+    },
+    {
+      "iso5426" : "c179",
+      "unicode" : "1ef3"
+    },
+    {
+      "iso5426" : "c241",
+      "unicode" : "00c1"
+    },
+    {
+      "iso5426" : "c243",
+      "unicode" : "0106"
+    },
+    {
+      "iso5426" : "c245",
+      "unicode" : "00c9"
+    },
+    {
+      "iso5426" : "c247",
+      "unicode" : "01f4"
+    },
+    {
+      "iso5426" : "c249",
+      "unicode" : "00cd"
+    },
+    {
+      "iso5426" : "c24b",
+      "unicode" : "1e30"
+    },
+    {
+      "iso5426" : "c24c",
+      "unicode" : "0139"
+    },
+    {
+      "iso5426" : "c24d",
+      "unicode" : "1e3e"
+    },
+    {
+      "iso5426" : "c24e",
+      "unicode" : "0143"
+    },
+    {
+      "iso5426" : "c24f",
+      "unicode" : "00d3"
+    },
+    {
+      "iso5426" : "c250",
+      "unicode" : "1e54"
+    },
+    {
+      "iso5426" : "c252",
+      "unicode" : "0154"
+    },
+    {
+      "iso5426" : "c253",
+      "unicode" : "015a"
+    },
+    {
+      "iso5426" : "c255",
+      "unicode" : "00da"
+    },
+    {
+      "iso5426" : "c257",
+      "unicode" : "1e82"
+    },
+    {
+      "iso5426" : "c259",
+      "unicode" : "00dd"
+    },
+    {
+      "iso5426" : "c25a",
+      "unicode" : "0179"
+    },
+    {
+      "iso5426" : "c261",
+      "unicode" : "00e1"
+    },
+    {
+      "iso5426" : "c263",
+      "unicode" : "0107"
+    },
+    {
+      "iso5426" : "c265",
+      "unicode" : "00e9"
+    },
+    {
+      "iso5426" : "c267",
+      "unicode" : "01f5"
+    },
+    {
+      "iso5426" : "c269",
+      "unicode" : "00ed"
+    },
+    {
+      "iso5426" : "c26b",
+      "unicode" : "1e31"
+    },
+    {
+      "iso5426" : "c26c",
+      "unicode" : "013a"
+    },
+    {
+      "iso5426" : "c26d",
+      "unicode" : "1e3f"
+    },
+    {
+      "iso5426" : "c26e",
+      "unicode" : "0144"
+    },
+    {
+      "iso5426" : "c26f",
+      "unicode" : "00f3"
+    },
+    {
+      "iso5426" : "c270",
+      "unicode" : "1e55"
+    },
+    {
+      "iso5426" : "c272",
+      "unicode" : "0155"
+    },
+    {
+      "iso5426" : "c273",
+      "unicode" : "015b"
+    },
+    {
+      "iso5426" : "c275",
+      "unicode" : "00fa"
+    },
+    {
+      "iso5426" : "c277",
+      "unicode" : "1e83"
+    },
+    {
+      "iso5426" : "c279",
+      "unicode" : "00fd"
+    },
+    {
+      "iso5426" : "c27a",
+      "unicode" : "017a"
+    },
+    {
+      "iso5426" : "c2e1",
+      "unicode" : "01fc"
+    },
+    {
+      "iso5426" : "c2f1",
+      "unicode" : "01fd"
+    },
+    {
+      "iso5426" : "c341",
+      "unicode" : "00c2"
+    },
+    {
+      "iso5426" : "c343",
+      "unicode" : "0108"
+    },
+    {
+      "iso5426" : "c345",
+      "unicode" : "00ca"
+    },
+    {
+      "iso5426" : "c347",
+      "unicode" : "011c"
+    },
+    {
+      "iso5426" : "c348",
+      "unicode" : "0124"
+    },
+    {
+      "iso5426" : "c349",
+      "unicode" : "00ce"
+    },
+    {
+      "iso5426" : "c34a",
+      "unicode" : "0134"
+    },
+    {
+      "iso5426" : "c34f",
+      "unicode" : "00d4"
+    },
+    {
+      "iso5426" : "c353",
+      "unicode" : "015c"
+    },
+    {
+      "iso5426" : "c355",
+      "unicode" : "00db"
+    },
+    {
+      "iso5426" : "c357",
+      "unicode" : "0174"
+    },
+    {
+      "iso5426" : "c359",
+      "unicode" : "0176"
+    },
+    {
+      "iso5426" : "c35a",
+      "unicode" : "1e90"
+    },
+    {
+      "iso5426" : "c361",
+      "unicode" : "00e2"
+    },
+    {
+      "iso5426" : "c363",
+      "unicode" : "0109"
+    },
+    {
+      "iso5426" : "c365",
+      "unicode" : "00ea"
+    },
+    {
+      "iso5426" : "c367",
+      "unicode" : "011d"
+    },
+    {
+      "iso5426" : "c368",
+      "unicode" : "0125"
+    },
+    {
+      "iso5426" : "c369",
+      "unicode" : "00ee"
+    },
+    {
+      "iso5426" : "c36a",
+      "unicode" : "0135"
+    },
+    {
+      "iso5426" : "c36e",
+      "unicode" : "00f1"
+    },
+    {
+      "iso5426" : "c36f",
+      "unicode" : "00f4"
+    },
+    {
+      "iso5426" : "c373",
+      "unicode" : "015d"
+    },
+    {
+      "iso5426" : "c375",
+      "unicode" : "00fb"
+    },
+    {
+      "iso5426" : "c377",
+      "unicode" : "0175"
+    },
+    {
+      "iso5426" : "c379",
+      "unicode" : "0177"
+    },
+    {
+      "iso5426" : "c37a",
+      "unicode" : "1e91"
+    },
+    {
+      "iso5426" : "c441",
+      "unicode" : "00c3"
+    },
+    {
+      "iso5426" : "c445",
+      "unicode" : "1ebc"
+    },
+    {
+      "iso5426" : "c449",
+      "unicode" : "0128"
+    },
+    {
+      "iso5426" : "c44e",
+      "unicode" : "00d1"
+    },
+    {
+      "iso5426" : "c44f",
+      "unicode" : "00d5"
+    },
+    {
+      "iso5426" : "c455",
+      "unicode" : "0168"
+    },
+    {
+      "iso5426" : "c456",
+      "unicode" : "1e7c"
+    },
+    {
+      "iso5426" : "c459",
+      "unicode" : "1ef8"
+    },
+    {
+      "iso5426" : "c461",
+      "unicode" : "00e3"
+    },
+    {
+      "iso5426" : "c465",
+      "unicode" : "1ebd"
+    },
+    {
+      "iso5426" : "c469",
+      "unicode" : "0129"
+    },
+    {
+      "iso5426" : "c46e",
+      "unicode" : "00f1"
+    },
+    {
+      "iso5426" : "c46f",
+      "unicode" : "00f5"
+    },
+    {
+      "iso5426" : "c475",
+      "unicode" : "0169"
+    },
+    {
+      "iso5426" : "c476",
+      "unicode" : "1e7d"
+    },
+    {
+      "iso5426" : "c479",
+      "unicode" : "1ef9"
+    },
+    {
+      "iso5426" : "c541",
+      "unicode" : "0100"
+    },
+    {
+      "iso5426" : "c545",
+      "unicode" : "0112"
+    },
+    {
+      "iso5426" : "c547",
+      "unicode" : "1e20"
+    },
+    {
+      "iso5426" : "c549",
+      "unicode" : "012a"
+    },
+    {
+      "iso5426" : "c54f",
+      "unicode" : "014c"
+    },
+    {
+      "iso5426" : "c555",
+      "unicode" : "016a"
+    },
+    {
+      "iso5426" : "c561",
+      "unicode" : "0101"
+    },
+    {
+      "iso5426" : "c565",
+      "unicode" : "0113"
+    },
+    {
+      "iso5426" : "c567",
+      "unicode" : "1e21"
+    },
+    {
+      "iso5426" : "c569",
+      "unicode" : "012b"
+    },
+    {
+      "iso5426" : "c56f",
+      "unicode" : "014d"
+    },
+    {
+      "iso5426" : "c572",
+      "unicode" : "0159"
+    },
+    {
+      "iso5426" : "c575",
+      "unicode" : "016b"
+    },
+    {
+      "iso5426" : "c5e1",
+      "unicode" : "01e2"
+    },
+    {
+      "iso5426" : "c5f1",
+      "unicode" : "01e3"
+    },
+    {
+      "iso5426" : "c641",
+      "unicode" : "0102"
+    },
+    {
+      "iso5426" : "c645",
+      "unicode" : "0114"
+    },
+    {
+      "iso5426" : "c647",
+      "unicode" : "011e"
+    },
+    {
+      "iso5426" : "c649",
+      "unicode" : "012c"
+    },
+    {
+      "iso5426" : "c64f",
+      "unicode" : "014e"
+    },
+    {
+      "iso5426" : "c655",
+      "unicode" : "016c"
+    },
+    {
+      "iso5426" : "c661",
+      "unicode" : "0103"
+    },
+    {
+      "iso5426" : "c665",
+      "unicode" : "0115"
+    },
+    {
+      "iso5426" : "c667",
+      "unicode" : "011f"
+    },
+    {
+      "iso5426" : "c669",
+      "unicode" : "012d"
+    },
+    {
+      "iso5426" : "c66f",
+      "unicode" : "014f"
+    },
+    {
+      "iso5426" : "c675",
+      "unicode" : "016d"
+    },
+    {
+      "iso5426" : "c742",
+      "unicode" : "1e02"
+    },
+    {
+      "iso5426" : "c743",
+      "unicode" : "010a"
+    },
+    {
+      "iso5426" : "c744",
+      "unicode" : "1e0a"
+    },
+    {
+      "iso5426" : "c745",
+      "unicode" : "0116"
+    },
+    {
+      "iso5426" : "c746",
+      "unicode" : "1e1e"
+    },
+    {
+      "iso5426" : "c747",
+      "unicode" : "0120"
+    },
+    {
+      "iso5426" : "c748",
+      "unicode" : "1e22"
+    },
+    {
+      "iso5426" : "c749",
+      "unicode" : "0130"
+    },
+    {
+      "iso5426" : "c74d",
+      "unicode" : "1e40"
+    },
+    {
+      "iso5426" : "c74e",
+      "unicode" : "1e44"
+    },
+    {
+      "iso5426" : "c750",
+      "unicode" : "1e56"
+    },
+    {
+      "iso5426" : "c752",
+      "unicode" : "1e58"
+    },
+    {
+      "iso5426" : "c753",
+      "unicode" : "1e60"
+    },
+    {
+      "iso5426" : "c754",
+      "unicode" : "1e6a"
+    },
+    {
+      "iso5426" : "c757",
+      "unicode" : "1e86"
+    },
+    {
+      "iso5426" : "c758",
+      "unicode" : "1e8a"
+    },
+    {
+      "iso5426" : "c759",
+      "unicode" : "1e8e"
+    },
+    {
+      "iso5426" : "c75a",
+      "unicode" : "017b"
+    },
+    {
+      "iso5426" : "c761",
+      "unicode" : "0227"
+    },
+    {
+      "iso5426" : "c762",
+      "unicode" : "1e03"
+    },
+    {
+      "iso5426" : "c763",
+      "unicode" : "010b"
+    },
+    {
+      "iso5426" : "c764",
+      "unicode" : "1e0b"
+    },
+    {
+      "iso5426" : "c765",
+      "unicode" : "0117"
+    },
+    {
+      "iso5426" : "c766",
+      "unicode" : "1e1f"
+    },
+    {
+      "iso5426" : "c767",
+      "unicode" : "0121"
+    },
+    {
+      "iso5426" : "c768",
+      "unicode" : "1e23"
+    },
+    {
+      "iso5426" : "c76d",
+      "unicode" : "1e41"
+    },
+    {
+      "iso5426" : "c76e",
+      "unicode" : "1e45"
+    },
+    {
+      "iso5426" : "c770",
+      "unicode" : "1e57"
+    },
+    {
+      "iso5426" : "c772",
+      "unicode" : "1e59"
+    },
+    {
+      "iso5426" : "c773",
+      "unicode" : "1e61"
+    },
+    {
+      "iso5426" : "c774",
+      "unicode" : "1e6b"
+    },
+    {
+      "iso5426" : "c777",
+      "unicode" : "1e87"
+    },
+    {
+      "iso5426" : "c778",
+      "unicode" : "1e8b"
+    },
+    {
+      "iso5426" : "c779",
+      "unicode" : "1e8f"
+    },
+    {
+      "iso5426" : "c77a",
+      "unicode" : "017c"
+    },
+    {
+      "iso5426" : "c7b0",
+      "unicode" : "01e1"
+    },
+    {
+      "iso5426" : "c820",
+      "unicode" : "00a8"
+    },
+    {
+      "iso5426" : "c841",
+      "unicode" : "00c4"
+    },
+    {
+      "iso5426" : "c845",
+      "unicode" : "00cb"
+    },
+    {
+      "iso5426" : "c848",
+      "unicode" : "1e26"
+    },
+    {
+      "iso5426" : "c849",
+      "unicode" : "00cf"
+    },
+    {
+      "iso5426" : "c84f",
+      "unicode" : "00d6"
+    },
+    {
+      "iso5426" : "c855",
+      "unicode" : "00dc"
+    },
+    {
+      "iso5426" : "c857",
+      "unicode" : "1e84"
+    },
+    {
+      "iso5426" : "c858",
+      "unicode" : "1e8c"
+    },
+    {
+      "iso5426" : "c859",
+      "unicode" : "0178"
+    },
+    {
+      "iso5426" : "c861",
+      "unicode" : "00e4"
+    },
+    {
+      "iso5426" : "c865",
+      "unicode" : "00eb"
+    },
+    {
+      "iso5426" : "c868",
+      "unicode" : "1e27"
+    },
+    {
+      "iso5426" : "c869",
+      "unicode" : "00ef"
+    },
+    {
+      "iso5426" : "c86f",
+      "unicode" : "00f6"
+    },
+    {
+      "iso5426" : "c874",
+      "unicode" : "1e97"
+    },
+    {
+      "iso5426" : "c875",
+      "unicode" : "00fc"
+    },
+    {
+      "iso5426" : "c877",
+      "unicode" : "1e85"
+    },
+    {
+      "iso5426" : "c878",
+      "unicode" : "1e8d"
+    },
+    {
+      "iso5426" : "c879",
+      "unicode" : "00ff"
+    },
+    {
+      "iso5426" : "c920",
+      "unicode" : "00a8"
+    },
+    {
+      "iso5426" : "c961",
+      "unicode" : "00e4"
+    },
+    {
+      "iso5426" : "c965",
+      "unicode" : "00eb"
+    },
+    {
+      "iso5426" : "c969",
+      "unicode" : "00ef"
+    },
+    {
+      "iso5426" : "c96f",
+      "unicode" : "00f6"
+    },
+    {
+      "iso5426" : "c975",
+      "unicode" : "00fc"
+    },
+    {
+      "iso5426" : "ca41",
+      "unicode" : "00c5"
+    },
+    {
+      "iso5426" : "ca61",
+      "unicode" : "00e5"
+    },
+    {
+      "iso5426" : "ca75",
+      "unicode" : "016f"
+    },
+    {
+      "iso5426" : "ca77",
+      "unicode" : "1e98"
+    },
+    {
+      "iso5426" : "ca79",
+      "unicode" : "1e99"
+    },
+    {
+      "iso5426" : "caad",
+      "unicode" : "016e"
+    },
+    {
+      "iso5426" : "cd4f",
+      "unicode" : "0150"
+    },
+    {
+      "iso5426" : "cd55",
+      "unicode" : "0170"
+    },
+    {
+      "iso5426" : "cd6f",
+      "unicode" : "0151"
+    },
+    {
+      "iso5426" : "cd75",
+      "unicode" : "0171"
+    },
+    {
+      "iso5426" : "ce54",
+      "unicode" : "01a0"
+    },
+    {
+      "iso5426" : "ce55",
+      "unicode" : "01af"
+    },
+    {
+      "iso5426" : "ce74",
+      "unicode" : "01a1"
+    },
+    {
+      "iso5426" : "ce75",
+      "unicode" : "01b0"
+    },
+    {
+      "iso5426" : "cf41",
+      "unicode" : "01cd"
+    },
+    {
+      "iso5426" : "cf43",
+      "unicode" : "010c"
+    },
+    {
+      "iso5426" : "cf44",
+      "unicode" : "010e"
+    },
+    {
+      "iso5426" : "cf45",
+      "unicode" : "011a"
+    },
+    {
+      "iso5426" : "cf47",
+      "unicode" : "01e6"
+    },
+    {
+      "iso5426" : "cf49",
+      "unicode" : "01cf"
+    },
+    {
+      "iso5426" : "cf4b",
+      "unicode" : "01e8"
+    },
+    {
+      "iso5426" : "cf4c",
+      "unicode" : "013d"
+    },
+    {
+      "iso5426" : "cf4e",
+      "unicode" : "0147"
+    },
+    {
+      "iso5426" : "cf4f",
+      "unicode" : "01d1"
+    },
+    {
+      "iso5426" : "cf52",
+      "unicode" : "0158"
+    },
+    {
+      "iso5426" : "cf53",
+      "unicode" : "0160"
+    },
+    {
+      "iso5426" : "cf54",
+      "unicode" : "0164"
+    },
+    {
+      "iso5426" : "cf55",
+      "unicode" : "01d3"
+    },
+    {
+      "iso5426" : "cf5a",
+      "unicode" : "017d"
+    },
+    {
+      "iso5426" : "cf61",
+      "unicode" : "01ce"
+    },
+    {
+      "iso5426" : "cf63",
+      "unicode" : "010d"
+    },
+    {
+      "iso5426" : "cf64",
+      "unicode" : "010f"
+    },
+    {
+      "iso5426" : "cf65",
+      "unicode" : "011b"
+    },
+    {
+      "iso5426" : "cf67",
+      "unicode" : "01e7"
+    },
+    {
+      "iso5426" : "cf69",
+      "unicode" : "01d0"
+    },
+    {
+      "iso5426" : "cf6a",
+      "unicode" : "01f0"
+    },
+    {
+      "iso5426" : "cf6b",
+      "unicode" : "01e9"
+    },
+    {
+      "iso5426" : "cf6c",
+      "unicode" : "013e"
+    },
+    {
+      "iso5426" : "cf6e",
+      "unicode" : "0148"
+    },
+    {
+      "iso5426" : "cf6f",
+      "unicode" : "01d2"
+    },
+    {
+      "iso5426" : "cf72",
+      "unicode" : "0159"
+    },
+    {
+      "iso5426" : "cf73",
+      "unicode" : "0161"
+    },
+    {
+      "iso5426" : "cf74",
+      "unicode" : "0165"
+    },
+    {
+      "iso5426" : "cf75",
+      "unicode" : "01d4"
+    },
+    {
+      "iso5426" : "cf7a",
+      "unicode" : "017e"
+    },
+    {
+      "iso5426" : "d020",
+      "unicode" : "00b8"
+    },
+    {
+      "iso5426" : "d043",
+      "unicode" : "00c7"
+    },
+    {
+      "iso5426" : "d044",
+      "unicode" : "1e10"
+    },
+    {
+      "iso5426" : "d047",
+      "unicode" : "0122"
+    },
+    {
+      "iso5426" : "d048",
+      "unicode" : "1e28"
+    },
+    {
+      "iso5426" : "d04b",
+      "unicode" : "0136"
+    },
+    {
+      "iso5426" : "d04c",
+      "unicode" : "013b"
+    },
+    {
+      "iso5426" : "d04e",
+      "unicode" : "0145"
+    },
+    {
+      "iso5426" : "d052",
+      "unicode" : "0156"
+    },
+    {
+      "iso5426" : "d053",
+      "unicode" : "015e"
+    },
+    {
+      "iso5426" : "d054",
+      "unicode" : "0162"
+    },
+    {
+      "iso5426" : "d063",
+      "unicode" : "00e7"
+    },
+    {
+      "iso5426" : "d064",
+      "unicode" : "1e11"
+    },
+    {
+      "iso5426" : "d065",
+      "unicode" : "0119"
+    },
+    {
+      "iso5426" : "d067",
+      "unicode" : "0123"
+    },
+    {
+      "iso5426" : "d068",
+      "unicode" : "1e29"
+    },
+    {
+      "iso5426" : "d06b",
+      "unicode" : "0137"
+    },
+    {
+      "iso5426" : "d06c",
+      "unicode" : "013c"
+    },
+    {
+      "iso5426" : "d06e",
+      "unicode" : "0146"
+    },
+    {
+      "iso5426" : "d072",
+      "unicode" : "0157"
+    },
+    {
+      "iso5426" : "d073",
+      "unicode" : "015f"
+    },
+    {
+      "iso5426" : "d074",
+      "unicode" : "0163"
+    },
+    {
+      "iso5426" : "d320",
+      "unicode" : "02db"
+    },
+    {
+      "iso5426" : "d341",
+      "unicode" : "0104"
+    },
+    {
+      "iso5426" : "d345",
+      "unicode" : "0118"
+    },
+    {
+      "iso5426" : "d349",
+      "unicode" : "012e"
+    },
+    {
+      "iso5426" : "d34f",
+      "unicode" : "01ea"
+    },
+    {
+      "iso5426" : "d355",
+      "unicode" : "0172"
+    },
+    {
+      "iso5426" : "d361",
+      "unicode" : "0105"
+    },
+    {
+      "iso5426" : "d365",
+      "unicode" : "0119"
+    },
+    {
+      "iso5426" : "d369",
+      "unicode" : "012f"
+    },
+    {
+      "iso5426" : "d36f",
+      "unicode" : "01eb"
+    },
+    {
+      "iso5426" : "d375",
+      "unicode" : "0173"
+    },
+    {
+      "iso5426" : "d441",
+      "unicode" : "1e00"
+    },
+    {
+      "iso5426" : "d461",
+      "unicode" : "1e01"
+    },
+    {
+      "iso5426" : "d548",
+      "unicode" : "1e2a"
+    },
+    {
+      "iso5426" : "d568",
+      "unicode" : "1e2b"
+    },
+    {
+      "iso5426" : "d641",
+      "unicode" : "1ea0"
+    },
+    {
+      "iso5426" : "d642",
+      "unicode" : "1e04"
+    },
+    {
+      "iso5426" : "d644",
+      "unicode" : "1e0c"
+    },
+    {
+      "iso5426" : "d645",
+      "unicode" : "1eb8"
+    },
+    {
+      "iso5426" : "d648",
+      "unicode" : "1e24"
+    },
+    {
+      "iso5426" : "d649",
+      "unicode" : "1eca"
+    },
+    {
+      "iso5426" : "d64b",
+      "unicode" : "1e32"
+    },
+    {
+      "iso5426" : "d64c",
+      "unicode" : "1e36"
+    },
+    {
+      "iso5426" : "d64d",
+      "unicode" : "1e42"
+    },
+    {
+      "iso5426" : "d64e",
+      "unicode" : "1e46"
+    },
+    {
+      "iso5426" : "d64f",
+      "unicode" : "1ecc"
+    },
+    {
+      "iso5426" : "d652",
+      "unicode" : "1e5a"
+    },
+    {
+      "iso5426" : "d653",
+      "unicode" : "1e62"
+    },
+    {
+      "iso5426" : "d654",
+      "unicode" : "1e6c"
+    },
+    {
+      "iso5426" : "d655",
+      "unicode" : "1ee4"
+    },
+    {
+      "iso5426" : "d656",
+      "unicode" : "1e7e"
+    },
+    {
+      "iso5426" : "d657",
+      "unicode" : "1e88"
+    },
+    {
+      "iso5426" : "d659",
+      "unicode" : "1ef4"
+    },
+    {
+      "iso5426" : "d65a",
+      "unicode" : "1e92"
+    },
+    {
+      "iso5426" : "d661",
+      "unicode" : "1ea1"
+    },
+    {
+      "iso5426" : "d662",
+      "unicode" : "1e05"
+    },
+    {
+      "iso5426" : "d664",
+      "unicode" : "1e0d"
+    },
+    {
+      "iso5426" : "d665",
+      "unicode" : "1eb9"
+    },
+    {
+      "iso5426" : "d668",
+      "unicode" : "1e25"
+    },
+    {
+      "iso5426" : "d669",
+      "unicode" : "1ecb"
+    },
+    {
+      "iso5426" : "d66b",
+      "unicode" : "1e33"
+    },
+    {
+      "iso5426" : "d66c",
+      "unicode" : "1e37"
+    },
+    {
+      "iso5426" : "d66d",
+      "unicode" : "1e43"
+    },
+    {
+      "iso5426" : "d66e",
+      "unicode" : "1e47"
+    },
+    {
+      "iso5426" : "d66f",
+      "unicode" : "1ecd"
+    },
+    {
+      "iso5426" : "d672",
+      "unicode" : "1e5b"
+    },
+    {
+      "iso5426" : "d673",
+      "unicode" : "1e63"
+    },
+    {
+      "iso5426" : "d674",
+      "unicode" : "1e6d"
+    },
+    {
+      "iso5426" : "d675",
+      "unicode" : "1ee5"
+    },
+    {
+      "iso5426" : "d676",
+      "unicode" : "1e7f"
+    },
+    {
+      "iso5426" : "d677",
+      "unicode" : "1e89"
+    },
+    {
+      "iso5426" : "d679",
+      "unicode" : "1ef5"
+    },
+    {
+      "iso5426" : "d67a",
+      "unicode" : "1e93"
+    },
+    {
+      "iso5426" : "d755",
+      "unicode" : "1e72"
+    },
+    {
+      "iso5426" : "d775",
+      "unicode" : "1e73"
+    },
+    {
+      "iso5426" : "d820",
+      "unicode" : "005f"
+    },
+    {
+      "iso5426" : "d920",
+      "unicode" : "2017"
+    },
+    {
+      "iso5426" : "da20",
+      "unicode" : "02cc"
+    }
+  ],
+  "source" : {
+    "file" : "C4/Charset.pm",
+    "sha256" : "c695aaefb79b13fe20ba25d3e3a1c2cf0a5d27bb818c82c2bb74f818b6160e78"
+  }
+}

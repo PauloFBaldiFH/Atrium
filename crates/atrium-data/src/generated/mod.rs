@@ -5,6 +5,7 @@
 
 #[expect(clippy::too_many_lines, reason = "one match arm per Koha rule kind")]
 pub(crate) mod circulation_rule_kinds;
+pub(crate) mod iso5426;
 pub(crate) mod koha_version;
 pub(crate) mod marc21_framework_0xx;
 pub(crate) mod marc21_framework_1xx;
@@ -16,3 +17,4 @@ pub(crate) mod marc21_framework_6xx;
 pub(crate) mod marc21_framework_7xx;
 pub(crate) mod marc21_framework_8xx;
 pub(crate) mod marc21_framework_9xx;
+pub(crate) mod search_fields;

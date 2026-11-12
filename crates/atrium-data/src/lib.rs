@@ -211,3 +211,90 @@ static MARC21_HUNDREDS: [&[MarcFieldDefinition]; 10] = [
     generated::marc21_framework_8xx::FIELDS,
     generated::marc21_framework_9xx::FIELDS,
 ];
+
+/// The Unicode character for an ISO 5426 code: a single byte, or a diacritic byte followed
+/// by its base byte (`0xc141` is capital A with grave).
+///
+/// Koha: the `%chars` table of `C4::Charset::char_decode5426`.
+#[must_use]
+pub fn iso5426_char(code: u16) -> Option<char> {
+    let table = generated::iso5426::ISO5426;
+    let at = table.binary_search_by_key(&code, |&(c, _)| c).ok()?;
+    table.get(at).map(|&(_, character)| character)
+}
+
+/// How a search field's values are indexed.
+///
+/// Koha: the `type` of a search field in `mappings.yaml`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum SearchFieldKind {
+    /// No type: full-text with Koha's default analysis.
+    Default,
+    /// Text kept as written (exact match, facets).
+    String,
+    /// A number.
+    Number,
+    /// A date.
+    Date,
+    /// True or false.
+    Boolean,
+    /// A call number, sorted by its classification order.
+    CallNumber,
+    /// An ISBN, matched in its 10- and 13-digit forms.
+    Isbn,
+    /// A standard number (ISSN, control numbers).
+    StandardNumber,
+    /// A number summed over the record's items.
+    Sum,
+    /// Latitude or longitude.
+    GeoPoint,
+}
+
+/// One search field and the MARC21 data that feeds it.
+///
+/// Koha: a `search_fields` row with its `search_marc_to_field` mappings.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SearchField {
+    /// Name used in queries, for example `title`.
+    pub name: &'static str,
+    /// Label in the interface.
+    pub label: &'static str,
+    /// How values are indexed.
+    pub kind: SearchFieldKind,
+    /// Searchable in the OPAC.
+    pub opac: bool,
+    /// Searchable in the staff interface.
+    pub staff_client: bool,
+    /// Koha refuses to delete it.
+    pub mandatory: bool,
+    /// Position among the facets, if it is one.
+    pub facet_order: Option<u8>,
+    /// MARC21 sources, possibly none.
+    pub mappings: &'static [SearchMapping],
+}
+
+/// One MARC21 source of a search field.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SearchMapping {
+    /// Koha's field spec: a tag, subfield codes, and optionally positions, as in
+    /// `245abp`, `100(abcd)` or `008_/35-37`.
+    pub marc_field: &'static str,
+    /// Feeds the facet.
+    pub facet: bool,
+    /// Feeds sorting.
+    pub sort: bool,
+    /// Feeds search suggestions.
+    pub suggestible: bool,
+}
+
+/// Koha's default search fields for bibliographic records, sorted by name.
+#[must_use]
+pub fn biblio_search_fields() -> &'static [SearchField] {
+    generated::search_fields::BIBLIOS
+}
+
+/// Koha's default search fields for authority records, sorted by name.
+#[must_use]
+pub fn authority_search_fields() -> &'static [SearchField] {
+    generated::search_fields::AUTHORITIES
+}

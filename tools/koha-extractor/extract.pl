@@ -34,6 +34,8 @@ my %outputs = (
     'circulation_rule_kinds.json' => circulation_rule_kinds($koha_dir),
     'sysprefs.json'               => sysprefs($koha_dir),
     'marc21_framework.json'       => marc21_framework($koha_dir),
+    'iso5426.json'                => iso5426($koha_dir),
+    'search_fields.json'          => search_fields($koha_dir),
 );
 
 my $stale = 0;
@@ -210,6 +212,93 @@ sub marc21_framework {
     return {
         source => { file => $file, sha256 => sha256_hex($source) },
         fields => \@fields,
+    };
+}
+
+# Koha: the %chars table of C4::Charset (used by char_decode5426): ISO 5426 code, one
+# byte or a diacritic byte followed by a base byte, to a Unicode code point.
+sub iso5426 {
+    my ($dir) = @_;
+    my $file = 'C4/Charset.pm';
+    my $source = slurp("$dir/$file");
+    my %chars;
+    while ( $source =~ /^\$chars\{0x([0-9a-f]+)\}\s*=\s*0x([0-9a-f]+);/mg ) {
+        die "duplicate ISO 5426 code 0x$1 in $file\n" if exists $chars{ hex $1 };
+        $chars{ hex $1 } = hex $2;
+    }
+    die "no %chars entries in $file\n" unless %chars;
+    return {
+        source => { file => $file, sha256 => sha256_hex($source) },
+        chars  => [ map { { iso5426 => sprintf( '%04x', $_ ), unicode => sprintf( '%04x', $chars{$_} ) } } sort { $a <=> $b } keys %chars ],
+    };
+}
+
+# Koha: the default search field mappings (admin/searchengine/elasticsearch/mappings.yaml):
+# each search field with its type and the MARC fields that feed it, per MARC flavour, with
+# the defaults Koha::SearchEngine::Elasticsearch::reset_elasticsearch_mappings applies
+# (opac and staff_client default to 1, sort to 1, facet and suggestible to 0).
+sub search_fields {
+    my ($dir) = @_;
+    my $file = 'admin/searchengine/elasticsearch/mappings.yaml';
+    my $source = slurp("$dir/$file");
+    my ( %indexes, $index, $field, $mapping );
+    for my $line ( split /\n/, $source ) {
+        next if $line =~ /^(---)?\s*$/;
+        if ( $line =~ /^(\w+):\s*$/ ) {
+            $index = $1;
+            $indexes{$index} = {};
+        } elsif ( $line =~ /^  ([\w-]+):\s*$/ ) {
+            die "field outside an index in $file\n" unless $index;
+            $field = $indexes{$index}{$1} = { name => $1, mappings => [] };
+            undef $mapping;
+        } elsif ( $line =~ /^    (\w+):\s*(.*?)\s*$/ ) {
+            die "attribute outside a field in $file: $line\n" unless $field;
+            undef $mapping;
+            next if $1 eq 'mappings';
+            $field->{$1} = yaml_scalar($2);
+        } elsif ( $line =~ /^\s{4,6}- (\w+):\s*(.*?)\s*$/ ) {
+            die "mapping outside a field in $file: $line\n" unless $field;
+            $mapping = { $1 => yaml_scalar($2) };
+            push @{ $field->{mappings} }, $mapping;
+        } elsif ( $line =~ /^\s{6,8}(\w+):\s*(.*?)\s*$/ ) {
+            die "key outside a mapping in $file: $line\n" unless $mapping;
+            $mapping->{$1} = yaml_scalar($2);
+        } else {
+            die "unexpected line in $file: $line\n";
+        }
+    }
+    my $flag = sub { JSON::PP::true_or_false( defined $_[0] && $_[0] ne '' && $_[0] ne '0' ) };
+    my %out;
+    for my $name ( sort keys %indexes ) {
+        $out{$name} = [
+            map {
+                my $f = $_;
+                {
+                    name         => $f->{name},
+                    label        => $f->{label},
+                    type         => ( defined $f->{type} && $f->{type} ne '' ? $f->{type} : undef ),
+                    opac         => $flag->( $f->{opac}         // 1 ),
+                    staff_client => $flag->( $f->{staff_client} // 1 ),
+                    mandatory    => $flag->( $f->{mandatory} ),
+                    facet_order  => ( defined $f->{facet_order} ? 0 + $f->{facet_order} : undef ),
+                    mappings     => [
+                        map {
+                            {
+                                marc_type   => $_->{marc_type},
+                                marc_field  => $_->{marc_field},
+                                facet       => $flag->( $_->{facet} ),
+                                sort        => $flag->( $_->{sort} // 1 ),
+                                suggestible => $flag->( $_->{suggestible} ),
+                            }
+                        } sort { $a->{marc_type} cmp $b->{marc_type} or $a->{marc_field} cmp $b->{marc_field} } @{ $f->{mappings} }
+                    ],
+                }
+            } map { $indexes{$name}{$_} } sort keys %{ $indexes{$name} }
+        ];
+    }
+    return {
+        source  => { file => $file, sha256 => sha256_hex($source) },
+        indexes => \%out,
     };
 }
 

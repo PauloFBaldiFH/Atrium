@@ -17,12 +17,14 @@
     reason = "xtask reports failures on the terminal"
 )]
 
+mod charsets;
 mod codegen;
 mod deviations;
 mod file_size;
 mod layers;
 mod ledger;
 mod marc_framework;
+mod search_fields;
 mod sysprefs;
 
 use std::path::{Path, PathBuf};

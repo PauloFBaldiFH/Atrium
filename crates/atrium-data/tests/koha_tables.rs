@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! The generated MARC21 framework matches facts checked by hand in Koha's YAML.
+//! The generated Koha tables match facts checked by hand in the Koha sources.
 
 use atrium_data::{marc21_field, marc21_framework};
 
@@ -58,4 +58,33 @@ fn unknown_tags_are_none() {
     assert!(marc21_field("").is_none());
     assert!(marc21_field("x45").is_none());
     assert!(marc21_field("2450").is_none());
+}
+
+#[test]
+fn iso5426_table() {
+    use atrium_data::iso5426_char;
+    assert_eq!(iso5426_char(0xc141), Some('À'));
+    assert_eq!(iso5426_char(0xc161), Some('à'));
+    assert_eq!(iso5426_char(0x0097), Some('<'));
+    assert_eq!(iso5426_char(0x0041), None);
+}
+
+#[test]
+fn search_fields() {
+    use atrium_data::{SearchFieldKind, authority_search_fields, biblio_search_fields};
+    assert_eq!(biblio_search_fields().len(), 155);
+    assert_eq!(authority_search_fields().len(), 30);
+    let title = biblio_search_fields()
+        .iter()
+        .find(|field| field.name == "title")
+        .unwrap();
+    assert_eq!(title.kind, SearchFieldKind::String);
+    assert!(title.mappings.iter().any(|m| m.marc_field == "245abp"));
+    let holding = biblio_search_fields()
+        .iter()
+        .find(|field| field.name == "holdingbranch")
+        .unwrap();
+    assert_eq!(holding.facet_order, Some(8));
+    assert_eq!(holding.mappings.len(), 1);
+    assert!(holding.mappings[0].facet);
 }
