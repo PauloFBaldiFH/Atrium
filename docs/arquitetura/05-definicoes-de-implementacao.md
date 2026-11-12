@@ -117,4 +117,4 @@ then:
   - `allow_attributes` e `allow_attributes_without_reason`: exceção só com `#[expect(lint, reason = "...")]`, que também falha quando deixa de ser necessária.
   - `clippy::pedantic` como aviso, e o CI roda com `-D warnings`.
   - Em testes, `unwrap`, `expect`, `panic` e indexação são livres (`clippy.toml`).
-- **CI** (`.github/workflows/ci.yml`): `fmt`, `clippy`, `cargo xtask ci` (camadas e tamanho de arquivo) e `cargo-deny` no Linux; testes com `nextest` em Linux, Windows e macOS, cada um em x86_64 e ARM64.
+- **CI** (`.github/workflows/ci.yml`): `fmt`, `clippy`, `cargo xtask ci` (camadas e tamanho de arquivo) e `cargo-deny` no Linux; testes com `nextest` em Linux e Windows, cada um em x86_64 e ARM64. O macOS saiu da matriz em 2026-11-12 porque os runners são lentos; volta quando o projeto precisar validar a plataforma.
