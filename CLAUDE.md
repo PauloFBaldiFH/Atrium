@@ -8,9 +8,9 @@ O Atrium é um sistema de bibliotecas em Rust que reconstrói o **comportamento*
 
 ## Estado atual
 
-- **Fase de planejamento.** Não comece a implementação sem um pedido explícito do Paulo. Até lá, só documentação.
-- Fontes de verdade, nesta ordem: [`docs/arquitetura/04-decisoes.md`](docs/arquitetura/04-decisoes.md) > 03 > 02 > 01. Se o código contradiz o doc 04, o código está errado ou o doc 04 precisa de um PR primeiro.
-- `koha/` é **referência de leitura** (GPLv3), não código do Atrium. Vai para `reference/`, fora do workspace Cargo, na versão-alvo Koha 26.05.05.
+- **Fase 0 em andamento** (autorizada em 2026-11-12): workspace, CI, `atrium-store`, `atrium-marc` e o ferramental mínimo do método. A Fase 1 depende do oráculo na VM da biblioteca; não comece a Fase 1 sem confirmação do Paulo.
+- Fontes de verdade, nesta ordem: [`docs/arquitetura/04-decisoes.md`](docs/arquitetura/04-decisoes.md) e [`05-definicoes-de-implementacao.md`](docs/arquitetura/05-definicoes-de-implementacao.md) > 03 > 02 > 01. Se o código contradiz o doc 04, o código está errado ou o doc 04 precisa de um PR primeiro.
+- `reference/koha/` é **referência de leitura** (GPLv3, submódulo fixado no Koha 26.05.05), não código do Atrium, e fica fora do workspace Cargo. Baixe com `git submodule update --init --depth 1 reference/koha`.
 
 ## Como trabalhar numa tarefa
 

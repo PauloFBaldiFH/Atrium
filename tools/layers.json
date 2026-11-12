@@ -1,0 +1,18 @@
+{
+  "_comment": "Which Atrium crates each workspace crate may depend on (any dependency kind). Checked by `cargo xtask check-layers`. See docs/arquitetura/02-modo-de-implementacao.md, section 2.",
+  "crates": {
+    "atrium-data": [],
+    "atrium-domain": ["atrium-data"],
+    "atrium-marc": [],
+    "atrium-app": ["atrium-domain", "atrium-data", "atrium-marc"],
+    "atrium-store": ["atrium-app", "atrium-domain", "atrium-data", "atrium-marc"],
+    "atrium-web-templates": ["atrium-domain"],
+    "atrium-web": ["atrium-app", "atrium-domain", "atrium-data", "atrium-web-templates"],
+    "atrium-sip2": ["atrium-app", "atrium-domain"],
+    "atrium": [
+      "atrium-app", "atrium-data", "atrium-domain", "atrium-marc", "atrium-sip2",
+      "atrium-store", "atrium-web", "atrium-web-templates"
+    ],
+    "xtask": []
+  }
+}

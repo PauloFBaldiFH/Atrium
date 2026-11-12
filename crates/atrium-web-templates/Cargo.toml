@@ -1,0 +1,15 @@
+[package]
+name = "atrium-web-templates"
+description = "Askama templates for the OPAC and the staff interface, kept in their own crate to bound rebuild time."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+
+
+[lints]
+workspace = true

@@ -1,0 +1,15 @@
+[package]
+name = "atrium-marc"
+description = "MARC21 and UNIMARC reading and writing (ISO 2709 and MARCXML) with explicit input limits."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+
+
+[lints]
+workspace = true

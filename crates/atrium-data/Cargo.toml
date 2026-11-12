@@ -1,0 +1,15 @@
+[package]
+name = "atrium-data"
+description = "Tables generated from the pinned Koha reference (circulation rule kinds, MARC frameworks, vocabularies)."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+
+
+[lints]
+workspace = true
