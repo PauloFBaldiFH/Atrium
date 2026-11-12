@@ -7,6 +7,9 @@
 //! - `check-file-size`: no hand-written Rust file exceeds [`file_size::MAX_LINES`] lines.
 //! - `codegen [--check]`: writes (or checks) `crates/atrium-data/src/generated/` from
 //!   `koha-lock.json` and `data/koha-<series>/`.
+//! - `check-deviations`: validates `docs/desvios-conhecidos.md`.
+//! - `ledger [where <name>]`: port ledger, Koha subs cited with `/// Koha:` (needs
+//!   `reference/koha`).
 //! - `ci`: runs every check above, with `codegen` in check mode.
 #![expect(
     clippy::print_stderr,
@@ -14,8 +17,10 @@
 )]
 
 mod codegen;
+mod deviations;
 mod file_size;
 mod layers;
+mod ledger;
 
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
@@ -27,11 +32,14 @@ fn main() -> ExitCode {
         "check-layers" => layers::run(&root),
         "check-file-size" => file_size::run(&root),
         "codegen" => codegen::run(&root, codegen_mode()),
+        "check-deviations" => deviations::run(&root),
+        "ledger" => ledger::run(&root, &std::env::args().skip(2).collect::<Vec<_>>()),
         "ci" => layers::run(&root)
             .and_then(|()| file_size::run(&root))
-            .and_then(|()| codegen::run(&root, codegen::Mode::Check)),
+            .and_then(|()| codegen::run(&root, codegen::Mode::Check))
+            .and_then(|()| deviations::run(&root)),
         _ => Err(format!(
-            "unknown command `{command}`; expected one of: check-layers, check-file-size, codegen [--check], ci"
+            "unknown command `{command}`; expected one of: check-layers, check-file-size, codegen [--check], check-deviations, ledger, ci"
         )),
     };
     match result {
