@@ -16,7 +16,13 @@ atrium-sip2.workspace = true
 atrium-web-templates.workspace = true
 axum.workspace = true
 clap.workspace = true
+mimalloc.workspace = true
+stats_alloc = { workspace = true, optional = true }
 tokio = { workspace = true, features = ["rt-multi-thread", "net", "signal", "macros"] }
+
+[features]
+# Counts every allocation (small overhead); shown at /equipe/admin/memory.
+alloc-count = ["dep:stats_alloc"]
 
 [lints]
 workspace = true

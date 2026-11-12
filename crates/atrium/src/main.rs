@@ -6,6 +6,8 @@
     reason = "the command line reports errors on the terminal"
 )]
 
+mod memory;
+
 use std::io::BufRead;
 use std::net::SocketAddr;
 use std::path::{Path, PathBuf};
@@ -103,7 +105,12 @@ fn serve(data_dir: &Path, listen: SocketAddr, insecure_cookies: bool) -> Result<
         secure_cookies: !insecure_cookies,
         ..WebConfig::default()
     };
-    let app = atrium_web::router(AppState::new(store, i18n, config));
+    let app = atrium_web::router(AppState::new(
+        store,
+        Arc::new(memory::AllocatorProbe),
+        i18n,
+        config,
+    ));
     let runtime = tokio::runtime::Runtime::new().map_err(|e| e.to_string())?;
     runtime.block_on(async move {
         let listener = tokio::net::TcpListener::bind(listen)
