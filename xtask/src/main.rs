@@ -5,12 +5,15 @@
 //! - `check-layers`: every workspace crate depends only on the Atrium crates that
 //!   `tools/layers.json` allows.
 //! - `check-file-size`: no hand-written Rust file exceeds [`file_size::MAX_LINES`] lines.
-//! - `ci`: runs every check above.
+//! - `codegen [--check]`: writes (or checks) `crates/atrium-data/src/generated/` from
+//!   `koha-lock.json` and `data/koha-<series>/`.
+//! - `ci`: runs every check above, with `codegen` in check mode.
 #![expect(
     clippy::print_stderr,
     reason = "xtask reports failures on the terminal"
 )]
 
+mod codegen;
 mod file_size;
 mod layers;
 
@@ -23,9 +26,12 @@ fn main() -> ExitCode {
     let result = match command.as_str() {
         "check-layers" => layers::run(&root),
         "check-file-size" => file_size::run(&root),
-        "ci" => layers::run(&root).and_then(|()| file_size::run(&root)),
+        "codegen" => codegen::run(&root, codegen_mode()),
+        "ci" => layers::run(&root)
+            .and_then(|()| file_size::run(&root))
+            .and_then(|()| codegen::run(&root, codegen::Mode::Check)),
         _ => Err(format!(
-            "unknown command `{command}`; expected one of: check-layers, check-file-size, ci"
+            "unknown command `{command}`; expected one of: check-layers, check-file-size, codegen [--check], ci"
         )),
     };
     match result {
@@ -34,6 +40,15 @@ fn main() -> ExitCode {
             eprintln!("error: {message}");
             ExitCode::FAILURE
         }
+    }
+}
+
+/// `codegen --check` compares; plain `codegen` writes.
+fn codegen_mode() -> codegen::Mode {
+    if std::env::args().any(|arg| arg == "--check") {
+        codegen::Mode::Check
+    } else {
+        codegen::Mode::Write
     }
 }
 

@@ -33,6 +33,15 @@ jobs:
         with:
           command: check
 
+  koha-reference:
+    name: Koha extraction is up to date
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - run: perl tools/koha-extractor/extract.pl --check
+
   test:
     name: test (${{ matrix.name }})
     strategy:

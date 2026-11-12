@@ -88,7 +88,7 @@ cargo xtask check-layers
 cargo xtask codegen --check
 ```
 
-(Os comandos `xtask` passam a existir na Fase 0.)
+(`cargo xtask ci` roda as três verificações `xtask` de uma vez. Ao mexer em `reference/koha` ou `koha-lock.json`, rode também `perl tools/koha-extractor/extract.pl --check`.)
 
 Definition of Done: spec atualizada se mudou comportamento; testes do nível certo; tudo acima verde; ADR em `docs/adr/` se tomou decisão de arquitetura; sem regressão de desempenho.
 
