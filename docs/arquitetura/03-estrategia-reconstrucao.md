@@ -2,6 +2,8 @@
 
 > Status: proposta para discussão. Complementa [01](01-avaliacao-da-arquitetura.md) e [02](02-modo-de-implementacao.md).
 > Data: 2026-11-12. Referência funcional: Koha 26.06.00.052 (em `koha/`). Licença do Atrium: GPL-3.0-or-later.
+>
+> **Atualização (2026-11-12):** a versão-alvo passa a ser a estável mais recente, **Koha 26.05.05** (a mesma da instância de testes), e o código de referência vai para `reference/`, fora do workspace Cargo. As citações de arquivos abaixo foram verificadas no 26.06 e serão reconferidas na troca. A leitura MARC passou a ser por *buffer* em fluxo (§2.2 item 1), a Fase 0 ficou mais enxuta (§4) e o idioma principal é o inglês. Decisões consolidadas em [04-decisoes.md](04-decisoes.md).
 
 O **Horizon** ([horizon-rust/horizon](https://github.com/horizon-rust/horizon)) é uma reimplementação do Minecraft: Java Edition 26.3 em Rust, sem nada de Java no programa final, publicada sob MIT por Ludovic Marie e colaboradores. É o caso mais próximo do Atrium que existe hoje: um sistema grande e legado, reconstruído em Rust **por comportamento** (não por tradução de código), com a paridade **medida** contra o original. Em novembro de 2026 o projeto declara 326 *harnesses* de paridade, cada um rodando o jogo original e o Horizon com as mesmas entradas e comparando as saídas, e 0 lacunas visíveis ao jogador abertas de 833 encontradas.
 
@@ -23,7 +25,7 @@ Este estudo foi feito lendo a documentação de engenharia do próprio repositó
 
 | Princípio do Horizon | Onde está documentado | Equivalente no Atrium |
 |---|---|---|
-| **Versão-alvo fixada.** O comportamento-alvo é o Minecraft 26.3, fixado em `research-lock.json` (sha1 dos jars) e em um `version.rs` gerado. | `docs/rust-parity.md`, `docs/version-ports.md` | Koha **26.06.00.052** fixado num `koha-lock.json` e num `koha_version.rs` gerado |
+| **Versão-alvo fixada.** O comportamento-alvo é o Minecraft 26.3, fixado em `research-lock.json` (sha1 dos jars) e em um `version.rs` gerado. | `docs/rust-parity.md`, `docs/version-ports.md` | Koha **26.05.05** (estável mais recente) fixado num `koha-lock.json` e num `koha_version.rs` gerado |
 | **O original é o oráculo.** Cada *harness* roda um oráculo Java sobre os jars reais e uma sonda Rust sobre as mesmas entradas, e compara. "Um *harness* é a especificação da sua área: nunca apague um." | `docs/rust-parity.md`, `docs/parity-workflow.md` | Koha real em container como oráculo; cada cenário diferencial é a spec do comportamento |
 | **Paridade é o que o usuário observa, não as entranhas.** Desempenho pode mudar a ordem interna, desde que ninguém consiga notar; quem muda algo observável põe atrás de uma configuração e documenta. | `CONTRIBUTING.md`, "When it doesn't have to be 1:1" | Datas, valores, filas e mensagens iguais ao Koha; estrutura interna livre |
 | **Livro-razão de portabilidade.** `tools/port_ledger.py` lista cada método do original ao lado da função Rust que o porta, nos dois sentidos, e mostra as lacunas. | `docs/port-ledger.md` | Livro-razão Koha → Atrium sobre as ~6.000 *subs* Perl de `C4/` e `Koha/` |
@@ -125,7 +127,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    F["arquivo .mrc<br/>memmap2"] --> S["divide por 0x1D<br/>memchr"]
+    F["arquivo .mrc<br/>buffer em fluxo"] --> S["divide por 0x1D<br/>memchr"]
     S --> P["RecordRef zero-copy<br/>rayon, com limites"]
     P --> M["mapeamento<br/>IDs numéricos + arena por lote"]
     M --> Q[["fila limitada"]]
@@ -133,7 +135,7 @@ flowchart LR
     W --> O["effect_outbox"] --> I["indexador Tantivy"]
 ```
 
-1. **Registro emprestado, nunca copiado.** O arquivo é mapeado (`memmap2`), os registros são separados com `memchr` pelo terminador `0x1D`, e cada um vira um `RecordRef<'a>` que só guarda fatias do mapa:
+1. **Registro emprestado, nunca copiado.** O arquivo é lido em fluxo por um *buffer* reaproveitado, os registros são separados com `memchr` pelo terminador `0x1D`, e cada um vira um `RecordRef<'a>` que só guarda fatias do *buffer* (o empréstimo vale até o próximo registro). Mapear o arquivo com `memmap2` só entra se um benchmark mostrar ganho, e nesse caso num único bloco `unsafe` documentado dentro de `atrium-marc`; as crates de domínio, aplicação e web mantêm `#![forbid(unsafe_code)]`:
 
    ```rust
    pub struct RecordRef<'a> { raw: &'a [u8], leader: &'a [u8; 24], dir: &'a [u8] }
@@ -169,7 +171,7 @@ flowchart LR
 
 ### 3.1 Fixar o alvo, como o `research-lock.json`
 
-- **`koha-lock.json`**: versão `26.06.00.052`, commit/tag de origem e SHA-256 dos arquivos extraídos.
+- **`koha-lock.json`**: versão `26.05.05`, commit/tag de origem e SHA-256 dos arquivos extraídos.
 - **`koha_version.rs` gerado** com as constantes da versão-alvo, conferido no CI (`--check`), como o `version.rs` do Horizon.
 - **Atualizar de versão é um processo**, como o `version_port.py` do Horizon: rodar o extrator na nova versão do Koha, gerar o diff dos dados, rodar todos os cenários contra o novo oráculo e transformar as diferenças numa lista ordenada de tarefas. Não é reescrita.
 
@@ -297,6 +299,8 @@ Extras que mudam algo observável em relação ao Koha começam **desligados**, 
 
 Substitui as listas do doc 02, §8. Cada tarefa traz a técnica do Horizon que aplica e o critério de pronto.
 
+Prioridade da Fase 0: workspace, CI, `atrium-store` e `atrium-marc` primeiro. O ferramental do método (extrator, livro-razão, executor) começa mínimo para não engolir a fase; o executor de cenários abre a Fase 1.
+
 ### Fase 0: fundações
 
 | # | Tarefa | Técnica (seção) | Pronto quando |
@@ -304,22 +308,23 @@ Substitui as listas do doc 02, §8. Cada tarefa traz a técnica do Horizon que a
 | 0.1 | Workspace: `atrium-domain`, `atrium-data`, `atrium-marc`, `atrium-store`, `atrium-app`, `atrium-web`, `atrium-sip2` (vazia), `atrium` (bin) e `xtask`; `tools/layers.json` | Camadas (3.6) | `cargo build` verde; `xtask check-layers` falha numa dependência proibida de teste |
 | 0.2 | CI: `fmt`, `clippy -D warnings`, `nextest`, `cargo-deny`, `check-layers`, limite de tamanho de arquivo, `codegen --check` | Camadas e geradores (3.2, 3.6) | CI verde na main |
 | 0.3 | `koha-lock.json` + `koha_version.rs` gerado | Alvo fixado (3.1) | `--check` falha se o lock mudar sem regerar |
-| 0.4 | `tools/koha-extractor` v1: frameworks MARC21, `mappings.yaml`, `$RULE_KINDS` (via Perl), inventário de sysprefs, permissões, vocabulários | Extrator (3.2) | JSON + manifesto reproduzíveis (duas execuções, mesmo resultado) |
-| 0.5 | `cargo xtask codegen` → `atrium-data` com *features* por grupo | Geradores (3.2) | Tabelas acessíveis em Rust; teste de que todo `kohafield` mapeado existe |
+| 0.4 | `tools/koha-extractor` v0: só `$RULE_KINDS` (via Perl) | Extrator (3.2) | JSON + manifesto reproduzíveis (duas execuções, mesmo resultado) |
+| 0.5 | `cargo xtask codegen` → `atrium-data` com *features* por grupo | Geradores (3.2) | Tipos de regra de circulação acessíveis em Rust, com escopo de cada um; o resto das tabelas entra com o extrator completo (1.1) |
 | 0.6 | `atrium-store`: PRAGMAs, **thread escritora dona do estado**, fila limitada, pool de leitura, `row_version` nas tabelas, `audit_log`, `effect_outbox` | Dono único, pré-cálculo confirmado, log de efeitos (1.2) | Teste com 50 escritores concorrentes: zero `SQLITE_BUSY`, ordem do `audit_log` reproduz o estado |
 | 0.7 | mimalloc + *feature* `alloc-count` + `GET /admin/memory` | Medição (2.2 itens 7 e 8) | JSON com caches e resíduo; custo do contador medido |
-| 0.8 | `atrium-web`: axum, Askama, HTMX, Fluent pt-BR/en, login Argon2id, RBAC inicial | Camadas (3.6) | Login e página inicial com teste Playwright |
-| 0.9 | Executor de cenários v0: Koha 26.06 em container com `libfaketime`, formato YAML, gravação do oráculo por hash, comparação de traços | Oráculo (3.5) | Um cenário de vencimento simples passando dos dois lados; CI usa a gravação |
-| 0.10 | `tools/koha_ledger` v0: indexa *subs* do Koha e comentários `/// Koha:` | Livro-razão (3.3) | `where`, `what` e `coverage` funcionando |
+| 0.8 | `atrium-web` + `atrium-web-templates` (templates Askama numa crate própria, tempo de recompilação incremental medido no CI): axum, HTMX, Fluent (inglês primeiro), *tokens* de design, login Argon2id, RBAC inicial | Camadas (3.6) | Login e página inicial com teste Playwright |
+| 0.9 | *(movida para 1.0)* | | |
+| 0.10 | `tools/koha_ledger` v0: script pequeno que lista *subs* do Koha e comentários `/// Koha:` | Livro-razão (3.3) | Relatório de cobertura gerado |
 | 0.11 | Triagem de sysprefs a partir do inventário + desenho do `atrium.toml` | Configuração tipada (3.4) | Cada preferência com destino; ADR com a lista da v1 |
-| 0.12 | `docs/desvios-conhecidos.md` com formato lido pelo executor | Exato por padrão (1.2 item 9) | Executor aceita um desvio listado e rejeita um não listado |
+| 0.12 | `docs/desvios-conhecidos.md` com formato lido pelo executor | Exato por padrão (1.2 item 9) | Formato definido; o executor (1.0) aceita um desvio listado e rejeita um não listado |
 
 ### Fase 1: MARC, modelo bibliográfico e busca
 
 | # | Tarefa | Técnica (seção) | Pronto quando |
 |---|---|---|---|
-| 1.1 | Extrator: MARC-8 (LC `codetables.xml`), ISO 5426 (`%chars`), frameworks UNIMARC | Extrator (3.2) | Ida e volta caractere a caractere sobre as tabelas inteiras |
-| 1.2 | `atrium-marc`: `RecordRef`/`FieldRef` sobre `memmap2`, `memchr`, `simdutf8`, **limites explícitos** | Zero-copy e limites (2.2 itens 1 e 2) | 1 milhão de registros lidos com memória constante; fuzzing de 1 h sem falhas |
+| 1.0 | Executor de cenários v0: Koha 26.05.05 em container com `libfaketime`, formato YAML, gravação do oráculo por hash, comparação de traços | Oráculo (3.5) | Um cenário de vencimento simples passando dos dois lados; CI usa a gravação |
+| 1.1 | Extrator completo: frameworks MARC21, `mappings.yaml`, inventário de sysprefs, permissões, vocabulários; MARC-8 (LC `codetables.xml`), ISO 5426 (`%chars`), frameworks UNIMARC | Extrator (3.2) | Ida e volta caractere a caractere sobre as tabelas inteiras |
+| 1.2 | `atrium-marc`: `RecordRef`/`FieldRef` sobre *buffer* em fluxo (mmap só se o benchmark justificar), `memchr`, `simdutf8`, **limites explícitos** | Zero-copy e limites (2.2 itens 1 e 2) | 1 milhão de registros lidos com memória constante; fuzzing de 1 h sem falhas |
 | 1.3 | Escrita ISO 2709 e MARCXML com publicação atômica | Exportação atômica (2.2 item 11) | Ida e volta byte a byte em registros válidos |
 | 1.4 | Conversão MARC-8 / ISO 5426 → UTF-8 com `Cow` | Zero-copy (2.2 item 1) | Mesmo resultado que o Koha num corpus de registros legados (cenário diferencial) |
 | 1.5 | Modelo inspirado em BIBFRAME com **identidades numéricas** para vocabulários | Identidades (2.2 item 3) | Repositórios e migrações testados |
@@ -342,7 +347,7 @@ flowchart LR
     T05 --> T011["0.11 Triagem sysprefs"]
     T01 --> T06["0.6 Store"] --> T08["0.8 Web"]
     T01 --> T07["0.7 Memória"]
-    T03 --> T09["0.9 Executor"] --> T012["0.12 Desvios"]
+    T03 --> T10["1.0 Executor"] --> T012["0.12 Desvios"]
     T01 --> T010["0.10 Livro-razão"]
     T05 --> T11["1.1 Tabelas de caracteres"] --> T14["1.4 Conversão"]
     T01 --> T12["1.2 RecordRef"] --> T13["1.3 Escrita"]
@@ -350,19 +355,19 @@ flowchart LR
     T06 --> T15["1.5 Modelo"] --> T16["1.6 Mapeamento"]
     T14 --> T16 --> T17["1.7 Pipeline"] --> T18["1.8 Busca"] --> T19["1.9 OPAC"]
     T17 --> T110["1.10 Casamento"] --> T111["1.11 CLI"]
-    T09 --> T112["1.12 Cenários de circulação"]
+    T10 --> T112["1.12 Cenários de circulação"]
     T010 --> T112
-    T09 --> T14
+    T10 --> T14
 ```
 
-Trilha crítica: **lock → extrator → codegen → tabelas de caracteres → conversão → mapeamento → pipeline → busca → OPAC**. O executor de cenários (0.9) e o livro-razão (0.10) correm em paralelo e precisam estar prontos antes de 1.4 e 1.12.
+Trilha crítica: **lock → extrator → codegen → tabelas de caracteres → conversão → mapeamento → pipeline → busca → OPAC**. O executor de cenários (1.0, no início da Fase 1) e o livro-razão (0.10) correm em paralelo e precisam estar prontos antes de 1.4 e 1.12.
 
 ### Primeira semana depois do merge
 
 1. PR 1: workspace, CI e `layers.json` (0.1, 0.2).
 2. PR 2: `koha-lock.json`, `koha_version.rs` e o primeiro gerador, só com `$RULE_KINDS` (0.3, parte de 0.4 e 0.5): prova o pipeline extrator → JSON → Rust com o menor dado possível.
 3. PR 3: `atrium-store` com a escritora única, `row_version`, `audit_log` e `effect_outbox` (0.6).
-4. PR 4: `atrium-marc` lendo ISO 2709 com `RecordRef` e limites, com fuzzing (1.2).
+4. PR 4: `atrium-marc` lendo ISO 2709 com `RecordRef` sobre *buffer* em fluxo e limites, com fuzzing (1.2, puxada para a Fase 0 por prioridade).
 
 PRs pequenos (até ~500 linhas, a regra do Horizon), cada um com o seu critério de pronto.
 

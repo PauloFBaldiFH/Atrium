@@ -163,7 +163,7 @@ flowchart LR
 2. CI no GitHub Actions: `fmt`, `clippy -D warnings`, `nextest`, `cargo-deny`, verificação das regras de dependência.
 3. ADRs 0001 a 0007 a partir das decisões do §7 do documento 01.
 4. `atrium-store`: abertura do banco com os PRAGMAs, thread escritora, pool de leitura, migrações, backup antes de migrar.
-5. `atrium-web`: axum com layout base Askama, HTMX, Fluent (pt-BR e en), sessões, CSRF, login com Argon2id, página "olá".
+5. `atrium-web`: axum com layout base Askama, HTMX, Fluent (inglês primeiro, depois pt-BR), sessões, CSRF, login com Argon2id, página "olá".
 6. Configuração TOML tipada, logs estruturados com `tracing`, endpoint `/health`.
 7. Inventário de telas: listar as capturas em `Data/` por módulo e marcar o que entra na v1 (vira o índice das specs).
 
@@ -197,6 +197,6 @@ Além do que já está no documento 01:
 |---|---|
 | Specs viram burocracia e travam o ritmo | Spec curta (1 a 3 páginas), escrita junto com os cenários; revisão em 24 h |
 | Mapeamento MARC ↔ modelo infinito | Mapear só o que a busca, a exibição e a circulação usam; o resto fica preservado no registro de origem |
-| Testes diferenciais frágeis (Koha muda entre versões) | Fixar a versão do Koha de referência (26.06) e gravar os dados-oráculo em arquivos versionados |
+| Testes diferenciais frágeis (Koha muda entre versões) | Fixar a versão do Koha de referência (26.05.05, a estável mais recente; ver doc 04) e gravar os dados-oráculo em arquivos versionados |
 | SQLite insuficiente para um cliente grande | Metas de carga medidas desde a Fase 0; repositórios atrás de *traits* para permitir PostgreSQL no futuro |
 | Escopo cresce por pedidos de paridade com o Koha | Lista de "fora da v1" (documento 01, §5.1) só muda por ADR |

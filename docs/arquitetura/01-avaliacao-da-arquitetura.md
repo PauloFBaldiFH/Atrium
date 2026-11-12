@@ -23,7 +23,7 @@ Também proponho três adições que não estavam no plano e que, na minha avali
 
 | Caminho | Conteúdo | Observação |
 |---|---|---|
-| `koha/` | Código-fonte do Koha 26.06.00.052 (Perl, templates TT, testes `.t`, API OpenAPI) | GPLv3. Ótima referência, mas ver §3 sobre licença. |
+| `koha/` | Código-fonte do Koha 26.06.00.052 (Perl, templates TT, testes `.t`, API OpenAPI) | GPLv3. Ótima referência, mas ver §3 sobre licença. Será trocado pela versão estável mais recente (26.05.05) e movido para `reference/` (ver [04](04-decisoes.md)). |
 | `Data/*.html` | Capturas de páginas da interface do Koha (staff) | Útil para mapear telas e fluxos. |
 | `Data/kohastructure.sql` | Esquema do banco do Koha (303 `CREATE TABLE`) | Referência de domínio, não de modelagem a copiar. |
 | `Data/mandatory/sysprefs.sql` | ~935 preferências de sistema | A maior fonte de complexidade acidental do Koha. |
@@ -62,7 +62,7 @@ Padrão de fato do ecossistema, maduro e rápido. Pontos de atenção:
 
 Ajustes:
 
-- **Internacionalização.** Askama não tem i18n embutido. O Koha atende dezenas de idiomas. Proponho **Fluent** (`fluent-rs`) com uma função de template `t("chave")`, começando por pt-BR e en.
+- **Internacionalização.** Askama não tem i18n embutido. O Koha atende dezenas de idiomas. Proponho **Fluent** (`fluent-rs`) com uma função de template `t("chave")`, começando pelo inglês como idioma principal e depois o português do Brasil; os demais idiomas entram mais tarde (decidido, ver [04](04-decisoes.md)).
 - **Telas ricas.** O editor de catalogação e o balcão de circulação precisam de interações mais densas (atalhos de teclado, leitura contínua de códigos de barras, edição de campos repetíveis). Para essas, aceitar "ilhas" pequenas de JavaScript (Web Components em JS puro ou Alpine.js), sem framework SPA.
 - **Acessibilidade.** OPAC deve mirar WCAG 2.2 AA desde o início; é bem mais barato do que corrigir depois.
 - Askama recompila a cada mudança de template. Para iteração rápida de UI, considerar `cargo-watch` / `bacon` e manter templates pequenos e componentizados.
@@ -366,21 +366,23 @@ flowchart TB
 
 ---
 
-## 7. Decisões pendentes
+## 7. Decisões
 
-| # | Decisão | Recomendação |
+Todas as decisões abaixo foram tomadas em 2026-11-12. O registro completo, com as demais decisões do planejamento, está em [04-decisoes.md](04-decisoes.md).
+
+| # | Decisão | Resultado |
 |---|---|---|
 | 1 | Licença do Atrium | **Decidido:** GPL-3.0-or-later (ver §3.2) |
-| 2 | Porte-alvo da v1 | Biblioteca única até rede pequena (≤ 20 bibliotecas, ≤ 2 milhões de itens) em SQLite |
-| 3 | Onde fica o código do Koha | Repositório de referência separado ou `reference/` fora do workspace |
-| 4 | Formato prioritário | MARC21 primeiro, UNIMARC na Fase 4 |
-| 5 | Profundidade do BIBFRAME | Modelo relacional inspirado em BF + MARC de origem preservado; sem triple store |
-| 6 | Driver SQLite | `rusqlite` com ator de escrita única |
-| 7 | Idiomas da v1 | pt-BR e en, via Fluent |
+| 2 | Porte-alvo da v1 | **Decidido:** biblioteca única e redes de bibliotecas (várias unidades numa instituição, até ~20 unidades e ~2 milhões de itens por base SQLite), mais várias instituições independentes por servidor |
+| 3 | Onde fica o código do Koha | **Decidido:** `reference/` fora do workspace Cargo (pode virar um repositório separado mais tarde) |
+| 4 | Formatos | **Decidido:** importação e exportação em MARC21, MARCXML e UNIMARC; a base interna é BIBFRAME 2.0. MARC21 primeiro, UNIMARC na Fase 4 |
+| 5 | Profundidade do BIBFRAME | **Decidido:** modelo relacional inspirado em BIBFRAME 2.0 + registro MARC original preservado; sem triple store RDF |
+| 6 | Driver SQLite | **Decidido:** `rusqlite` com ator de escrita única (thread dedicada) + pool de conexões de leitura |
+| 7 | Idiomas da v1 | **Decidido:** inglês como idioma principal, depois português do Brasil; os demais idiomas depois, via Fluent |
 
 ## 8. Próximos passos sugeridos
 
-1. Fechar as decisões restantes do §7.
+1. ~~Fechar as decisões do §7.~~ Feito; ver [04-decisoes.md](04-decisoes.md).
 2. Registrar cada decisão como ADR em `docs/adr/`.
 3. Escrever a primeira spec pelo fluxo do §6: **`atrium-marc` (leitura e escrita MARC21)**, que não depende de nada e destrava todo o resto.
 4. Fase 0: criar o workspace Cargo, CI e o esqueleto do servidor.
