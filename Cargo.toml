@@ -17,6 +17,7 @@ atrium-app = { path = "crates/atrium-app" }
 atrium-data = { path = "crates/atrium-data" }
 atrium-domain = { path = "crates/atrium-domain" }
 atrium-marc = { path = "crates/atrium-marc" }
+atrium-scenarios = { path = "crates/atrium-scenarios" }
 atrium-sip2 = { path = "crates/atrium-sip2" }
 atrium-store = { path = "crates/atrium-store" }
 atrium-web = { path = "crates/atrium-web" }
@@ -31,10 +32,12 @@ getrandom = "0.4"
 mimalloc = { version = "0.1", default-features = false }
 stats_alloc = "0.1"
 http-body-util = "0.1"
+jiff = { version = "0.2", default-features = false, features = ["std", "tz-system", "tzdb-bundle-platform", "tzdb-zoneinfo"] }
 proptest = "1"
 rusqlite = { version = "0.42", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+serde_norway = "0.9"
 tempfile = "3"
 thiserror = "2"
 tokio = { version = "1", default-features = false }

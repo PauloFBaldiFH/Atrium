@@ -1,0 +1,140 @@
+{
+  "koha_version": "26.05.05.000",
+  "scenario": {
+    "id": "vencimento-emprestimo-padrao",
+    "spec": "docs/specs/circulacao/vencimento.md",
+    "parity": "required",
+    "given": {
+      "patron": {
+        "category": "B"
+      },
+      "item": {
+        "itemtype": "BK",
+        "branch": "MAIN"
+      }
+    },
+    "when": [
+      {
+        "checkout": {
+          "branch": "MAIN"
+        }
+      }
+    ],
+    "then": [
+      {
+        "loan": {
+          "due": "recorded"
+        }
+      }
+    ]
+  },
+  "inputs": {
+    "rule": {
+      "issuelength": "14",
+      "lengthunit": "days",
+      "daysmode": "Datedue",
+      "hardduedate": ""
+    },
+    "use_days_mode": "Calendar",
+    "return_before_expiry": "0",
+    "consider_library_hours": "ignore",
+    "calendar": {
+      "weekly_closed": [
+        0,
+        6
+      ],
+      "annual": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          22
+        ],
+        [
+          2,
+          16
+        ],
+        [
+          2,
+          17
+        ],
+        [
+          2,
+          18
+        ],
+        [
+          3,
+          21
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          21
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          10,
+          12
+        ],
+        [
+          11,
+          2
+        ],
+        [
+          11,
+          15
+        ],
+        [
+          11,
+          20
+        ],
+        [
+          12,
+          25
+        ]
+      ],
+      "closed": [
+        "2026-04-20",
+        "2026-04-30",
+        "2026-06-26",
+        "2026-08-21",
+        "2026-09-25",
+        "2026-10-13",
+        "2026-10-23",
+        "2026-11-23",
+        "2026-11-24",
+        "2026-12-24",
+        "2026-12-31"
+      ],
+      "open": []
+    }
+  },
+  "outputs": [
+    {
+      "loan": {
+        "checkout_date": "2026-11-12T17:00:25-03:00",
+        "due_date": "2026-11-26T23:59:00-03:00"
+      }
+    }
+  ]
+}

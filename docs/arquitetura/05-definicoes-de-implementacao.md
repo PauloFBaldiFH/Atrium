@@ -78,26 +78,30 @@ Uma spec por funcionalidade em `docs/specs/<area>/<nome>.md`, com estas seções
 Em `scenarios/<area>/<nome>.yaml`, executado contra o Atrium e contra o oráculo gravado do Koha:
 
 ```yaml
-id: circ-due-date-skips-holiday
+id: circ-due-date-default-loan
 spec: docs/specs/circulacao/vencimento.md
 parity: required
-now: 2026-03-02T10:00:00-03:00
 given:
-  branches: [{ id: MAIN, timezone: America/Sao_Paulo }]
-  holidays: [{ branch: MAIN, date: 2026-03-16 }]
-  circulation_rules:
-    - { branch: "*", categorycode: "*", itemtype: BK, rule: issuelength, value: 14 }
-  patrons: [{ ref: p1, category: ADULT, branch: MAIN }]
-  items: [{ ref: i1, itemtype: BK, branch: MAIN }]
+  patron: { category: B }
+  item: { itemtype: BK, branch: MAIN }
 when:
-  - checkout: { patron: p1, item: i1, branch: MAIN }
+  - checkout: { branch: MAIN }
 then:
-  - loan: { item: i1, due: 2026-03-17T23:59:00-03:00 }
+  - loan: { due: recorded }
 ```
 
+- O oráculo é uma instância real com **relógio real** (doc 04, §3): não dá para fixar a data. Por isso o cenário não traz `now`. Quem grava anota o instante da operação, e a gravação guarda esse instante.
+- A gravação também guarda as **entradas efetivas** que o Koha usou: a regra de circulação resolvida para o contexto (`issuelength`, `lengthunit`, `daysmode`, `hardduedate` e afins), o calendário da biblioteca (dias da semana fechados, feriados fixos e datas avulsas) e as preferências que a sub consulta. O Atrium refaz o cálculo a partir dessas entradas e deve chegar à mesma saída.
+- `then` diz o que comparar; o valor esperado vem da gravação (`recorded`). Quando o cenário fixa um valor (por exemplo, uma recusa), ele precisa bater com a gravação e com o Atrium.
 - Nomes de regras e campos seguem o Koha (`issuelength`, `categorycode`) para o executor traduzir sem tabela de apelidos.
-- `ref` são nomes locais do cenário; os IDs reais são atribuídos por quem executa.
-- Só dados fictícios.
+- Só dados fictícios ou o cadastro de exemplo autorizado; o gravador nunca lê outros leitores.
+
+### Gravação do oráculo
+
+- Arquivo `scenarios/<area>/<nome>.koha.json`, ao lado do cenário, com: versão do Koha (bate com o `koha-lock.json`), hash do cenário, instante da operação com fuso, entradas efetivas e saídas.
+- O gravador (`atrium-scenarios`, binário `oracle-record`) lê a URL e as credenciais de variáveis de ambiente, faz a operação pela API REST e pelas telas da equipe, e **desfaz o que fez** (devolve o exemplar, apaga regra criada).
+- O CI comum nunca acessa a instância. Ele confere que cada gravação corresponde ao cenário atual (hash) e que o Atrium reproduz as saídas.
+- Cenário alterado exige gravação nova; sem acesso ao oráculo, o executor acusa a gravação desatualizada em vez de passar.
 
 ### Logs (`tracing`)
 

@@ -10,6 +10,11 @@ publish.workspace = true
 
 [dependencies]
 atrium-data.workspace = true
+jiff.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
 
 [lints]
 workspace = true
