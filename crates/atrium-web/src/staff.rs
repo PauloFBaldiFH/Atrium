@@ -29,6 +29,17 @@ pub(crate) async fn home(State(state): State<AppState>, headers: HeaderMap) -> R
     })
 }
 
+/// `GET /equipe/admin/memory`: allocator report as JSON, for administrators.
+pub(crate) async fn memory(State(state): State<AppState>, headers: HeaderMap) -> Response {
+    let Some(session) = current_session(&state, &headers) else {
+        return Redirect::to("/equipe/login").into_response();
+    };
+    if !session.identity.can(Permission::Administration) {
+        return StatusCode::FORBIDDEN.into_response();
+    }
+    axum::Json(state.inner.memory.report()).into_response()
+}
+
 /// `GET /equipe/login`: the sign-in form with a fresh anti-forgery token.
 pub(crate) async fn login_form(State(state): State<AppState>) -> Response {
     login_page(&state, "", None, StatusCode::OK)

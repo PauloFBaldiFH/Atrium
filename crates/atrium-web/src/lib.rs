@@ -14,6 +14,7 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use askama::Template;
+use atrium_app::memory::MemoryProbe;
 use atrium_app::staff::StaffDirectory;
 use atrium_web_templates::{I18n, OpacHome};
 use axum::Router;
@@ -50,6 +51,7 @@ pub struct AppState {
 
 struct Inner {
     staff: Arc<dyn StaffDirectory>,
+    memory: Arc<dyn MemoryProbe>,
     sessions: Sessions,
     i18n: I18n,
     config: WebConfig,
@@ -58,10 +60,16 @@ struct Inner {
 impl AppState {
     /// Builds the state from its ports.
     #[must_use]
-    pub fn new(staff: Arc<dyn StaffDirectory>, i18n: I18n, config: WebConfig) -> Self {
+    pub fn new(
+        staff: Arc<dyn StaffDirectory>,
+        memory: Arc<dyn MemoryProbe>,
+        i18n: I18n,
+        config: WebConfig,
+    ) -> Self {
         Self {
             inner: Arc::new(Inner {
                 staff,
+                memory,
                 sessions: Sessions::new(config.session_idle),
                 i18n,
                 config,
@@ -79,6 +87,7 @@ pub fn router(state: AppState) -> Router {
         .route("/equipe", get(staff::home))
         .route("/equipe/login", get(staff::login_form).post(staff::log_in))
         .route("/equipe/logout", post(staff::log_out))
+        .route("/equipe/admin/memory", get(staff::memory))
         .layer(axum::middleware::map_response(security::headers))
         .with_state(state)
 }

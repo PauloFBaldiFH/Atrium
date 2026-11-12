@@ -7,6 +7,7 @@
 
 use std::sync::Arc;
 
+use atrium_app::memory::{MemoryProbe, MemoryReport};
 use atrium_app::staff::{
     Permission, StaffAccount, StaffDirectory, StaffDirectoryError, StaffId, hash_password,
 };
@@ -26,19 +27,39 @@ impl StaffDirectory for Accounts {
     }
 }
 
+struct NoCounters;
+
+impl MemoryProbe for NoCounters {
+    fn report(&self) -> MemoryReport {
+        MemoryReport {
+            allocator: "system",
+            counters: None,
+        }
+    }
+}
+
 fn app() -> Router {
-    let accounts = Accounts(vec![StaffAccount {
-        id: StaffId(1),
-        login: "ana".to_owned(),
-        password_hash: hash_password("s3cret").unwrap(),
-        permissions: [Permission::StaffInterface, Permission::Administration].into(),
-    }]);
+    let accounts = Accounts(vec![
+        StaffAccount {
+            id: StaffId(1),
+            login: "ana".to_owned(),
+            password_hash: hash_password("s3cret").unwrap(),
+            permissions: [Permission::StaffInterface, Permission::Administration].into(),
+        },
+        StaffAccount {
+            id: StaffId(2),
+            login: "leo".to_owned(),
+            password_hash: hash_password("s3cret").unwrap(),
+            permissions: [Permission::StaffInterface].into(),
+        },
+    ]);
     let config = WebConfig {
         secure_cookies: false,
         ..WebConfig::default()
     };
     router(AppState::new(
         Arc::new(accounts),
+        Arc::new(NoCounters),
         I18n::english().unwrap(),
         config,
     ))
@@ -171,6 +192,13 @@ async fn full_sign_in_and_sign_out() {
     assert!(home_html.contains("Administration"));
     let logout_csrf = hidden_csrf(&home_html);
 
+    let memory = send(&app, get("/equipe/admin/memory", Some(&session))).await;
+    assert_eq!(memory.status(), StatusCode::OK);
+    assert_eq!(
+        body(memory).await,
+        r#"{"allocator":"system","counters":null}"#
+    );
+
     let forged = send(&app, post("/equipe/logout", &session, "csrf=forged")).await;
     assert_eq!(forged.status(), StatusCode::FORBIDDEN);
 
@@ -193,4 +221,27 @@ async fn sign_in_without_the_form_token_is_forbidden() {
     )
     .await;
     assert_eq!(response.status(), StatusCode::FORBIDDEN);
+}
+
+#[tokio::test]
+async fn the_memory_report_is_for_administrators_only() {
+    let app = app();
+    let form = send(&app, get("/equipe/login", None)).await;
+    let login_cookie = set_cookie(&form, "atrium_login_csrf").unwrap();
+    let csrf = hidden_csrf(&body(form).await);
+    let ok = send(
+        &app,
+        post(
+            "/equipe/login",
+            &login_cookie,
+            &format!("login=leo&password=s3cret&csrf={csrf}"),
+        ),
+    )
+    .await;
+    let session = set_cookie(&ok, "atrium_session").unwrap();
+
+    let memory = send(&app, get("/equipe/admin/memory", Some(&session))).await;
+    assert_eq!(memory.status(), StatusCode::FORBIDDEN);
+    let anonymous = send(&app, get("/equipe/admin/memory", None)).await;
+    assert_eq!(anonymous.status(), StatusCode::SEE_OTHER);
 }

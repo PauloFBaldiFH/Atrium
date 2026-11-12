@@ -24,10 +24,12 @@ atrium-web-templates = { path = "crates/atrium-web-templates" }
 
 argon2 = "0.6"
 askama = { version = "0.16", default-features = false, features = ["derive", "std"] }
-axum = { version = "0.8", default-features = false, features = ["http1", "tokio", "form", "query"] }
+axum = { version = "0.8", default-features = false, features = ["http1", "tokio", "form", "query", "json"] }
 clap = { version = "4", features = ["derive"] }
 fluent-bundle = "0.16"
 getrandom = "0.4"
+mimalloc = { version = "0.1", default-features = false }
+stats_alloc = "0.1"
 http-body-util = "0.1"
 proptest = "1"
 rusqlite = { version = "0.42", features = ["bundled"] }
