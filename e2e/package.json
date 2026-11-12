@@ -1,0 +1,12 @@
+{
+  "name": "atrium-e2e",
+  "private": true,
+  "type": "module",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "staff-login": "node staff-login.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

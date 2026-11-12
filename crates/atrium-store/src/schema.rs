@@ -29,6 +29,18 @@ const MIGRATIONS: &[&str] = &[
          done       INTEGER NOT NULL DEFAULT 0 CHECK (done IN (0, 1))
      ) STRICT;
      CREATE INDEX effect_outbox_pending ON effect_outbox (id) WHERE done = 0;",
+    // 2: staff accounts and their permissions.
+    "CREATE TABLE staff_accounts (
+         id            INTEGER PRIMARY KEY,
+         login         TEXT NOT NULL UNIQUE,
+         password_hash TEXT NOT NULL,
+         row_version   INTEGER NOT NULL DEFAULT 1
+     ) STRICT;
+     CREATE TABLE staff_permissions (
+         staff_id   INTEGER NOT NULL REFERENCES staff_accounts (id) ON DELETE CASCADE,
+         permission TEXT NOT NULL,
+         PRIMARY KEY (staff_id, permission)
+     ) STRICT, WITHOUT ROWID;",
 ];
 
 /// How long a connection waits on a lock before failing. With a single writer this only

@@ -13,6 +13,10 @@ atrium-app.workspace = true
 atrium-store.workspace = true
 atrium-web.workspace = true
 atrium-sip2.workspace = true
+atrium-web-templates.workspace = true
+axum.workspace = true
+clap.workspace = true
+tokio = { workspace = true, features = ["rt-multi-thread", "net", "signal", "macros"] }
 
 [lints]
 workspace = true

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ t.get("opac-home-title") }}{% endblock %}
+{% block content %}
+<h1>{{ t.get("opac-home-title") }}</h1>
+<form class="search" action="/search" method="get" role="search">
+  <label for="q">{{ t.get("opac-home-search-label") }}</label>
+  <input id="q" name="q" type="search" placeholder="{{ t.get("opac-home-search-placeholder") }}">
+  <button type="submit">{{ t.get("opac-home-search-button") }}</button>
+</form>
+{% endblock %}

@@ -10,8 +10,17 @@ publish.workspace = true
 
 [dependencies]
 atrium-app.workspace = true
-atrium-domain.workspace = true
 atrium-web-templates.workspace = true
+askama.workspace = true
+axum.workspace = true
+getrandom.workspace = true
+serde.workspace = true
+tokio = { workspace = true, features = ["rt"] }
+
+[dev-dependencies]
+http-body-util.workspace = true
+tokio = { workspace = true, features = ["rt", "macros"] }
+tower.workspace = true
 
 [lints]
 workspace = true

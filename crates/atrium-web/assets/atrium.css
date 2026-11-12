@@ -1,0 +1,72 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Design tokens: the only place colours, spacing and type are defined. Institutions will
+   override these (docs/arquitetura/04-decisoes.md, §8). */
+:root {
+  --atrium-color-bg: #ffffff;
+  --atrium-color-text: #1d2433;
+  --atrium-color-muted: #5b6475;
+  --atrium-color-primary: #1f5fa8;
+  --atrium-color-primary-text: #ffffff;
+  --atrium-color-error: #a1261f;
+  --atrium-color-border: #d5dae3;
+  --atrium-radius: 6px;
+  --atrium-space: 1rem;
+  --atrium-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --atrium-measure: 42rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --atrium-color-bg: #12161f;
+    --atrium-color-text: #e6e9ef;
+    --atrium-color-muted: #a3abba;
+    --atrium-color-primary: #6aa2e8;
+    --atrium-color-primary-text: #0b1220;
+    --atrium-color-error: #f08c84;
+    --atrium-color-border: #2c3445;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--atrium-color-bg);
+  color: var(--atrium-color-text);
+  font-family: var(--atrium-font);
+  line-height: 1.5;
+}
+.topbar {
+  display: flex;
+  gap: var(--atrium-space);
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--atrium-space) / 2) var(--atrium-space);
+  border-bottom: 1px solid var(--atrium-color-border);
+}
+.topbar nav { display: flex; gap: var(--atrium-space); }
+.brand { font-weight: 700; text-decoration: none; color: inherit; }
+a { color: var(--atrium-color-primary); }
+main { max-width: var(--atrium-measure); margin: 0 auto; padding: var(--atrium-space); }
+form { display: grid; gap: calc(var(--atrium-space) / 2); }
+input {
+  font: inherit;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--atrium-color-border);
+  border-radius: var(--atrium-radius);
+  background: transparent;
+  color: inherit;
+}
+button {
+  font: inherit;
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: var(--atrium-radius);
+  background: var(--atrium-color-primary);
+  color: var(--atrium-color-primary-text);
+  cursor: pointer;
+  justify-self: start;
+}
+.error { color: var(--atrium-color-error); }
+/* htmx request indicators (htmx's own inline styles are disabled to satisfy the CSP). */
+.htmx-indicator { opacity: 0; }
+.htmx-request .htmx-indicator, .htmx-request.htmx-indicator { opacity: 1; transition: opacity 200ms ease-in; }
