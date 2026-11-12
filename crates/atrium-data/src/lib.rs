@@ -122,3 +122,92 @@ mod tests {
         assert_eq!(KOHA_REFERENCE.commit.len(), 40);
     }
 }
+
+/// One tag of a MARC bibliographic framework: what the cataloguing editor shows and checks.
+///
+/// Koha: a row of `marc_tag_structure` with its `marc_subfield_structure` rows.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct MarcFieldDefinition {
+    /// Three-digit tag, for example `245`.
+    pub tag: &'static str,
+    /// Label in the staff interface.
+    pub label: &'static str,
+    /// Label in the OPAC.
+    pub label_opac: &'static str,
+    /// Whether the tag may appear more than once in a record.
+    pub repeatable: bool,
+    /// Whether every record must have it.
+    pub mandatory: bool,
+    /// Authorised value category for the tag as a whole, rarely used.
+    pub authorised_value: Option<&'static str>,
+    /// Subfields, letters before digits.
+    pub subfields: &'static [MarcSubfieldDefinition],
+}
+
+/// One subfield of a framework tag. Control fields have a single subfield `@`.
+///
+/// Koha: a row of `marc_subfield_structure`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct MarcSubfieldDefinition {
+    /// Subfield code; `@` stands for the whole control field.
+    pub code: char,
+    /// Label in the staff interface.
+    pub label: &'static str,
+    /// Label in the OPAC.
+    pub label_opac: &'static str,
+    /// Whether it may appear more than once in a field.
+    pub repeatable: bool,
+    /// Whether the field must have it.
+    pub mandatory: bool,
+    /// The Koha database column it fills, for example `biblio.title`.
+    pub kohafield: Option<&'static str>,
+    /// Editor tab; `-1` means ignored.
+    pub tab: Option<i8>,
+    /// Koha's visibility code (which interfaces show it).
+    pub hidden: Option<i8>,
+    /// Authorised value category whose values it takes.
+    pub authorised_value: Option<&'static str>,
+    /// Authority type it links to.
+    pub authtypecode: Option<&'static str>,
+    /// Koha plugin that fills it in the editor.
+    pub value_builder: Option<&'static str>,
+    /// Whether the value is a URL.
+    pub is_url: bool,
+    /// Maximum length of the value.
+    pub max_length: u16,
+}
+
+/// Every tag of Koha's default MARC21 bibliographic framework, sorted by tag.
+pub fn marc21_framework() -> impl Iterator<Item = &'static MarcFieldDefinition> {
+    MARC21_HUNDREDS.iter().flat_map(|fields| fields.iter())
+}
+
+/// The default MARC21 framework's definition of `tag`, if it defines it.
+#[must_use]
+pub fn marc21_field(tag: &str) -> Option<&'static MarcFieldDefinition> {
+    let hundred = tag.as_bytes().first()?.checked_sub(b'0')?;
+    let fields = MARC21_HUNDREDS.get(usize::from(hundred))?;
+    let at = fields.binary_search_by(|field| field.tag.cmp(tag)).ok()?;
+    fields.get(at)
+}
+
+impl MarcFieldDefinition {
+    /// The definition of subfield `code`, if the framework defines it.
+    #[must_use]
+    pub fn subfield(&self, code: char) -> Option<&'static MarcSubfieldDefinition> {
+        self.subfields.iter().find(|subfield| subfield.code == code)
+    }
+}
+
+static MARC21_HUNDREDS: [&[MarcFieldDefinition]; 10] = [
+    generated::marc21_framework_0xx::FIELDS,
+    generated::marc21_framework_1xx::FIELDS,
+    generated::marc21_framework_2xx::FIELDS,
+    generated::marc21_framework_3xx::FIELDS,
+    generated::marc21_framework_4xx::FIELDS,
+    generated::marc21_framework_5xx::FIELDS,
+    generated::marc21_framework_6xx::FIELDS,
+    generated::marc21_framework_7xx::FIELDS,
+    generated::marc21_framework_8xx::FIELDS,
+    generated::marc21_framework_9xx::FIELDS,
+];
