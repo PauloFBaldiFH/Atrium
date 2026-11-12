@@ -1,0 +1,562 @@
+{
+  "rule_kinds" : [
+    {
+      "can_be_blank" : true,
+      "is_monetary" : true,
+      "name" : "article_request_fee",
+      "scope" : [
+        "branchcode",
+        "categorycode"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "article_requests",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "auto_renew",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "bookings_lead_period",
+      "scope" : [
+        "branchcode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "bookings_trail_period",
+      "scope" : [
+        "branchcode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "cap_fine_to_replacement_price",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "chargeperiod",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "chargeperiod_charge_at",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "daysmode",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "decreaseloanholds",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : false,
+      "is_monetary" : false,
+      "name" : "expire_reserves_charge",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : false,
+      "is_monetary" : false,
+      "name" : "fill_other_biblio_holds_policy",
+      "scope" : [
+        "branchcode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : true,
+      "name" : "fine",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "finedays",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "firstremind",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "hardduedate",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "hardduedatecompare",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : true,
+      "name" : "hold_fee",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : false,
+      "is_monetary" : false,
+      "name" : "hold_fulfillment_policy",
+      "scope" : [
+        "branchcode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : false,
+      "is_monetary" : false,
+      "name" : "holdallowed",
+      "scope" : [
+        "branchcode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "holds_per_day",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "holds_per_record",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "holds_pickup_period",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "issuelength",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "lengthunit",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : false,
+      "is_monetary" : false,
+      "name" : "lost_item_processing_fee",
+      "scope" : [
+        "branchcode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "lostreturn",
+      "scope" : [
+        "branchcode"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "max_holds",
+      "scope" : [
+        "branchcode",
+        "categorycode"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "maxissueqty",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "maxonsiteissueqty",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "maxsuspensiondays",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "no_auto_renewal_after",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "no_auto_renewal_after_hard_limit",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "noautorenewalbefore",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "norenewalbefore",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "note",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "on_shelf_recalls",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "onshelfholds",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "opacitemholds",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "open_article_requests_limit",
+      "scope" : [
+        "branchcode",
+        "categorycode"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : true,
+      "name" : "overduefinescap",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "patron_maxissueqty",
+      "scope" : [
+        "branchcode",
+        "categorycode"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "patron_maxonsiteissueqty",
+      "scope" : [
+        "branchcode",
+        "categorycode"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "processingreturn",
+      "scope" : [
+        "branchcode"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "recall_due_date_interval",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : true,
+      "name" : "recall_overdue_fine",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "recall_shelf_time",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "recalls_allowed",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "recalls_per_record",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "renewalperiod",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "renewalsallowed",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : false,
+      "is_monetary" : false,
+      "name" : "rentaldiscount",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "reservesallowed",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : false,
+      "is_monetary" : false,
+      "name" : "returnbranch",
+      "scope" : [
+        "branchcode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "suspension_chargeperiod",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : true,
+      "is_monetary" : false,
+      "name" : "unseen_renewals_allowed",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    },
+    {
+      "can_be_blank" : false,
+      "is_monetary" : false,
+      "name" : "waiting_hold_cancellation",
+      "scope" : [
+        "branchcode",
+        "categorycode",
+        "itemtype"
+      ]
+    }
+  ],
+  "source" : {
+    "file" : "Koha/CirculationRules.pm",
+    "sha256" : "e5396f81db4112a0002fa7602657f2ce92c5a160f13047b88be7f020e9b8d0e9"
+  }
+}
