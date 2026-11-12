@@ -48,6 +48,13 @@ pub(crate) fn run(root: &Path, mode: Mode) -> Result<(), String> {
             .join("marc21_framework.json"),
     )?;
 
+    let iso5426 = read_json(
+        &root
+            .join("data")
+            .join(format!("koha-{series}"))
+            .join("iso5426.json"),
+    )?;
+
     let mut files = vec![
         Generated {
             name: "mod.rs".to_owned(),
@@ -60,6 +67,14 @@ pub(crate) fn run(root: &Path, mode: Mode) -> Result<(), String> {
         Generated {
             name: "circulation_rule_kinds.rs".to_owned(),
             source: circulation_rule_kinds(&rule_kinds)?,
+        },
+        Generated {
+            name: "iso5426.rs".to_owned(),
+            source: crate::charsets::iso5426(
+                &iso5426,
+                &format!("data/koha-{series}/iso5426.json"),
+                &header(&format!("data/koha-{series}/iso5426.json")),
+            )?,
         },
     ];
     files.extend(
@@ -128,6 +143,7 @@ fn module_index() -> String {
         "//! Tables generated from the pinned Koha reference.\n\n\
          #[expect(clippy::too_many_lines, reason = \"one match arm per Koha rule kind\")]\n\
          pub(crate) mod circulation_rule_kinds;\n\
+         pub(crate) mod iso5426;\n\
          pub(crate) mod koha_version;\n\
          pub(crate) mod marc21_framework_0xx;\n\
          pub(crate) mod marc21_framework_1xx;\n\

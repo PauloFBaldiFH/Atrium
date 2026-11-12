@@ -34,6 +34,7 @@ my %outputs = (
     'circulation_rule_kinds.json' => circulation_rule_kinds($koha_dir),
     'sysprefs.json'               => sysprefs($koha_dir),
     'marc21_framework.json'       => marc21_framework($koha_dir),
+    'iso5426.json'                => iso5426($koha_dir),
 );
 
 my $stale = 0;
@@ -210,6 +211,24 @@ sub marc21_framework {
     return {
         source => { file => $file, sha256 => sha256_hex($source) },
         fields => \@fields,
+    };
+}
+
+# Koha: the %chars table of C4::Charset (used by char_decode5426): ISO 5426 code, one
+# byte or a diacritic byte followed by a base byte, to a Unicode code point.
+sub iso5426 {
+    my ($dir) = @_;
+    my $file = 'C4/Charset.pm';
+    my $source = slurp("$dir/$file");
+    my %chars;
+    while ( $source =~ /^\$chars\{0x([0-9a-f]+)\}\s*=\s*0x([0-9a-f]+);/mg ) {
+        die "duplicate ISO 5426 code 0x$1 in $file\n" if exists $chars{ hex $1 };
+        $chars{ hex $1 } = hex $2;
+    }
+    die "no %chars entries in $file\n" unless %chars;
+    return {
+        source => { file => $file, sha256 => sha256_hex($source) },
+        chars  => [ map { { iso5426 => sprintf( '%04x', $_ ), unicode => sprintf( '%04x', $chars{$_} ) } } sort { $a <=> $b } keys %chars ],
     };
 }
 

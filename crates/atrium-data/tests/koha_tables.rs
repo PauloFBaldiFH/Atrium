@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! The generated MARC21 framework matches facts checked by hand in Koha's YAML.
+//! The generated Koha tables match facts checked by hand in the Koha sources.
 
 use atrium_data::{marc21_field, marc21_framework};
 
@@ -58,4 +58,13 @@ fn unknown_tags_are_none() {
     assert!(marc21_field("").is_none());
     assert!(marc21_field("x45").is_none());
     assert!(marc21_field("2450").is_none());
+}
+
+#[test]
+fn iso5426_table() {
+    use atrium_data::iso5426_char;
+    assert_eq!(iso5426_char(0xc141), Some('À'));
+    assert_eq!(iso5426_char(0xc161), Some('à'));
+    assert_eq!(iso5426_char(0x0097), Some('<'));
+    assert_eq!(iso5426_char(0x0041), None);
 }

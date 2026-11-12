@@ -211,3 +211,14 @@ static MARC21_HUNDREDS: [&[MarcFieldDefinition]; 10] = [
     generated::marc21_framework_8xx::FIELDS,
     generated::marc21_framework_9xx::FIELDS,
 ];
+
+/// The Unicode character for an ISO 5426 code: a single byte, or a diacritic byte followed
+/// by its base byte (`0xc141` is capital A with grave).
+///
+/// Koha: the `%chars` table of `C4::Charset::char_decode5426`.
+#[must_use]
+pub fn iso5426_char(code: u16) -> Option<char> {
+    let table = generated::iso5426::ISO5426;
+    let at = table.binary_search_by_key(&code, |&(c, _)| c).ok()?;
+    table.get(at).map(|&(_, character)| character)
+}

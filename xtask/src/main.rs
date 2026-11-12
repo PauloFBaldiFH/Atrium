@@ -17,6 +17,7 @@
     reason = "xtask reports failures on the terminal"
 )]
 
+mod charsets;
 mod codegen;
 mod deviations;
 mod file_size;
