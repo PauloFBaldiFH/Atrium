@@ -1,8 +1,0 @@
-#!/bin/sh
-
-set -e
-
-a2enmod mpm_itk rewrite cgi rewrite headers proxy_http
-service apache2 restart
-
-exit 0

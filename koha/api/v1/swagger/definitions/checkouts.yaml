@@ -1,5 +1,0 @@
----
-type: array
-items:
-  $ref: "checkout.yaml"
-additionalProperties: false

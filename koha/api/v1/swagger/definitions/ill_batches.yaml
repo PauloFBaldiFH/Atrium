@@ -1,5 +1,0 @@
----
-type: array
-items:
-  $ref: "ill_batch.yaml"
-additionalProperties: false

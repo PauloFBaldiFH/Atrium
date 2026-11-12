@@ -1,0 +1,17 @@
+[package]
+name = "atrium-app"
+description = "Use cases and ports (repository, index, clock and mail traits). Knows only traits, never concrete storage."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+atrium-domain.workspace = true
+atrium-data.workspace = true
+atrium-marc.workspace = true
+
+[lints]
+workspace = true

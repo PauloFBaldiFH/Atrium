@@ -1,0 +1,58 @@
+[workspace]
+resolver = "3"
+members = ["crates/*", "xtask"]
+default-members = ["crates/*"]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.97"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/PauloFBaldiFH/Atrium"
+publish = false
+
+[workspace.dependencies]
+atrium-app = { path = "crates/atrium-app" }
+atrium-data = { path = "crates/atrium-data" }
+atrium-domain = { path = "crates/atrium-domain" }
+atrium-marc = { path = "crates/atrium-marc" }
+atrium-sip2 = { path = "crates/atrium-sip2" }
+atrium-store = { path = "crates/atrium-store" }
+atrium-web = { path = "crates/atrium-web" }
+atrium-web-templates = { path = "crates/atrium-web-templates" }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+unreachable_pub = "warn"
+unused_qualifications = "warn"
+rust_2024_compatibility = { level = "warn", priority = -1 }
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+# Production code must not abort a request (CLAUDE.md, "Erros").
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+todo = "deny"
+unimplemented = "deny"
+unreachable = "deny"
+indexing_slicing = "deny"
+string_slice = "deny"
+exit = "deny"
+dbg_macro = "deny"
+print_stderr = "deny"
+float_arithmetic = "deny"
+# Every `#[allow]` / `#[expect]` must say why.
+allow_attributes_without_reason = "deny"
+allow_attributes = "deny"
+undocumented_unsafe_blocks = "deny"
+let_underscore_must_use = "deny"
+mem_forget = "deny"
+rc_mutex = "deny"
+clone_on_ref_ptr = "deny"
+self_named_module_files = "deny"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1

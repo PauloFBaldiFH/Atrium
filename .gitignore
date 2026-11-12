@@ -1,0 +1,6 @@
+/target
+**/*.rs.bk
+# Local data directories and Koha dumps never go to git (CLAUDE.md, privacy).
+/data-local/
+*.sql.gz
+*.mrc.local

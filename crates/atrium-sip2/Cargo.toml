@@ -1,0 +1,15 @@
+[package]
+name = "atrium-sip2"
+description = "SIP2 protocol server for self-check machines (placeholder until Phase 5)."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+atrium-app.workspace = true
+
+[lints]
+workspace = true

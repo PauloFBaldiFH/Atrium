@@ -1,0 +1,17 @@
+[package]
+name = "atrium-web"
+description = "HTTP layer: axum routes for the OPAC and the staff interface, HTMX fragments."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+atrium-app.workspace = true
+atrium-domain.workspace = true
+atrium-web-templates.workspace = true
+
+[lints]
+workspace = true

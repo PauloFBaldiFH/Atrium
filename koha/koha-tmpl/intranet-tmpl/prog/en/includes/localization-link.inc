@@ -1,1 +1,0 @@
-<a href="/cgi-bin/koha/admin/localization.pl?source=[% source | uri %]&object_id=[% object_id | uri %]&property=[% property | uri %]"><i class="fa-solid fa-pencil" aria-hidden="true"></i> Translate into other languages</a>

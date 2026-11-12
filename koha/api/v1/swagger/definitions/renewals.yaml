@@ -1,5 +1,0 @@
----
-type: array
-items:
-  $ref: "renewal.yaml"
-additionalProperties: false
