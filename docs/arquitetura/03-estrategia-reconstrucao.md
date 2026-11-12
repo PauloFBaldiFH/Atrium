@@ -1,7 +1,7 @@
 # Atrium: estratégia de reconstrução inspirada no Horizon
 
 > Status: proposta para discussão. Complementa [01](01-avaliacao-da-arquitetura.md) e [02](02-modo-de-implementacao.md).
-> Data: 2026-11-12. Referência funcional: Koha 26.06.00.052 (em `koha/`). Licença do Atrium: GPL-3.0-or-later.
+> Data: 2026-11-12. Referência funcional: Koha 26.06.00.052 (na época em `koha/`; agora Koha 26.05.05 em `reference/koha/`). Licença do Atrium: GPL-3.0-or-later.
 >
 > **Atualização (2026-11-12):** a versão-alvo passa a ser a estável mais recente, **Koha 26.05.05** (a mesma da instância de testes), e o código de referência vai para `reference/`, fora do workspace Cargo. As citações de arquivos abaixo foram verificadas no 26.06 e serão reconferidas na troca. A leitura MARC passou a ser por *buffer* em fluxo (§2.2 item 1), a Fase 0 ficou mais enxuta (§4) e o idioma principal é o inglês. Decisões consolidadas em [04-decisoes.md](04-decisoes.md).
 
@@ -402,4 +402,4 @@ Repositório [horizon-rust/horizon](https://github.com/horizon-rust/horizon), br
 - [docs/how-horizon-is-built.md](https://github.com/horizon-rust/horizon/blob/main/docs/how-horizon-is-built.md): processo, agentes de IA, incidentes de licença
 - [docs/cleanroom/README.md](https://github.com/horizon-rust/horizon/blob/main/docs/cleanroom/README.md): processo de *clean room*
 
-Library of Congress: [MARC-8 code tables](https://www.loc.gov/marc/specifications/codetables.xml). Koha 26.06: arquivos citados, em `koha/` neste repositório.
+Library of Congress: [MARC-8 code tables](https://www.loc.gov/marc/specifications/codetables.xml). Koha: arquivos citados, verificados no 26.06 e agora em `reference/koha/` (26.05.05).

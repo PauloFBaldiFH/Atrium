@@ -1,5 +1,0 @@
----
-type: array
-items:
-  $ref: "recall.yaml"
-additionalProperties: false

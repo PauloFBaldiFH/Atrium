@@ -134,7 +134,7 @@ Escolha excelente: substitui Zebra e Elasticsearch do Koha com uma biblioteca em
 A ideia está certa: **não traduzir Perl para Rust**. Traduzir carregaria junto 25 anos de decisões acidentais, e um tradutor (humano ou IA) lendo código legado tende a reproduzir bugs e "inventar" comportamento. O caminho robusto é:
 
 1. **Especificar comportamento, não código.** Para cada módulo, escrever em nossas palavras o que o sistema faz: regras, estados, casos-limite, mensagens.
-2. **Fontes de especificação, em ordem de preferência:** manual do Koha e documentação pública → uso da interface (as capturas em `Data/`) → testes do Koha (`koha/t/`, ~850 arquivos `.t`, que descrevem casos-limite de forma explícita) → código Perl só para tirar dúvidas pontuais, nunca como base de implementação.
+2. **Fontes de especificação, em ordem de preferência:** manual do Koha e documentação pública → uso da interface (as capturas em `Data/`) → testes do Koha (`reference/koha/t/`, ~850 arquivos `.t`, que descrevem casos-limite de forma explícita) → código Perl só para tirar dúvidas pontuais, nunca como base de implementação.
 3. **O Koha como oráculo.** Subir um Koha real (por exemplo, `koha-testing-docker`) e rodar **testes diferenciais**: mesma entrada nos dois sistemas, comparar a saída (data de vencimento, multa calculada, posição na fila de reservas, MARC exportado). Isso substitui "achismo" por evidência e é a melhor defesa contra alucinação.
 4. **Simplificar de propósito.** Cada preferência de sistema do Koha (~935) precisa justificar sua existência. A maioria vira um padrão sensato fixo, configuração tipada ou é descartada.
 

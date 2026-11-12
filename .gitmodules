@@ -1,0 +1,4 @@
+[submodule "reference/koha"]
+	path = reference/koha
+	url = https://github.com/Koha-Community/Koha.git
+	shallow = true

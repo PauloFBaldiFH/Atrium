@@ -1,2 +1,0 @@
--- custom.sql, English edition
--- You may want to add SQL statements here to customize your Koha install
