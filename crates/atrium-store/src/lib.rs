@@ -13,12 +13,14 @@
 //! - **Effects** that must happen after a commit (reindexing, notices) are written to
 //!   `effect_outbox` inside the same transaction as the change that causes them.
 
+mod atrium;
 mod config;
 mod error;
 mod readers;
 mod schema;
 mod writer;
 
+pub use atrium::{AtriumHandler, AtriumStore};
 pub use config::StoreConfig;
 pub use error::{CommandFailed, StoreError, SubmitError};
 pub use readers::ReadPool;
