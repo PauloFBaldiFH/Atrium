@@ -8,6 +8,7 @@
 //! - `codegen [--check]`: writes (or checks) `crates/atrium-data/src/generated/` from
 //!   `koha-lock.json` and `data/koha-<series>/`.
 //! - `check-deviations`: validates `docs/desvios-conhecidos.md`.
+//! - `check-sysprefs`: every Koha preference has a destination in `tools/sysprefs-triage.json`.
 //! - `ledger [where <name>]`: port ledger, Koha subs cited with `/// Koha:` (needs
 //!   `reference/koha`).
 //! - `ci`: runs every check above, with `codegen` in check mode.
@@ -21,6 +22,7 @@ mod deviations;
 mod file_size;
 mod layers;
 mod ledger;
+mod sysprefs;
 
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
@@ -33,13 +35,15 @@ fn main() -> ExitCode {
         "check-file-size" => file_size::run(&root),
         "codegen" => codegen::run(&root, codegen_mode()),
         "check-deviations" => deviations::run(&root),
+        "check-sysprefs" => sysprefs::run(&root),
         "ledger" => ledger::run(&root, &std::env::args().skip(2).collect::<Vec<_>>()),
         "ci" => layers::run(&root)
             .and_then(|()| file_size::run(&root))
             .and_then(|()| codegen::run(&root, codegen::Mode::Check))
-            .and_then(|()| deviations::run(&root)),
+            .and_then(|()| deviations::run(&root))
+            .and_then(|()| sysprefs::run(&root)),
         _ => Err(format!(
-            "unknown command `{command}`; expected one of: check-layers, check-file-size, codegen [--check], check-deviations, ledger, ci"
+            "unknown command `{command}`; expected one of: check-layers, check-file-size, codegen [--check], check-deviations, check-sysprefs, ledger, ci"
         )),
     };
     match result {

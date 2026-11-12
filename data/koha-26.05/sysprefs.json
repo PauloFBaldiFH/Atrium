@@ -1,0 +1,5501 @@
+{
+  "source" : {
+    "defaults" : {
+      "file" : "installer/data/mysql/mandatory/sysprefs.sql",
+      "sha256" : "4d750b8124312a8278ffce825f78f18b05cd8887fb3652586ebfc07e67653d7d"
+    },
+    "screens" : "koha-tmpl/intranet-tmpl/prog/en/modules/admin/preferences"
+  },
+  "sysprefs" : [
+    {
+      "default" : "Order number must appear on all related correspondence, shipping papers and invoices. Notify us immediately if \\n you are unable to supply item(s).",
+      "name" : "1PageOrderPDFText",
+      "section" : "Printing",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "",
+      "name" : "AccessControlAllowOrigin",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "0",
+      "name" : "AccountAutoReconcile",
+      "section" : "Policy",
+      "tab" : "Accounting"
+    },
+    {
+      "default" : "ordering",
+      "name" : "AcqCreateItem",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "0",
+      "name" : "AcqEnableFiles",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "",
+      "name" : "AcqItemSetSubfieldsWhenReceiptIsCancelled",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "",
+      "name" : "AcqItemSetSubfieldsWhenReceived",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "1",
+      "name" : "AcquisitionDetails",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "AcquisitionLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "",
+      "name" : "AcquisitionsDefaultEmailAddress",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "",
+      "name" : "AcquisitionsDefaultReplyTo",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "user",
+      "name" : "AcqViewBaskets",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "0",
+      "name" : "AcqWarnOnDuplicateInvoice",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "0",
+      "name" : "ActionLogsTraceDepth",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "0",
+      "name" : "AdditionalContentLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "tinymce",
+      "name" : "AdditionalContentsEditor",
+      "section" : "News",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "",
+      "name" : "AdditionalFieldsInZ3950ResultAuthSearch",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "",
+      "name" : "AdditionalFieldsInZ3950ResultSearch",
+      "section" : "Importing",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "AddressForFailedOverdueNotices",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "us",
+      "name" : "AddressFormat",
+      "section" : "Global",
+      "tab" : "I18N/L10N"
+    },
+    {
+      "default" : "0",
+      "name" : "advancedMARCeditor",
+      "section" : "Interface",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "AdvancedSearchLanguages",
+      "section" : "Search form",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "itemtypes",
+      "name" : "AdvancedSearchTypes",
+      "section" : "Search form",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "",
+      "name" : "AgeRestrictionMarker",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AgeRestrictionOverride",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AggressiveMatchOnISBN",
+      "section" : "Importing",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "AggressiveMatchOnISSN",
+      "section" : "Importing",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "1",
+      "name" : "AllFinesNeedOverride",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "AllNoticeCSS",
+      "section" : "Notices and slips",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "",
+      "name" : "AllNoticeStylesheet",
+      "section" : "Notices and slips",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowAllMessageDeletion",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowCheckoutNotes",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowFineOverride",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowFineOverrideRenewing",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "AllowHoldCheckoutOverride",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowHoldDateInFuture",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowHoldItemTypeSelection",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowHoldPolicyOverride",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "AllowHoldsOnDamagedItems",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "AllowHoldsOnPatronsPossessions",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowItemsOnHoldCheckoutSCO",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowItemsOnHoldCheckoutSIP",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowItemsOnLoanCheckoutSIP",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowMultipleCovers",
+      "section" : "Local or remote cover images",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "1",
+      "name" : "AllowMultipleIssuesOnABiblio",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowNotForLoanOverride",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowPatronToControlAutorenewal",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowPatronToSetCheckoutsVisibilityForGuarantor",
+      "section" : "Privacy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowPatronToSetFinesVisibilityForGuarantor",
+      "section" : "Privacy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "None",
+      "name" : "AllowPKIAuth",
+      "section" : "SSL client certificate authentication",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowRenewalIfOtherItemsAvailable",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowRenewalLimitOverride",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowRenewalOnHoldOverride",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "anywhere",
+      "name" : "AllowReturnToBranch",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "AllowSetAutomaticRenewal",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowStaffToSetCheckoutsVisibilityForGuarantor",
+      "section" : "Patron relationships",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "AllowStaffToSetFinesVisibilityForGuarantor",
+      "section" : "Patron relationships",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "AllowTooManyOverride",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z",
+      "name" : "alphabet",
+      "section" : "Global",
+      "tab" : "I18N/L10N"
+    },
+    {
+      "default" : "",
+      "name" : "AlternateHoldingsField",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "AlternateHoldingsSeparator",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "AlwaysLoadCheckoutsTable",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AlwaysShowHoldingsTableFilters",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "AmazonAssocTag",
+      "section" : "Amazon",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "AmazonCoverImages",
+      "section" : "Amazon",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "US",
+      "name" : "AmazonLocale",
+      "section" : "Amazon",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "AnonSuggestions",
+      "section" : "Suggestions",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "AnonymizeLastBorrower",
+      "section" : "Privacy",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "AnonymizeLastBorrowerDays",
+      "section" : "Privacy",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "AnonymousPatron",
+      "section" : "Privacy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "ApiKeyLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "new",
+      "name" : "ApplyFrameworkDefaults",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "ArticleRequests",
+      "section" : "Article requests",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "calc",
+      "name" : "ArticleRequestsLinkControl",
+      "section" : "Article requests",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "ArticleRequestsMandatoryFields",
+      "section" : "Article requests",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "ArticleRequestsMandatoryFieldsItemOnly",
+      "section" : "Article requests",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "ArticleRequestsMandatoryFieldsRecordOnly",
+      "section" : "Article requests",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "ArticleRequestsOpacHostRedirection",
+      "section" : "Article requests",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "PHOTOCOPY",
+      "name" : "ArticleRequestsSupportedFormats",
+      "section" : "Article requests",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AudioAlerts",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "0",
+      "name" : "AuthDisplayHierarchy",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "0",
+      "name" : "AuthFailureLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "1",
+      "name" : "AuthoritiesLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "# PERSO_NAME  100 600 696 700 796 800 896\\nmarc21, 100, ind1:auth1\\nmarc21, 600, ind1:auth1, ind2:thesaurus\\nmarc21, 696, ind1:auth1\\nmarc21, 700, ind1:auth1\\nmarc21, 796, ind1:auth1\\nmarc21, 800, ind1:auth1\\nmarc21, 896, ind1:auth1\\n# CORPO_NAME  110 610 697 710 797 810 897\\nmarc21, 110, ind1:auth1\\nmarc21, 610, ind1:auth1, ind2:thesaurus\\nmarc21, 697, ind1:auth1\\nmarc21, 710, ind1:auth1\\nmarc21, 797, ind1:auth1\\nmarc21, 810, ind1:auth1\\nmarc21, 897, ind1:auth1\\n# MEETI_NAME    111 611 698 711 798 811 898\\nmarc21, 111, ind1:auth1\\nmarc21, 611, ind1:auth1, ind2:thesaurus\\nmarc21, 698, ind1:auth1\\nmarc21, 711, ind1:auth1\\nmarc21, 798, ind1:auth1\\nmarc21, 811, ind1:auth1\\nmarc21, 898, ind1:auth1\\n# UNIF_TITLE        130 440 630 699 730 799 830 899\\nmarc21, 130, ind1:auth2\\nmarc21, 240, , ind2:auth2\\nmarc21, 440, , ind2:auth2\\nmarc21, 630, ind1:auth2, ind2:thesaurus\\nmarc21, 699, ind1:auth2\\nmarc21, 730, ind1:auth2\\nmarc21, 799, ind1:auth2\\nmarc21, 830, , ind2:auth2\\nmarc21, 899, ind1:auth2\\n# CHRON_TERM    648 \\nmarc21, 648, , ind2:thesaurus\\n# TOPIC_TERM      650 654 656 657 658 690\\nmarc21, 650, , ind2:thesaurus\\n# GEOGR_NAME   651 662 691\\nmarc21, 651, , ind2:thesaurus\\n# GENRE/FORM    655 \\nmarc21, 655, , ind2:thesaurus\\n\\n# UNIMARC: Always copy the indicators from the authority\\nunimarc, *, ind1:auth1, ind2:auth2",
+      "name" : "AuthorityControlledIndicators",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "50",
+      "name" : "AuthorityMergeLimit",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "loose",
+      "name" : "AuthorityMergeMode",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "--",
+      "name" : "AuthoritySeparator",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "AuthorityXSLTDetailsDisplay",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "",
+      "name" : "AuthorityXSLTOpacDetailsDisplay",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "AuthorityXSLTOpacResultsDisplay",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "AuthorityXSLTResultsDisplay",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "default",
+      "name" : "AuthorLinkSortBy",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "asc",
+      "name" : "AuthorLinkSortOrder",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "AuthSuccessLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "0",
+      "name" : "AutoApprovePatronProfileSettings",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "OFF",
+      "name" : "autoBarcode",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "AutoClaimReturnStatusOnCheckin",
+      "section" : "Return claims",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "AutoClaimReturnStatusOnCheckout",
+      "section" : "Return claims",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "OFF",
+      "name" : "autoControlNumber",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "AutoCreateAuthorities",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "",
+      "name" : "AutoCreditNumber",
+      "section" : "Features",
+      "tab" : "Accounting"
+    },
+    {
+      "default" : "0",
+      "name" : "AutoEmailNewUser",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "AutoILLBackendPriority",
+      "section" : "Workflow",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "0",
+      "name" : "AutoLinkBiblios",
+      "section" : "Linker",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "0",
+      "name" : "AutomaticCheckinAutoFill",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AutomaticConfirmTransfer",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AutomaticEmailReceipts",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "AutomaticItemReturn",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "date_due",
+      "name" : "AutomaticRenewalPeriodBase",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "autoMemberNum",
+      "section" : "Patron forms",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "autoMemberNumValue",
+      "section" : "Patron forms",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "no",
+      "name" : "AutoRemoveOverduesRestrictions",
+      "section" : "Patron restrictions",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "preferences",
+      "name" : "AutoRenewalNotices",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "AutoResumeSuspendedHolds",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AutoReturnCheckedOutItems",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "AutoSelfCheckAllowed",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "AutoSelfCheckID",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "AutoSelfCheckPass",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "subscription",
+      "name" : "AutoShareWithMana",
+      "section" : "Mana KB",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "0",
+      "name" : "AutoSwitchPatron",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "Babeltheque",
+      "section" : "Babelthèque",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "Babeltheque_url_js",
+      "section" : "Babelthèque",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "Babeltheque_url_update",
+      "section" : "Babelthèque",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "\\\\s\\\\r\\\\n",
+      "name" : "BarcodeSeparators",
+      "section" : "Barcodes",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "1",
+      "name" : "BasketConfirmations",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "0",
+      "name" : "BatchCheckouts",
+      "section" : "Batch checkout",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "BatchCheckoutsValidCategories",
+      "section" : "Batch checkout",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "normal",
+      "name" : "BiblioDefaultView",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "BiblioItemtypeInfo",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "",
+      "name" : "BibtexExportAdditionalFields",
+      "section" : "Exporting",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "BlockExpiredPatronOpacActions",
+      "section" : "Policy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "BlockReturnOfLostItems",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "BlockReturnOfWithdrawnItems",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "surname|cardnumber",
+      "name" : "BorrowerMandatoryField",
+      "section" : "Patron forms",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "father|mother",
+      "name" : "borrowerRelationship",
+      "section" : "Patron relationships",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "now",
+      "name" : "BorrowerRenewalPeriodBase",
+      "section" : "Membership expiry",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "BorrowersLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "Mr|Mrs|Miss|Ms",
+      "name" : "BorrowersTitles",
+      "section" : "Patron forms",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "BorrowerUnwantedField",
+      "section" : "Patron forms",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "ccode",
+      "name" : "BranchTransferLimitsType",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "BrowseResultSelection",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "5",
+      "name" : "BundleLostValue",
+      "section" : "Item bundles",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "3",
+      "name" : "BundleNotLoanValue",
+      "section" : "Item bundles",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "CalculateFinesOnBackdate",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "CalculateFinesOnReturn",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "CalculateFundValuesIncludingTax",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "0",
+      "name" : "CalendarFirstDayOfWeek",
+      "section" : "Global",
+      "tab" : "I18N/L10N"
+    },
+    {
+      "default" : "0",
+      "name" : "CancelOrdersInClosedBaskets",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "do_not_allow",
+      "name" : "CanMarkHoldsToPullAsLost",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "canreservefromotherbranches",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "CardnumberLength",
+      "section" : "Patron forms",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "CardnumberLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "0",
+      "name" : "casAuthentication",
+      "section" : "CAS authentication",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "casLogout",
+      "section" : "CAS authentication",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "https://localhost:8443/cas",
+      "name" : "casServerUrl",
+      "section" : "CAS authentication",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "2",
+      "name" : "casServerVersion",
+      "section" : "CAS authentication",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "CatalogConcerns",
+      "section" : "Interface",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "CatalogerEmails",
+      "section" : "Interface",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "CatalogModuleRelink",
+      "section" : "Linker",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "1",
+      "name" : "CataloguingLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "0",
+      "name" : "ChargeFinesOnClosedDays",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "hardno",
+      "name" : "CheckPrevCheckout",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "CheckPrevCheckoutDelay",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "ChildNeedsGuarantor",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "qslip",
+      "name" : "CircAutoPrintQuickSlip",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "CircConfirmItemParts",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "ItemHomeLibrary",
+      "name" : "CircControl",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "ItemHomeLibrary",
+      "name" : "CircControlReturnsBranch",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "CircSidebar",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "CirculateILL",
+      "section" : "Features",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "ask",
+      "name" : "ClaimReturnedChargeFee",
+      "section" : "Return claims",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "ClaimReturnedLostValue",
+      "section" : "Return claims",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "ClaimReturnedWarningThreshold",
+      "section" : "Return claims",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "ClaimsBccCopy",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "1",
+      "name" : "ClaimsLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "",
+      "name" : "CleanUpDatabaseReturnClaims",
+      "section" : "Return claims",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "CoceHost",
+      "section" : "Coce cover images cache",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "CoceProviders",
+      "section" : "Coce cover images cache",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "1",
+      "name" : "COinSinOPACResults",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "CollapseFieldsPatronAddForm",
+      "section" : "Patron forms",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "title",
+      "name" : "ComponentSortField",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "asc",
+      "name" : "ComponentSortOrder",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "ConfirmFutureHolds",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "ConsiderHeadingUse",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "close",
+      "name" : "ConsiderLibraryHoursInCirculation",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "ConsiderOnSiteCheckoutsAsNormalCheckouts",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "ContentWarningField",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "CookieConsent",
+      "section" : "Privacy",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "CookieConsentedJS",
+      "section" : "Privacy",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "CreateAVFromCataloguing",
+      "section" : "Interface",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "CronjobLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : ",",
+      "name" : "CSVDelimiter",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "CumulativeRestrictionPeriods",
+      "section" : "Patron restrictions",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "CurbsidePickup",
+      "section" : "Curbside pickup module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "US",
+      "name" : "CurrencyFormat",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "0",
+      "name" : "CustomCoverImages",
+      "section" : "Local or remote cover images",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "CustomCoverImagesURL",
+      "section" : "Local or remote cover images",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "us",
+      "name" : "dateformat",
+      "section" : "Global",
+      "tab" : "I18N/L10N"
+    },
+    {
+      "default" : "2",
+      "name" : "DebugLevel",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "decreaseLoanHighHolds",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "static",
+      "name" : "decreaseLoanHighHoldsControl",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "decreaseLoanHighHoldsDuration",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "decreaseLoanHighHoldsIgnoreStatuses",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "decreaseLoanHighHoldsValue",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "DefaultAuthorityTab",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "ddc",
+      "name" : "DefaultClassificationSource",
+      "section" : "Interface",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "DefaultCountryField008",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "DefaultHoldExpirationdate",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "DefaultHoldExpirationdatePeriod",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "days",
+      "name" : "DefaultHoldExpirationdateUnitOfTime",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "loggedinlibrary",
+      "name" : "DefaultHoldPickupLocation",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "DefaultLanguageField008",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "DefaultLongOverdueChargeValue",
+      "section" : "Lost item policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "DefaultLongOverdueDays",
+      "section" : "Lost item policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "DefaultLongOverdueLostValue",
+      "section" : "Lost item policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "DefaultLongOverduePatronCategories",
+      "section" : "Lost item policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "DefaultLongOverdueSkipLostStatuses",
+      "section" : "Lost item policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "DefaultLongOverdueSkipPatronCategories",
+      "section" : "Lost item policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "firstname|preferred_name|middle_name|surname|othernames|cardnumber|userid",
+      "name" : "DefaultPatronSearchFields",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "starts_with",
+      "name" : "DefaultPatronSearchMethod",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "biblionumber",
+      "name" : "DefaultSaveRecordFileID",
+      "section" : "Interface",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "relevance",
+      "name" : "defaultSortField",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "dsc",
+      "name" : "defaultSortOrder",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "DefaultToLoggedInLibraryCircRules",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "DefaultToLoggedInLibraryNoticesSlips",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "DefaultToLoggedInLibraryOverdueTriggers",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "OFF",
+      "name" : "Display856uAsImage",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "0",
+      "name" : "DisplayAddHoldGroups",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "no",
+      "name" : "DisplayClearScreenButton",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "displayFacetCount",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "1",
+      "name" : "DisplayIconsXSLT",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "holding",
+      "name" : "DisplayLibraryFacets",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "DisplayMultiItemHolds",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "DisplayMultiPlaceHold",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "DisplayOPACiconsXSLT",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "DisplayPublishedDate",
+      "section" : "Features",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "0",
+      "name" : "DumpSearchQueryTemplate",
+      "section" : "Debugging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "0",
+      "name" : "DumpTemplateVarsIntranet",
+      "section" : "Debugging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "0",
+      "name" : "DumpTemplateVarsOpac",
+      "section" : "Debugging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "0",
+      "name" : "EasyAnalyticalRecords",
+      "section" : "Interface",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "EDIFACT",
+      "section" : "EDIFACT",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "automatic",
+      "name" : "EdifactInvoiceImport",
+      "section" : "EDIFACT",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "ccode",
+      "name" : "EdifactLSL",
+      "section" : "EDIFACT",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "location",
+      "name" : "EdifactLSQ",
+      "section" : "EDIFACT",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "0",
+      "name" : "ElasticsearchBoostFieldMatch",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "ElasticsearchBoostFieldMatchAmount",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "1",
+      "name" : "ElasticsearchCrossFields",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "ElasticsearchEnableZebraQueue",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "",
+      "name" : "ElasticsearchEscapeCharacters",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "ElasticsearchIndexStatus_authorities",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "0",
+      "name" : "ElasticsearchIndexStatus_biblios",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "base64ISO2709",
+      "name" : "ElasticsearchMARCFormat",
+      "section" : "Search engine",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "barcode|control-number|control-number-identifier|date-of-acquisition|date-of-publication|date-time-last-modified|identifier-standard|isbn|issn|itype|lc-card-number|number-local-acquisition|other-control-number|record-control-number",
+      "name" : "ElasticsearchPreventAutoTruncate",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "",
+      "name" : "EmailAddressForPatronRegistrations",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "EmailAddressForSuggestions",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "email|emailpro|B_email",
+      "name" : "EmailFieldPrecedence",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "EmailFieldPrimary",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "EmailFieldSelection",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "emailLibrarianWhenHoldIsPlaced",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "EmailNoticeCSS",
+      "section" : "Notices and slips",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "",
+      "name" : "EmailNoticeStylesheet",
+      "section" : "Notices and slips",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "1",
+      "name" : "EmailOverduesNoEmail",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "EmailPatronRegistrations",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "EmailPatronWhenHoldIsPlaced",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "EmailPurchaseSuggestions",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "",
+      "name" : "EmailSMSSendDriverFromAddress",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "EnableAdvancedCatalogingEditor",
+      "section" : "Interface",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "1",
+      "name" : "EnableBooking",
+      "section" : "Booking module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "EnableBorrowerFiles",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "EnableExpiredPasswordReset",
+      "section" : "Security",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "EnableItemGroupHolds",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "EnableItemGroups",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "1",
+      "name" : "EnableOpacSearchHistory",
+      "section" : "Privacy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "EnablePointOfSale",
+      "section" : "Features",
+      "tab" : "Accounting"
+    },
+    {
+      "default" : "0",
+      "name" : "EnableSearchHistory",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "1",
+      "name" : "EnableZotero",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "EnhancedMessagingPreferences",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "EnhancedMessagingPreferencesOPAC",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "ERMModule",
+      "section" : "Interface",
+      "tab" : "E-resource management"
+    },
+    {
+      "default" : "",
+      "name" : "ERMProviderEbscoApiKey",
+      "section" : "Interface",
+      "tab" : "E-resource management"
+    },
+    {
+      "default" : "",
+      "name" : "ERMProviderEbscoCustomerID",
+      "section" : "Interface",
+      "tab" : "E-resource management"
+    },
+    {
+      "default" : "local",
+      "name" : "ERMProviders",
+      "section" : "Interface",
+      "tab" : "E-resource management"
+    },
+    {
+      "default" : "0",
+      "name" : "ExcludeHolidaysFromMaxPickUpDelay",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "expandedSearchOption",
+      "section" : "Search form",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "ExpireReservesAutoFill",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "ExpireReservesAutoFillEmail",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "ExpireReservesMaxPickUpDelay",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "ExpireReservesMaxPickUpDelayCharge",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "ExpireReservesOnHolidays",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "ExportCircHistory",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "ExportRemoveFields",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "ExtendedPatronAttributes",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "20",
+      "name" : "FacetLabelTruncationLength",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "20",
+      "name" : "FacetMaxCount",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "Alphabetical",
+      "name" : "FacetOrder",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "default",
+      "name" : "FacetSortingLocale",
+      "section" : "Global",
+      "tab" : "I18N/L10N"
+    },
+    {
+      "default" : "",
+      "name" : "FailedLoginAttempts",
+      "section" : "Security",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "FallbackToSMSIfNoEmail",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "FeeOnChangePatronCategory",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "FilterBeforeOverdueReport",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "FilterSearchResultsByLoggedInBranch",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "100",
+      "name" : "FineNoRenewals",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "FineNoRenewalsBlockAutoRenew",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "FineNoRenewalsBlockSelfCheckRenew",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "FineNoRenewalsIncludeCredits",
+      "section" : "Policy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "FineNotifyAtCheckin",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "FinePaymentAutoPopup",
+      "section" : "Policy",
+      "tab" : "Accounting"
+    },
+    {
+      "default" : "noFinesWhenClosed",
+      "name" : "finesCalendar",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "FinesIncludeGracePeriod",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "FinesLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "off",
+      "name" : "finesMode",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "ForceLibrarySelection",
+      "section" : "Login options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "ForcePasswordResetWhenSetByStaff",
+      "section" : "Security",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "FRBRizeEditions",
+      "section" : "All",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "FutureHoldsBlockRenewals",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "Machine generated authority record",
+      "name" : "GenerateAuthorityField667",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "Work cat.",
+      "name" : "GenerateAuthorityField670",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "0",
+      "name" : "GoogleJackets",
+      "section" : "Google",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "GoogleOAuth2ClientID",
+      "section" : "Google OpenID Connect",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "GoogleOAuth2ClientSecret",
+      "section" : "Google OpenID Connect",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "GoogleOpenIDConnect",
+      "section" : "Google OpenID Connect",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "GoogleOpenIDConnectAutoRegister",
+      "section" : "Google OpenID Connect",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "GoogleOpenIDConnectDefaultBranch",
+      "section" : "Google OpenID Connect",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "GoogleOpenIDConnectDefaultCategory",
+      "section" : "Google OpenID Connect",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "GoogleOpenIDConnectDomain",
+      "section" : "Google OpenID Connect",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "hide_marc",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "hidelostitems",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "HidePatronName",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "0",
+      "name" : "HidePersonalPatronDetailOnCirculation",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "HoldCancellationRequestSIP",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "not_always",
+      "name" : "HoldFeeMode",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "3",
+      "name" : "HoldRatioDefault",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "HoldsAutoFill",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "HoldsAutoFillPrintSlip",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "HoldsLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "0",
+      "name" : "HoldsNeedProcessingSIP",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "HoldsQueueParallelLoopsCount",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "homebranch",
+      "name" : "HoldsQueuePrioritizeBranch",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "HoldsQueueSkipClosed",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "nothing",
+      "name" : "HoldsSplitQueue",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "actual",
+      "name" : "HoldsSplitQueueNumbering",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "2",
+      "name" : "HoldsToPullStartDate",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "holdingbranch",
+      "name" : "HomeOrHoldingBranch",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "HouseboundModule",
+      "section" : "Housebound module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "not",
+      "name" : "HTML5MediaEnabled",
+      "section" : "HTML5 media",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "webm|ogg|ogv|oga|vtt",
+      "name" : "HTML5MediaExtensions",
+      "section" : "HTML5 media",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "HTML5MediaYouTube",
+      "section" : "HTML5 media",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "IdRef",
+      "section" : "IdRef",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "0",
+      "name" : "ILLCheckAvailability",
+      "section" : "Workflow",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "",
+      "name" : "ILLDefaultStaffEmail",
+      "section" : "Notifications",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "",
+      "name" : "ILLHiddenRequestStatuses",
+      "section" : "Features",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "0",
+      "name" : "ILLHistoryCheck",
+      "section" : "Workflow",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "0",
+      "name" : "IllLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "0",
+      "name" : "ILLModule",
+      "section" : "Features",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "",
+      "name" : "ILLModuleDisclaimerByType",
+      "section" : "Workflow",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "0",
+      "name" : "ILLModuleUnmediated",
+      "section" : "Features",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "",
+      "name" : "ILLOpacbackends",
+      "section" : "OPAC",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "0",
+      "name" : "ILLOpacUnauthenticatedRequest",
+      "section" : "OPAC",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "IL",
+      "name" : "ILLPartnerCode",
+      "section" : "Features",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "",
+      "name" : "ILLRequestsTabs",
+      "section" : "Features",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "",
+      "name" : "ILLSendStaffNotices",
+      "section" : "Notifications",
+      "tab" : "Interlibrary loans"
+    },
+    {
+      "default" : "0",
+      "name" : "ILS-DI",
+      "section" : "ILS-DI",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "",
+      "name" : "ILS-DI:AuthorizedIPs",
+      "section" : "ILS-DI",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "5",
+      "name" : "ImageLimit",
+      "section" : "Patron cards",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "0",
+      "name" : "IncludeSeeAlsoFromInSearches",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "IncludeSeeFromInSearches",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "IndependentBranches",
+      "section" : "Login options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "IndependentBranchesPatronModifications",
+      "section" : "Login options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "IndependentBranchesTransfers",
+      "section" : "Login options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "includes",
+      "name" : "intranet_includes",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "0",
+      "name" : "IntranetAddMastheadLibraryPulldown",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "normal",
+      "name" : "IntranetBiblioDefaultView",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "1",
+      "name" : "intranetbookbag",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "0",
+      "name" : "IntranetCatalogSearchPulldown",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "",
+      "name" : "IntranetCirculationHomeHTML",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "0",
+      "name" : "IntranetCoce",
+      "section" : "Coce cover images cache",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "intranetcolorstylesheet",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "",
+      "name" : "IntranetFavicon",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "",
+      "name" : "IntranetNav",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "0",
+      "name" : "IntranetNumbersPreferPhrase",
+      "section" : "Search form",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "1",
+      "name" : "intranetreadinghistory",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "IntranetReadingHistoryHolds",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "IntranetSlipPrinterJS",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "",
+      "name" : "intranetstylesheet",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "",
+      "name" : "IntranetUserCSS",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "",
+      "name" : "IntranetUserJS",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "#100||{ 100a }{ 100b }{ 100c }{ 100d }{ 110a }{ 110b }{ 110c }{ 110d }{ 110e }{ 110f }{ 110g }{ 130a }{ 130d }{ 130f }{ 130g }{ 130h }{ 130k }{ 130l }{ 130m }{ 130n }{ 130o }{ 130p }{ 130r }{ 130s }{ 130t }|<br/><br/>\\r\\n#245||{ 245a }{ 245b }{245f }{ 245g }{ 245k }{ 245n }{ 245p }{ 245s }{ 245h }|\\r\\n#246||{ : 246i }{ 246a }{ 246b }{ 246f }{ 246g }{ 246n }{ 246p }{ 246h }|\\r\\n#242||{ = 242a }{ 242b }{ 242n }{ 242p }{ 242h }|\\r\\n#245||{ 245c }|\\r\\n#242||{ = 242c }|\\r\\n#250| - |{ 250a }{ 250b }|\\r\\n#254|, |{ 254a }|\\r\\n#255|, |{ 255a }{ 255b }{ 255c }{ 255d }{ 255e }{ 255f }{ 255g }|\\r\\n#256|, |{ 256a }|\\r\\n#257|, |{ 257a }|\\r\\n#258|, |{ 258a }{ 258b }|\\r\\n#260| - |{ 260a }{ 260b }{ 260c }|\\r\\n#300| - |{ 300a }{ 300b }{ 300c }{ 300d }{ 300e }{ 300f }{ 300g }|\\r\\n#306| - |{ 306a }|\\r\\n#307| - |{ 307a }{ 307b }|\\r\\n#310| - |{ 310a }{ 310b }|\\r\\n#321| - |{ 321a }{ 321b }|\\r\\n#340| - |{ 3403 }{ 340a }{ 340b }{ 340c }{ 340d }{ 340e }{ 340f }{ 340h }{ 340i }|\\r\\n#342| - |{ 342a }{ 342b }{ 342c }{ 342d }{ 342e }{ 342f }{ 342g }{ 342h }{ 342i }{ 342j }{ 342k }{ 342l }{ 342m }{ 342n }{ 342o }{ 342p }{ 342q }{ 342r }{ 342s }{ 342t }{ 342u }{ 342v }{ 342w }|\\r\\n#343| - |{ 343a }{ 343b }{ 343c }{ 343d }{ 343e }{ 343f }{ 343g }{ 343h }{ 343i }|\\r\\n#351| - |{ 3513 }{ 351a }{ 351b }{ 351c }|\\r\\n#352| - |{ 352a }{ 352b }{ 352c }{ 352d }{ 352e }{ 352f }{ 352g }{ 352i }{ 352q }|\\r\\n#362| - |{ 362a }{ 351z }|\\r\\n#440| - |{ 440a }{ 440n }{ 440p }{ 440v }{ 440x }|.\\r\\n#490| - |{ 490a }{ 490v }{ 490x }|.\\r\\n#800| - |{ 800a }{ 800b }{ 800c }{ 800d }{ 800e }{ 800f }{ 800g }{ 800h }{ 800j }{ 800k }{ 800l }{ 800m }{ 800n }{ 800o }{ 800p }{ 800q }{ 800r }{ 800s }{ 800t }{ 800u }{ 800v }|.\\r\\n#810| - |{ 810a }{ 810b }{ 810c }{ 810d }{ 810e }{ 810f }{ 810g }{ 810h }{ 810k }{ 810l }{ 810m }{ 810n }{ 810o }{ 810p }{ 810r }{ 810s }{ 810t }{ 810u }{ 810v }|.\\r\\n#811| - |{ 811a }{ 811c }{ 811d }{ 811e }{ 811f }{ 811g }{ 811h }{ 811k }{ 811l }{ 811n }{ 811p }{ 811q }{ 811s }{ 811t }{ 811u }{ 811v }|.\\r\\n#830| - |{ 830a }{ 830d }{ 830f }{ 830g }{ 830h }{ 830k }{ 830l }{ 830m }{ 830n }{ 830o }{ 830p }{ 830r }{ 830s }{ 830t }{ 830v }|.\\r\\n#500|<br/><br/>|{ 5003 }{ 500a }|\\r\\n#501|<br/><br/>|{ 501a }|\\r\\n#502|<br/><br/>|{ 502a }|\\r\\n#504|<br/><br/>|{ 504a }|\\r\\n#505|<br/><br/>|{ 505a }{ 505t }{ 505r }{ 505g }{ 505u }|\\r\\n#506|<br/><br/>|{ 5063 }{ 506a }{ 506b }{ 506c }{ 506d }{ 506u }|\\r\\n#507|<br/><br/>|{ 507a }{ 507b }|\\r\\n#508|<br/><br/>|{ 508a }{ 508a }|\\r\\n#510|<br/><br/>|{ 5103 }{ 510a }{ 510x }{ 510c }{ 510b }|\\r\\n#511|<br/><br/>|{ 511a }|\\r\\n#513|<br/><br/>|{ 513a }{513b }|\\r\\n#514|<br/><br/>|{ 514z }{ 514a }{ 514b }{ 514c }{ 514d }{ 514e }{ 514f }{ 514g }{ 514h }{ 514i }{ 514j }{ 514k }{ 514m }{ 514u }|\\r\\n#515|<br/><br/>|{ 515a }|\\r\\n#516|<br/><br/>|{ 516a }|\\r\\n#518|<br/><br/>|{ 5183 }{ 518a }|\\r\\n#520|<br/><br/>|{ 5203 }{ 520a }{ 520b }{ 520u }|\\r\\n#521|<br/><br/>|{ 5213 }{ 521a }{ 521b }|\\r\\n#522|<br/><br/>|{ 522a }|\\r\\n#524|<br/><br/>|{ 524a }|\\r\\n#525|<br/><br/>|{ 525a }|\\r\\n#526|<br/><br/>|{\\\\n510i }{\\\\n510a }{ 510b }{ 510c }{ 510d }{\\\\n510x }|\\r\\n#530|<br/><br/>|{\\\\n5063 }{\\\\n506a }{ 506b }{ 506c }{ 506d }{\\\\n506u }|\\r\\n#533|<br/><br/>|{\\\\n5333 }{\\\\n533a }{\\\\n533b }{\\\\n533c }{\\\\n533d }{\\\\n533e }{\\\\n533f }{\\\\n533m }{\\\\n533n }|\\r\\n#534|<br/><br/>|{\\\\n533p }{\\\\n533a }{\\\\n533b }{\\\\n533c }{\\\\n533d }{\\\\n533e }{\\\\n533f }{\\\\n533m }{\\\\n533n }{\\\\n533t }{\\\\n533x }{\\\\n533z }|\\r\\n#535|<br/><br/>|{\\\\n5353 }{\\\\n535a }{\\\\n535b }{\\\\n535c }{\\\\n535d }|\\r\\n#538|<br/><br/>|{\\\\n5383 }{\\\\n538a }{\\\\n538i }{\\\\n538u }|\\r\\n#540|<br/><br/>|{\\\\n5403 }{\\\\n540a }{ 540b }{ 540c }{ 540d }{\\\\n520u }|\\r\\n#544|<br/><br/>|{\\\\n5443 }{\\\\n544a }{\\\\n544b }{\\\\n544c }{\\\\n544d }{\\\\n544e }{\\\\n544n }|\\r\\n#545|<br/><br/>|{\\\\n545a }{ 545b }{\\\\n545u }|\\r\\n#546|<br/><br/>|{\\\\n5463 }{\\\\n546a }{ 546b }|\\r\\n#547|<br/><br/>|{\\\\n547a }|\\r\\n#550|<br/><br/>|{ 550a }|\\r\\n#552|<br/><br/>|{ 552z }{ 552a }{ 552b }{ 552c }{ 552d }{ 552e }{ 552f }{ 552g }{ 552h }{ 552i }{ 552j }{ 552k }{ 552l }{ 552m }{ 552n }{ 562o }{ 552p }{ 552u }|\\r\\n#555|<br/><br/>|{ 5553 }{ 555a }{ 555b }{ 555c }{ 555d }{ 555u }|\\r\\n#556|<br/><br/>|{ 556a }{ 506z }|\\r\\n#563|<br/><br/>|{ 5633 }{ 563a }{ 563u }|\\r\\n#565|<br/><br/>|{ 5653 }{ 565a }{ 565b }{ 565c }{ 565d }{ 565e }|\\r\\n#567|<br/><br/>|{ 567a }|\\r\\n#580|<br/><br/>|{ 580a }|\\r\\n#581|<br/><br/>|{ 5633 }{ 581a }{ 581z }|\\r\\n#584|<br/><br/>|{ 5843 }{ 584a }{ 584b }|\\r\\n#585|<br/><br/>|{ 5853 }{ 585a }|\\r\\n#586|<br/><br/>|{ 5863 }{ 586a }|\\r\\n#020|<br/><br/><label>ISBN: </label>|{ 020a }{ 020c }|\\r\\n#022|<br/><br/><label>ISSN: </label>|{ 022a }|\\r\\n#222| = |{ 222a }{ 222b }|\\r\\n#210| = |{ 210a }{ 210b }|\\r\\n#024|<br/><br/><label>Standard No.: </label>|{ 024a }{ 024c }{ 024d }{ 0242 }|\\r\\n#027|<br/><br/><label>Standard Tech. Report. No.: </label>|{ 027a }|\\r\\n#028|<br/><br/><label>Publisher. No.: </label>|{ 028a }{ 028b }|\\r\\n#013|<br/><br/><label>Patent No.: </label>|{ 013a }{ 013b }{ 013c }{ 013d }{ 013e }{ 013f }|\\r\\n#030|<br/><br/><label>CODEN: </label>|{ 030a }|\\r\\n#037|<br/><br/><label>Source: </label>|{ 037a }{ 037b }{ 037c }{ 037f }{ 037g }{ 037n }|\\r\\n#010|<br/><br/><label>LCCN: </label>|{ 010a }|\\r\\n#015|<br/><br/><label>Nat. Bib. No.: </label>|{ 015a }{ 0152 }|\\r\\n#016|<br/><br/><label>Nat. Bib. Agency Control No.: </label>|{ 016a }{ 0162 }|\\r\\n#600|<br/><br/><label>Subjects--Personal Names: </label>|{\\\\n6003 }{\\\\n600a}{ 600b }{ 600c }{ 600d }{ 600e }{ 600f }{ 600g }{ 600h }{--600k}{ 600l }{ 600m }{ 600n }{ 600o }{--600p}{ 600r }{ 600s }{ 600t }{ 600u }{--600x}{--600z}{--600y}{--600v}|\\r\\n#610|<br/><br/><label>Subjects--Corporate Names: </label>|{\\\\n6103 }{\\\\n610a}{ 610b }{ 610c }{ 610d }{ 610e }{ 610f }{ 610g }{ 610h }{--610k}{ 610l }{ 610m }{ 610n }{ 610o }{--610p}{ 610r }{ 610s }{ 610t }{ 610u }{--610x}{--610z}{--610y}{--610v}|\\r\\n#611|<br/><br/><label>Subjects--Meeting Names: </label>|{\\\\n6113 }{\\\\n611a}{ 611b }{ 611c }{ 611d }{ 611e }{ 611f }{ 611g }{ 611h }{--611k}{ 611l }{ 611m }{ 611n }{ 611o }{--611p}{ 611r }{ 611s }{ 611t }{ 611u }{--611x}{--611z}{--611y}{--611v}|\\r\\n#630|<br/><br/><label>Subjects--Uniform Titles: </label>|{\\\\n630a}{ 630b }{ 630c }{ 630d }{ 630e }{ 630f }{ 630g }{ 630h }{--630k }{ 630l }{ 630m }{ 630n }{ 630o }{--630p}{ 630r }{ 630s }{ 630t }{--630x}{--630z}{--630y}{--630v}|\\r\\n#648|<br/><br/><label>Subjects--Chronological Terms: </label>|{\\\\n6483 }{\\\\n648a }{--648x}{--648z}{--648y}{--648v}|\\r\\n#650|<br/><br/><label>Subjects--Topical Terms: </label>|{\\\\n6503 }{\\\\n650a}{ 650b }{ 650c }{ 650d }{ 650e }{--650x}{--650z}{--650y}{--650v}|\\r\\n#651|<br/><br/><label>Subjects--Geographic Terms: </label>|{\\\\n6513 }{\\\\n651a}{ 651b }{ 651c }{ 651d }{ 651e }{--651x}{--651z}{--651y}{--651v}|\\r\\n#653|<br/><br/><label>Subjects--Index Terms: </label>|{ 653a }|\\r\\n#654|<br/><br/><label>Subjects--Facted Index Terms: </label>|{\\\\n6543 }{\\\\n654a}{--654b}{--654x}{--654z}{--654y}{--654v}|\\r\\n#655|<br/><br/><label>Index Terms--Genre/Form: </label>|{\\\\n6553 }{\\\\n655a}{--655b}{--655x }{--655z}{--655y}{--655v}|\\r\\n#656|<br/><br/><label>Index Terms--Occupation: </label>|{\\\\n6563 }{\\\\n656a}{--656k}{--656x}{--656z}{--656y}{--656v}|\\r\\n#657|<br/><br/><label>Index Terms--Function: </label>|{\\\\n6573 }{\\\\n657a}{--657x}{--657z}{--657y}{--657v}|\\r\\n#658|<br/><br/><label>Index Terms--Curriculum Objective: </label>|{\\\\n658a}{--658b}{--658c}{--658d}{--658v}|\\r\\n#050|<br/><br/><label>LC Class. No.: </label>|{ 050a }{ / 050b }|\\r\\n#082|<br/><br/><label>Dewey Class. No.: </label>|{ 082a }{ / 082b }|\\r\\n#080|<br/><br/><label>Universal Decimal Class. No.: </label>|{ 080a }{ 080x }{ / 080b }|\\r\\n#070|<br/><br/><label>National Agricultural Library Call No.: </label>|{ 070a }{ / 070b }|\\r\\n#060|<br/><br/><label>National Library of Medicine Call No.: </label>|{ 060a }{ / 060b }|\\r\\n#074|<br/><br/><label>GPO Item No.: </label>|{ 074a }|\\r\\n#086|<br/><br/><label>Gov. Doc. Class. No.: </label>|{ 086a }|\\r\\n#088|<br/><br/><label>Report. No.: </label>|{ 088a }|",
+      "name" : "ISBD",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "1",
+      "name" : "IssueLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "alert",
+      "name" : "IssueLostItem",
+      "section" : "Lost item policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "IssuingInProcess",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "item-level_itypes",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "itemBarcodeFallbackSearch",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "itemBarcodeInputFilter",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "itemcallnumber",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "ItemsDeniedRenewal",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "STOMP",
+      "name" : "JobsNotificationMethod",
+      "section" : "Jobs",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "root@localhost",
+      "name" : "KohaAdminEmailAddress",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "https://koha-community.org/manual/",
+      "name" : "KohaManualBaseURL",
+      "section" : "Manual",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "en",
+      "name" : "KohaManualLanguage",
+      "section" : "Manual",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "standard",
+      "name" : "LabelMARCView",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "LanguageToUseOnMerge",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "",
+      "name" : "LibraryName",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "LibraryThingForLibrariesEnabled",
+      "section" : "Library Thing",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "LibraryThingForLibrariesID",
+      "section" : "Library Thing",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "LibraryThingForLibrariesTabbedView",
+      "section" : "Library Thing",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "LinkerConsiderDiacritics",
+      "section" : "Linker",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "0",
+      "name" : "LinkerConsiderThesaurus",
+      "section" : "Linker",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "0",
+      "name" : "LinkerKeepStale",
+      "section" : "Linker",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "Default",
+      "name" : "LinkerModule",
+      "section" : "Linker",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "",
+      "name" : "LinkerOptions",
+      "section" : "Linker",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "1",
+      "name" : "LinkerRelink",
+      "section" : "Linker",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "",
+      "name" : "ListOwnerDesignated",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "delete",
+      "name" : "ListOwnershipUponPatronDeletion",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "LoadCheckoutsTableDelay",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "LoadSearchHistoryToTheFirstLoggedUser",
+      "section" : "Search form",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "LocalCoverImages",
+      "section" : "Local or remote cover images",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "None",
+      "name" : "LocalHoldsPriority",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "holdingbranch",
+      "name" : "LocalHoldsPriorityItemControl",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "PickupLibrary",
+      "name" : "LocalHoldsPriorityPatronControl",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "LockExpiredDelay",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "ItemHomeLibrary",
+      "name" : "LostChargesControl",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "makePreviousSerialAvailable",
+      "section" : "Features",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "2",
+      "name" : "Mana",
+      "section" : "Mana KB",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "",
+      "name" : "ManaToken",
+      "section" : "Mana KB",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "date_due",
+      "name" : "ManualRenewalPeriodBase",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "|| aca||aabn           | a|a     d",
+      "name" : "MARCAuthorityControlField008",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "",
+      "name" : "MarcFieldDocURL",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "MarcFieldForCreatorId",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "MarcFieldForCreatorName",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "MarcFieldForModifierId",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "MarcFieldForModifierName",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "MarcFieldsToOrder",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "",
+      "name" : "MarcItemFieldsToOrder",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "0",
+      "name" : "MarcOrderingAutomation",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "OSt",
+      "name" : "MARCOrgCode",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "MARCOverlayRules",
+      "section" : "Importing",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "batchmod,moredetail,cronjob,additem,pendingreserves,onpayment",
+      "name" : "MarkLostItemsAsReturned",
+      "section" : "Lost item policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "300",
+      "name" : "MaxComponentRecords",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "MaxFine",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "20",
+      "name" : "maxItemsInSearchResults",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "1000",
+      "name" : "MaxItemsToDisplayForBatchDel",
+      "section" : "Batch item",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "1000",
+      "name" : "MaxItemsToDisplayForBatchMod",
+      "section" : "Batch item",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "1000",
+      "name" : "MaxItemsToProcessForBatchMod",
+      "section" : "Batch item",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "",
+      "name" : "MaxOpenSuggestions",
+      "section" : "Suggestions",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "5",
+      "name" : "maxoutstanding",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "20",
+      "name" : "maxRecordsForFacets",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "50",
+      "name" : "maxreserves",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "20",
+      "name" : "MaxSearchResultsItemsPerRecordStatusCheck",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "",
+      "name" : "MaxTotalSuggestions",
+      "section" : "Suggestions",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "MembershipExpiryDaysNotice",
+      "section" : "Membership expiry",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "MergeReportFields",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "8",
+      "name" : "minPasswordLength",
+      "section" : "Security",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "NewItemsDefaultLocation",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "none",
+      "name" : "NewsAuthorDisplay",
+      "section" : "News",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "5",
+      "name" : "noissuescharge",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "NoIssuesChargeGuarantees",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "NoIssuesChargeGuarantorsWithGuarantees",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "noItemTypeImages",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "NoRefundOnLostFinesPaidAge",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "NoRefundOnLostReturnedItemsAge",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "exact_time",
+      "name" : "NoRenewalBeforePrecision",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "NotesToHide",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "and|or|not",
+      "name" : "NotHighlightedWords",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "NoticeBcc",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "NoticesLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "30",
+      "name" : "NotifyBorrowerDeparture",
+      "section" : "Membership expiry",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "NotifyPasswordChange",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "NovelistSelectEnabled",
+      "section" : "Novelist Select",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "NovelistSelectPassword",
+      "section" : "Novelist Select",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "NovelistSelectProfile",
+      "section" : "Novelist Select",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "NovelistSelectStaffEnabled",
+      "section" : "Novelist Select",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "NovelistSelectStaffProfile",
+      "section" : "Novelist Select",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "tab",
+      "name" : "NovelistSelectStaffView",
+      "section" : "Novelist Select",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "tab",
+      "name" : "NovelistSelectView",
+      "section" : "Novelist Select",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "NumberOfSuggestionDays",
+      "section" : "Suggestions",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "20",
+      "name" : "numReturnedItemsToShow",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "20",
+      "name" : "numSearchResults",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "numSearchResultsDropdown",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "50",
+      "name" : "numSearchRSSResults",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OAI-PMH",
+      "section" : "OAI-PMH",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "KOHA-OAI-TEST",
+      "name" : "OAI-PMH:archiveID",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "0",
+      "name" : "OAI-PMH:AutoUpdateSets",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "0",
+      "name" : "OAI-PMH:AutoUpdateSetsEmbedItemData",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "",
+      "name" : "OAI-PMH:ConfFile",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "persistent",
+      "name" : "OAI-PMH:DeletedRecord",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "",
+      "name" : "OAI-PMH:HarvestEmailReport",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "50",
+      "name" : "OAI-PMH:MaxCount",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "0",
+      "name" : "OnSiteCheckoutAutoCheck",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "OnSiteCheckouts",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "OnSiteCheckoutsForce",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACAcquisitionDetails",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OpacAdditionalStylesheet",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacAddMastheadLibraryPulldown",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "itemtypes",
+      "name" : "OpacAdvancedSearchTypes",
+      "section" : "Advanced search options",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "pubdate,itemtype,language,subtype,sorting,location",
+      "name" : "OpacAdvSearchMoreOptions",
+      "section" : "Advanced search options",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "pubdate,itemtype,language,sorting,location",
+      "name" : "OpacAdvSearchOptions",
+      "section" : "Advanced search options",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACAllowHoldDateInFuture",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "OpacAllowPublicListCreation",
+      "section" : "Policy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacAllowSharingPrivateLists",
+      "section" : "Policy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OPACAllowUserToChangeBranch",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "OPACAllowUserToChooseBranch",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACAmazonCoverImages",
+      "section" : "Amazon",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "OPACAuthorIdentifiersAndInformation",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OpacAuthorities",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OPACBaseURL",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "opacbookbag",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacBrowser",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OpacBrowseResults",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacBrowseSearch",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacCatalogConcerns",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacCloud",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacCoce",
+      "section" : "Coce cover images cache",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "1",
+      "name" : "OPACComments",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACCustomCoverImages",
+      "section" : "Local or remote cover images",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "relevance",
+      "name" : "OPACdefaultSortField",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "dsc",
+      "name" : "OPACdefaultSortOrder",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACDetailQRCode",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OPACdidyoumean",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "0",
+      "name" : "OPACDisableSendList",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "OFF",
+      "name" : "OPACDisplay856uAsImage",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OpacElasticsearchEscapeCharacters",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "bibtex,dc,marcxml,marc8,utf8,marcstd,mods,ris,isbd",
+      "name" : "OpacExportOptions",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "prog",
+      "name" : "OPACFallback",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OpacFavicon",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OPACFinesTab",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACFRBRizeEditions",
+      "section" : "All",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "OpacHiddenItems",
+      "section" : "Policy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OpacHiddenItemsExceptions",
+      "section" : "Policy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OpacHiddenItemsHidesRecord",
+      "section" : "Policy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OpacHighlightedWords",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacHoldNotes",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OPACHoldRequests",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACHoldsHistory",
+      "section" : "Privacy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OPACHoldsIfAvailableAtPickup",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "OPACHoldsIfAvailableAtPickupExceptions",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "#100||{ 100a }{ 100b }{ 100c }{ 100d }{ 110a }{ 110b }{ 110c }{ 110d }{ 110e }{ 110f }{ 110g }{ 130a }{ 130d }{ 130f }{ 130g }{ 130h }{ 130k }{ 130l }{ 130m }{ 130n }{ 130o }{ 130p }{ 130r }{ 130s }{ 130t }|<br/><br/>\\r\\n#245||{ 245a }{ 245b }{245f }{ 245g }{ 245k }{ 245n }{ 245p }{ 245s }{ 245h }|\\r\\n#246||{ : 246i }{ 246a }{ 246b }{ 246f }{ 246g }{ 246n }{ 246p }{ 246h }|\\r\\n#242||{ = 242a }{ 242b }{ 242n }{ 242p }{ 242h }|\\r\\n#245||{ 245c }|\\r\\n#242||{ = 242c }|\\r\\n#250| - |{ 250a }{ 250b }|\\r\\n#254|, |{ 254a }|\\r\\n#255|, |{ 255a }{ 255b }{ 255c }{ 255d }{ 255e }{ 255f }{ 255g }|\\r\\n#256|, |{ 256a }|\\r\\n#257|, |{ 257a }|\\r\\n#258|, |{ 258a }{ 258b }|\\r\\n#260| - |{ 260a }{ 260b }{ 260c }|\\r\\n#300| - |{ 300a }{ 300b }{ 300c }{ 300d }{ 300e }{ 300f }{ 300g }|\\r\\n#306| - |{ 306a }|\\r\\n#307| - |{ 307a }{ 307b }|\\r\\n#310| - |{ 310a }{ 310b }|\\r\\n#321| - |{ 321a }{ 321b }|\\r\\n#340| - |{ 3403 }{ 340a }{ 340b }{ 340c }{ 340d }{ 340e }{ 340f }{ 340h }{ 340i }|\\r\\n#342| - |{ 342a }{ 342b }{ 342c }{ 342d }{ 342e }{ 342f }{ 342g }{ 342h }{ 342i }{ 342j }{ 342k }{ 342l }{ 342m }{ 342n }{ 342o }{ 342p }{ 342q }{ 342r }{ 342s }{ 342t }{ 342u }{ 342v }{ 342w }|\\r\\n#343| - |{ 343a }{ 343b }{ 343c }{ 343d }{ 343e }{ 343f }{ 343g }{ 343h }{ 343i }|\\r\\n#351| - |{ 3513 }{ 351a }{ 351b }{ 351c }|\\r\\n#352| - |{ 352a }{ 352b }{ 352c }{ 352d }{ 352e }{ 352f }{ 352g }{ 352i }{ 352q }|\\r\\n#362| - |{ 362a }{ 351z }|\\r\\n#440| - |{ 440a }{ 440n }{ 440p }{ 440v }{ 440x }|.\\r\\n#490| - |{ 490a }{ 490v }{ 490x }|.\\r\\n#800| - |{ 800a }{ 800b }{ 800c }{ 800d }{ 800e }{ 800f }{ 800g }{ 800h }{ 800j }{ 800k }{ 800l }{ 800m }{ 800n }{ 800o }{ 800p }{ 800q }{ 800r }{ 800s }{ 800t }{ 800u }{ 800v }|.\\r\\n#810| - |{ 810a }{ 810b }{ 810c }{ 810d }{ 810e }{ 810f }{ 810g }{ 810h }{ 810k }{ 810l }{ 810m }{ 810n }{ 810o }{ 810p }{ 810r }{ 810s }{ 810t }{ 810u }{ 810v }|.\\r\\n#811| - |{ 811a }{ 811c }{ 811d }{ 811e }{ 811f }{ 811g }{ 811h }{ 811k }{ 811l }{ 811n }{ 811p }{ 811q }{ 811s }{ 811t }{ 811u }{ 811v }|.\\r\\n#830| - |{ 830a }{ 830d }{ 830f }{ 830g }{ 830h }{ 830k }{ 830l }{ 830m }{ 830n }{ 830o }{ 830p }{ 830r }{ 830s }{ 830t }{ 830v }|.\\r\\n#500|<br/><br/>|{ 5003 }{ 500a }|\\r\\n#501|<br/><br/>|{ 501a }|\\r\\n#502|<br/><br/>|{ 502a }|\\r\\n#504|<br/><br/>|{ 504a }|\\r\\n#505|<br/><br/>|{ 505a }{ 505t }{ 505r }{ 505g }{ 505u }|\\r\\n#506|<br/><br/>|{ 5063 }{ 506a }{ 506b }{ 506c }{ 506d }{ 506u }|\\r\\n#507|<br/><br/>|{ 507a }{ 507b }|\\r\\n#508|<br/><br/>|{ 508a }{ 508a }|\\r\\n#510|<br/><br/>|{ 5103 }{ 510a }{ 510x }{ 510c }{ 510b }|\\r\\n#511|<br/><br/>|{ 511a }|\\r\\n#513|<br/><br/>|{ 513a }{513b }|\\r\\n#514|<br/><br/>|{ 514z }{ 514a }{ 514b }{ 514c }{ 514d }{ 514e }{ 514f }{ 514g }{ 514h }{ 514i }{ 514j }{ 514k }{ 514m }{ 514u }|\\r\\n#515|<br/><br/>|{ 515a }|\\r\\n#516|<br/><br/>|{ 516a }|\\r\\n#518|<br/><br/>|{ 5183 }{ 518a }|\\r\\n#520|<br/><br/>|{ 5203 }{ 520a }{ 520b }{ 520u }|\\r\\n#521|<br/><br/>|{ 5213 }{ 521a }{ 521b }|\\r\\n#522|<br/><br/>|{ 522a }|\\r\\n#524|<br/><br/>|{ 524a }|\\r\\n#525|<br/><br/>|{ 525a }|\\r\\n#526|<br/><br/>|{\\\\n510i }{\\\\n510a }{ 510b }{ 510c }{ 510d }{\\\\n510x }|\\r\\n#530|<br/><br/>|{\\\\n5063 }{\\\\n506a }{ 506b }{ 506c }{ 506d }{\\\\n506u }|\\r\\n#533|<br/><br/>|{\\\\n5333 }{\\\\n533a }{\\\\n533b }{\\\\n533c }{\\\\n533d }{\\\\n533e }{\\\\n533f }{\\\\n533m }{\\\\n533n }|\\r\\n#534|<br/><br/>|{\\\\n533p }{\\\\n533a }{\\\\n533b }{\\\\n533c }{\\\\n533d }{\\\\n533e }{\\\\n533f }{\\\\n533m }{\\\\n533n }{\\\\n533t }{\\\\n533x }{\\\\n533z }|\\r\\n#535|<br/><br/>|{\\\\n5353 }{\\\\n535a }{\\\\n535b }{\\\\n535c }{\\\\n535d }|\\r\\n#538|<br/><br/>|{\\\\n5383 }{\\\\n538a }{\\\\n538i }{\\\\n538u }|\\r\\n#540|<br/><br/>|{\\\\n5403 }{\\\\n540a }{ 540b }{ 540c }{ 540d }{\\\\n520u }|\\r\\n#544|<br/><br/>|{\\\\n5443 }{\\\\n544a }{\\\\n544b }{\\\\n544c }{\\\\n544d }{\\\\n544e }{\\\\n544n }|\\r\\n#545|<br/><br/>|{\\\\n545a }{ 545b }{\\\\n545u }|\\r\\n#546|<br/><br/>|{\\\\n5463 }{\\\\n546a }{ 546b }|\\r\\n#547|<br/><br/>|{\\\\n547a }|\\r\\n#550|<br/><br/>|{ 550a }|\\r\\n#552|<br/><br/>|{ 552z }{ 552a }{ 552b }{ 552c }{ 552d }{ 552e }{ 552f }{ 552g }{ 552h }{ 552i }{ 552j }{ 552k }{ 552l }{ 552m }{ 552n }{ 562o }{ 552p }{ 552u }|\\r\\n#555|<br/><br/>|{ 5553 }{ 555a }{ 555b }{ 555c }{ 555d }{ 555u }|\\r\\n#556|<br/><br/>|{ 556a }{ 506z }|\\r\\n#563|<br/><br/>|{ 5633 }{ 563a }{ 563u }|\\r\\n#565|<br/><br/>|{ 5653 }{ 565a }{ 565b }{ 565c }{ 565d }{ 565e }|\\r\\n#567|<br/><br/>|{ 567a }|\\r\\n#580|<br/><br/>|{ 580a }|\\r\\n#581|<br/><br/>|{ 5633 }{ 581a }{ 581z }|\\r\\n#584|<br/><br/>|{ 5843 }{ 584a }{ 584b }|\\r\\n#585|<br/><br/>|{ 5853 }{ 585a }|\\r\\n#586|<br/><br/>|{ 5863 }{ 586a }|\\r\\n#020|<br/><br/><label>ISBN: </label>|{ 020a }{ 020c }|\\r\\n#022|<br/><br/><label>ISSN: </label>|{ 022a }|\\r\\n#222| = |{ 222a }{ 222b }|\\r\\n#210| = |{ 210a }{ 210b }|\\r\\n#024|<br/><br/><label>Standard No.: </label>|{ 024a }{ 024c }{ 024d }{ 0242 }|\\r\\n#027|<br/><br/><label>Standard Tech. Report. No.: </label>|{ 027a }|\\r\\n#028|<br/><br/><label>Publisher. No.: </label>|{ 028a }{ 028b }|\\r\\n#013|<br/><br/><label>Patent No.: </label>|{ 013a }{ 013b }{ 013c }{ 013d }{ 013e }{ 013f }|\\r\\n#030|<br/><br/><label>CODEN: </label>|{ 030a }|\\r\\n#037|<br/><br/><label>Source: </label>|{ 037a }{ 037b }{ 037c }{ 037f }{ 037g }{ 037n }|\\r\\n#010|<br/><br/><label>LCCN: </label>|{ 010a }|\\r\\n#015|<br/><br/><label>Nat. Bib. No.: </label>|{ 015a }{ 0152 }|\\r\\n#016|<br/><br/><label>Nat. Bib. Agency Control No.: </label>|{ 016a }{ 0162 }|\\r\\n#600|<br/><br/><label>Subjects--Personal Names: </label>|{\\\\n6003 }{\\\\n600a}{ 600b }{ 600c }{ 600d }{ 600e }{ 600f }{ 600g }{ 600h }{--600k}{ 600l }{ 600m }{ 600n }{ 600o }{--600p}{ 600r }{ 600s }{ 600t }{ 600u }{--600x}{--600z}{--600y}{--600v}|\\r\\n#610|<br/><br/><label>Subjects--Corporate Names: </label>|{\\\\n6103 }{\\\\n610a}{ 610b }{ 610c }{ 610d }{ 610e }{ 610f }{ 610g }{ 610h }{--610k}{ 610l }{ 610m }{ 610n }{ 610o }{--610p}{ 610r }{ 610s }{ 610t }{ 610u }{--610x}{--610z}{--610y}{--610v}|\\r\\n#611|<br/><br/><label>Subjects--Meeting Names: </label>|{\\\\n6113 }{\\\\n611a}{ 611b }{ 611c }{ 611d }{ 611e }{ 611f }{ 611g }{ 611h }{--611k}{ 611l }{ 611m }{ 611n }{ 611o }{--611p}{ 611r }{ 611s }{ 611t }{ 611u }{--611x}{--611z}{--611y}{--611v}|\\r\\n#630|<br/><br/><label>Subjects--Uniform Titles: </label>|{\\\\n630a}{ 630b }{ 630c }{ 630d }{ 630e }{ 630f }{ 630g }{ 630h }{--630k }{ 630l }{ 630m }{ 630n }{ 630o }{--630p}{ 630r }{ 630s }{ 630t }{--630x}{--630z}{--630y}{--630v}|\\r\\n#648|<br/><br/><label>Subjects--Chronological Terms: </label>|{\\\\n6483 }{\\\\n648a }{--648x}{--648z}{--648y}{--648v}|\\r\\n#650|<br/><br/><label>Subjects--Topical Terms: </label>|{\\\\n6503 }{\\\\n650a}{ 650b }{ 650c }{ 650d }{ 650e }{--650x}{--650z}{--650y}{--650v}|\\r\\n#651|<br/><br/><label>Subjects--Geographic Terms: </label>|{\\\\n6513 }{\\\\n651a}{ 651b }{ 651c }{ 651d }{ 651e }{--651x}{--651z}{--651y}{--651v}|\\r\\n#653|<br/><br/><label>Subjects--Index Terms: </label>|{ 653a }|\\r\\n#654|<br/><br/><label>Subjects--Facted Index Terms: </label>|{\\\\n6543 }{\\\\n654a}{--654b}{--654x}{--654z}{--654y}{--654v}|\\r\\n#655|<br/><br/><label>Index Terms--Genre/Form: </label>|{\\\\n6553 }{\\\\n655a}{--655b}{--655x }{--655z}{--655y}{--655v}|\\r\\n#656|<br/><br/><label>Index Terms--Occupation: </label>|{\\\\n6563 }{\\\\n656a}{--656k}{--656x}{--656z}{--656y}{--656v}|\\r\\n#657|<br/><br/><label>Index Terms--Function: </label>|{\\\\n6573 }{\\\\n657a}{--657x}{--657z}{--657y}{--657v}|\\r\\n#658|<br/><br/><label>Index Terms--Curriculum Objective: </label>|{\\\\n658a}{--658b}{--658c}{--658d}{--658v}|\\r\\n#050|<br/><br/><label>LC Class. No.: </label>|{ 050a }{ / 050b }|\\r\\n#082|<br/><br/><label>Dewey Class. No.: </label>|{ 082a }{ / 082b }|\\r\\n#080|<br/><br/><label>Universal Decimal Class. No.: </label>|{ 080a }{ 080x }{ / 080b }|\\r\\n#070|<br/><br/><label>National Agricultural Library Call No.: </label>|{ 070a }{ / 070b }|\\r\\n#060|<br/><br/><label>National Library of Medicine Call No.: </label>|{ 060a }{ / 060b }|\\r\\n#074|<br/><br/><label>GPO Item No.: </label>|{ 074a }|\\r\\n#086|<br/><br/><label>Gov. Doc. Class. No.: </label>|{ 086a }|\\r\\n#088|<br/><br/><label>Report. No.: </label>|{ 088a }|",
+      "name" : "OPACISBD",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "callnum",
+      "name" : "OPACItemLocation",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OpacKohaUrl",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "both",
+      "name" : "OpacLangSelectorMode",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "en",
+      "name" : "OPACLanguages",
+      "section" : "Global",
+      "tab" : "I18N/L10N"
+    },
+    {
+      "default" : "0",
+      "name" : "opaclanguagesdisplay",
+      "section" : "Global",
+      "tab" : "I18N/L10N"
+    },
+    {
+      "default" : "opac.css",
+      "name" : "opaclayoutstylesheet",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACLocalCoverImages",
+      "section" : "Local or remote cover images",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "holding",
+      "name" : "OpacLocationBranchToDisplay",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "holding",
+      "name" : "OpacLocationOnDetail",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "cardnumber",
+      "name" : "OPACLoginLabelTextContent",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacMaintenance",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OPACMandatoryHoldDates",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "50",
+      "name" : "OpacMaxItemsToDisplay",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OpacMetaDescription",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "noindex,nofollow",
+      "name" : "OpacMetaRobots",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OPACMySummaryHTML",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacNewsLibrarySelect",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacNoItemTypeImages",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OPACNoResultsFound",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACNumbersPreferPhrase",
+      "section" : "Search form",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "20",
+      "name" : "OPACnumSearchResults",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACnumSearchResultsDropdown",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "",
+      "name" : "OPACOpenURLItemTypes",
+      "section" : "OpenURL",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACOverDrive",
+      "section" : "OverDrive",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "1",
+      "name" : "OpacPasswordChange",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OPACPatronDetails",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACpatronimages",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACPlayMusicalInscripts",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACPopupAuthorsSearch",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACPrivacy",
+      "section" : "Privacy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OpacPublic",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "opacreadinghistory",
+      "section" : "Privacy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OpacRenewalAllowed",
+      "section" : "Policy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "checkoutbranch",
+      "name" : "OpacRenewalBranch",
+      "section" : "Policy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACReportProblem",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacResetPassword",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "homebranch",
+      "name" : "OPACResultsLibrary",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OPACResultsMaxItems",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACResultsMaxItemsUnavailable",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "branch",
+      "name" : "OPACResultsUnavailableGroupingBy",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "<a href=\"https://worldcat.org/search?q={TITLE}\" target=\"_blank\">Other Libraries (WorldCat)</a>\\n<a href=\"https://scholar.google.com/scholar?q={TITLE}\" target=\"_blank\">Other Databases (Google Scholar)</a>\\n<a href=\"https://www.bookfinder.com/search/?author={AUTHOR}&amp;title={TITLE}&amp;st=xl&amp;ac=qr\" target=\"_blank\">Online Stores (Bookfinder.com)</a>\\n<a href=\"https://openlibrary.org/search?author=({AUTHOR})&title=({TITLE})\" target=\"_blank\">Open Library (openlibrary.org)</a>",
+      "name" : "OPACSearchForTitleIn",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacSeparateHoldings",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "homebranch",
+      "name" : "OpacSeparateHoldingsBranch",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "subscriptions",
+      "name" : "opacSerialDefaultTab",
+      "section" : "Features",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "3",
+      "name" : "OPACSerialIssueDisplayCount",
+      "section" : "Features",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "1",
+      "name" : "OPACShelfBrowser",
+      "section" : "Shelf browser",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACShibOnly",
+      "section" : "Authentication",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACShowCheckoutName",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "none",
+      "name" : "OPACShowHoldQueueDetails",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OPACShowLibraries",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACShowMusicalInscripts",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACShowOpenURL",
+      "section" : "OpenURL",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacShowRecentComments",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OPACShowSavings",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OPACShowUnusedAuthorities",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "all",
+      "name" : "OpacStarRatings",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACSuggestionAutoFill",
+      "section" : "Suggestions",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OpacSuggestionManagedBy",
+      "section" : "Suggestions",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "title",
+      "name" : "OPACSuggestionMandatoryFields",
+      "section" : "Suggestions",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OPACSuggestionUnwantedFields",
+      "section" : "Suggestions",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacSuppression",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "OpacSuppressionByIPRange",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "1",
+      "name" : "OpacSuppressionRedirect",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACTableColExpandedByDefault",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "bootstrap",
+      "name" : "opacthemes",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacTopissue",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpacTrustedCheckout",
+      "section" : "Policy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACURLOpenInNewWindow",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OPACUserCSS",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OPACUserJS",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "opacuserlogin",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "OPACUserSummary",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACViewOthersSuggestions",
+      "section" : "Suggestions",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OPACVirtualCard",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "code39",
+      "name" : "OPACVirtualCardBarcode",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "default",
+      "name" : "OPACXSLTDetailsDisplay",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "default",
+      "name" : "OPACXSLTListsDisplay",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "default",
+      "name" : "OPACXSLTResultsDisplay",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "OpenLibraryCovers",
+      "section" : "Open Library",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "OpenLibrarySearch",
+      "section" : "Open Library",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "OpenURLImageLocation",
+      "section" : "OpenURL",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OpenURLResolverURL",
+      "section" : "OpenURL",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "OpenURLText",
+      "section" : "OpenURL",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "pdfformat::layout3pages",
+      "name" : "OrderPdfFormat",
+      "section" : "Printing",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "",
+      "name" : "OrderPriceRounding",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "",
+      "name" : "OverDriveAuthName",
+      "section" : "OverDrive",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "OverDriveCirculation",
+      "section" : "OverDrive",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "OverDriveClientKey",
+      "section" : "OverDrive",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "OverDriveClientSecret",
+      "section" : "OverDrive",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "OverDriveLibraryID",
+      "section" : "OverDrive",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "OverDrivePasswordRequired",
+      "section" : "OverDrive",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "cardnumber",
+      "name" : "OverDriveUsername",
+      "section" : "OverDrive",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "OverDriveWebsiteID",
+      "section" : "OverDrive",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "OverdueNoticeCalendar",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "cron",
+      "name" : "OverdueNoticeFrom",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "noblock",
+      "name" : "OverduesBlockCirc",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "allow",
+      "name" : "OverduesBlockRenewing",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "PassItemMarcToXSLT",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "",
+      "name" : "PatronAgeRestriction",
+      "section" : "Patron forms",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "PatronAnonymizeDelay",
+      "section" : "Privacy",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "PatronAutoComplete",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "surname|firstname|dateofbirth",
+      "name" : "PatronDuplicateMatchingAddFields",
+      "section" : "Patron forms",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "patronimages",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "PatronQuickAddFields",
+      "section" : "Patron forms",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "PatronRemovalDelay",
+      "section" : "Privacy",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "PatronRestrictionTypes",
+      "section" : "Patron restrictions",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "PatronSelfModificationBorrowerUnwantedField",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "PatronSelfModificationMandatoryField",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "PatronSelfRegistration",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "PatronSelfRegistrationAgeRestriction",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "PatronSelfRegistrationAlert",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "surname|firstname",
+      "name" : "PatronSelfRegistrationBorrowerMandatoryField",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "PatronSelfRegistrationBorrowerUnwantedField",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "PatronSelfRegistrationConfirmEmail",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "PatronSelfRegistrationDefaultCategory",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "PatronSelfRegistrationEmailMustBeUnique",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "PatronSelfRegistrationExpireTemporaryAccountsDelay",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "PatronSelfRegistrationLibraryList",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "PatronSelfRegistrationPrefillForm",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "PatronSelfRegistrationVerifyByEmail",
+      "section" : "Self-registration and modification",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "20",
+      "name" : "PatronsPerPage",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "PhoneNotification",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "PlaceHoldsOnOrdersFromSuggestions",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "phone,email,streetnumber,address,city,state,zipcode,country",
+      "name" : "PrefillGuaranteeField",
+      "section" : "Patron relationships",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "PrefillItem",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "PreservationModule",
+      "section" : "Interface",
+      "tab" : "Preservation"
+    },
+    {
+      "default" : "",
+      "name" : "PreservationNotForLoanDefaultTrainIn",
+      "section" : "Interface",
+      "tab" : "Preservation"
+    },
+    {
+      "default" : "",
+      "name" : "PreservationNotForLoanWaitingListIn",
+      "section" : "Interface",
+      "tab" : "Preservation"
+    },
+    {
+      "default" : "1",
+      "name" : "PreserveSerialNotes",
+      "section" : "Features",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "",
+      "name" : "PreventWithdrawingItemsStatus",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "asc",
+      "name" : "previousIssuesDefaultSortOrder",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "PrintNoticeCSS",
+      "section" : "Notices and slips",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "0",
+      "name" : "PrintNoticesMaxLines",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "PrintNoticeStylesheet",
+      "section" : "Notices and slips",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "",
+      "name" : "PrintSlipCSS",
+      "section" : "Notices and slips",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "",
+      "name" : "PrintSlipStylesheet",
+      "section" : "Notices and slips",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "",
+      "name" : "PrivacyPolicyConsent",
+      "section" : "Privacy",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "PrivacyPolicyURL",
+      "section" : "Privacy",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "ProcessingFeeNote",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "ProtectSuperlibrarianPrivileges",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "Pseudonymization",
+      "section" : "Security",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "PseudonymizationPatronFields",
+      "section" : "Security",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "PseudonymizationTransactionFields",
+      "section" : "Security",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "14",
+      "name" : "PurgeListShareInvitesOlderThan",
+      "section" : "Policy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "PurgeSuggestionsOlderThan",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "1",
+      "name" : "QueryAutoTruncate",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "1",
+      "name" : "QueryFuzzy",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "escape",
+      "name" : "QueryRegexEscapeOptions",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "1",
+      "name" : "QueryStemming",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "1",
+      "name" : "QueryWeightFields",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "",
+      "name" : "QuoteOfTheDay",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "RandomizeHoldsQueueWeight",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "RealTimeHoldsQueue",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "RecallsLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "7",
+      "name" : "RecallsMaxPickUpDelay",
+      "section" : "Recalls",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "RecordLocalUseOnReturn",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "RecordStaffUserOnCheckout",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "RedirectGuaranteeEmail",
+      "section" : "Patron relationships",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "RedirectToSoleResult",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "1|2",
+      "name" : "Reference_NFL_Statuses",
+      "section" : "Appearance",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "CheckinLibrary",
+      "name" : "RefundLostOnReturnControl",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "RenewAccruingItemInOpac",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "RenewAccruingItemWhenPaid",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "RenewalLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "0",
+      "name" : "RenewalSendNotice",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "RenewSerialAddsSuggestion",
+      "section" : "Features",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "0",
+      "name" : "RentalFeesCheckoutConfirmation",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "ReplytoDefault",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "1",
+      "name" : "ReportsExportFormatODS",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "",
+      "name" : "ReportsExportLimit",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "0",
+      "name" : "ReportsLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "0",
+      "name" : "RequireCashRegister",
+      "section" : "Features",
+      "tab" : "Accounting"
+    },
+    {
+      "default" : "0",
+      "name" : "RequireChoosingExistingAuthority",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "0",
+      "name" : "RequirePaymentType",
+      "section" : "Policy",
+      "tab" : "Accounting"
+    },
+    {
+      "default" : "1",
+      "name" : "RequireStrongPassword",
+      "section" : "Security",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "PatronLibrary",
+      "name" : "ReservesControlBranch",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "7",
+      "name" : "ReservesMaxPickUpDelay",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "ReservesNeedReturns",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "apiuserbranch",
+      "name" : "RESTAPIRenewalBranch",
+      "section" : "REST API",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "0",
+      "name" : "RESTBasicAuth",
+      "section" : "REST API",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "20",
+      "name" : "RESTdefaultPageSize",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "0",
+      "name" : "RESTOAuth2ClientCredentials",
+      "section" : "REST API",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "1",
+      "name" : "RESTPublicAnonymousRequests",
+      "section" : "REST API",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "1",
+      "name" : "RESTPublicAPI",
+      "section" : "REST API",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "",
+      "name" : "RestrictedPageContent",
+      "section" : "Restricted page",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "RestrictedPageLocalIPs",
+      "section" : "Restricted page",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "RestrictedPageTitle",
+      "section" : "Restricted page",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "RestrictionBlockRenewing",
+      "section" : "Patron restrictions",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "RestrictPatronsWithFailedNotices",
+      "section" : "Patron restrictions",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "RetainCatalogSearchTerms",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "1",
+      "name" : "RetainPatronsSearchTerms",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "ReturnBeforeExpiry",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "ReturnLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "",
+      "name" : "ReturnpathDefault",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "RisExportAdditionalFields",
+      "section" : "Exporting",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "RoundFinesAtPayment",
+      "section" : "Policy",
+      "tab" : "Accounting"
+    },
+    {
+      "default" : "0",
+      "name" : "RoutingListAddReserves",
+      "section" : "Features",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "1",
+      "name" : "RoutingSerials",
+      "section" : "Features",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "0",
+      "name" : "SavedSearchFilters",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "SCOAllowCheckin",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "SCOBatchCheckoutsValidCategories",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "SCOLoadCheckoutsByDefault",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "SCOUserCSS",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "SCOUserJS",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "SearchCancelledAndInvalidISBNandISSN",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "Zebra",
+      "name" : "SearchEngine",
+      "section" : "Search engine",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "homebranch",
+      "name" : "SearchLimitLibrary",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "SearchMyLibraryFirst",
+      "section" : "Policy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "SearchWithISBNVariations",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "SearchWithISSNVariations",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "",
+      "name" : "SelfCheckAllowByIPRanges",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "SelfCheckInModule",
+      "section" : "Self check-in module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "120",
+      "name" : "SelfCheckInTimeout",
+      "section" : "Self check-in module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "SelfCheckInUserCSS",
+      "section" : "Self check-in module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "SelfCheckInUserJS",
+      "section" : "Self check-in module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "SelfCheckoutByLogin",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "SelfCheckReceiptPrompt",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "120",
+      "name" : "SelfCheckTimeout",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "SendAllEmailsTo",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "SeparateHoldings",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "homebranch",
+      "name" : "SeparateHoldingsBranch",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "SerialsDefaultEmailAddress",
+      "section" : "Notifications",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "",
+      "name" : "SerialsDefaultReplyTo",
+      "section" : "Notifications",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "",
+      "name" : "SerialsSearchResultsLimit",
+      "section" : "Features",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "1",
+      "name" : "SessionRestrictionByIP",
+      "section" : "Login options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "mysql",
+      "name" : "SessionStorage",
+      "section" : "Login options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "1",
+      "name" : "ShelfBrowserUsesCcode",
+      "section" : "Shelf browser",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "ShelfBrowserUsesHomeBranch",
+      "section" : "Shelf browser",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "ShelfBrowserUsesLocation",
+      "section" : "Shelf browser",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "ShowAllCheckins",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "nowhere",
+      "name" : "ShowComponentRecords",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "ShowHeadingUse",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "showLastPatron",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "10",
+      "name" : "showLastPatronCount",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "0",
+      "name" : "ShowPatronFirstnameIfDifferentThanPreferredname",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "ShowPatronImageInWebBasedSelfCheck",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "full",
+      "name" : "ShowReviewer",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "ShowReviewerPhoto",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "SIP2AddOpacMessagesToScreenMessage",
+      "section" : "SIP2",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "SIP2SortBinMapping",
+      "section" : "SIP2",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "SkipHoldTrapOnNotForLoanValue",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "SMSSendAdditionalOptions",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "SMSSendDriver",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "SMSSendMaxChar",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "SMSSendPassword",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "SMSSendUsername",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "SocialNetworks",
+      "section" : "Features",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "1",
+      "name" : "SpecifyDueDate",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "SpecifyReturnDate",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "SpineLabelAutoPrint",
+      "section" : "Spine labels",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "<itemcallnumber><copynumber>",
+      "name" : "SpineLabelFormat",
+      "section" : "Spine labels",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "staffClientBaseURL",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "1",
+      "name" : "StaffHighlightedWords",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "en",
+      "name" : "StaffInterfaceLanguages",
+      "section" : "Global",
+      "tab" : "I18N/L10N"
+    },
+    {
+      "default" : "footer",
+      "name" : "StaffLangSelectorMode",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "1",
+      "name" : "StaffLoginLibraryBasedOnIP",
+      "section" : "Login options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "StaffLoginRestrictLibraryByIP",
+      "section" : "Login options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "holdingbranch",
+      "name" : "StaffSearchResultsDisplayBranch",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "3",
+      "name" : "StaffSerialIssueDisplayCount",
+      "section" : "Features",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "0",
+      "name" : "staffShibOnly",
+      "section" : "Authentication",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "0",
+      "name" : "StaticHoldsQueueWeight",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "location|itype|ccode",
+      "name" : "StatisticsFields",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "StockRotation",
+      "section" : "Stock rotation module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "StoreLastBorrower",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "StripWhitespaceChars",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "SubfieldsToAllowForRestrictedBatchmod",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "SubfieldsToAllowForRestrictedEditing",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "SubfieldsToUseWhenPrefill",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "SubscriptionDuplicateDroppedInput",
+      "section" : "Features",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "simplified",
+      "name" : "SubscriptionHistory",
+      "section" : "Features",
+      "tab" : "Serials"
+    },
+    {
+      "default" : "1",
+      "name" : "SubscriptionLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "1",
+      "name" : "suggestion",
+      "section" : "Suggestions",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "suggestionPatronCategoryExceptions",
+      "section" : "Suggestions",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "0",
+      "name" : "SuggestionsLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "1",
+      "name" : "SuspendHoldsIntranet",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "SuspendHoldsOpac",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "noSuspensionsWhenClosed",
+      "name" : "SuspensionsCalendar",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "10",
+      "name" : "SvcMaxReportRows",
+      "section" : "Reporting",
+      "tab" : "Web services"
+    },
+    {
+      "default" : "0",
+      "name" : "SwitchOnSiteCheckouts",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "SyndeticsAuthorNotes",
+      "section" : "Syndetics",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "SyndeticsAwards",
+      "section" : "Syndetics",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "SyndeticsClientCode",
+      "section" : "Syndetics",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "SyndeticsCoverImages",
+      "section" : "Syndetics",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "MC",
+      "name" : "SyndeticsCoverImageSize",
+      "section" : "Syndetics",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "SyndeticsEditions",
+      "section" : "Syndetics",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "SyndeticsEnabled",
+      "section" : "Syndetics",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "SyndeticsExcerpt",
+      "section" : "Syndetics",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "SyndeticsReviews",
+      "section" : "Syndetics",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "SyndeticsSeries",
+      "section" : "Syndetics",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "SyndeticsSummary",
+      "section" : "Syndetics",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "SyndeticsTOC",
+      "section" : "Syndetics",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "1",
+      "name" : "TagsEnabled",
+      "section" : "Tagging",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "",
+      "name" : "TagsExternalDictionary",
+      "section" : "Tagging",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "1",
+      "name" : "TagsInputOnDetail",
+      "section" : "Tagging",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "TagsInputOnList",
+      "section" : "Tagging",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "TagsModeration",
+      "section" : "Tagging",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "10",
+      "name" : "TagsShowOnDetail",
+      "section" : "Tagging",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "6",
+      "name" : "TagsShowOnList",
+      "section" : "Tagging",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "0",
+      "name" : "TalkingTechItivaPhoneNotification",
+      "section" : "Notices and notifications",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "0",
+      "name" : "TaxRates",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "prog",
+      "name" : "template",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "0",
+      "name" : "ThingISBN",
+      "section" : "Library Thing",
+      "tab" : "Enhanced content"
+    },
+    {
+      "default" : "24hr",
+      "name" : "TimeFormat",
+      "section" : "Global",
+      "tab" : "I18N/L10N"
+    },
+    {
+      "default" : "1d",
+      "name" : "timeout",
+      "section" : "Login options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "highest",
+      "name" : "TitleHoldFeeStrategy",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "desc",
+      "name" : "todaysIssuesDefaultSortOrder",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "TraceCompleteSubfields",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "TraceSubjectSubdivisions",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "TrackClicks",
+      "section" : "Privacy",
+      "tab" : "OPAC"
+    },
+    {
+      "default" : "",
+      "name" : "TrackLastPatronActivityTriggers",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "TransfersBlockCirc",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "TransfersLog",
+      "section" : "Logging",
+      "tab" : "Logging"
+    },
+    {
+      "default" : "3",
+      "name" : "TransfersMaxDaysWarning",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "TransferWhenCancelAllWaitingHolds",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "TranslateNotices",
+      "section" : "Global",
+      "tab" : "I18N/L10N"
+    },
+    {
+      "default" : "1",
+      "name" : "TrapHoldsOnOrder",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "disabled",
+      "name" : "TwoFactorAuthentication",
+      "section" : "Authentication",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "afrey50      ba0",
+      "name" : "UNIMARCAuthorityField100",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : ", ",
+      "name" : "UNIMARCAuthorsFacetsSeparator",
+      "section" : "Results display",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "fre",
+      "name" : "UNIMARCField100Language",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "barcode",
+      "name" : "UniqueItemFields",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "0",
+      "name" : "UnseenRenewals",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "UnsubscribeReflectionDelay",
+      "section" : "Privacy",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "softyes",
+      "name" : "UpdateExpiryDateOnCategoryChange",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "UpdateItemLocationOnCheckin",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "UpdateItemLocationOnCheckout",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "UpdateItemLostStatusWhenPaid",
+      "section" : "Lost item policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "UpdateItemLostStatusWhenWriteoff",
+      "section" : "Lost item policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "UpdateItemWhenLostFromHoldList",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "softyes",
+      "name" : "UpdateMessagingPrefsOnCategoryChange",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "UpdateNotForLoanStatusOnCheckin",
+      "section" : "Checkin policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "UpdateNotForLoanStatusOnCheckout",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "UpdateTotalIssuesOnCirc",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "",
+      "name" : "UploadPurgeTemporaryFilesDays",
+      "section" : "Upload",
+      "tab" : "Tools"
+    },
+    {
+      "default" : "0",
+      "name" : "uppercasesurnames",
+      "section" : "Patron forms",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "",
+      "name" : "URLLinkText",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "2",
+      "name" : "UsageStats",
+      "section" : "Share anonymous usage statistics",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "UsageStatsCountry",
+      "section" : "Share anonymous usage statistics",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "UsageStatsGeolocation",
+      "section" : "Share anonymous usage statistics",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "UsageStatsID",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "",
+      "name" : "UsageStatsLastUpdateTime",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "0",
+      "name" : "UsageStatsLibrariesInfo",
+      "section" : "Share anonymous usage statistics",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "UsageStatsLibraryName",
+      "section" : "Share anonymous usage statistics",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "UsageStatsLibraryType",
+      "section" : "Share anonymous usage statistics",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "UsageStatsLibraryUrl",
+      "section" : "Share anonymous usage statistics",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "",
+      "name" : "UsageStatsPublicID",
+      "section" : null,
+      "tab" : null
+    },
+    {
+      "default" : "0",
+      "name" : "UseACQFrameworkForBiblioRecords",
+      "section" : "Policy",
+      "tab" : "Acquisitions"
+    },
+    {
+      "default" : "1",
+      "name" : "UseAuthoritiesForTracings",
+      "section" : "General",
+      "tab" : "Authorities"
+    },
+    {
+      "default" : "0",
+      "name" : "UseBranchTransferLimits",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "UseCashRegisters",
+      "section" : "Features",
+      "tab" : "Accounting"
+    },
+    {
+      "default" : "0",
+      "name" : "UseCirculationDesks",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "UseControlNumber",
+      "section" : "Display",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "UseCourseReserves",
+      "section" : "Course reserves",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "Calendar",
+      "name" : "useDaysMode",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "useDefaultReplacementCost",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "useDischarge",
+      "section" : "General",
+      "tab" : "Patrons"
+    },
+    {
+      "default" : "1",
+      "name" : "UseHoldsQueueFilterOptions",
+      "section" : "Holds policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "UseICUStyleQuotes",
+      "section" : "Features",
+      "tab" : "Searching"
+    },
+    {
+      "default" : "0",
+      "name" : "UseLibraryFloatLimits",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "UseLocationAsAQInSIP",
+      "section" : "SIP2",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "UseOCLCEncodingLevels",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "UseRecalls",
+      "section" : "Recalls",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "UseTransportCostMatrix",
+      "section" : "Checkout policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "UseWYSIWYGinSystemPreferences",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "1",
+      "name" : "viewISBD",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "0",
+      "name" : "viewLabeledMARC",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "1",
+      "name" : "viewMARC",
+      "section" : "Options",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "1",
+      "name" : "virtualshelves",
+      "section" : "Interface options",
+      "tab" : "Administration"
+    },
+    {
+      "default" : "0",
+      "name" : "WaitingNotifyAtCheckin",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "WaitingNotifyAtCheckout",
+      "section" : "Interface",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "WebBasedSelfCheck",
+      "section" : "Self-checkout module",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "1",
+      "name" : "WhenLostChargeReplacementFee",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "0",
+      "name" : "WhenLostForgiveFine",
+      "section" : "Fines policy",
+      "tab" : "Circulation"
+    },
+    {
+      "default" : "default",
+      "name" : "XSLTDetailsDisplay",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "default",
+      "name" : "XSLTListsDisplay",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "default",
+      "name" : "XSLTResultsDisplay",
+      "section" : "Appearance",
+      "tab" : "Staff interface"
+    },
+    {
+      "default" : "701,702,700",
+      "name" : "z3950AuthorAuthFields",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "0",
+      "name" : "z3950NormalizeAuthor",
+      "section" : "Record structure",
+      "tab" : "Cataloging"
+    },
+    {
+      "default" : "",
+      "name" : "z3950Status",
+      "section" : "Features",
+      "tab" : "Searching"
+    }
+  ]
+}

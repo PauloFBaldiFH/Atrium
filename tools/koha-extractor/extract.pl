@@ -30,7 +30,10 @@ my $out_dir  = "data/koha-$lock->{series}";
 -d $koha_dir or die "missing $koha_dir: run `git submodule update --init --depth 1 reference/koha`\n";
 verify_pinned_version( $lock, $koha_dir );
 
-my %outputs = ( 'circulation_rule_kinds.json' => circulation_rule_kinds($koha_dir) );
+my %outputs = (
+    'circulation_rule_kinds.json' => circulation_rule_kinds($koha_dir),
+    'sysprefs.json'               => sysprefs($koha_dir),
+);
 
 my $stale = 0;
 for my $name ( sort keys %outputs ) {
@@ -74,6 +77,53 @@ sub circulation_rule_kinds {
     return {
         source => { file => $file, sha256 => sha256_hex($source) },
         rule_kinds => \@rules,
+    };
+}
+
+# Koha: installer/data/mysql/mandatory/sysprefs.sql (defaults) and the staff interface's
+# preference screens, koha-tmpl/intranet-tmpl/prog/en/modules/admin/preferences/*.pref
+# (tab and section). Inventory only: Atrium does not copy Koha's preferences, it triages
+# them into atrium.toml (task 0.11).
+sub sysprefs {
+    my ($dir) = @_;
+    my $sql_file = 'installer/data/mysql/mandatory/sysprefs.sql';
+    my $sql = slurp("$dir/$sql_file");
+    my %default;
+    while ( $sql =~ /^\(\s*'([^']+)'\s*,\s*'((?:[^'\\]|\\.|'')*)'/mg ) {
+        $default{$1} = $2;
+    }
+
+    my $pref_dir = 'koha-tmpl/intranet-tmpl/prog/en/modules/admin/preferences';
+    my %place;
+    opendir my $dh, "$dir/$pref_dir" or die "cannot list $pref_dir: $!\n";
+    for my $file ( sort grep { /\.pref$/ } readdir $dh ) {
+        my ( $tab, $section ) = ( '', '' );
+        for my $line ( split /\n/, slurp("$dir/$pref_dir/$file") ) {
+            if    ( $line =~ /^(\S[^:]*):\s*$/ )        { $tab     = $1; $section = '' }
+            elsif ( $line =~ /^    (\S[^:]*):\s*$/ )    { $section = $1 }
+            elsif ( $line =~ /^\s*-?\s*pref:\s*(\S+)/ ) {
+                $place{$1} //= { tab => $tab, section => $section, file => $file };
+            }
+        }
+    }
+    closedir $dh;
+
+    my @prefs;
+    for my $name ( sort { lc $a cmp lc $b or $a cmp $b } keys %default ) {
+        my $where = $place{$name};
+        push @prefs, {
+            name    => $name,
+            default => $default{$name},
+            tab     => $where ? $where->{tab}     : undef,
+            section => $where ? $where->{section} : undef,
+        };
+    }
+    return {
+        source => {
+            defaults => { file => $sql_file, sha256 => sha256_hex($sql) },
+            screens  => $pref_dir,
+        },
+        sysprefs => \@prefs,
     };
 }
 

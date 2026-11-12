@@ -1,0 +1,3665 @@
+{
+  "_comment": "Destino de cada preferência do Koha 26.05.05 no Atrium (tarefa 0.11). Gerado a partir de data/koha-26.05/sysprefs.json e revisado à mão; cargo xtask check-sysprefs garante que toda preferência tem destino. Destinos: config, regra, fixo, interface, plataforma, fora-v1, revisar.",
+  "preferencias": {
+    "1PageOrderPDFText": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "AccessControlAllowOrigin": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "AccountAutoReconcile": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de multas e pagamentos (Fase 3)."
+    },
+    "AcqCreateItem": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "AcqEnableFiles": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "AcqItemSetSubfieldsWhenReceiptIsCancelled": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "AcqItemSetSubfieldsWhenReceived": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "AcquisitionDetails": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "AcquisitionLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "AcquisitionsDefaultEmailAddress": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "AcquisitionsDefaultReplyTo": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "AcqViewBaskets": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "AcqWarnOnDuplicateInvoice": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "ActionLogsTraceDepth": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "AdditionalContentLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "AdditionalContentsEditor": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "AdditionalFieldsInZ3950ResultAuthSearch": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "AdditionalFieldsInZ3950ResultSearch": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "AddressForFailedOverdueNotices": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "AddressFormat": {
+      "destino": "config",
+      "nota": "Idiomas e formatos de data vão para atrium.toml [interface]."
+    },
+    "advancedMARCeditor": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "AdvancedSearchLanguages": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "AdvancedSearchTypes": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "AgeRestrictionMarker": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AgeRestrictionOverride": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AggressiveMatchOnISBN": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "AggressiveMatchOnISSN": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "AllFinesNeedOverride": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllNoticeCSS": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "AllNoticeStylesheet": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "AllowAllMessageDeletion": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowCheckoutNotes": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowFineOverride": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowFineOverrideRenewing": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowHoldCheckoutOverride": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowHoldDateInFuture": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowHoldItemTypeSelection": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowHoldPolicyOverride": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowHoldsOnDamagedItems": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowHoldsOnPatronsPossessions": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowItemsOnHoldCheckoutSCO": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowItemsOnHoldCheckoutSIP": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowItemsOnLoanCheckoutSIP": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowMultipleCovers": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "AllowMultipleIssuesOnABiblio": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowNotForLoanOverride": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowPatronToControlAutorenewal": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "AllowPatronToSetCheckoutsVisibilityForGuarantor": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "AllowPatronToSetFinesVisibilityForGuarantor": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "AllowPKIAuth": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "AllowRenewalIfOtherItemsAvailable": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowRenewalLimitOverride": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowRenewalOnHoldOverride": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowReturnToBranch": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowSetAutomaticRenewal": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AllowStaffToSetCheckoutsVisibilityForGuarantor": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "AllowStaffToSetFinesVisibilityForGuarantor": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "AllowTooManyOverride": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "alphabet": {
+      "destino": "config",
+      "nota": "Idiomas e formatos de data vão para atrium.toml [interface]."
+    },
+    "AlternateHoldingsField": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "AlternateHoldingsSeparator": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "AlwaysLoadCheckoutsTable": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AlwaysShowHoldingsTableFilters": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "AmazonAssocTag": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "AmazonCoverImages": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "AmazonLocale": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "AnonSuggestions": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "AnonymizeLastBorrower": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "AnonymizeLastBorrowerDays": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "AnonymousPatron": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "ApiKeyLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "ApplyFrameworkDefaults": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "ArticleRequests": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ArticleRequestsLinkControl": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ArticleRequestsMandatoryFields": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ArticleRequestsMandatoryFieldsItemOnly": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ArticleRequestsMandatoryFieldsRecordOnly": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ArticleRequestsOpacHostRedirection": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ArticleRequestsSupportedFormats": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AudioAlerts": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "AuthDisplayHierarchy": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "AuthFailureLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "AuthoritiesLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "AuthorityControlledIndicators": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "AuthorityMergeLimit": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "AuthorityMergeMode": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "AuthoritySeparator": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "AuthorityXSLTDetailsDisplay": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "AuthorityXSLTOpacDetailsDisplay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "AuthorityXSLTOpacResultsDisplay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "AuthorityXSLTResultsDisplay": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "AuthorLinkSortBy": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "AuthorLinkSortOrder": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "AuthSuccessLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "AutoApprovePatronProfileSettings": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "autoBarcode": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "AutoClaimReturnStatusOnCheckin": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AutoClaimReturnStatusOnCheckout": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "autoControlNumber": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "AutoCreateAuthorities": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "AutoCreditNumber": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de multas e pagamentos (Fase 3)."
+    },
+    "AutoEmailNewUser": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "AutoILLBackendPriority": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "AutoLinkBiblios": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "AutomaticCheckinAutoFill": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AutomaticConfirmTransfer": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AutomaticEmailReceipts": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "AutomaticItemReturn": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AutomaticRenewalPeriodBase": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "autoMemberNum": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "autoMemberNumValue": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "AutoRemoveOverduesRestrictions": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AutoRenewalNotices": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "AutoResumeSuspendedHolds": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AutoReturnCheckedOutItems": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AutoSelfCheckAllowed": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AutoSelfCheckID": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AutoSelfCheckPass": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "AutoShareWithMana": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "AutoSwitchPatron": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "Babeltheque": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "Babeltheque_url_js": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "Babeltheque_url_update": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "BarcodeSeparators": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "BasketConfirmations": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "BatchCheckouts": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "BatchCheckoutsValidCategories": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "BiblioDefaultView": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "BiblioItemtypeInfo": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "BibtexExportAdditionalFields": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "BlockExpiredPatronOpacActions": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "BlockReturnOfLostItems": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "BlockReturnOfWithdrawnItems": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "BorrowerMandatoryField": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "borrowerRelationship": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "BorrowerRenewalPeriodBase": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "BorrowersLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "BorrowersTitles": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "BorrowerUnwantedField": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "BranchTransferLimitsType": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "BrowseResultSelection": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "BundleLostValue": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "BundleNotLoanValue": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CalculateFinesOnBackdate": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CalculateFinesOnReturn": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CalculateFundValuesIncludingTax": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "CalendarFirstDayOfWeek": {
+      "destino": "config",
+      "nota": "atrium.toml [interface] primeiro_dia_semana."
+    },
+    "CancelOrdersInClosedBaskets": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "CanMarkHoldsToPullAsLost": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "canreservefromotherbranches": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CardnumberLength": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "CardnumberLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "casAuthentication": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "casLogout": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "casServerUrl": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "casServerVersion": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "CatalogConcerns": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "CatalogerEmails": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "CatalogModuleRelink": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "CataloguingLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "ChargeFinesOnClosedDays": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CheckPrevCheckout": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "CheckPrevCheckoutDelay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "ChildNeedsGuarantor": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "CircAutoPrintQuickSlip": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CircConfirmItemParts": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CircControl": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CircControlReturnsBranch": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CircSidebar": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CirculateILL": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "ClaimReturnedChargeFee": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ClaimReturnedLostValue": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ClaimReturnedWarningThreshold": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ClaimsBccCopy": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "ClaimsLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "CleanUpDatabaseReturnClaims": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CoceHost": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "CoceProviders": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "COinSinOPACResults": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "CollapseFieldsPatronAddForm": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "ComponentSortField": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "ComponentSortOrder": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "ConfirmFutureHolds": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ConsiderHeadingUse": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "ConsiderLibraryHoursInCirculation": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ConsiderOnSiteCheckoutsAsNormalCheckouts": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ContentWarningField": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "CookieConsent": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "CookieConsentedJS": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "CreateAVFromCataloguing": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "CronjobLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "CSVDelimiter": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "CumulativeRestrictionPeriods": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CurbsidePickup": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "CurrencyFormat": {
+      "destino": "config",
+      "nota": "atrium.toml [instituicao] formato_moeda."
+    },
+    "CustomCoverImages": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "CustomCoverImagesURL": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "dateformat": {
+      "destino": "config",
+      "nota": "atrium.toml [interface] formato_data."
+    },
+    "DebugLevel": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "decreaseLoanHighHolds": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "decreaseLoanHighHoldsControl": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "decreaseLoanHighHoldsDuration": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "decreaseLoanHighHoldsIgnoreStatuses": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "decreaseLoanHighHoldsValue": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DefaultAuthorityTab": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "DefaultClassificationSource": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "DefaultCountryField008": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "DefaultHoldExpirationdate": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DefaultHoldExpirationdatePeriod": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DefaultHoldExpirationdateUnitOfTime": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DefaultHoldPickupLocation": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DefaultLanguageField008": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "DefaultLongOverdueChargeValue": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DefaultLongOverdueDays": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DefaultLongOverdueLostValue": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DefaultLongOverduePatronCategories": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DefaultLongOverdueSkipLostStatuses": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DefaultLongOverdueSkipPatronCategories": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DefaultPatronSearchFields": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "DefaultPatronSearchMethod": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "DefaultSaveRecordFileID": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "defaultSortField": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "defaultSortOrder": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "DefaultToLoggedInLibraryCircRules": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "DefaultToLoggedInLibraryNoticesSlips": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "DefaultToLoggedInLibraryOverdueTriggers": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "Display856uAsImage": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "DisplayAddHoldGroups": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DisplayClearScreenButton": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "displayFacetCount": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "DisplayIconsXSLT": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "DisplayLibraryFacets": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "DisplayMultiItemHolds": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DisplayMultiPlaceHold": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "DisplayOPACiconsXSLT": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "DisplayPublishedDate": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "DumpSearchQueryTemplate": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "DumpTemplateVarsIntranet": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "DumpTemplateVarsOpac": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "EasyAnalyticalRecords": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "EDIFACT": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "EdifactInvoiceImport": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "EdifactLSL": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "EdifactLSQ": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "ElasticsearchBoostFieldMatch": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "ElasticsearchBoostFieldMatchAmount": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "ElasticsearchCrossFields": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "ElasticsearchEnableZebraQueue": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "ElasticsearchEscapeCharacters": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "ElasticsearchIndexStatus_authorities": {
+      "destino": "fixo",
+      "nota": "Busca sempre Tantivy."
+    },
+    "ElasticsearchIndexStatus_biblios": {
+      "destino": "fixo",
+      "nota": "Busca sempre Tantivy."
+    },
+    "ElasticsearchMARCFormat": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "ElasticsearchPreventAutoTruncate": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "EmailAddressForPatronRegistrations": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "EmailAddressForSuggestions": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "EmailFieldPrecedence": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "EmailFieldPrimary": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "EmailFieldSelection": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "emailLibrarianWhenHoldIsPlaced": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "EmailNoticeCSS": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "EmailNoticeStylesheet": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "EmailOverduesNoEmail": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "EmailPatronRegistrations": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "EmailPatronWhenHoldIsPlaced": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "EmailPurchaseSuggestions": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "EmailSMSSendDriverFromAddress": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "EnableAdvancedCatalogingEditor": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "EnableBooking": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "EnableBorrowerFiles": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "EnableExpiredPasswordReset": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "EnableItemGroupHolds": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "EnableItemGroups": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "EnableOpacSearchHistory": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "EnablePointOfSale": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de multas e pagamentos (Fase 3)."
+    },
+    "EnableSearchHistory": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "EnableZotero": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "EnhancedMessagingPreferences": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "EnhancedMessagingPreferencesOPAC": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "ERMModule": {
+      "destino": "fora-v1",
+      "nota": "ERM não entra na v1."
+    },
+    "ERMProviderEbscoApiKey": {
+      "destino": "fora-v1",
+      "nota": "ERM não entra na v1."
+    },
+    "ERMProviderEbscoCustomerID": {
+      "destino": "fora-v1",
+      "nota": "ERM não entra na v1."
+    },
+    "ERMProviders": {
+      "destino": "fora-v1",
+      "nota": "ERM não entra na v1."
+    },
+    "ExcludeHolidaysFromMaxPickUpDelay": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "expandedSearchOption": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "ExpireReservesAutoFill": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ExpireReservesAutoFillEmail": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ExpireReservesMaxPickUpDelay": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ExpireReservesMaxPickUpDelayCharge": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ExpireReservesOnHolidays": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ExportCircHistory": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ExportRemoveFields": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ExtendedPatronAttributes": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "FacetLabelTruncationLength": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "FacetMaxCount": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "FacetOrder": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "FacetSortingLocale": {
+      "destino": "config",
+      "nota": "Idiomas e formatos de data vão para atrium.toml [interface]."
+    },
+    "FailedLoginAttempts": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "FallbackToSMSIfNoEmail": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "FeeOnChangePatronCategory": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "FilterBeforeOverdueReport": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "FilterSearchResultsByLoggedInBranch": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "FineNoRenewals": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "FineNoRenewalsBlockAutoRenew": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "FineNoRenewalsBlockSelfCheckRenew": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "FineNoRenewalsIncludeCredits": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "FineNotifyAtCheckin": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "FinePaymentAutoPopup": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de multas e pagamentos (Fase 3)."
+    },
+    "finesCalendar": {
+      "destino": "regra",
+      "nota": "Junto com daysmode: decide se multas contam dias fechados."
+    },
+    "FinesIncludeGracePeriod": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "FinesLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "finesMode": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ForceLibrarySelection": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "ForcePasswordResetWhenSetByStaff": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "FRBRizeEditions": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "FutureHoldsBlockRenewals": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "GenerateAuthorityField667": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "GenerateAuthorityField670": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "GoogleJackets": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "GoogleOAuth2ClientID": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "GoogleOAuth2ClientSecret": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "GoogleOpenIDConnect": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "GoogleOpenIDConnectAutoRegister": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "GoogleOpenIDConnectDefaultBranch": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "GoogleOpenIDConnectDefaultCategory": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "GoogleOpenIDConnectDomain": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "hide_marc": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "hidelostitems": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "HidePatronName": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "HidePersonalPatronDetailOnCirculation": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HoldCancellationRequestSIP": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HoldFeeMode": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HoldRatioDefault": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HoldsAutoFill": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HoldsAutoFillPrintSlip": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HoldsLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "HoldsNeedProcessingSIP": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HoldsQueueParallelLoopsCount": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HoldsQueuePrioritizeBranch": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HoldsQueueSkipClosed": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HoldsSplitQueue": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HoldsSplitQueueNumbering": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HoldsToPullStartDate": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HomeOrHoldingBranch": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HouseboundModule": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "HTML5MediaEnabled": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "HTML5MediaExtensions": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "HTML5MediaYouTube": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "IdRef": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "ILLCheckAvailability": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "ILLDefaultStaffEmail": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "ILLHiddenRequestStatuses": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "ILLHistoryCheck": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "IllLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "ILLModule": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "ILLModuleDisclaimerByType": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "ILLModuleUnmediated": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "ILLOpacbackends": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "ILLOpacUnauthenticatedRequest": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "ILLPartnerCode": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "ILLRequestsTabs": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "ILLSendStaffNotices": {
+      "destino": "fora-v1",
+      "nota": "Empréstimo entre bibliotecas não entra na v1."
+    },
+    "ILS-DI": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "ILS-DI:AuthorizedIPs": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "ImageLimit": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "IncludeSeeAlsoFromInSearches": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "IncludeSeeFromInSearches": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "IndependentBranches": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "IndependentBranchesPatronModifications": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "IndependentBranchesTransfers": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "intranet_includes": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "IntranetAddMastheadLibraryPulldown": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "IntranetBiblioDefaultView": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "intranetbookbag": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "IntranetCatalogSearchPulldown": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "IntranetCirculationHomeHTML": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "IntranetCoce": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "intranetcolorstylesheet": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "IntranetFavicon": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "IntranetNav": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "IntranetNumbersPreferPhrase": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "intranetreadinghistory": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "IntranetReadingHistoryHolds": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "IntranetSlipPrinterJS": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "intranetstylesheet": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "IntranetUserCSS": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "IntranetUserJS": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "ISBD": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "IssueLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "IssueLostItem": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "IssuingInProcess": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "item-level_itypes": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "itemBarcodeFallbackSearch": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "itemBarcodeInputFilter": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "itemcallnumber": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "ItemsDeniedRenewal": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "JobsNotificationMethod": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "KohaAdminEmailAddress": {
+      "destino": "config",
+      "nota": "atrium.toml [instituicao] email."
+    },
+    "KohaManualBaseURL": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "KohaManualLanguage": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "LabelMARCView": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "LanguageToUseOnMerge": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "LibraryName": {
+      "destino": "config",
+      "nota": "atrium.toml [instituicao] nome."
+    },
+    "LibraryThingForLibrariesEnabled": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "LibraryThingForLibrariesID": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "LibraryThingForLibrariesTabbedView": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "LinkerConsiderDiacritics": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "LinkerConsiderThesaurus": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "LinkerKeepStale": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "LinkerModule": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "LinkerOptions": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "LinkerRelink": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "ListOwnerDesignated": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "ListOwnershipUponPatronDeletion": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "LoadCheckoutsTableDelay": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "LoadSearchHistoryToTheFirstLoggedUser": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "LocalCoverImages": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "LocalHoldsPriority": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "LocalHoldsPriorityItemControl": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "LocalHoldsPriorityPatronControl": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "LockExpiredDelay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "LostChargesControl": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "makePreviousSerialAvailable": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "Mana": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "ManaToken": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "ManualRenewalPeriodBase": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "MARCAuthorityControlField008": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "MarcFieldDocURL": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "MarcFieldForCreatorId": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "MarcFieldForCreatorName": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "MarcFieldForModifierId": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "MarcFieldForModifierName": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "MarcFieldsToOrder": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "MarcItemFieldsToOrder": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "MarcOrderingAutomation": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "MARCOrgCode": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "MARCOverlayRules": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "MarkLostItemsAsReturned": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "MaxComponentRecords": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "MaxFine": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "maxItemsInSearchResults": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "MaxItemsToDisplayForBatchDel": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "MaxItemsToDisplayForBatchMod": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "MaxItemsToProcessForBatchMod": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "MaxOpenSuggestions": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "maxoutstanding": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "maxRecordsForFacets": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "maxreserves": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "MaxSearchResultsItemsPerRecordStatusCheck": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "MaxTotalSuggestions": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "MembershipExpiryDaysNotice": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "MergeReportFields": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "minPasswordLength": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "NewItemsDefaultLocation": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "NewsAuthorDisplay": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "noissuescharge": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "NoIssuesChargeGuarantees": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "NoIssuesChargeGuarantorsWithGuarantees": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "noItemTypeImages": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "NoRefundOnLostFinesPaidAge": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "NoRefundOnLostReturnedItemsAge": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "NoRenewalBeforePrecision": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "NotesToHide": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "NotHighlightedWords": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "NoticeBcc": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "NoticesLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "NotifyBorrowerDeparture": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "NotifyPasswordChange": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "NovelistSelectEnabled": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "NovelistSelectPassword": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "NovelistSelectProfile": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "NovelistSelectStaffEnabled": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "NovelistSelectStaffProfile": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "NovelistSelectStaffView": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "NovelistSelectView": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "NumberOfSuggestionDays": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "numReturnedItemsToShow": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "numSearchResults": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "numSearchResultsDropdown": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "numSearchRSSResults": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OAI-PMH": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "OAI-PMH:archiveID": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "OAI-PMH:AutoUpdateSets": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "OAI-PMH:AutoUpdateSetsEmbedItemData": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "OAI-PMH:ConfFile": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "OAI-PMH:DeletedRecord": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "OAI-PMH:HarvestEmailReport": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "OAI-PMH:MaxCount": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "OnSiteCheckoutAutoCheck": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "OnSiteCheckouts": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "OnSiteCheckoutsForce": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "OPACAcquisitionDetails": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacAdditionalStylesheet": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacAddMastheadLibraryPulldown": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacAdvancedSearchTypes": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacAdvSearchMoreOptions": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacAdvSearchOptions": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACAllowHoldDateInFuture": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "OpacAllowPublicListCreation": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacAllowSharingPrivateLists": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACAllowUserToChangeBranch": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "OPACAllowUserToChooseBranch": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "OPACAmazonCoverImages": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OPACAuthorIdentifiersAndInformation": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacAuthorities": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACBaseURL": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "opacbookbag": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacBrowser": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacBrowseResults": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacBrowseSearch": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacCatalogConcerns": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacCloud": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacCoce": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OPACComments": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACCustomCoverImages": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OPACdefaultSortField": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "OPACdefaultSortOrder": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "OPACDetailQRCode": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACdidyoumean": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "OPACDisableSendList": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACDisplay856uAsImage": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacElasticsearchEscapeCharacters": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "OpacExportOptions": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACFallback": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacFavicon": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACFinesTab": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACFRBRizeEditions": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OpacHiddenItems": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacHiddenItemsExceptions": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacHiddenItemsHidesRecord": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacHighlightedWords": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacHoldNotes": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACHoldRequests": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACHoldsHistory": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACHoldsIfAvailableAtPickup": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "OPACHoldsIfAvailableAtPickupExceptions": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "OPACISBD": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACItemLocation": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacKohaUrl": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacLangSelectorMode": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACLanguages": {
+      "destino": "config",
+      "nota": "atrium.toml [interface] idiomas_opac."
+    },
+    "opaclanguagesdisplay": {
+      "destino": "config",
+      "nota": "Idiomas e formatos de data vão para atrium.toml [interface]."
+    },
+    "opaclayoutstylesheet": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACLocalCoverImages": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OpacLocationBranchToDisplay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacLocationOnDetail": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACLoginLabelTextContent": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacMaintenance": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACMandatoryHoldDates": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "OpacMaxItemsToDisplay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacMetaDescription": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacMetaRobots": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACMySummaryHTML": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacNewsLibrarySelect": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacNoItemTypeImages": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACNoResultsFound": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACNumbersPreferPhrase": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "OPACnumSearchResults": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "OPACnumSearchResultsDropdown": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "OPACOpenURLItemTypes": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACOverDrive": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OpacPasswordChange": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACPatronDetails": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACpatronimages": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACPlayMusicalInscripts": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACPopupAuthorsSearch": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACPrivacy": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacPublic": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "opacreadinghistory": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacRenewalAllowed": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacRenewalBranch": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACReportProblem": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacResetPassword": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACResultsLibrary": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACResultsMaxItems": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACResultsMaxItemsUnavailable": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACResultsUnavailableGroupingBy": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACSearchForTitleIn": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacSeparateHoldings": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacSeparateHoldingsBranch": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "opacSerialDefaultTab": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "OPACSerialIssueDisplayCount": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "OPACShelfBrowser": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACShibOnly": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACShowCheckoutName": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACShowHoldQueueDetails": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACShowLibraries": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACShowMusicalInscripts": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACShowOpenURL": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacShowRecentComments": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACShowSavings": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACShowUnusedAuthorities": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacStarRatings": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACSuggestionAutoFill": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacSuggestionManagedBy": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACSuggestionMandatoryFields": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACSuggestionUnwantedFields": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacSuppression": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "OpacSuppressionByIPRange": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "OpacSuppressionRedirect": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "OPACTableColExpandedByDefault": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "opacthemes": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacTopissue": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpacTrustedCheckout": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACURLOpenInNewWindow": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACUserCSS": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACUserJS": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "opacuserlogin": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACUserSummary": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACViewOthersSuggestions": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACVirtualCard": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACVirtualCardBarcode": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACXSLTDetailsDisplay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACXSLTListsDisplay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OPACXSLTResultsDisplay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpenLibraryCovers": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OpenLibrarySearch": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OpenURLImageLocation": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpenURLResolverURL": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OpenURLText": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "OrderPdfFormat": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "OrderPriceRounding": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "OverDriveAuthName": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OverDriveCirculation": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OverDriveClientKey": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OverDriveClientSecret": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OverDriveLibraryID": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OverDrivePasswordRequired": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OverDriveUsername": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OverDriveWebsiteID": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "OverdueNoticeCalendar": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "OverdueNoticeFrom": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "OverduesBlockCirc": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "OverduesBlockRenewing": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "PassItemMarcToXSLT": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "PatronAgeRestriction": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "PatronAnonymizeDelay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "PatronAutoComplete": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "PatronDuplicateMatchingAddFields": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "patronimages": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "PatronQuickAddFields": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "PatronRemovalDelay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "PatronRestrictionTypes": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "PatronSelfModificationBorrowerUnwantedField": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfModificationMandatoryField": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfRegistration": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfRegistrationAgeRestriction": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfRegistrationAlert": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfRegistrationBorrowerMandatoryField": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfRegistrationBorrowerUnwantedField": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfRegistrationConfirmEmail": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfRegistrationDefaultCategory": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfRegistrationEmailMustBeUnique": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfRegistrationExpireTemporaryAccountsDelay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfRegistrationLibraryList": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfRegistrationPrefillForm": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronSelfRegistrationVerifyByEmail": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PatronsPerPage": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "PhoneNotification": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "PlaceHoldsOnOrdersFromSuggestions": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "PrefillGuaranteeField": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "PrefillItem": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "PreservationModule": {
+      "destino": "fora-v1",
+      "nota": "Preservação não entra na v1."
+    },
+    "PreservationNotForLoanDefaultTrainIn": {
+      "destino": "fora-v1",
+      "nota": "Preservação não entra na v1."
+    },
+    "PreservationNotForLoanWaitingListIn": {
+      "destino": "fora-v1",
+      "nota": "Preservação não entra na v1."
+    },
+    "PreserveSerialNotes": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "PreventWithdrawingItemsStatus": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "previousIssuesDefaultSortOrder": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "PrintNoticeCSS": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "PrintNoticesMaxLines": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "PrintNoticeStylesheet": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "PrintSlipCSS": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "PrintSlipStylesheet": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "PrivacyPolicyConsent": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "PrivacyPolicyURL": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "ProcessingFeeNote": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ProtectSuperlibrarianPrivileges": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "Pseudonymization": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "PseudonymizationPatronFields": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "PseudonymizationTransactionFields": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "PurgeListShareInvitesOlderThan": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "PurgeSuggestionsOlderThan": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "QueryAutoTruncate": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "QueryFuzzy": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "QueryRegexEscapeOptions": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "QueryStemming": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "QueryWeightFields": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "QuoteOfTheDay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "RandomizeHoldsQueueWeight": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "RealTimeHoldsQueue": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "RecallsLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "RecallsMaxPickUpDelay": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "RecordLocalUseOnReturn": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "RecordStaffUserOnCheckout": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "RedirectGuaranteeEmail": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "RedirectToSoleResult": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "Reference_NFL_Statuses": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "RefundLostOnReturnControl": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "RenewAccruingItemInOpac": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "RenewAccruingItemWhenPaid": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "RenewalLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "RenewalSendNotice": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "RenewSerialAddsSuggestion": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "RentalFeesCheckoutConfirmation": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ReplytoDefault": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "ReportsExportFormatODS": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "ReportsExportLimit": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "ReportsLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "RequireCashRegister": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de multas e pagamentos (Fase 3)."
+    },
+    "RequireChoosingExistingAuthority": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "RequirePaymentType": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de multas e pagamentos (Fase 3)."
+    },
+    "RequireStrongPassword": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "ReservesControlBranch": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ReservesMaxPickUpDelay": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ReservesNeedReturns": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "RESTAPIRenewalBranch": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "RESTBasicAuth": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "RESTdefaultPageSize": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "RESTOAuth2ClientCredentials": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "RESTPublicAnonymousRequests": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "RESTPublicAPI": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "RestrictedPageContent": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "RestrictedPageLocalIPs": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "RestrictedPageTitle": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "RestrictionBlockRenewing": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "RestrictPatronsWithFailedNotices": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "RetainCatalogSearchTerms": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "RetainPatronsSearchTerms": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "ReturnBeforeExpiry": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ReturnLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "ReturnpathDefault": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "RisExportAdditionalFields": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "RoundFinesAtPayment": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de multas e pagamentos (Fase 3)."
+    },
+    "RoutingListAddReserves": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "RoutingSerials": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "SavedSearchFilters": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "SCOAllowCheckin": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SCOBatchCheckoutsValidCategories": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SCOLoadCheckoutsByDefault": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SCOUserCSS": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SCOUserJS": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SearchCancelledAndInvalidISBNandISSN": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "SearchEngine": {
+      "destino": "fixo",
+      "nota": "Busca sempre Tantivy."
+    },
+    "SearchLimitLibrary": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "SearchMyLibraryFirst": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "SearchWithISBNVariations": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "SearchWithISSNVariations": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "SelfCheckAllowByIPRanges": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SelfCheckInModule": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SelfCheckInTimeout": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SelfCheckInUserCSS": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SelfCheckInUserJS": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SelfCheckoutByLogin": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SelfCheckReceiptPrompt": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SelfCheckTimeout": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SendAllEmailsTo": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "SeparateHoldings": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "SeparateHoldingsBranch": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "SerialsDefaultEmailAddress": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "SerialsDefaultReplyTo": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "SerialsSearchResultsLimit": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "SessionRestrictionByIP": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "SessionStorage": {
+      "destino": "fixo",
+      "nota": "Sessões do Atrium são próprias (doc 05)."
+    },
+    "ShelfBrowserUsesCcode": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "ShelfBrowserUsesHomeBranch": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "ShelfBrowserUsesLocation": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "ShowAllCheckins": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ShowComponentRecords": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "ShowHeadingUse": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "showLastPatron": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "showLastPatronCount": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "ShowPatronFirstnameIfDifferentThanPreferredname": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "ShowPatronImageInWebBasedSelfCheck": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "ShowReviewer": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "ShowReviewerPhoto": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "SIP2AddOpacMessagesToScreenMessage": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SIP2SortBinMapping": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SkipHoldTrapOnNotForLoanValue": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SMSSendAdditionalOptions": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "SMSSendDriver": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "SMSSendMaxChar": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "SMSSendPassword": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "SMSSendUsername": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "SocialNetworks": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "SpecifyDueDate": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SpecifyReturnDate": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SpineLabelAutoPrint": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "SpineLabelFormat": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "staffClientBaseURL": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "StaffHighlightedWords": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "StaffInterfaceLanguages": {
+      "destino": "config",
+      "nota": "Idiomas e formatos de data vão para atrium.toml [interface]."
+    },
+    "StaffLangSelectorMode": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "StaffLoginLibraryBasedOnIP": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "StaffLoginRestrictLibraryByIP": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "StaffSearchResultsDisplayBranch": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "StaffSerialIssueDisplayCount": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "staffShibOnly": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "StaticHoldsQueueWeight": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "StatisticsFields": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "StockRotation": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "StoreLastBorrower": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "StripWhitespaceChars": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "SubfieldsToAllowForRestrictedBatchmod": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "SubfieldsToAllowForRestrictedEditing": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "SubfieldsToUseWhenPrefill": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "SubscriptionDuplicateDroppedInput": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "SubscriptionHistory": {
+      "destino": "fora-v1",
+      "nota": "Seriados não entram na v1."
+    },
+    "SubscriptionLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "suggestion": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "suggestionPatronCategoryExceptions": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "SuggestionsLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "SuspendHoldsIntranet": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SuspendHoldsOpac": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SuspensionsCalendar": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SvcMaxReportRows": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de cada serviço (OAI-PMH, SRU, REST)."
+    },
+    "SwitchOnSiteCheckouts": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "SyndeticsAuthorNotes": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "SyndeticsAwards": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "SyndeticsClientCode": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "SyndeticsCoverImages": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "SyndeticsCoverImageSize": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "SyndeticsEditions": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "SyndeticsEnabled": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "SyndeticsExcerpt": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "SyndeticsReviews": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "SyndeticsSeries": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "SyndeticsSummary": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "SyndeticsTOC": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "TagsEnabled": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "TagsExternalDictionary": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "TagsInputOnDetail": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "TagsInputOnList": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "TagsModeration": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "TagsShowOnDetail": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "TagsShowOnList": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "TalkingTechItivaPhoneNotification": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "TaxRates": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "template": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "ThingISBN": {
+      "destino": "fora-v1",
+      "nota": "Serviços externos de enriquecimento (capas, resenhas) ficam para depois da v1."
+    },
+    "TimeFormat": {
+      "destino": "config",
+      "nota": "atrium.toml [interface] formato_hora."
+    },
+    "timeout": {
+      "destino": "config",
+      "nota": "atrium.toml [equipe] sessao_ociosa."
+    },
+    "TitleHoldFeeStrategy": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "todaysIssuesDefaultSortOrder": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "TraceCompleteSubfields": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "TraceSubjectSubdivisions": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "TrackClicks": {
+      "destino": "revisar",
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+    },
+    "TrackLastPatronActivityTriggers": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "TransfersBlockCirc": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "TransfersLog": {
+      "destino": "fixo",
+      "nota": "O audit_log registra toda escrita; não há o que ligar ou desligar."
+    },
+    "TransfersMaxDaysWarning": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "TransferWhenCancelAllWaitingHolds": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "TranslateNotices": {
+      "destino": "config",
+      "nota": "Idiomas e formatos de data vão para atrium.toml [interface]."
+    },
+    "TrapHoldsOnOrder": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "TwoFactorAuthentication": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "UNIMARCAuthorityField100": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "UNIMARCAuthorsFacetsSeparator": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "UNIMARCField100Language": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "UniqueItemFields": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "UnseenRenewals": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UnsubscribeReflectionDelay": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "UpdateExpiryDateOnCategoryChange": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "UpdateItemLocationOnCheckin": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UpdateItemLocationOnCheckout": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UpdateItemLostStatusWhenPaid": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UpdateItemLostStatusWhenWriteoff": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UpdateItemWhenLostFromHoldList": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UpdateMessagingPrefsOnCategoryChange": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "UpdateNotForLoanStatusOnCheckin": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UpdateNotForLoanStatusOnCheckout": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UpdateTotalIssuesOnCirc": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UploadPurgeTemporaryFilesDays": {
+      "destino": "revisar",
+      "nota": "Decidir por ferramenta, quando ela for especificada."
+    },
+    "uppercasesurnames": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "URLLinkText": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "UsageStats": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "UsageStatsCountry": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "UsageStatsGeolocation": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "UsageStatsID": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "UsageStatsLastUpdateTime": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "UsageStatsLibrariesInfo": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "UsageStatsLibraryName": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "UsageStatsLibraryType": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "UsageStatsLibraryUrl": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "UsageStatsPublicID": {
+      "destino": "plataforma",
+      "nota": "Preferência oculta no Koha (estado interno, OAI-PMH, estatísticas de uso)."
+    },
+    "UseACQFrameworkForBiblioRecords": {
+      "destino": "fora-v1",
+      "nota": "Aquisições não entram na v1."
+    },
+    "UseAuthoritiesForTracings": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de autoridades."
+    },
+    "UseBranchTransferLimits": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UseCashRegisters": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de multas e pagamentos (Fase 3)."
+    },
+    "UseCirculationDesks": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UseControlNumber": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "UseCourseReserves": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "useDaysMode": {
+      "destino": "regra",
+      "nota": "Já existe como regra de circulação `daysmode` em $RULE_KINDS; a preferência vira o valor padrão."
+    },
+    "useDefaultReplacementCost": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "useDischarge": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de leitores (Fase 2)."
+    },
+    "UseHoldsQueueFilterOptions": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UseICUStyleQuotes": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    },
+    "UseLibraryFloatLimits": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UseLocationAsAQInSIP": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UseOCLCEncodingLevels": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "UseRecalls": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UseTransportCostMatrix": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "UseWYSIWYGinSystemPreferences": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "viewISBD": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "viewLabeledMARC": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "viewMARC": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "virtualshelves": {
+      "destino": "plataforma",
+      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+    },
+    "WaitingNotifyAtCheckin": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "WaitingNotifyAtCheckout": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "WebBasedSelfCheck": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "WhenLostChargeReplacementFee": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "WhenLostForgiveFine": {
+      "destino": "revisar",
+      "nota": "Paridade exigida: decidir uma a uma na spec de circulação (Fase 3)."
+    },
+    "XSLTDetailsDisplay": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "XSLTListsDisplay": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "XSLTResultsDisplay": {
+      "destino": "interface",
+      "nota": "Interface da equipe redesenhada; preferências viram tokens de design ou somem."
+    },
+    "z3950AuthorAuthFields": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "z3950NormalizeAuthor": {
+      "destino": "revisar",
+      "nota": "Decidir na spec de catalogação (Fase 1)."
+    },
+    "z3950Status": {
+      "destino": "revisar",
+      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+    }
+  }
+}
