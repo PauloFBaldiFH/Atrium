@@ -88,3 +88,35 @@ fn search_fields() {
     assert_eq!(holding.mappings.len(), 1);
     assert!(holding.mappings[0].facet);
 }
+
+#[test]
+fn marc8_tables() {
+    let ascii_a = atrium_data::marc8_char(0x42, 0x41).unwrap();
+    assert_eq!(ascii_a.unicode, Some('A'));
+    assert!(!ascii_a.combining);
+
+    // ANSEL lists its G1 form: 0xe1 is the combining grave accent.
+    let grave = atrium_data::marc8_char(0x45, 0xe1).unwrap();
+    assert_eq!(grave.unicode, Some('\u{300}'));
+    assert!(grave.combining);
+
+    // The second half of the ligature has no preferred mapping, only the half mark.
+    let ligature_end = atrium_data::marc8_char(0x45, 0xec).unwrap();
+    assert_eq!(ligature_end.unicode, None);
+    assert_eq!(ligature_end.alternative, Some('\u{fe21}'));
+
+    assert_eq!(
+        atrium_data::marc8_char(0x4e, 0x41).unwrap().unicode,
+        Some('\u{430}')
+    );
+    assert_eq!(
+        atrium_data::marc8_char(0x31, 0x21_30_21).unwrap().unicode,
+        Some('\u{4e00}')
+    );
+    // Some EACC codes map to private use, with the geta mark as the alternative.
+    let private = atrium_data::marc8_char(0x31, 0x21_2a_21).unwrap();
+    assert_eq!(private.unicode, Some('\u{e8d0}'));
+    assert_eq!(private.alternative, Some('\u{3013}'));
+    assert!(atrium_data::marc8_char(0x45, 0x41).is_none());
+    assert!(atrium_data::marc8_char(0x99, 0x41).is_none());
+}

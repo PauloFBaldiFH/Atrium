@@ -24,6 +24,9 @@ pub(crate) enum Mode {
     Check,
 }
 
+/// MARC-8 code tables from the Library of Congress, which do not depend on the Koha release.
+const MARC8_JSON: &str = "data/loc/marc8.json";
+
 /// Path of an extracted data file, relative to the repository root.
 fn data_path(series: &str, name: &str) -> String {
     format!("data/koha-{series}/{name}")
@@ -44,6 +47,7 @@ pub(crate) fn run(root: &Path, mode: Mode) -> Result<(), String> {
     let framework = data("marc21_framework.json")?;
     let iso5426 = data("iso5426.json")?;
     let search_fields = data("search_fields.json")?;
+    let marc8 = read_json(&root.join(MARC8_JSON))?;
 
     let mut files = vec![
         Generated {
@@ -75,6 +79,11 @@ pub(crate) fn run(root: &Path, mode: Mode) -> Result<(), String> {
             )?,
         },
     ];
+    files.extend(
+        crate::charsets::marc8(&marc8, MARC8_JSON, &header(MARC8_JSON))?
+            .into_iter()
+            .map(|(name, source)| Generated { name, source }),
+    );
     files.extend(
         crate::marc_framework::files(
             &framework,
@@ -153,6 +162,8 @@ fn module_index() -> String {
          pub(crate) mod marc21_framework_7xx;\n\
          pub(crate) mod marc21_framework_8xx;\n\
          pub(crate) mod marc21_framework_9xx;\n\
+         pub(crate) mod marc8;\n\
+         pub(crate) mod marc8_eacc;\n\
          pub(crate) mod search_fields;\n",
     );
     out
