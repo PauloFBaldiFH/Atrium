@@ -1,0 +1,24 @@
+[package]
+name = "atrium-fuzz"
+description = "Fuzz targets for Atrium parsers (cargo-fuzz, nightly). Outside the workspace."
+version = "0.0.0"
+edition = "2024"
+license = "GPL-3.0-or-later"
+publish = false
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+atrium-marc = { path = "../crates/atrium-marc" }
+libfuzzer-sys = "0.4"
+
+[[bin]]
+name = "iso2709"
+path = "fuzz_targets/iso2709.rs"
+test = false
+doc = false
+bench = false
+
+# Not part of the main workspace: it needs the nightly toolchain.
+[workspace]

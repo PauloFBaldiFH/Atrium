@@ -2,6 +2,7 @@
 resolver = "3"
 members = ["crates/*", "xtask"]
 default-members = ["crates/*"]
+exclude = ["fuzz"]
 
 [workspace.package]
 version = "0.0.0"
@@ -21,6 +22,7 @@ atrium-store = { path = "crates/atrium-store" }
 atrium-web = { path = "crates/atrium-web" }
 atrium-web-templates = { path = "crates/atrium-web-templates" }
 
+proptest = "1"
 rusqlite = { version = "0.42", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
