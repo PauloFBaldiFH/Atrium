@@ -4,3 +4,6 @@
 # Generated from the pinned Koha reference; collapsed in GitHub diffs.
 crates/atrium-data/src/generated/** linguist-generated=true
 data/koha-*/** linguist-generated=true
+
+# Generated from the Library of Congress MARC-8 code tables (tools/marc8-extractor).
+data/loc/** linguist-generated=true

@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Tables generated from the pinned Koha reference (circulation rule kinds, MARC frameworks, vocabularies).
+//! Tables generated from the pinned Koha reference (circulation rule kinds, MARC frameworks, vocabularies)
+//! and from the Library of Congress MARC-8 code tables.
 //!
 //! The types in this file are written by hand. The tables live in `src/generated/`, which
-//! `cargo xtask codegen` writes from `koha-lock.json` and `data/koha-<series>/`; never edit
+//! `cargo xtask codegen` writes from `koha-lock.json`, `data/koha-<series>/` and `data/loc/`; never edit
 //! them by hand. CI runs `cargo xtask codegen --check` to keep them in sync.
 
 mod generated;
@@ -221,6 +222,47 @@ pub fn iso5426_char(code: u16) -> Option<char> {
     let table = generated::iso5426::ISO5426;
     let at = table.binary_search_by_key(&code, |&(c, _)| c).ok()?;
     table.get(at).map(|&(_, character)| character)
+}
+
+/// A generated MARC-8 row: `(code, unicode, alternative, combining)`.
+pub(crate) type Marc8Row = (u32, Option<char>, Option<char>, bool);
+
+/// One character of a MARC-8 graphic set, as the Library of Congress code tables define it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Marc8Character {
+    /// The preferred Unicode character. `None` only for the second half of the two-part
+    /// ligature and double tilde, which have no Unicode counterpart of their own.
+    pub unicode: Option<char>,
+    /// The alternative Unicode mapping the tables give (for example the half-mark
+    /// `U+FE21` for the ligature's second half, or the geta mark `U+3013` for EACC codes
+    /// whose preferred mapping is a private-use character).
+    pub alternative: Option<char>,
+    /// Whether the character is a combining mark. MARC-8 writes combining marks
+    /// before their base character; Unicode writes them after.
+    pub combining: bool,
+}
+
+/// The character for `code` in the MARC-8 graphic set whose ISO code (the final byte
+/// of its escape sequence) is `set`, for example `0x45` for Extended Latin (ANSEL) or
+/// `0x31` for EACC. `code` is written as the code tables write it: one byte for most
+/// sets, three bytes for EACC (`0x213021`). Most sets list their G0 form (`0x21`–`0x7e`),
+/// but ANSEL, Extended Cyrillic and Extended Arabic list their G1 form (`0xa1`–`0xfe`,
+/// so `0xe1` is ANSEL's combining grave), and ANSEL adds the C1 controls `0x88`, `0x89`,
+/// `0x8d` and `0x8e`. Mapping bytes read from a record to these codes is the decoder's job.
+///
+/// Source: the Library of Congress MARC-8 code tables (`data/loc/marc8.json`).
+#[must_use]
+pub fn marc8_char(set: u8, code: u32) -> Option<Marc8Character> {
+    let sets = generated::marc8::SETS;
+    let at = sets.binary_search_by_key(&set, |&(iso, _)| iso).ok()?;
+    let (_, rows) = sets.get(at)?;
+    let row = rows.binary_search_by_key(&code, |&(marc, ..)| marc).ok()?;
+    rows.get(row)
+        .map(|&(_, unicode, alternative, combining)| Marc8Character {
+            unicode,
+            alternative,
+            combining,
+        })
 }
 
 /// How a search field's values are indexed.
