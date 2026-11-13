@@ -2,7 +2,14 @@
 //! Recomputes a recording's outputs with the Elzevir domain.
 
 use elzevir_domain::calendar::{AnnualHoliday, Calendar, DatedEntry};
-use elzevir_domain::due_date::{DaysMode, DueDateError, LoanDays, due_date};
+use elzevir_domain::circulation::{
+    CircContext, CircEvent, ItemState, Refusal, RenewalBase, Transition, transition,
+};
+use elzevir_domain::due_date::{
+    ConsiderLibraryHours, DaysMode, DueDateContext, DueDateError, LengthUnit, LibraryHours,
+    LoanRule,
+};
+use elzevir_domain::fine::{FineContext, FineRule, FinesCalendar};
 use jiff::Timestamp;
 use jiff::civil::{Date, Weekday};
 use jiff::fmt::temporal::DateTimeParser;
@@ -94,11 +101,65 @@ pub fn check(
 }
 
 fn check_loan(inputs: &RecordedInputs, loan: &LoanRecorded) -> Result<(), CheckError> {
-    let (length, mode) = loan_rule(inputs)?;
+    let rule = loan_rule(inputs)?;
     let calendar = calendar(&inputs.calendar)?;
+    let hours = LibraryHours::default();
+    let context = DueDateContext {
+        rule: &rule,
+        calendar: &calendar,
+        hours: &hours,
+        consider_hours: ConsiderLibraryHours::Ignore,
+        return_before_expiry: false,
+        patron_expiry: None,
+    };
     let start = parse_instant(&loan.checkout_date)?;
     let koha_due = parse_instant(&loan.due_date)?;
-    let elzevir_due = due_date(&start, length, mode, &calendar)?;
+    // Checkout goes through `transition()`, which keeps the due date to the minute as
+    // `AddIssue` does; no fine is read, so the fine part is empty.
+    let fine_rule = FineRule {
+        unit: LengthUnit::Days,
+        grace: 0,
+        charge_period: 0,
+        charge_at_start: false,
+        fine: None,
+        cap: None,
+        cap_to_replacement_price: false,
+        recall_fine: None,
+    };
+    let circ = CircContext {
+        due_date: context,
+        fine: FineContext {
+            rule: &fine_rule,
+            calendar: &calendar,
+            fines_calendar: FinesCalendar::Ignore,
+            include_grace: false,
+            replacement_price: None,
+            default_replacement_cost: None,
+            overdue_recall: false,
+        },
+        renewal_base: RenewalBase::DueDate,
+        fines_on_return: false,
+    };
+    let elzevir_due = match transition(
+        &ItemState::Available,
+        &CircEvent::Checkout { at: start },
+        &circ,
+    ) {
+        Ok(Transition {
+            state: ItemState::OnLoan { due },
+            ..
+        }) => due,
+        Ok(Transition {
+            state: ItemState::Available,
+            ..
+        }) => {
+            return Err(CheckError::Invalid(
+                "checkout left the item available".to_owned(),
+            ));
+        }
+        Err(Refusal::DueDate(error)) => return Err(error.into()),
+        Err(refusal) => return Err(CheckError::Invalid(refusal.to_string())),
+    };
     if elzevir_due.timestamp() != koha_due.timestamp() || elzevir_due.offset() != koha_due.offset()
     {
         return Err(CheckError::Mismatch {
@@ -112,7 +173,7 @@ fn check_loan(inputs: &RecordedInputs, loan: &LoanRecorded) -> Result<(), CheckE
 /// Loan length and days mode, refusing inputs outside the v0 spec.
 ///
 /// Koha: `Koha::CirculationRules::get_effective_daysmode`
-fn loan_rule(inputs: &RecordedInputs) -> Result<(LoanDays, DaysMode), CheckError> {
+fn loan_rule(inputs: &RecordedInputs) -> Result<LoanRule, CheckError> {
     let rule = &inputs.rule;
     if rule.lengthunit.as_deref().unwrap_or("days") != "days" {
         return Err(CheckError::Unsupported("loan length in hours".to_owned()));
@@ -127,16 +188,20 @@ fn loan_rule(inputs: &RecordedInputs) -> Result<(LoanDays, DaysMode), CheckError
         .issuelength
         .as_deref()
         .unwrap_or_default()
-        .parse::<u16>()
+        .parse::<u32>()
         .map_err(|_| CheckError::Invalid(format!("issuelength {:?}", rule.issuelength)))?;
     let mode_name = rule
         .daysmode
         .as_deref()
         .filter(|m| !m.is_empty())
         .unwrap_or(&inputs.use_days_mode);
-    let mode = DaysMode::from_koha(mode_name)
-        .ok_or_else(|| CheckError::Invalid(format!("daysmode {mode_name:?}")))?;
-    Ok((LoanDays(days), mode))
+    Ok(LoanRule {
+        issue_length: days,
+        renewal_period: None,
+        unit: LengthUnit::Days,
+        days_mode: DaysMode::from_koha(mode_name),
+        hard_due_date: None,
+    })
 }
 
 fn calendar(snapshot: &CalendarSnapshot) -> Result<Calendar, CheckError> {

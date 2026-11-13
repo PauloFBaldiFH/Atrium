@@ -52,7 +52,8 @@ pub struct NoOpenDay {
 pub(crate) enum Push {
     /// One day at a time.
     Daily,
-    /// A week at a time, except from a day that is closed every week.
+    /// A week at a time, except from a day that is closed every week. Koha does this for
+    /// every search in the `Dayweek` mode, whatever the loan period.
     Weekly,
 }
 
@@ -109,7 +110,7 @@ impl Calendar {
     /// The step size from `date` during a search.
     ///
     /// Koha: `Koha::Calendar::get_push_amt`
-    fn step_from(&self, date: Date, push: Push) -> i32 {
+    pub(crate) fn step_from(&self, date: Date, push: Push) -> i32 {
         match push {
             Push::Weekly if !self.closed_weekly(date.weekday()) => 7,
             Push::Weekly | Push::Daily => 1,
@@ -138,9 +139,42 @@ impl Calendar {
         Ok(date)
     }
 
-    /// The step a search would take from `date`; exposed for the due-date rules.
-    pub(crate) fn first_step(&self, date: Date, push: Push) -> i32 {
-        self.step_from(date, push)
+    /// Moves `first_step` days back, then keeps stepping back while the day is closed.
+    ///
+    /// Koha: `Koha::Calendar::prev_open_days`
+    pub(crate) fn previous_open(
+        &self,
+        from: Date,
+        first_step: i32,
+        push: Push,
+    ) -> Result<Date, NoOpenDay> {
+        let no_open_day = NoOpenDay { from };
+        let mut date = add_days(from, -first_step.abs()).ok_or(no_open_day)?;
+        let mut steps = 0;
+        while self.is_closed(date) && steps < OPEN_DAY_SEARCH_LIMIT {
+            date = add_days(date, -self.step_from(date, push)).ok_or(no_open_day)?;
+            steps += 1;
+        }
+        if self.is_closed(date) {
+            return Err(no_open_day);
+        }
+        Ok(date)
+    }
+
+    /// Closed days from `first` to `last`, both included.
+    pub(crate) fn closed_days(&self, first: Date, last: Date) -> i64 {
+        let mut count = 0;
+        let mut day = first;
+        while day <= last {
+            if self.is_closed(day) {
+                count += 1;
+            }
+            let Some(next) = add_days(day, 1) else {
+                break;
+            };
+            day = next;
+        }
+        count
     }
 }
 

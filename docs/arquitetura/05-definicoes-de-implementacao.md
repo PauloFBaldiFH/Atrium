@@ -103,6 +103,31 @@ then:
 - O CI comum nunca acessa a instância. Ele confere que cada gravação corresponde ao cenário atual (hash) e que o Elzevir reproduz as saídas.
 - Cenário alterado exige gravação nova; sem acesso ao oráculo, o executor acusa a gravação desatualizada em vez de passar.
 
+### Cenário convertido de teste do Koha (`.t.yaml`)
+
+Os testes `.t` do Koha fixam todas as entradas e afirmam a saída com `is()`, então já são um oráculo e não precisam de gravação. Cada um vira `scenarios/<area>/<nome>.t.yaml`, com um caso por asserção:
+
+```yaml
+id: calcfine-t
+spec: docs/specs/circulacao/multa.md
+parity: required
+source: t/db_dependent/Circulation/CalcFine.t   # relativo a reference/koha/
+defaults:                                        # contexto comum a todos os casos
+  CalculateFinesOnReturn: 1
+  rule: { fine: "1.00", lengthunit: days, chargeperiod: 1 }
+cases:
+  - name: Test basic functionality               # a descrição do is() no Koha
+    context: { rule: { overduefinescap: "0" } }  # mesclado por cima de defaults
+    state: !on_loan { due: "2000-01-01T00:00" }  # ou: available
+    event: !checkin { at: "2000-01-30T00:00" }   # !checkout, !renew, !checkin
+    expect: { fine: "29.00" }                    # e/ou due: "AAAA-MM-DDTHH:MM"
+```
+
+- O caso roda contra a `transition()` pura do domínio; datas são civis, no fuso `timezone` do contexto (padrão UTC).
+- O contexto usa os nomes do Koha: regras (`issuelength`, `renewalperiod`, `daysmode`, `fine`, `firstremind`...), preferências (`useDaysMode`, `ReturnBeforeExpiry`, `finesCalendar`...), `calendar` (`weekly_closed`, `annual`, `closed`, `open`) e `library_hours`.
+- O teste do Koha muda preferências e feriados em sequência; cada caso escreve o estado em vigor na hora da asserção, e um comentário explica quando o `.t` depende de efeito colateral (por exemplo, uma data mutada).
+- Âncoras YAML e `<<` servem para repetir contexto. O CI roda todos os casos (`crates/elzevir-scenarios/tests/koha_tests.rs`).
+
 ### Logs (`tracing`)
 
 - Eventos estruturados, nunca texto montado: `info!(item = %item_id, branch = %branch, "checkout accepted")`.
