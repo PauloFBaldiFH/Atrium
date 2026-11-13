@@ -3,15 +3,15 @@
 
 use elzevir_app::catalog::{
     CatalogCommand, CatalogOutput, CatalogReadError, CatalogReader, CatalogRefusal, InstanceView,
-    ItemData, ItemStatus, ItemView, NewContribution, NewIdentifier, NewInstance, NewRecord,
-    NewSubject, NewWorkRelation,
+    ItemData, ItemStatus, ItemView, NewContribution, NewIdentifier, NewInstance, NewNote,
+    NewRecord, NewSubject, NewWorkRelation,
 };
 use elzevir_app::commands::{WriteOutput, WriteRefusal};
 use elzevir_app::matching::match_keys;
 use elzevir_app::search::REINDEX_INSTANCE;
 use elzevir_domain::catalog::{
     AgentKind, BranchId, HubId, IdentifierKind, InstanceId, ItemId, ItemTypeId, MaterialType,
-    SourceFormat, SubjectKind, Vocabulary, WorkId, WorkRelationKind,
+    NoteKind, SourceFormat, SubjectKind, Vocabulary, WorkId, WorkRelationKind,
 };
 use rusqlite::{Connection, ErrorCode, OptionalExtension, params};
 
@@ -343,6 +343,7 @@ fn add_instance(
         .map_err(StoreError::from)?;
     let instance_id = connection.last_insert_rowid();
     insert_identifiers(connection, instance_id, &instance.identifiers)?;
+    insert_notes(connection, instance_id, &instance.notes)?;
     Ok(instance_id)
 }
 
@@ -362,6 +363,21 @@ pub(crate) fn insert_identifiers(
                 identifier.value,
                 identifier.qualifier
             ],
+        )?;
+    }
+    Ok(())
+}
+
+pub(crate) fn insert_notes(
+    connection: &Connection,
+    instance: i64,
+    notes: &[NewNote],
+) -> Result<(), StoreError> {
+    for (note, position) in notes.iter().zip(0_i64..) {
+        connection.execute(
+            "INSERT INTO instance_notes (instance_id, position, kind, text)
+             VALUES (?1, ?2, ?3, ?4)",
+            params![instance, position, note.kind.code(), note.text],
         )?;
     }
     Ok(())
@@ -651,6 +667,13 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
         "identifier kind",
         IdentifierKind::from_code,
     )?;
+    let notes = coded_list(
+        c,
+        "SELECT kind, text FROM instance_notes WHERE instance_id = ?1 ORDER BY position",
+        id.0,
+        "note kind",
+        NoteKind::from_code,
+    )?;
     let relations = work_relations(c, work)?;
     let mut statement = c.prepare(
         "SELECT terms.code FROM work_languages JOIN terms ON terms.id = work_languages.language
@@ -675,6 +698,7 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
         contributors,
         subjects,
         identifiers,
+        notes,
         languages,
     }))
 }

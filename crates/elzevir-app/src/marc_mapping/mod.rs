@@ -10,9 +10,9 @@ mod items;
 mod text;
 mod work;
 
-use elzevir_marc::{Field, Record, Subfield};
+use elzevir_marc::{Field, Limits, Record, RecordRef, Subfield};
 
-use crate::catalog::NewRecord;
+use crate::catalog::{NewNote, NewRecord};
 
 pub use export::bibframe_to_marc;
 
@@ -34,6 +34,15 @@ pub enum MappingError {
         /// Zero-based position of the `952` among the record's `952` fields.
         position: usize,
     },
+}
+
+/// The notes of a stored source record (UTF-8 ISO 2709), for records stored before the
+/// model had notes. A record that no longer parses has none.
+#[must_use]
+pub fn source_notes(source: &[u8]) -> Vec<NewNote> {
+    RecordRef::parse(source, &Limits::default())
+        .map(|parsed| instance::notes(&Marc(&Record::from_ref(&parsed))))
+        .unwrap_or_default()
 }
 
 /// Maps one MARC21 record, already in UTF-8, to a Work, its Instance and its Items.

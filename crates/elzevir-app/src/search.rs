@@ -72,6 +72,8 @@ pub struct SearchDocument {
     pub publisher: Option<String>,
     /// The Work's summary.
     pub summary: Option<String>,
+    /// The Instance's notes (general, contents, local), in order.
+    pub notes: Vec<String>,
     /// Date of publication, as written.
     pub date: Option<String>,
     /// Category of material: the Instance's, else the Work's.
@@ -117,6 +119,11 @@ pub fn document_of(instance: &InstanceView, items: &[ItemView]) -> SearchDocumen
             .collect(),
         publisher: instance.publisher.clone(),
         summary: instance.summary.clone(),
+        notes: instance
+            .notes
+            .iter()
+            .map(|(_, text)| text.clone())
+            .collect(),
         date: instance.date.clone(),
         material_type: instance.material_type.or(instance.work_material_type),
         classification: instance.classification.clone(),
@@ -398,6 +405,7 @@ mod tests {
                 contributors: Vec::new(),
                 subjects: Vec::new(),
                 identifiers: Vec::new(),
+                notes: Vec::new(),
                 languages: Vec::new(),
             }))
         }

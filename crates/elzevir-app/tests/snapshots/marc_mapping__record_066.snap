@@ -47,6 +47,7 @@ instance:
     - kind: isbn
       value: "8516009181"
       qualifier: v. 3
+  notes: []
 items:
   - barcode: "12766"
     inventory_number: ~

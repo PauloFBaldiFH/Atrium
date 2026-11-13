@@ -167,3 +167,48 @@ fn editing_a_list_keeps_untouched_fields_with_their_authority_links() {
     assert_eq!(again.subjects, edited.subjects);
     assert_eq!(again.contributions, edited.contributions);
 }
+
+#[test]
+fn notes_map_both_ways_and_an_edited_note_touches_only_its_field() {
+    use elzevir_app::catalog::NewNote;
+    use elzevir_domain::catalog::NoteKind;
+
+    let records = records();
+    let with_notes = records
+        .iter()
+        .filter(|(_, record)| !model(record).instance.notes.is_empty())
+        .count();
+    assert!(with_notes > 0, "the staff export has notes");
+    // Record 147 has a contents note with "Karl Marx" (docs/specs/catalogo/busca.md, §4).
+    let (_, record) = &records[146];
+    let mut edited = model(record);
+    let contents = edited
+        .instance
+        .notes
+        .iter_mut()
+        .find(|note| note.kind == NoteKind::Contents)
+        .unwrap();
+    assert!(contents.text.contains("Marx"));
+    contents.text = "Nota de conteúdo reescrita.".to_owned();
+    edited.instance.notes.push(NewNote {
+        kind: NoteKind::Local,
+        text: "Doação da família.".to_owned(),
+    });
+    let exported = bibframe_to_marc(&edited, Some(record));
+    for tag in [*b"500", *b"505", *b"590"] {
+        let others = |r: &Record| {
+            r.fields
+                .iter()
+                .filter(|f| ![*b"500", *b"505", *b"590"].contains(f.tag().as_bytes()))
+                .cloned()
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(
+            others(&exported),
+            others(record),
+            "only notes change ({tag:?})"
+        );
+    }
+    assert_eq!(tags(&exported, *b"500"), tags(record, *b"500"));
+    assert_eq!(model(&exported).instance.notes, edited.instance.notes);
+}

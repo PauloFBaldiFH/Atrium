@@ -18,7 +18,7 @@ use elzevir_app::catalog::{InstanceView, ItemStatus, ItemView};
 use elzevir_app::memory::{MemoryProbe, MemoryReport};
 use elzevir_app::search::SearchHit;
 use elzevir_app::staff::{StaffAccount, StaffDirectory, StaffDirectoryError};
-use elzevir_domain::catalog::{InstanceId, ItemId, MaterialType, WorkId};
+use elzevir_domain::catalog::{InstanceId, ItemId, MaterialType, NoteKind, WorkId};
 use elzevir_web::{AppState, OpacPorts, WebConfig, router};
 use elzevir_web_templates::I18n;
 use http_body_util::BodyExt;
@@ -62,6 +62,10 @@ fn view(id: i64, title: &str) -> InstanceView {
         contributors: Vec::new(),
         subjects: Vec::new(),
         identifiers: Vec::new(),
+        notes: vec![
+            (NoteKind::General, "Inclui índice.".to_owned()),
+            (NoteKind::Contents, "Parte 1 -- Parte 2.".to_owned()),
+        ],
         languages: vec!["por".to_owned()],
     }
 }
@@ -210,6 +214,8 @@ async fn a_record_shows_its_items_and_is_rendered_once_per_version() {
     assert!(html.contains("Editora, 1995"));
     assert!(html.contains("Available"));
     assert!(html.contains("Lost"));
+    assert!(html.contains("<dt>Contents</dt>\n    <dd>Parte 1 -- Parte 2.</dd>"));
+    assert!(html.contains("<dt>Notes</dt>\n    <dd>Inclui índice.</dd>"));
     assert!(!html.contains("<Anuário>"));
     assert_eq!(catalog.reads.load(Ordering::SeqCst), 1);
     let (_, again) = get(&app, "/record/1", false).await;

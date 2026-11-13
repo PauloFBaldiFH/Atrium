@@ -39,6 +39,7 @@ instance:
     - kind: isbn
       value: "9788599583159"
       qualifier: ~
+  notes: []
 items:
   - barcode: "16283"
     inventory_number: ~

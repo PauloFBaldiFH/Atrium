@@ -40,6 +40,11 @@ instance:
     - kind: system_control_number
       value: "000002219"
       qualifier: ~
+  notes:
+    - kind: general
+      text: Colaboração de Alfred S. Eichner.
+    - kind: general
+      text: "Título original: The troublesome presence."
 items:
   - barcode: "9261"
     inventory_number: ~

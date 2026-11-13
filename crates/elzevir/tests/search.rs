@@ -184,16 +184,12 @@ fn the_index_and_its_cursor_survive_a_restart() {
 /// finds and only the Elzevir finds (docs/specs/catalogo/busca.md, §4). Every other query
 /// must find exactly what Koha finds among the 200 records.
 const KNOWN_DIFFERENCES: &[(&str, &[i64], &[i64])] = &[
-    // 505 (contents note): notes are not in the model yet.
-    ("karl marx", &[147], &[]),
     // 590 (local note) `reimpressão`: Koha also truncates `rei`.
     ("discurso do rei", &[187], &[]),
-    // 520 `gramatical` (Koha cuts it to `gramat`) and 505 (contents note).
-    ("gramatica", &[179, 188], &[]),
+    // 520 `gramatical`: Koha cuts it to `gramat`.
+    ("gramatica", &[179], &[]),
     // 520 `contextualização histórica`: the Portuguese stemmer joins it to `história`.
     ("historia da arte", &[], &[146]),
-    // 500 (general note) `análise`: notes are not in the model yet.
-    ("analise do discurso", &[12], &[]),
 ];
 
 #[test]

@@ -113,6 +113,18 @@ stable_enum! {
 }
 
 stable_enum! {
+    /// Kinds of note on an Instance.
+    NoteKind {
+        /// A general note (MARC21 500).
+        General = 1,
+        /// A formatted contents note (MARC21 505).
+        Contents = 2,
+        /// A local note (MARC21 590).
+        Local = 3,
+    }
+}
+
+stable_enum! {
     /// Kinds of Instance identifier.
     IdentifierKind {
         /// ISBN (MARC21 020).
@@ -306,6 +318,7 @@ mod tests {
             IdentifierKind::code,
             IdentifierKind::from_code,
         );
+        round_trips(NoteKind::ALL, NoteKind::code, NoteKind::from_code);
         round_trips(Vocabulary::ALL, Vocabulary::code, Vocabulary::from_code);
         round_trips(
             MaterialType::ALL,

@@ -5,7 +5,7 @@
 ## 1. Comportamento
 
 1. **Obra** (`works`) é o conteúdo intelectual: título preferido (título uniforme), idiomas, contribuições (autores e colaboradores), assuntos, classificação e resumo.
-2. **Instância** (`instances`) é uma edição publicada de uma Obra: título como está na publicação, edição, local, editora, data, descrição física, série e identificadores (ISBN, ISSN, LCCN, EAN). Toda Instância pertence a exatamente uma Obra.
+2. **Instância** (`instances`) é uma edição publicada de uma Obra: título como está na publicação, edição, local, editora, data, descrição física, série, identificadores (ISBN, ISSN, LCCN, EAN) e notas (`instance_notes`: geral, de conteúdo e local, tarefa 2.1). Toda Instância pertence a exatamente uma Obra.
 3. Na v1, cada registro importado cria **uma Obra e uma Instância**. O esquema já aceita várias Instâncias por Obra, mas nada as funde automaticamente.
 4. **Item** (`items`) é o exemplar físico de uma Instância: código de barras, unidade de origem e unidade atual, tipo de item, número de chamada, localização, coleção, situação e preços. É o que a circulação empresta.
 5. **Agente** (`agents`) é uma pessoa, entidade coletiva, evento ou família, identificado pelo tipo e pelo cabeçalho. O mesmo cabeçalho do mesmo tipo é sempre o mesmo Agente.
@@ -14,8 +14,8 @@
 8. **Identidades numéricas**: tudo que é vocabulário é guardado como número, nunca como texto repetido.
    - Unidades (`branches`) e tipos de item (`item_types`) têm tabela própria, porque a circulação depende deles.
    - Os outros códigos ficam em `terms`, separados por vocabulário: idioma, função do colaborador (relator), localização, coleção, esquema de classificação e tesauro.
-   - Tipos fixos (tipo de agente, de assunto, de identificador, formato do registro de origem) são `enum`s no domínio com um número estável cada.
-9. A ordem importa e é guardada (`position`): idiomas, contribuições, assuntos e identificadores saem na ordem em que entraram.
+   - Tipos fixos (tipo de agente, de assunto, de identificador, de nota, formato do registro de origem) são `enum`s no domínio com um número estável cada.
+9. A ordem importa e é guardada (`position`): idiomas, contribuições, assuntos, identificadores e notas saem na ordem em que entraram.
 10. Situação do exemplar (`not_for_loan`, `damaged`, `lost`, `withdrawn`, `restricted`): número, com 0 = normal. Os outros valores são definidos pela biblioteca, como os valores autorizados do Koha.
 11. Dinheiro é inteiro em centavos. Datas são texto ISO 8601.
 12. Propriedades pouco usadas vão para a coluna `extra` (JSON) da entidade, em vez de uma coluna para cada.
@@ -34,7 +34,7 @@
     - Os outros vocabulários (idioma, relator, localização, coleção, esquema, tesauro) são criados no primeiro uso, com o próprio código como rótulo.
 21. Agente e Assunto já existentes são reaproveitados (itens 5 e 6), nunca duplicados.
 22. Recusas, sem nada gravado: código de unidade ou tipo de item já usado, unidade ou tipo de item desconhecido, Hub, Obra relacionada ou Instância inexistente e código de barras repetido.
-23. A leitura (`CatalogReader`) devolve uma Instância com sua Obra, Hub, categorias, relações, contribuições, assuntos, identificadores e idiomas na ordem gravada, e os Itens de uma Instância na ordem de criação.
+23. A leitura (`CatalogReader`) devolve uma Instância com sua Obra, Hub, categorias, relações, contribuições, assuntos, identificadores, notas e idiomas na ordem gravada, e os Itens de uma Instância na ordem de criação.
 24. Acrescentar registro ou Item grava, na mesma transação, o efeito `catalog.reindex_instance` (`{"instance": id}`) em `effect_outbox`, para o indexador (tarefa 1.8) refazer o documento daquela Instância depois do commit. Comando recusado não deixa efeito.
 
 ## 2. Origem no Koha
@@ -63,7 +63,7 @@ Testes: `crates/elzevir-store/src/schema.rs` (`catalog_tests`, esquema) e `crate
 ## 4. Casos de borda
 
 1. Apagar uma Obra que tem Instâncias, uma Instância que tem Itens, ou uma unidade ou tipo de item em uso: o banco recusa.
-2. Apagar uma Instância sem Itens apaga junto os identificadores e o registro de origem dela.
+2. Apagar uma Instância sem Itens apaga junto os identificadores, as notas e o registro de origem dela.
 3. Dois Itens com o mesmo código de barras: recusado. Vários Itens sem código de barras: aceito.
 4. Mesmo código em vocabulários diferentes (por exemplo `REF` como localização e como coleção): são dois termos.
 5. Assunto com o mesmo cabeçalho e tipo, um com tesauro e outro sem: são dois Assuntos. Dois sem tesauro: é o mesmo.
@@ -78,7 +78,7 @@ Nenhum (paridade livre).
 
 ## 6. Fora do escopo
 
-- Mapeamento MARC21 ↔ modelo, incluindo títulos variantes, notas e séries estruturadas: tarefa 1.6.
+- Títulos variantes e séries estruturadas no mapeamento MARC21.
 - Edição e exclusão de Obras, Instâncias e Itens pelos comandos: quando a catalogação na interface existir.
 - Autoridades (registro de autoridade por Agente e Assunto), fusão de Obras e serialização BIBFRAME em RDF: fases seguintes.
 - Empréstimos, reservas e leitores: Fase 3.

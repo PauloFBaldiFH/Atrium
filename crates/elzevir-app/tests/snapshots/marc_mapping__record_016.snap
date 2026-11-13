@@ -36,6 +36,7 @@ instance:
   extent: ~
   series: ~
   identifiers: []
+  notes: []
 items:
   - barcode: "6908"
     inventory_number: ~

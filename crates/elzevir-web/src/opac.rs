@@ -11,7 +11,7 @@ use axum::response::{Html, IntoResponse, Response};
 use elzevir_app::catalog::{CatalogReader, ItemStatus, ItemView};
 use elzevir_app::opac::{self, RecordPage, ResultsPage};
 use elzevir_app::search::SearchIndex;
-use elzevir_domain::catalog::{InstanceId, MaterialType};
+use elzevir_domain::catalog::{InstanceId, MaterialType, NoteKind};
 use elzevir_web_templates::{
     ItemLine, OpacNotFound, OpacRecord, OpacRecordBody, OpacResults, ResultLine,
 };
@@ -203,8 +203,19 @@ fn record_body<'a>(state: &'a AppState, page: &'a RecordPage) -> OpacRecordBody<
             .collect(),
         languages: instance.languages.iter().map(String::as_str).collect(),
         summary: instance.summary.as_deref(),
+        notes: notes(&instance.notes, |kind| kind != NoteKind::Contents),
+        contents: notes(&instance.notes, |kind| kind == NoteKind::Contents),
         items: page.items.iter().map(item_line).collect(),
     }
+}
+
+/// The texts of the notes whose kind passes `keep`, in order.
+fn notes(notes: &[(NoteKind, String)], keep: impl Fn(NoteKind) -> bool) -> Vec<&str> {
+    notes
+        .iter()
+        .filter(|(kind, _)| keep(*kind))
+        .map(|(_, text)| text.as_str())
+        .collect()
 }
 
 fn item_line(item: &ItemView) -> ItemLine {

@@ -4,12 +4,12 @@
 use std::num::NonZeroUsize;
 
 use elzevir_app::catalog::{
-    CatalogReadError, ItemData, NewContribution, NewIdentifier, NewInstance, NewRecord, NewSubject,
-    NewWorkRelation,
+    CatalogReadError, ItemData, NewContribution, NewIdentifier, NewInstance, NewNote, NewRecord,
+    NewSubject, NewWorkRelation,
 };
 use elzevir_app::export::{RecordSource, StoredRecord};
 use elzevir_domain::catalog::{
-    AgentKind, HubId, IdentifierKind, InstanceId, MaterialType, Money, SubjectKind,
+    AgentKind, HubId, IdentifierKind, InstanceId, MaterialType, Money, NoteKind, SubjectKind,
 };
 use rusqlite::{Connection, OptionalExtension, Row, params};
 
@@ -130,6 +130,7 @@ fn stored(c: &Connection, head: Head) -> Result<StoredRecord, ReadFailure> {
             extent: head.extent,
             series: head.series,
             identifiers: identifiers(c, head.instance)?,
+            notes: notes(c, head.instance)?,
         },
         items: items(c, head.instance)?,
         source: c
@@ -215,6 +216,25 @@ fn subjects(c: &Connection, work: i64) -> Result<Vec<NewSubject>, ReadFailure> {
                 kind: required(kind, "subject kind", SubjectKind::from_code)?,
                 heading,
                 thesaurus,
+            })
+        })
+        .collect()
+}
+
+fn notes(c: &Connection, instance: i64) -> Result<Vec<NewNote>, ReadFailure> {
+    let mut statement = c.prepare_cached(
+        "SELECT kind, text FROM instance_notes WHERE instance_id = ?1 ORDER BY position",
+    )?;
+    let rows = statement
+        .query_map(params![instance], |row| {
+            Ok((row.get::<_, u8>(0)?, row.get(1)?))
+        })?
+        .collect::<Result<Vec<_>, _>>()?;
+    rows.into_iter()
+        .map(|(kind, text)| {
+            Ok(NewNote {
+                kind: required(kind, "note kind", NoteKind::from_code)?,
+                text,
             })
         })
         .collect()

@@ -8,7 +8,7 @@
 
 use elzevir_domain::catalog::{
     AgentKind, BranchId, HubId, IdentifierKind, InstanceId, ItemId, ItemTypeId, MaterialType,
-    Money, SubjectKind, WorkId, WorkRelationKind,
+    Money, NoteKind, SubjectKind, WorkId, WorkRelationKind,
 };
 use serde::{Deserialize, Serialize};
 
@@ -199,6 +199,9 @@ pub struct NewInstance {
     pub series: Option<String>,
     /// Identifiers, in order.
     pub identifiers: Vec<NewIdentifier>,
+    /// Notes, in order.
+    #[serde(default)]
+    pub notes: Vec<NewNote>,
 }
 
 /// One identifier of an Instance.
@@ -210,6 +213,15 @@ pub struct NewIdentifier {
     pub value: String,
     /// Qualifier, such as `(broch.)`.
     pub qualifier: Option<String>,
+}
+
+/// One note of an Instance.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct NewNote {
+    /// Kind of note.
+    pub kind: NoteKind,
+    /// The note, as written.
+    pub text: String,
 }
 
 /// A new Item of an existing Instance.
@@ -369,6 +381,8 @@ pub struct InstanceView {
     pub subjects: Vec<(SubjectKind, String)>,
     /// Identifiers, in order.
     pub identifiers: Vec<(IdentifierKind, String)>,
+    /// Notes with their kind, in order.
+    pub notes: Vec<(NoteKind, String)>,
     /// Language codes, in order.
     pub languages: Vec<String>,
 }

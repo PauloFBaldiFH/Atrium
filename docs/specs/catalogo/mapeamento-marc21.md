@@ -64,6 +64,7 @@ Hub e relações entre Obras não são criados na importação desta versão (AD
 | LCCN | `010$a` |
 | DOI, ISMN, EAN | `024$a` com 1º indicador `7` e `$2` = `doi`; `2`; `3` |
 | número de controle | `035$a` |
+| notas, na ordem | `500$a` (geral), `505` (conteúdo: `$a`, ou `$g`, `$t` e `$r` na ordem do campo, unidos por espaço), `590$a` (local); a pontuação é mantida |
 
 ### 1.4 Itens (`952`, convenção do Koha)
 
@@ -92,7 +93,7 @@ Os outros subcampos do `952` são dados que o Koha calcula ou mantém sozinho (`
    - Título da Instância: `245$a` e `$b` (separados no ` : `); `$n` e `$p` saem.
    - Título da Obra: `130$a` se o registro tem `130`, senão `240$a` (criado só se difere do título principal).
    - Publicação: no `264` de 2º indicador `1`, ou no `260` quando é o que o registro usa.
-4. Listas (contribuições, assuntos, identificadores, exemplares): cada valor do modelo reaproveita, sem mudança, o campo original que mapeia exatamente para ele, com `$0`, `$1`, `$9` e o que mais tiver. Só valores novos ou alterados geram campo novo, no lugar do primeiro campo da lista.
+4. Listas (contribuições, assuntos, identificadores, notas, exemplares): cada valor do modelo reaproveita, sem mudança, o campo original que mapeia exatamente para ele, com `$0`, `$1`, `$9` e o que mais tiver. Só valores novos ou alterados geram campo novo, no lugar do primeiro campo da lista.
    - Exemplar alterado com o mesmo código de barras: o `952` original é mantido e só os subcampos mapeados mudam (`$9`, `$6`, `$l`, `$r`... ficam).
    - Exemplar novo: `952` novo depois dos outros.
 5. Categoria: posições 06 e 07 do líder pela tabela de §1.1 ao contrário (livro `am`, periódico `as`, mapa `em`, partitura `cm`, gravação sonora `jm`, vídeo `gm`, digital `mm`, visual `km`, misto `pc`). Instância digital sem `007` ganha `007` = `cr`.

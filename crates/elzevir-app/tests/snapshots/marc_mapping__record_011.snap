@@ -46,6 +46,11 @@ instance:
     - kind: isbn
       value: "8570181515"
       qualifier: coleção
+  notes:
+    - kind: general
+      text: "Créditos: Diretor: Raimundo Pontes Cunha Neto; elaboração e composição: Luciano de Sousa Dias; índice: Paulo R. M. de Aguiar; revisão: Alessandra da Silva Moreira et al.; colaboração: Subsecretaria de Anais, Análise e Arquivo do Senado Federal."
+    - kind: general
+      text: "Reúne testemunhos e depoimentos de Ronaldo Cunha Lima, Teotônio Vilela, Joacil de Brito Pereira e Humberto Lucena na contracapa."
 items:
   - barcode: "10255"
     inventory_number: ~

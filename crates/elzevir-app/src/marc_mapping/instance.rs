@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //! The Instance: title, publication, extent, series, identifiers, category (spec §1.1, §1.3).
 
-use elzevir_domain::catalog::{IdentifierKind, MaterialType};
+use elzevir_domain::catalog::{IdentifierKind, MaterialType, NoteKind};
 
 use super::{DataField, Marc, text};
-use crate::catalog::{NewIdentifier, NewInstance};
+use crate::catalog::{NewIdentifier, NewInstance, NewNote};
 
 pub(super) fn map(marc: &Marc<'_>, work_material_type: MaterialType) -> NewInstance {
     let publication = marc
@@ -23,6 +23,7 @@ pub(super) fn map(marc: &Marc<'_>, work_material_type: MaterialType) -> NewInsta
             .and_then(|field| field.raw_joined(b"abc")),
         series: series(marc),
         identifiers: identifiers(marc),
+        notes: notes(marc),
     }
 }
 
@@ -92,6 +93,27 @@ pub(super) fn identifier_of(tag: [u8; 3], field: DataField<'_>) -> Option<NewIde
         value,
         qualifier,
     })
+}
+
+/// Tags of the note fields.
+pub(super) const NOTE_TAGS: [&[u8; 3]; 3] = [b"500", b"505", b"590"];
+
+pub(super) fn notes(marc: &Marc<'_>) -> Vec<NewNote> {
+    marc.data_in(&NOTE_TAGS)
+        .filter_map(|(tag, field)| note_of(*tag, field))
+        .collect()
+}
+
+/// The note one field holds. Notes keep their punctuation: they are sentences.
+pub(super) fn note_of(tag: [u8; 3], field: DataField<'_>) -> Option<NewNote> {
+    let (kind, text) = match &tag {
+        b"500" => (NoteKind::General, field.raw(b'a')),
+        // An enhanced contents note splits each part into `$g`, `$t` and `$r`.
+        b"505" => (NoteKind::Contents, field.raw_joined(b"agtr")),
+        b"590" => (NoteKind::Local, field.raw(b'a')),
+        _ => return None,
+    };
+    Some(NewNote { kind, text: text? })
 }
 
 /// `024`: the first indicator (and `$2`) says which standard number it is.

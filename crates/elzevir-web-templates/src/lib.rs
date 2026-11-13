@@ -239,6 +239,10 @@ pub struct OpacRecordBody<'a> {
     pub languages: Vec<&'a str>,
     /// Summary.
     pub summary: Option<&'a str>,
+    /// General and local notes.
+    pub notes: Vec<&'a str>,
+    /// Contents notes.
+    pub contents: Vec<&'a str>,
     /// Items.
     pub items: Vec<ItemLine>,
 }
