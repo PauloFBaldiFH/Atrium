@@ -10,6 +10,8 @@ O Atrium é um sistema de bibliotecas em Rust que reconstrói o **comportamento*
 
 - **Fase 0 concluída** (PRs #6 a #14). **Fase 1 em andamento** (autorizada por Paulo em 2026-11-12): MARC, modelo bibliográfico, busca e o executor de cenários. O oráculo é a instância de testes de Paulo (doc 04, §3); as credenciais ficam só em variáveis de ambiente de quem grava.
 - Fontes de verdade, nesta ordem: [`docs/arquitetura/04-decisoes.md`](docs/arquitetura/04-decisoes.md) e [`05-definicoes-de-implementacao.md`](docs/arquitetura/05-definicoes-de-implementacao.md) > 03 > 02 > 01. Se o código contradiz o doc 04, o código está errado ou o doc 04 precisa de um PR primeiro.
+- **Novo nome: Elzevir** (Paulo, 2026-11-12). O código ainda se chama `atrium`; a troca é um PR mecânico próprio ([visão, B.7](docs/ARCHITECTURE_VISION.md)).
+- **Antes de mexer no núcleo BIBFRAME (Hub, Work, Instance, Item), no mapeamento MARC21/Koha ou no frontend, leia [`docs/ARCHITECTURE_VISION.md`](docs/ARCHITECTURE_VISION.md)**: a especificação de Paulo (regra de ouro: nenhuma etiqueta MARC no núcleo, MARC só na borda, ida e volta sem perdas) e o plano de integração com o código, com a ordem das etapas.
 - `reference/koha/` é **referência de leitura** (GPLv3, submódulo fixado no Koha 26.05.05), não código do Atrium, e fica fora do workspace Cargo. Baixe com `git submodule update --init --depth 1 reference/koha`.
 
 ## Como trabalhar numa tarefa
