@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Every Koha system preference has a destination in Atrium (task 0.11).
+//! Every Koha system preference has a destination in Elzevir (task 0.11).
 //!
 //! Compares the inventory extracted from Koha (`data/koha-<series>/sysprefs.json`) with the
 //! triage (`tools/sysprefs-triage.json`). A Koha upgrade that adds a preference fails CI

@@ -1,5 +1,5 @@
 {
-  "_comment": "Destino de cada preferência do Koha 26.05.05 no Atrium (tarefa 0.11). Gerado a partir de data/koha-26.05/sysprefs.json e revisado à mão; cargo xtask check-sysprefs garante que toda preferência tem destino. Destinos: config, regra, fixo, interface, plataforma, fora-v1, revisar.",
+  "_comment": "Destino de cada preferência do Koha 26.05.05 no Elzevir (tarefa 0.11). Gerado a partir de data/koha-26.05/sysprefs.json e revisado à mão; cargo xtask check-sysprefs garante que toda preferência tem destino. Destinos: config, regra, fixo, interface, plataforma, fora-v1, revisar.",
   "preferencias": {
     "1PageOrderPDFText": {
       "destino": "fora-v1",
@@ -75,11 +75,11 @@
     },
     "AddressForFailedOverdueNotices": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "AddressFormat": {
       "destino": "config",
-      "nota": "Idiomas e formatos de data vão para atrium.toml [interface]."
+      "nota": "Idiomas e formatos de data vão para elzevir.toml [interface]."
     },
     "advancedMARCeditor": {
       "destino": "revisar",
@@ -87,11 +87,11 @@
     },
     "AdvancedSearchLanguages": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "AdvancedSearchTypes": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "AgeRestrictionMarker": {
       "destino": "revisar",
@@ -191,15 +191,15 @@
     },
     "AllowPatronToSetCheckoutsVisibilityForGuarantor": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "AllowPatronToSetFinesVisibilityForGuarantor": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "AllowPKIAuth": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "AllowRenewalIfOtherItemsAvailable": {
       "destino": "revisar",
@@ -235,7 +235,7 @@
     },
     "alphabet": {
       "destino": "config",
-      "nota": "Idiomas e formatos de data vão para atrium.toml [interface]."
+      "nota": "Idiomas e formatos de data vão para elzevir.toml [interface]."
     },
     "AlternateHoldingsField": {
       "destino": "revisar",
@@ -267,7 +267,7 @@
     },
     "AnonSuggestions": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "AnonymizeLastBorrower": {
       "destino": "revisar",
@@ -279,7 +279,7 @@
     },
     "AnonymousPatron": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "ApiKeyLog": {
       "destino": "fixo",
@@ -355,11 +355,11 @@
     },
     "AuthorityXSLTOpacDetailsDisplay": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "AuthorityXSLTOpacResultsDisplay": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "AuthorityXSLTResultsDisplay": {
       "destino": "interface",
@@ -367,11 +367,11 @@
     },
     "AuthorLinkSortBy": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "AuthorLinkSortOrder": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "AuthSuccessLog": {
       "destino": "fixo",
@@ -511,11 +511,11 @@
     },
     "BiblioDefaultView": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "BiblioItemtypeInfo": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "BibtexExportAdditionalFields": {
       "destino": "revisar",
@@ -523,7 +523,7 @@
     },
     "BlockExpiredPatronOpacActions": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "BlockReturnOfLostItems": {
       "destino": "revisar",
@@ -563,7 +563,7 @@
     },
     "BrowseResultSelection": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "BundleLostValue": {
       "destino": "revisar",
@@ -587,7 +587,7 @@
     },
     "CalendarFirstDayOfWeek": {
       "destino": "config",
-      "nota": "atrium.toml [interface] primeiro_dia_semana."
+      "nota": "elzevir.toml [interface] primeiro_dia_semana."
     },
     "CancelOrdersInClosedBaskets": {
       "destino": "fora-v1",
@@ -611,19 +611,19 @@
     },
     "casAuthentication": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "casLogout": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "casServerUrl": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "casServerVersion": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "CatalogConcerns": {
       "destino": "revisar",
@@ -715,7 +715,7 @@
     },
     "COinSinOPACResults": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "CollapseFieldsPatronAddForm": {
       "destino": "revisar",
@@ -767,7 +767,7 @@
     },
     "CSVDelimiter": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "CumulativeRestrictionPeriods": {
       "destino": "revisar",
@@ -779,7 +779,7 @@
     },
     "CurrencyFormat": {
       "destino": "config",
-      "nota": "atrium.toml [instituicao] formato_moeda."
+      "nota": "elzevir.toml [instituicao] formato_moeda."
     },
     "CustomCoverImages": {
       "destino": "fora-v1",
@@ -791,11 +791,11 @@
     },
     "dateformat": {
       "destino": "config",
-      "nota": "atrium.toml [interface] formato_data."
+      "nota": "elzevir.toml [interface] formato_data."
     },
     "DebugLevel": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "decreaseLoanHighHolds": {
       "destino": "revisar",
@@ -887,23 +887,23 @@
     },
     "defaultSortField": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "defaultSortOrder": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "DefaultToLoggedInLibraryCircRules": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "DefaultToLoggedInLibraryNoticesSlips": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "DefaultToLoggedInLibraryOverdueTriggers": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "Display856uAsImage": {
       "destino": "interface",
@@ -919,7 +919,7 @@
     },
     "displayFacetCount": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "DisplayIconsXSLT": {
       "destino": "interface",
@@ -927,7 +927,7 @@
     },
     "DisplayLibraryFacets": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "DisplayMultiItemHolds": {
       "destino": "revisar",
@@ -939,7 +939,7 @@
     },
     "DisplayOPACiconsXSLT": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "DisplayPublishedDate": {
       "destino": "fora-v1",
@@ -979,23 +979,23 @@
     },
     "ElasticsearchBoostFieldMatch": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "ElasticsearchBoostFieldMatchAmount": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "ElasticsearchCrossFields": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "ElasticsearchEnableZebraQueue": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "ElasticsearchEscapeCharacters": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "ElasticsearchIndexStatus_authorities": {
       "destino": "fixo",
@@ -1007,15 +1007,15 @@
     },
     "ElasticsearchMARCFormat": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "ElasticsearchPreventAutoTruncate": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "EmailAddressForPatronRegistrations": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "EmailAddressForSuggestions": {
       "destino": "fora-v1",
@@ -1047,11 +1047,11 @@
     },
     "EmailOverduesNoEmail": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "EmailPatronRegistrations": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "EmailPatronWhenHoldIsPlaced": {
       "destino": "revisar",
@@ -1091,7 +1091,7 @@
     },
     "EnableOpacSearchHistory": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "EnablePointOfSale": {
       "destino": "revisar",
@@ -1099,11 +1099,11 @@
     },
     "EnableSearchHistory": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "EnableZotero": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "EnhancedMessagingPreferences": {
       "destino": "revisar",
@@ -1135,7 +1135,7 @@
     },
     "expandedSearchOption": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "ExpireReservesAutoFill": {
       "destino": "revisar",
@@ -1171,19 +1171,19 @@
     },
     "FacetLabelTruncationLength": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "FacetMaxCount": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "FacetOrder": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "FacetSortingLocale": {
       "destino": "config",
-      "nota": "Idiomas e formatos de data vão para atrium.toml [interface]."
+      "nota": "Idiomas e formatos de data vão para elzevir.toml [interface]."
     },
     "FailedLoginAttempts": {
       "destino": "revisar",
@@ -1219,7 +1219,7 @@
     },
     "FineNoRenewalsIncludeCredits": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "FineNotifyAtCheckin": {
       "destino": "revisar",
@@ -1247,7 +1247,7 @@
     },
     "ForceLibrarySelection": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "ForcePasswordResetWhenSetByStaff": {
       "destino": "revisar",
@@ -1275,31 +1275,31 @@
     },
     "GoogleOAuth2ClientID": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "GoogleOAuth2ClientSecret": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "GoogleOpenIDConnect": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "GoogleOpenIDConnectAutoRegister": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "GoogleOpenIDConnectDefaultBranch": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "GoogleOpenIDConnectDefaultCategory": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "GoogleOpenIDConnectDomain": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "hide_marc": {
       "destino": "revisar",
@@ -1307,7 +1307,7 @@
     },
     "hidelostitems": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "HidePatronName": {
       "destino": "interface",
@@ -1459,23 +1459,23 @@
     },
     "IncludeSeeAlsoFromInSearches": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "IncludeSeeFromInSearches": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "IndependentBranches": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "IndependentBranchesPatronModifications": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "IndependentBranchesTransfers": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "intranet_includes": {
       "destino": "interface",
@@ -1519,7 +1519,7 @@
     },
     "IntranetNumbersPreferPhrase": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "intranetreadinghistory": {
       "destino": "revisar",
@@ -1583,11 +1583,11 @@
     },
     "JobsNotificationMethod": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "KohaAdminEmailAddress": {
       "destino": "config",
-      "nota": "atrium.toml [instituicao] email."
+      "nota": "elzevir.toml [instituicao] email."
     },
     "KohaManualBaseURL": {
       "destino": "fora-v1",
@@ -1607,7 +1607,7 @@
     },
     "LibraryName": {
       "destino": "config",
-      "nota": "atrium.toml [instituicao] nome."
+      "nota": "elzevir.toml [instituicao] nome."
     },
     "LibraryThingForLibrariesEnabled": {
       "destino": "fora-v1",
@@ -1659,7 +1659,7 @@
     },
     "LoadSearchHistoryToTheFirstLoggedUser": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "LocalCoverImages": {
       "destino": "fora-v1",
@@ -1759,7 +1759,7 @@
     },
     "maxItemsInSearchResults": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "MaxItemsToDisplayForBatchDel": {
       "destino": "revisar",
@@ -1775,7 +1775,7 @@
     },
     "MaxOpenSuggestions": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "maxoutstanding": {
       "destino": "revisar",
@@ -1783,7 +1783,7 @@
     },
     "maxRecordsForFacets": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "maxreserves": {
       "destino": "revisar",
@@ -1791,11 +1791,11 @@
     },
     "MaxSearchResultsItemsPerRecordStatusCheck": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "MaxTotalSuggestions": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "MembershipExpiryDaysNotice": {
       "destino": "revisar",
@@ -1831,7 +1831,7 @@
     },
     "noItemTypeImages": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "NoRefundOnLostFinesPaidAge": {
       "destino": "revisar",
@@ -1851,7 +1851,7 @@
     },
     "NotHighlightedWords": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "NoticeBcc": {
       "destino": "revisar",
@@ -1899,7 +1899,7 @@
     },
     "NumberOfSuggestionDays": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "numReturnedItemsToShow": {
       "destino": "revisar",
@@ -1907,15 +1907,15 @@
     },
     "numSearchResults": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "numSearchResultsDropdown": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "numSearchRSSResults": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OAI-PMH": {
       "destino": "revisar",
@@ -1963,27 +1963,27 @@
     },
     "OPACAcquisitionDetails": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacAdditionalStylesheet": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacAddMastheadLibraryPulldown": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacAdvancedSearchTypes": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacAdvSearchMoreOptions": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacAdvSearchOptions": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACAllowHoldDateInFuture": {
       "destino": "revisar",
@@ -1991,11 +1991,11 @@
     },
     "OpacAllowPublicListCreation": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacAllowSharingPrivateLists": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACAllowUserToChangeBranch": {
       "destino": "revisar",
@@ -2011,39 +2011,39 @@
     },
     "OPACAuthorIdentifiersAndInformation": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacAuthorities": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACBaseURL": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "opacbookbag": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacBrowser": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacBrowseResults": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacBrowseSearch": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacCatalogConcerns": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacCloud": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacCoce": {
       "destino": "fora-v1",
@@ -2051,7 +2051,7 @@
     },
     "OPACComments": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACCustomCoverImages": {
       "destino": "fora-v1",
@@ -2059,15 +2059,15 @@
     },
     "OPACdefaultSortField": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "OPACdefaultSortOrder": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "OPACDetailQRCode": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACdidyoumean": {
       "destino": "plataforma",
@@ -2075,31 +2075,31 @@
     },
     "OPACDisableSendList": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACDisplay856uAsImage": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacElasticsearchEscapeCharacters": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "OpacExportOptions": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACFallback": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacFavicon": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACFinesTab": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACFRBRizeEditions": {
       "destino": "fora-v1",
@@ -2107,31 +2107,31 @@
     },
     "OpacHiddenItems": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacHiddenItemsExceptions": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacHiddenItemsHidesRecord": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacHighlightedWords": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacHoldNotes": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACHoldRequests": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACHoldsHistory": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACHoldsIfAvailableAtPickup": {
       "destino": "revisar",
@@ -2143,31 +2143,31 @@
     },
     "OPACISBD": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACItemLocation": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacKohaUrl": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacLangSelectorMode": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACLanguages": {
       "destino": "config",
-      "nota": "atrium.toml [interface] idiomas_opac."
+      "nota": "elzevir.toml [interface] idiomas_opac."
     },
     "opaclanguagesdisplay": {
       "destino": "config",
-      "nota": "Idiomas e formatos de data vão para atrium.toml [interface]."
+      "nota": "Idiomas e formatos de data vão para elzevir.toml [interface]."
     },
     "opaclayoutstylesheet": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACLocalCoverImages": {
       "destino": "fora-v1",
@@ -2175,19 +2175,19 @@
     },
     "OpacLocationBranchToDisplay": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacLocationOnDetail": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACLoginLabelTextContent": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacMaintenance": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACMandatoryHoldDates": {
       "destino": "revisar",
@@ -2195,47 +2195,47 @@
     },
     "OpacMaxItemsToDisplay": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacMetaDescription": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacMetaRobots": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACMySummaryHTML": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacNewsLibrarySelect": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacNoItemTypeImages": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACNoResultsFound": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACNumbersPreferPhrase": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "OPACnumSearchResults": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "OPACnumSearchResultsDropdown": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "OPACOpenURLItemTypes": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACOverDrive": {
       "destino": "fora-v1",
@@ -2243,79 +2243,79 @@
     },
     "OpacPasswordChange": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACPatronDetails": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACpatronimages": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACPlayMusicalInscripts": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACPopupAuthorsSearch": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACPrivacy": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacPublic": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "opacreadinghistory": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacRenewalAllowed": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacRenewalBranch": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACReportProblem": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacResetPassword": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACResultsLibrary": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACResultsMaxItems": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACResultsMaxItemsUnavailable": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACResultsUnavailableGroupingBy": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACSearchForTitleIn": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacSeparateHoldings": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacSeparateHoldingsBranch": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "opacSerialDefaultTab": {
       "destino": "fora-v1",
@@ -2327,63 +2327,63 @@
     },
     "OPACShelfBrowser": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACShibOnly": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACShowCheckoutName": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACShowHoldQueueDetails": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACShowLibraries": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACShowMusicalInscripts": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACShowOpenURL": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacShowRecentComments": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACShowSavings": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACShowUnusedAuthorities": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacStarRatings": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACSuggestionAutoFill": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacSuggestionManagedBy": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACSuggestionMandatoryFields": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACSuggestionUnwantedFields": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacSuppression": {
       "destino": "revisar",
@@ -2399,63 +2399,63 @@
     },
     "OPACTableColExpandedByDefault": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "opacthemes": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacTopissue": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpacTrustedCheckout": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACURLOpenInNewWindow": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACUserCSS": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACUserJS": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "opacuserlogin": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACUserSummary": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACViewOthersSuggestions": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACVirtualCard": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACVirtualCardBarcode": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACXSLTDetailsDisplay": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACXSLTListsDisplay": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OPACXSLTResultsDisplay": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpenLibraryCovers": {
       "destino": "fora-v1",
@@ -2467,15 +2467,15 @@
     },
     "OpenURLImageLocation": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpenURLResolverURL": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OpenURLText": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "OrderPdfFormat": {
       "destino": "fora-v1",
@@ -2535,7 +2535,7 @@
     },
     "PassItemMarcToXSLT": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "PatronAgeRestriction": {
       "destino": "revisar",
@@ -2571,59 +2571,59 @@
     },
     "PatronSelfModificationBorrowerUnwantedField": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfModificationMandatoryField": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfRegistration": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfRegistrationAgeRestriction": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfRegistrationAlert": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfRegistrationBorrowerMandatoryField": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfRegistrationBorrowerUnwantedField": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfRegistrationConfirmEmail": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfRegistrationDefaultCategory": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfRegistrationEmailMustBeUnique": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfRegistrationExpireTemporaryAccountsDelay": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfRegistrationLibraryList": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfRegistrationPrefillForm": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronSelfRegistrationVerifyByEmail": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PatronsPerPage": {
       "destino": "revisar",
@@ -2719,7 +2719,7 @@
     },
     "PurgeListShareInvitesOlderThan": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "PurgeSuggestionsOlderThan": {
       "destino": "fora-v1",
@@ -2727,27 +2727,27 @@
     },
     "QueryAutoTruncate": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "QueryFuzzy": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "QueryRegexEscapeOptions": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "QueryStemming": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "QueryWeightFields": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "QuoteOfTheDay": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "RandomizeHoldsQueueWeight": {
       "destino": "revisar",
@@ -2779,11 +2779,11 @@
     },
     "RedirectToSoleResult": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "Reference_NFL_Statuses": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "RefundLostOnReturnControl": {
       "destino": "revisar",
@@ -2815,7 +2815,7 @@
     },
     "ReplytoDefault": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "ReportsExportFormatODS": {
       "destino": "interface",
@@ -2883,15 +2883,15 @@
     },
     "RestrictedPageContent": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "RestrictedPageLocalIPs": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "RestrictedPageTitle": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "RestrictionBlockRenewing": {
       "destino": "revisar",
@@ -2903,11 +2903,11 @@
     },
     "RetainCatalogSearchTerms": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "RetainPatronsSearchTerms": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "ReturnBeforeExpiry": {
       "destino": "revisar",
@@ -2919,7 +2919,7 @@
     },
     "ReturnpathDefault": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "RisExportAdditionalFields": {
       "destino": "revisar",
@@ -2939,7 +2939,7 @@
     },
     "SavedSearchFilters": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "SCOAllowCheckin": {
       "destino": "revisar",
@@ -2963,7 +2963,7 @@
     },
     "SearchCancelledAndInvalidISBNandISSN": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "SearchEngine": {
       "destino": "fixo",
@@ -2971,19 +2971,19 @@
     },
     "SearchLimitLibrary": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "SearchMyLibraryFirst": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "SearchWithISBNVariations": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "SearchWithISSNVariations": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "SelfCheckAllowByIPRanges": {
       "destino": "revisar",
@@ -3019,7 +3019,7 @@
     },
     "SendAllEmailsTo": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "SeparateHoldings": {
       "destino": "revisar",
@@ -3043,23 +3043,23 @@
     },
     "SessionRestrictionByIP": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "SessionStorage": {
       "destino": "fixo",
-      "nota": "Sessões do Atrium são próprias (doc 05)."
+      "nota": "Sessões do Elzevir são próprias (doc 05)."
     },
     "ShelfBrowserUsesCcode": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "ShelfBrowserUsesHomeBranch": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "ShelfBrowserUsesLocation": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "ShowAllCheckins": {
       "destino": "revisar",
@@ -3071,7 +3071,7 @@
     },
     "ShowHeadingUse": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "showLastPatron": {
       "destino": "interface",
@@ -3091,11 +3091,11 @@
     },
     "ShowReviewer": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "ShowReviewerPhoto": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "SIP2AddOpacMessagesToScreenMessage": {
       "destino": "revisar",
@@ -3131,7 +3131,7 @@
     },
     "SocialNetworks": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "SpecifyDueDate": {
       "destino": "revisar",
@@ -3159,7 +3159,7 @@
     },
     "StaffInterfaceLanguages": {
       "destino": "config",
-      "nota": "Idiomas e formatos de data vão para atrium.toml [interface]."
+      "nota": "Idiomas e formatos de data vão para elzevir.toml [interface]."
     },
     "StaffLangSelectorMode": {
       "destino": "interface",
@@ -3167,11 +3167,11 @@
     },
     "StaffLoginLibraryBasedOnIP": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "StaffLoginRestrictLibraryByIP": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "StaffSearchResultsDisplayBranch": {
       "destino": "revisar",
@@ -3231,11 +3231,11 @@
     },
     "suggestion": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "suggestionPatronCategoryExceptions": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "SuggestionsLog": {
       "destino": "fixo",
@@ -3355,11 +3355,11 @@
     },
     "TimeFormat": {
       "destino": "config",
-      "nota": "atrium.toml [interface] formato_hora."
+      "nota": "elzevir.toml [interface] formato_hora."
     },
     "timeout": {
       "destino": "config",
-      "nota": "atrium.toml [equipe] sessao_ociosa."
+      "nota": "elzevir.toml [equipe] sessao_ociosa."
     },
     "TitleHoldFeeStrategy": {
       "destino": "revisar",
@@ -3371,15 +3371,15 @@
     },
     "TraceCompleteSubfields": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "TraceSubjectSubdivisions": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "TrackClicks": {
       "destino": "revisar",
-      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para atrium.toml ou fixo."
+      "nota": "Decidir na spec do OPAC: aparência vai para tokens de design, comportamento para elzevir.toml ou fixo."
     },
     "TrackLastPatronActivityTriggers": {
       "destino": "revisar",
@@ -3403,7 +3403,7 @@
     },
     "TranslateNotices": {
       "destino": "config",
-      "nota": "Idiomas e formatos de data vão para atrium.toml [interface]."
+      "nota": "Idiomas e formatos de data vão para elzevir.toml [interface]."
     },
     "TrapHoldsOnOrder": {
       "destino": "revisar",
@@ -3419,7 +3419,7 @@
     },
     "UNIMARCAuthorsFacetsSeparator": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "UNIMARCField100Language": {
       "destino": "revisar",
@@ -3491,15 +3491,15 @@
     },
     "UsageStats": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "UsageStatsCountry": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "UsageStatsGeolocation": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "UsageStatsID": {
       "destino": "plataforma",
@@ -3511,19 +3511,19 @@
     },
     "UsageStatsLibrariesInfo": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "UsageStatsLibraryName": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "UsageStatsLibraryType": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "UsageStatsLibraryUrl": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "UsageStatsPublicID": {
       "destino": "plataforma",
@@ -3575,7 +3575,7 @@
     },
     "UseICUStyleQuotes": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     },
     "UseLibraryFloatLimits": {
       "destino": "revisar",
@@ -3615,7 +3615,7 @@
     },
     "virtualshelves": {
       "destino": "plataforma",
-      "nota": "Coberto pela plataforma do Atrium (painel, atrium.toml de servidor, sessões, SMTP)."
+      "nota": "Coberto pela plataforma do Elzevir (painel, elzevir.toml de servidor, sessões, SMTP)."
     },
     "WaitingNotifyAtCheckin": {
       "destino": "revisar",
@@ -3659,7 +3659,7 @@
     },
     "z3950Status": {
       "destino": "revisar",
-      "nota": "A busca do Atrium é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
+      "nota": "A busca do Elzevir é Tantivy; decidir na spec de busca (Fase 1) o que vira opção."
     }
   }
 }

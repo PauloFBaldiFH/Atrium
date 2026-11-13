@@ -7,7 +7,7 @@ use std::process::Command;
 
 use serde_json::Value;
 
-/// Allowed Atrium dependencies per workspace crate.
+/// Allowed Elzevir dependencies per workspace crate.
 pub(crate) type Rules = BTreeMap<String, BTreeSet<String>>;
 
 /// Workspace crates and the workspace crates each one depends on.
@@ -139,18 +139,18 @@ mod tests {
     }
 
     const RULES: &str = r#"{ "crates": {
-        "atrium-domain": [],
-        "atrium-app": ["atrium-domain"],
-        "atrium-web": ["atrium-app"]
+        "elzevir-domain": [],
+        "elzevir-app": ["elzevir-domain"],
+        "elzevir-web": ["elzevir-app"]
     } }"#;
 
     #[test]
     fn allowed_graph_has_no_violations() {
         let rules = parse_rules(RULES).unwrap();
         let graph = Graph::from([
-            ("atrium-domain".to_owned(), set(&[])),
-            ("atrium-app".to_owned(), set(&["atrium-domain"])),
-            ("atrium-web".to_owned(), set(&["atrium-app"])),
+            ("elzevir-domain".to_owned(), set(&[])),
+            ("elzevir-app".to_owned(), set(&["elzevir-domain"])),
+            ("elzevir-web".to_owned(), set(&["elzevir-app"])),
         ]);
         assert!(violations(&rules, &graph).is_empty());
     }
@@ -158,20 +158,20 @@ mod tests {
     #[test]
     fn forbidden_dependency_is_reported() {
         let rules = parse_rules(RULES).unwrap();
-        let graph = Graph::from([("atrium-domain".to_owned(), set(&["atrium-web"]))]);
+        let graph = Graph::from([("elzevir-domain".to_owned(), set(&["elzevir-web"]))]);
         assert_eq!(
             violations(&rules, &graph),
-            ["`atrium-domain` must not depend on `atrium-web`"]
+            ["`elzevir-domain` must not depend on `elzevir-web`"]
         );
     }
 
     #[test]
     fn unlisted_crate_is_reported() {
         let rules = parse_rules(RULES).unwrap();
-        let graph = Graph::from([("atrium-new".to_owned(), set(&[]))]);
+        let graph = Graph::from([("elzevir-new".to_owned(), set(&[]))]);
         assert_eq!(
             violations(&rules, &graph),
-            ["`atrium-new` is not listed in tools/layers.json"]
+            ["`elzevir-new` is not listed in tools/layers.json"]
         );
     }
 
@@ -179,20 +179,20 @@ mod tests {
     fn metadata_keeps_only_workspace_dependencies() {
         let json: Value = serde_json::from_str(
             r#"{ "packages": [
-                { "name": "atrium-app", "dependencies": [
-                    { "name": "atrium-domain" }, { "name": "serde" } ] },
-                { "name": "atrium-domain", "dependencies": [] }
+                { "name": "elzevir-app", "dependencies": [
+                    { "name": "elzevir-domain" }, { "name": "serde" } ] },
+                { "name": "elzevir-domain", "dependencies": [] }
             ] }"#,
         )
         .unwrap();
         let graph = graph_from_metadata(&json).unwrap();
-        assert_eq!(graph["atrium-app"], set(&["atrium-domain"]));
+        assert_eq!(graph["elzevir-app"], set(&["elzevir-domain"]));
     }
 
     #[test]
     fn repository_layers_file_is_valid() {
         let text = include_str!("../../tools/layers.json");
         let rules = parse_rules(text).unwrap();
-        assert!(rules.contains_key("atrium-domain"));
+        assert!(rules.contains_key("elzevir-domain"));
     }
 }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Generates the MARC21 default framework tables in `atrium-data` from
+//! Generates the MARC21 default framework tables in `elzevir-data` from
 //! `data/koha-<series>/marc21_framework.json` (task 1.1).
 //!
 //! One file per hundred of tags keeps each under the 3,000-line limit. Rows are written one

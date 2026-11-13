@@ -1,16 +1,18 @@
 # CLAUDE.md
 
-Instruções para quem escreve código no Atrium (pessoas e agentes). Leia inteiro antes de mexer em qualquer coisa.
+Instruções para quem escreve código no Elzevir (pessoas e agentes). Leia inteiro antes de mexer em qualquer coisa.
 
 ## O projeto em uma frase
 
-O Atrium é um sistema de bibliotecas em Rust que reconstrói o **comportamento** do Koha a partir de especificações e testes contra o Koha real, sem traduzir Perl, e melhora onde o Koha é ruim (interface, configuração, busca).
+O Elzevir é um sistema de bibliotecas em Rust que reconstrói o **comportamento** do Koha a partir de especificações e testes contra o Koha real, sem traduzir Perl, e melhora onde o Koha é ruim (interface, configuração, busca).
 
 ## Estado atual
 
 - **Fase 0 concluída** (PRs #6 a #14). **Fase 1 em andamento** (autorizada por Paulo em 2026-11-12): MARC, modelo bibliográfico, busca e o executor de cenários. O oráculo é a instância de testes de Paulo (doc 04, §3); as credenciais ficam só em variáveis de ambiente de quem grava.
 - Fontes de verdade, nesta ordem: [`docs/arquitetura/04-decisoes.md`](docs/arquitetura/04-decisoes.md) e [`05-definicoes-de-implementacao.md`](docs/arquitetura/05-definicoes-de-implementacao.md) > 03 > 02 > 01. Se o código contradiz o doc 04, o código está errado ou o doc 04 precisa de um PR primeiro.
-- `reference/koha/` é **referência de leitura** (GPLv3, submódulo fixado no Koha 26.05.05), não código do Atrium, e fica fora do workspace Cargo. Baixe com `git submodule update --init --depth 1 reference/koha`.
+- **Nome: Elzevir** (Paulo, 2026-11-12). O projeto se chamava Atrium; documentos e commits antigos ainda usam o nome anterior.
+- **Antes de mexer no núcleo BIBFRAME (Hub, Work, Instance, Item), no mapeamento MARC21/Koha ou no frontend, leia [`docs/ARCHITECTURE_VISION.md`](docs/ARCHITECTURE_VISION.md)**: a especificação de Paulo (regra de ouro: nenhuma etiqueta MARC no núcleo, MARC só na borda, ida e volta sem perdas) e o plano de integração com o código, com a ordem das etapas.
+- `reference/koha/` é **referência de leitura** (GPLv3, submódulo fixado no Koha 26.05.05), não código do Elzevir, e fica fora do workspace Cargo. Baixe com `git submodule update --init --depth 1 reference/koha`.
 
 ## Como trabalhar numa tarefa
 
@@ -26,14 +28,14 @@ Se a tarefa é ambígua, escolha a leitura mais provável, diga qual escolheu e 
 ## Paridade com o Koha
 
 - **Paridade exigida:** datas de vencimento e calendário, multas, fila de reservas, exportação MARC, SIP2, Z39.50. Aqui o Koha é o oráculo; qualquer diferença é bug ou desvio documentado.
-- **Liberdade para melhorar:** interface, configuração (`atrium.toml` tipado em vez de preferências soltas) e busca.
+- **Liberdade para melhorar:** interface, configuração (`elzevir.toml` tipado em vez de preferências soltas) e busca.
 - Nunca traduza Perl linha a linha. Porte a regra, não a estrutura. Se o Koha tem um bug observável numa área de paridade, reproduza-o e documente o desvio que queremos fazer depois.
 
 ## Regras de Rust
 
 ### Desenho
 
-- **Domínio puro.** `atrium-domain` não faz I/O: não lê relógio, banco, rede, disco nem variável de ambiente. "Agora", calendário e regras entram como parâmetro.
+- **Domínio puro.** `elzevir-domain` não faz I/O: não lê relógio, banco, rede, disco nem variável de ambiente. "Agora", calendário e regras entram como parâmetro.
 - **Estados impossíveis não compilam.** `enum` com dados em vez de `bool`s e `Option`s combinados; *newtypes* para IDs (`ItemId(i64)`, nunca `i64` solto) e para valores com regra (`Barcode`, `Money`).
 - **Dinheiro é inteiro** em centavos (`Money(i64)`), nunca `f64`.
 - **Datas** com `jiff`; fuso da biblioteca explícito; nada de `Local::now()` fora da borda.
@@ -50,7 +52,7 @@ Se a tarefa é ambígua, escolha a leitura mais provável, diga qual escolheu e 
 
 ### Segurança e dependências
 
-- `#![forbid(unsafe_code)]` em domain, app, web e templates. `unsafe` só em `atrium-marc`, num bloco documentado, e só se um benchmark provou o ganho.
+- `#![forbid(unsafe_code)]` em domain, app, web e templates. `unsafe` só em `elzevir-marc`, num bloco documentado, e só se um benchmark provou o ganho.
 - SQL sempre parametrizado. Nunca `format!` para montar SQL com dado de fora.
 - Toda entrada externa (MARC, MARCXML, formulário, SIP2, Z39.50) tem limites explícitos de tamanho e profundidade.
 - Nova dependência precisa de motivo no PR, licença compatível com GPLv3 e passar no `cargo-deny`. Prefira a biblioteca padrão.

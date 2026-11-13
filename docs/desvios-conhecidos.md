@@ -1,8 +1,8 @@
 # Desvios conhecidos
 
-Diferenças **intencionais** entre o Atrium e o Koha 26.05.05 nas áreas de paridade exigida (datas e calendário, multas, fila de reservas, exportação MARC, SIP2, Z39.50; ver [04-decisoes.md](arquitetura/04-decisoes.md), §2).
+Diferenças **intencionais** entre o Elzevir e o Koha 26.05.05 nas áreas de paridade exigida (datas e calendário, multas, fila de reservas, exportação MARC, SIP2, Z39.50; ver [04-decisoes.md](arquitetura/04-decisoes.md), §2).
 
-Regra: o Atrium é exato por padrão. Um cenário diferencial só pode divergir do oráculo do Koha se o desvio estiver listado aqui. O executor de cenários (tarefa 1.0) lê este arquivo, aceita a divergência de um cenário listado e rejeita qualquer outra; `cargo xtask check-deviations` (no CI) valida o formato.
+Regra: o Elzevir é exato por padrão. Um cenário diferencial só pode divergir do oráculo do Koha se o desvio estiver listado aqui. O executor de cenários (tarefa 1.0) lê este arquivo, aceita a divergência de um cenário listado e rejeita qualquer outra; `cargo xtask check-deviations` (no CI) valida o formato.
 
 ## Formato
 
@@ -20,7 +20,7 @@ decided_by: Paulo
 date: 2026-11-12
 ```
 
-Por que divergimos, o que o Koha faz, o que o Atrium faz e como isso aparece para a biblioteca.
+Por que divergimos, o que o Koha faz, o que o Elzevir faz e como isso aparece para a biblioteca.
 ````
 
 | Chave | Obrigatória | Conteúdo |

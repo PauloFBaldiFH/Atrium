@@ -118,119 +118,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
-name = "atrium"
-version = "0.0.0"
-dependencies = [
- "atrium-app",
- "atrium-sip2",
- "atrium-store",
- "atrium-web",
- "atrium-web-templates",
- "axum",
- "clap",
- "mimalloc",
- "stats_alloc",
- "tokio",
-]
-
-[[package]]
-name = "atrium-app"
-version = "0.0.0"
-dependencies = [
- "argon2",
- "atrium-data",
- "atrium-domain",
- "atrium-marc",
- "serde",
- "thiserror",
-]
-
-[[package]]
-name = "atrium-data"
-version = "0.0.0"
-
-[[package]]
-name = "atrium-domain"
-version = "0.0.0"
-dependencies = [
- "atrium-data",
- "jiff",
- "proptest",
- "serde",
- "thiserror",
-]
-
-[[package]]
-name = "atrium-marc"
-version = "0.0.0"
-dependencies = [
- "atrium-data",
- "proptest",
- "tempfile",
- "thiserror",
- "unicode-normalization",
-]
-
-[[package]]
-name = "atrium-scenarios"
-version = "0.0.0"
-dependencies = [
- "atrium-domain",
- "jiff",
- "serde",
- "serde_json",
- "serde_norway",
- "tempfile",
- "thiserror",
-]
-
-[[package]]
-name = "atrium-sip2"
-version = "0.0.0"
-dependencies = [
- "atrium-app",
-]
-
-[[package]]
-name = "atrium-store"
-version = "0.0.0"
-dependencies = [
- "atrium-app",
- "atrium-domain",
- "rusqlite",
- "serde",
- "serde_json",
- "tempfile",
- "thiserror",
- "tokio",
-]
-
-[[package]]
-name = "atrium-web"
-version = "0.0.0"
-dependencies = [
- "askama",
- "atrium-app",
- "atrium-web-templates",
- "axum",
- "getrandom",
- "http-body-util",
- "serde",
- "tokio",
- "tower",
-]
-
-[[package]]
-name = "atrium-web-templates"
-version = "0.0.0"
-dependencies = [
- "askama",
- "fluent-bundle",
- "thiserror",
- "unic-langid",
-]
-
-[[package]]
 name = "autocfg"
 version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -503,6 +390,119 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 3.0.10",
+]
+
+[[package]]
+name = "elzevir"
+version = "0.0.0"
+dependencies = [
+ "axum",
+ "clap",
+ "elzevir-app",
+ "elzevir-sip2",
+ "elzevir-store",
+ "elzevir-web",
+ "elzevir-web-templates",
+ "mimalloc",
+ "stats_alloc",
+ "tokio",
+]
+
+[[package]]
+name = "elzevir-app"
+version = "0.0.0"
+dependencies = [
+ "argon2",
+ "elzevir-data",
+ "elzevir-domain",
+ "elzevir-marc",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "elzevir-data"
+version = "0.0.0"
+
+[[package]]
+name = "elzevir-domain"
+version = "0.0.0"
+dependencies = [
+ "elzevir-data",
+ "jiff",
+ "proptest",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "elzevir-marc"
+version = "0.0.0"
+dependencies = [
+ "elzevir-data",
+ "proptest",
+ "tempfile",
+ "thiserror",
+ "unicode-normalization",
+]
+
+[[package]]
+name = "elzevir-scenarios"
+version = "0.0.0"
+dependencies = [
+ "elzevir-domain",
+ "jiff",
+ "serde",
+ "serde_json",
+ "serde_norway",
+ "tempfile",
+ "thiserror",
+]
+
+[[package]]
+name = "elzevir-sip2"
+version = "0.0.0"
+dependencies = [
+ "elzevir-app",
+]
+
+[[package]]
+name = "elzevir-store"
+version = "0.0.0"
+dependencies = [
+ "elzevir-app",
+ "elzevir-domain",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
+name = "elzevir-web"
+version = "0.0.0"
+dependencies = [
+ "askama",
+ "axum",
+ "elzevir-app",
+ "elzevir-web-templates",
+ "getrandom",
+ "http-body-util",
+ "serde",
+ "tokio",
+ "tower",
+]
+
+[[package]]
+name = "elzevir-web-templates"
+version = "0.0.0"
+dependencies = [
+ "askama",
+ "fluent-bundle",
+ "thiserror",
+ "unic-langid",
 ]
 
 [[package]]

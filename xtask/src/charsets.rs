@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Generates character set tables in `atrium-data` (task 1.1).
+//! Generates character set tables in `elzevir-data` (task 1.1).
 
 use std::fmt::Write as _;
 

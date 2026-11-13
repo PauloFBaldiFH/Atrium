@@ -9,19 +9,19 @@ version = "0.0.0"
 edition = "2024"
 rust-version = "1.97"
 license = "GPL-3.0-or-later"
-repository = "https://github.com/PauloFBaldiFH/Atrium"
+repository = "https://github.com/PauloFBaldiFH/Elzevir"
 publish = false
 
 [workspace.dependencies]
-atrium-app = { path = "crates/atrium-app" }
-atrium-data = { path = "crates/atrium-data" }
-atrium-domain = { path = "crates/atrium-domain" }
-atrium-marc = { path = "crates/atrium-marc" }
-atrium-scenarios = { path = "crates/atrium-scenarios" }
-atrium-sip2 = { path = "crates/atrium-sip2" }
-atrium-store = { path = "crates/atrium-store" }
-atrium-web = { path = "crates/atrium-web" }
-atrium-web-templates = { path = "crates/atrium-web-templates" }
+elzevir-app = { path = "crates/elzevir-app" }
+elzevir-data = { path = "crates/elzevir-data" }
+elzevir-domain = { path = "crates/elzevir-domain" }
+elzevir-marc = { path = "crates/elzevir-marc" }
+elzevir-scenarios = { path = "crates/elzevir-scenarios" }
+elzevir-sip2 = { path = "crates/elzevir-sip2" }
+elzevir-store = { path = "crates/elzevir-store" }
+elzevir-web = { path = "crates/elzevir-web" }
+elzevir-web-templates = { path = "crates/elzevir-web-templates" }
 
 argon2 = "0.6"
 askama = { version = "0.16", default-features = false, features = ["derive", "std"] }

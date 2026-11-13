@@ -3,7 +3,7 @@
 //! panicking, looping forever or allocating past the record limit.
 #![no_main]
 
-use atrium_marc::{Limits, MarcReader};
+use elzevir_marc::{Limits, MarcReader};
 use libfuzzer_sys::fuzz_target;
 
 fuzz_target!(|data: &[u8]| {

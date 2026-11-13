@@ -40,16 +40,16 @@
 
 ## 3. Paridade
 
-`exigida` (exportação MARC, doc 04 §2). Prova: `crates/atrium-marc/tests/koha_export.rs`, com o registro 1 exportado pelo OPAC do oráculo em 2026-11-12 nos formatos `utf8` (ISO 2709) e `marcxml`, em `crates/atrium-marc/tests/data/`.
+`exigida` (exportação MARC, doc 04 §2). Prova: `crates/elzevir-marc/tests/koha_export.rs`, com o registro 1 exportado pelo OPAC do oráculo em 2026-11-12 nos formatos `utf8` (ISO 2709) e `marcxml`, em `crates/elzevir-marc/tests/data/`.
 
 - O ISO 2709 lido e reescrito sai igual byte a byte.
-- O MARCXML gerado pelo Atrium, depois de passar pela mesma normalização NFC e pelas mesmas entidades `&#x…;` que o `C4::Record::_entity_encode` aplica, é igual byte a byte ao do Koha.
+- O MARCXML gerado pelo Elzevir, depois de passar pela mesma normalização NFC e pelas mesmas entidades `&#x…;` que o `C4::Record::_entity_encode` aplica, é igual byte a byte ao do Koha.
 
 ## 4. Casos de borda
 
 1. Registro sem campos: base 25, tamanho 26.
 2. Campo de dados sem subfields: só indicadores e terminador.
-3. Campo com mais de 9.999 bytes, ou registro com mais de 99.999: o Atrium recusa o registro com erro.
+3. Campo com mais de 9.999 bytes, ou registro com mais de 99.999: o Elzevir recusa o registro com erro.
    - O `MARC::Record` escreveria um registro inválido (tamanho truncado em 99999, ou uma entrada de diretório com 5 dígitos no lugar de 4).
    - A exportação da equipe do Koha relê cada registro e pula o que tem avisos, então recusar dá o mesmo resultado nela.
 4. Valor com `0x1D`, `0x1E` ou `0x1F`, código de subcampo igual a um desses bytes, ou indicador que seja um deles: recusado pelo mesmo motivo do item 3.

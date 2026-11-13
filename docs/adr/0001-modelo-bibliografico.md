@@ -20,7 +20,7 @@ O Koha guarda o registro bibliográfico como MARCXML e extrai dele algumas colun
 
 - Listar "tudo deste autor" ou "tudo deste assunto" é uma junção por número, sem ler MARC.
 - A importação precisa resolver cabeçalhos e códigos para números (um lote por vez, tarefa 1.7).
-- Editar um registro no Atrium exige regenerar o MARC a partir do modelo para os campos que ele entende (tarefa 1.6); até lá só o caminho "não editado" é sem perdas.
+- Editar um registro no Elzevir exige regenerar o MARC a partir do modelo para os campos que ele entende (tarefa 1.6); até lá só o caminho "não editado" é sem perdas.
 - Sem controle de autoridade na v1, cabeçalhos com grafias diferentes viram Agentes diferentes.
 
 ## Alternativas descartadas

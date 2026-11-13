@@ -1,0 +1,25 @@
+[package]
+name = "elzevir-store"
+description = "SQLite storage: the single writer thread, the read pool, audit log and effect outbox."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+elzevir-app.workspace = true
+elzevir-domain.workspace = true
+rusqlite.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["sync"] }
+
+[dev-dependencies]
+tempfile.workspace = true
+tokio = { workspace = true, features = ["sync", "rt", "macros"] }
+
+[lints]
+workspace = true

@@ -1,8 +1,8 @@
-# Atrium: triagem das preferências do sistema do Koha (v0)
+# Elzevir: triagem das preferências do sistema do Koha (v0)
 
 > Status: proposta (tarefa 0.11), para Paulo revisar. Data: 2026-11-12. Base: Koha 26.05.05.
 
-O Koha 26.05.05 tem **915 preferências do sistema**. O Atrium não as copia: cada uma recebe um **destino**, e só vira opção do `atrium.toml` o que tiver justificativa (meta da v1: menos de 100 opções; doc 02, §1 item 5).
+O Koha 26.05.05 tem **915 preferências do sistema**. O Elzevir não as copia: cada uma recebe um **destino**, e só vira opção do `elzevir.toml` o que tiver justificativa (meta da v1: menos de 100 opções; doc 02, §1 item 5).
 
 - Inventário extraído do Koha: [`data/koha-26.05/sysprefs.json`](../../data/koha-26.05/sysprefs.json) (nome, valor padrão, aba e seção da tela de preferências).
 - Destino de cada uma: [`tools/sysprefs-triage.json`](../../tools/sysprefs-triage.json).
@@ -12,9 +12,9 @@ O Koha 26.05.05 tem **915 preferências do sistema**. O Atrium não as copia: ca
 
 | Destino | Significado | Quantas |
 |---|---|---|
-| `config` | Vira chave tipada do `atrium.toml` | 14 |
+| `config` | Vira chave tipada do `elzevir.toml` | 14 |
 | `regra` | Vira dado editável (regra de circulação, calendário), não opção global | 2 |
-| `fixo` | O Atrium adota um comportamento e não oferece opção | 30 |
+| `fixo` | O Elzevir adota um comportamento e não oferece opção | 30 |
 | `interface` | Interface redesenhada: vira *token* de design ou deixa de existir | 36 |
 | `plataforma` | Resolvido pela plataforma (painel, servidor, sessões, SMTP, estado interno) | 55 |
 | `fora-v1` | Módulo que não entra na v1 | 129 |

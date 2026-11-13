@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Repository automation for Atrium, run as `cargo xtask <command>`.
+//! Repository automation for Elzevir, run as `cargo xtask <command>`.
 //!
 //! Commands:
-//! - `check-layers`: every workspace crate depends only on the Atrium crates that
+//! - `check-layers`: every workspace crate depends only on the Elzevir crates that
 //!   `tools/layers.json` allows.
 //! - `check-file-size`: no hand-written Rust file exceeds [`file_size::MAX_LINES`] lines.
-//! - `codegen [--check]`: writes (or checks) `crates/atrium-data/src/generated/` from
+//! - `codegen [--check]`: writes (or checks) `crates/elzevir-data/src/generated/` from
 //!   `koha-lock.json` and `data/koha-<series>/`.
 //! - `check-deviations`: validates `docs/desvios-conhecidos.md`.
 //! - `check-sysprefs`: every Koha preference has a destination in `tools/sysprefs-triage.json`.

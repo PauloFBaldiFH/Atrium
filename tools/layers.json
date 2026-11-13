@@ -1,18 +1,18 @@
 {
-  "_comment": "Which Atrium crates each workspace crate may depend on (any dependency kind). Checked by `cargo xtask check-layers`. See docs/arquitetura/02-modo-de-implementacao.md, section 2.",
+  "_comment": "Which Elzevir crates each workspace crate may depend on (any dependency kind). Checked by `cargo xtask check-layers`. See docs/arquitetura/02-modo-de-implementacao.md, section 2.",
   "crates": {
-    "atrium-data": [],
-    "atrium-domain": ["atrium-data"],
-    "atrium-marc": ["atrium-data"],
-    "atrium-app": ["atrium-domain", "atrium-data", "atrium-marc"],
-    "atrium-store": ["atrium-app", "atrium-domain", "atrium-data", "atrium-marc"],
-    "atrium-web-templates": ["atrium-domain"],
-    "atrium-web": ["atrium-app", "atrium-domain", "atrium-data", "atrium-web-templates"],
-    "atrium-sip2": ["atrium-app", "atrium-domain"],
-    "atrium-scenarios": ["atrium-domain", "atrium-data"],
-    "atrium": [
-      "atrium-app", "atrium-data", "atrium-domain", "atrium-marc", "atrium-sip2",
-      "atrium-store", "atrium-web", "atrium-web-templates"
+    "elzevir-data": [],
+    "elzevir-domain": ["elzevir-data"],
+    "elzevir-marc": ["elzevir-data"],
+    "elzevir-app": ["elzevir-domain", "elzevir-data", "elzevir-marc"],
+    "elzevir-store": ["elzevir-app", "elzevir-domain", "elzevir-data", "elzevir-marc"],
+    "elzevir-web-templates": ["elzevir-domain"],
+    "elzevir-web": ["elzevir-app", "elzevir-domain", "elzevir-data", "elzevir-web-templates"],
+    "elzevir-sip2": ["elzevir-app", "elzevir-domain"],
+    "elzevir-scenarios": ["elzevir-domain", "elzevir-data"],
+    "elzevir": [
+      "elzevir-app", "elzevir-data", "elzevir-domain", "elzevir-marc", "elzevir-sip2",
+      "elzevir-store", "elzevir-web", "elzevir-web-templates"
     ],
     "xtask": []
   }

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //! Code generation: `koha-lock.json` and `data/koha-<series>/*.json` become Rust in
-//! `crates/atrium-data/src/generated/`.
+//! `crates/elzevir-data/src/generated/`.
 //!
 //! `codegen` writes the files; `codegen --check` fails when a committed file differs from
 //! what would be generated, so CI catches hand edits and forgotten regenerations.
@@ -13,7 +13,7 @@ use std::process::{Command, Stdio};
 use serde_json::Value;
 
 /// Where generated Rust goes, relative to the workspace root.
-const OUT_DIR: &str = "crates/atrium-data/src/generated";
+const OUT_DIR: &str = "crates/elzevir-data/src/generated";
 
 /// Write mode or check mode.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -175,7 +175,7 @@ fn koha_version(lock: &Value) -> Result<String, String> {
         out,
         "//! The pinned Koha reference release.\n\n\
          use crate::KohaReference;\n\n\
-         /// The Koha release Atrium is checked against (`koha-lock.json`).\n\
+         /// The Koha release Elzevir is checked against (`koha-lock.json`).\n\
          pub const KOHA_REFERENCE: KohaReference = KohaReference {{\n\
              version: {:?},\n\
              tag: {:?},\n\
@@ -302,7 +302,7 @@ fn rule_kind_rows(json: &Value) -> Result<Vec<RuleKindRow>, String> {
     Ok(rows)
 }
 
-/// Maps Koha's scope column names to [`atrium_data::RuleScope`] variants.
+/// Maps Koha's scope column names to [`elzevir_data::RuleScope`] variants.
 fn scope_variant(koha: &str, rule: &str) -> Result<&'static str, String> {
     match koha {
         "branchcode" => Ok("Branch"),
