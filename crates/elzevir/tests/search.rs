@@ -146,6 +146,11 @@ fn words_match_without_accents_or_case() {
         titles(&store, &index, "prefeitura municipal foz")
             .contains(&"Perfil - Anuário Estatístico".to_owned())
     );
+    // Portuguese plurals meet their singular.
+    assert!(
+        titles(&store, &index, "anuarios estatisticos")
+            .contains(&"Perfil - Anuário Estatístico".to_owned())
+    );
     assert!(titles(&store, &index, "zzzzqqq").is_empty());
 }
 
@@ -203,4 +208,58 @@ fn the_index_and_its_cursor_survive_a_restart() {
     );
     let again = index_pending(&store, &store, &index, &options(threads(2), 64)).unwrap();
     assert_eq!(again.effects, 0);
+}
+
+/// Reference queries whose results differ from Koha's, with the biblionumbers only Koha
+/// finds and only the Elzevir finds (docs/specs/catalogo/busca.md, §4). Every other query
+/// must find exactly what Koha finds among the 200 records.
+const KNOWN_DIFFERENCES: &[(&str, &[i64], &[i64])] = &[
+    // 505 (contents note): notes are not in the model yet.
+    ("karl marx", &[147], &[]),
+    // 590 (local note) `reimpressão`: Koha also truncates `rei`.
+    ("discurso do rei", &[187], &[]),
+    // 520 `gramatical` (Koha cuts it to `gramat`) and 505 (contents note).
+    ("gramatica", &[179, 188], &[]),
+    // 520 `contextualização histórica`: the Portuguese stemmer joins it to `história`.
+    ("historia da arte", &[], &[146]),
+    // 500 (general note) `análise`: notes are not in the model yet.
+    ("analise do discurso", &[12], &[]),
+];
+
+#[test]
+fn reference_queries_find_what_koha_finds() {
+    let (_dir, store) = imported();
+    let index = indexed(&store, Parallelism::Serial, 1024);
+    let ids = |list: &str| -> BTreeSet<i64> {
+        list.split(',')
+            .filter(|id| !id.is_empty())
+            .map(|id| id.parse().unwrap())
+            .collect()
+    };
+    let recorded = include_str!("data/koha-opac-search.tsv");
+    assert_eq!(recorded.lines().count(), 50);
+    for line in recorded.lines() {
+        let [query, _koha_total, koha] = line.split('\t').collect::<Vec<_>>()[..] else {
+            panic!("bad line {line:?}");
+        };
+        let koha = ids(koha);
+        // Instance ids follow the file, and the file is biblionumbers 1 to 200 in order.
+        let ours: BTreeSet<i64> = index
+            .search(query, 200)
+            .unwrap()
+            .into_iter()
+            .map(|hit| hit.instance.0)
+            .collect();
+        let only_koha: Vec<i64> = koha.difference(&ours).copied().collect();
+        let only_ours: Vec<i64> = ours.difference(&koha).copied().collect();
+        let expected = KNOWN_DIFFERENCES
+            .iter()
+            .find(|(known, _, _)| *known == query)
+            .map_or((&[][..], &[][..]), |(_, koha, ours)| (*koha, *ours));
+        assert_eq!(
+            (only_koha.as_slice(), only_ours.as_slice()),
+            expected,
+            "query {query:?}: (only Koha, only Elzevir)"
+        );
+    }
 }

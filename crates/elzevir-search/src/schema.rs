@@ -6,10 +6,13 @@ use tantivy::schema::{
     FAST, INDEXED, IndexRecordOption, STORED, STRING, Schema, TextFieldIndexing, TextOptions,
 };
 use tantivy::tokenizer::{
-    AsciiFoldingFilter, LowerCaser, RemoveLongFilter, SimpleTokenizer, TextAnalyzer,
+    AsciiFoldingFilter, Language, LowerCaser, RemoveLongFilter, SimpleTokenizer, Stemmer,
+    TextAnalyzer,
 };
 
-/// Words lower-cased and without accents, so `coração` finds `Coracao` and back.
+/// Words lower-cased, stemmed as Portuguese and without accents, so `coração` finds
+/// `Coracao` and `histórias` finds `história`. Folding runs before stemming so that a
+/// word typed without accents gets the same stem as the accented one.
 pub(crate) const FOLDED: &str = "elzevir_folded";
 
 /// The fields of the schema.
@@ -23,6 +26,7 @@ pub(crate) struct Fields {
     pub(crate) contributor: tantivy::schema::Field,
     pub(crate) subject: tantivy::schema::Field,
     pub(crate) publisher: tantivy::schema::Field,
+    pub(crate) summary: tantivy::schema::Field,
     pub(crate) date: tantivy::schema::Field,
     pub(crate) material_type: tantivy::schema::Field,
     pub(crate) classification: tantivy::schema::Field,
@@ -52,7 +56,8 @@ pub(crate) fn build() -> (Schema, Fields) {
         main_contributor: builder.add_text_field("main_contributor", STORED),
         contributor: builder.add_text_field("contributor", words.clone()),
         subject: builder.add_text_field("subject", words.clone()),
-        publisher: builder.add_text_field("publisher", words),
+        publisher: builder.add_text_field("publisher", words.clone()),
+        summary: builder.add_text_field("summary", words),
         date: builder.add_text_field("date", STORED),
         material_type: builder.add_u64_field("material_type", INDEXED | STORED | FAST),
         classification: builder.add_text_field("classification", code.clone()),
@@ -75,6 +80,7 @@ pub(crate) fn register_tokenizers(index: &Index) {
             .filter(RemoveLongFilter::limit(40))
             .filter(LowerCaser)
             .filter(AsciiFoldingFilter)
+            .filter(Stemmer::new(Language::Portuguese))
             .build(),
     );
 }

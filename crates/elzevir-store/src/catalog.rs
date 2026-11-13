@@ -459,7 +459,8 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
     let Some(row) = c
         .query_row(
             "SELECT works.id, works.title, instances.title, publisher, date, works.hub_id,
-                    works.material_type, instances.material_type, works.classification
+                    works.material_type, instances.material_type, works.classification,
+                    works.summary
              FROM instances JOIN works ON works.id = instances.work_id
              WHERE instances.id = ?1",
             params![id.0],
@@ -474,6 +475,7 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
                     work_material_type: row.get(6)?,
                     material_type: row.get(7)?,
                     classification: row.get(8)?,
+                    summary: row.get(9)?,
                 })
             },
         )
@@ -527,6 +529,7 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
         publisher: row.publisher,
         date: row.date,
         classification: row.classification,
+        summary: row.summary,
         contributors,
         subjects,
         identifiers,
@@ -545,6 +548,7 @@ struct InstanceRow {
     work_material_type: Option<u8>,
     material_type: Option<u8>,
     classification: Option<String>,
+    summary: Option<String>,
 }
 
 fn material_type(code: Option<u8>) -> Result<Option<MaterialType>, ReadFailure> {

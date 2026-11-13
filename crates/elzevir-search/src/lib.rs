@@ -140,6 +140,7 @@ impl TantivyIndex {
         }
         let optional = [
             (f.publisher, &source.publisher),
+            (f.summary, &source.summary),
             (f.date, &source.date),
             (f.classification, &source.classification),
         ];
@@ -161,7 +162,14 @@ impl TantivyIndex {
         let f = &self.fields;
         let mut parser = QueryParser::for_index(
             &self.index,
-            vec![f.title, f.work_title, f.contributor, f.subject, f.publisher],
+            vec![
+                f.title,
+                f.work_title,
+                f.contributor,
+                f.subject,
+                f.publisher,
+                f.summary,
+            ],
         );
         parser.set_conjunction_by_default();
         parser.set_field_boost(f.title, 2.0);

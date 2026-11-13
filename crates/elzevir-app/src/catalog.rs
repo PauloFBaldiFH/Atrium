@@ -268,6 +268,8 @@ pub struct InstanceView {
     pub date: Option<String>,
     /// The Work's classification number, such as a DDC number.
     pub classification: Option<String>,
+    /// The Work's summary.
+    pub summary: Option<String>,
     /// Contributor headings with their kind, in order.
     pub contributors: Vec<(AgentKind, String)>,
     /// Subject headings with their kind, in order.
