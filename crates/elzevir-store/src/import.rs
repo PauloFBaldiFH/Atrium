@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //! The writer queue as the import's record sink (docs/specs/catalogo/importacao.md).
 
-use elzevir_app::catalog::{CatalogCommand, CatalogOutput, NewRecord};
+use elzevir_app::catalog::{CatalogCommand, CatalogOutput, ImportRecord, NewRecord};
 use elzevir_app::commands::{WriteCommand, WriteOutput, WriteRefusal};
 use elzevir_app::import::{PendingRecord, RecordRejected, RecordSink, SinkClosed};
+use elzevir_app::matching::Matching;
 
 use crate::{CommandFailed, ElzevirHandler, ElzevirStore, Pending};
 
@@ -13,12 +14,20 @@ pub struct PendingAdd(Pending<ElzevirHandler>);
 impl RecordSink for ElzevirStore {
     type Pending = PendingAdd;
 
-    fn submit(&self, record: NewRecord) -> Result<PendingAdd, SinkClosed> {
-        self.submit_waiting(WriteCommand::Catalog(CatalogCommand::AddRecord(Box::new(
-            record,
-        ))))
-        .map(PendingAdd)
-        .map_err(|_| SinkClosed)
+    fn submit(
+        &self,
+        record: NewRecord,
+        matching: Option<Matching>,
+    ) -> Result<PendingAdd, SinkClosed> {
+        let command = match matching {
+            Some(matching) => {
+                CatalogCommand::ImportRecord(Box::new(ImportRecord { record, matching }))
+            }
+            None => CatalogCommand::AddRecord(Box::new(record)),
+        };
+        self.submit_waiting(WriteCommand::Catalog(command))
+            .map(PendingAdd)
+            .map_err(|_| SinkClosed)
     }
 }
 

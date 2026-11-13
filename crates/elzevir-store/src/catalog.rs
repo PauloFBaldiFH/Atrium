@@ -2,11 +2,12 @@
 //! Catalog commands and reads on SQLite (docs/specs/catalogo/modelo-bibliografico.md).
 
 use elzevir_app::catalog::{
-    CatalogCommand, CatalogOutput, CatalogReadError, CatalogReader, CatalogRefusal, InstanceView,
-    ItemData, ItemStatus, ItemView, NewContribution, NewInstance, NewRecord, NewSubject,
-    NewWorkRelation,
+    CatalogCommand, CatalogOutput, CatalogReadError, CatalogReader, CatalogRefusal, ImportOutcome,
+    ImportRecord, InstanceView, ItemData, ItemStatus, ItemView, NewContribution, NewInstance,
+    NewRecord, NewSubject, NewWorkRelation, RefusedItem,
 };
 use elzevir_app::commands::{WriteOutput, WriteRefusal};
+use elzevir_app::matching::{RecordAction, decide, match_keys};
 use elzevir_app::search::REINDEX_INSTANCE;
 use elzevir_domain::catalog::{
     AgentKind, BranchId, HubId, IdentifierKind, InstanceId, ItemId, ItemTypeId, MaterialType,
@@ -53,6 +54,7 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
             }
             output
         }
+        CatalogCommand::ImportRecord(import) => CatalogOutput::Imported(import_record(tx, import)?),
         CatalogCommand::AddItem(new) => {
             if !exists(
                 connection,
@@ -62,14 +64,7 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
                 return Err(refused(CatalogRefusal::UnknownInstance(new.instance)));
             }
             let item = add_item(connection, new.instance, &new.item)?;
-            // The record page shows the Items, so a new Item is a new record version.
-            connection
-                .execute(
-                    "UPDATE instances SET row_version = row_version + 1 WHERE id = ?1",
-                    params![new.instance.0],
-                )
-                .map_err(StoreError::from)?;
-            reindex(tx, new.instance)?;
+            items_changed(tx, new.instance)?;
             CatalogOutput::Item(item)
         }
     };
@@ -97,10 +92,135 @@ fn insert_coded(
     }
 }
 
+/// Imports one record with its matching rule (docs/specs/catalogo/casamento.md).
+fn import_record(
+    tx: &WriteTx<'_>,
+    import: &ImportRecord,
+) -> Result<ImportOutcome, CommandFailed<WriteRefusal>> {
+    let connection = tx.connection();
+    let matched = find_match(connection, import)?;
+    let decision = decide(&import.matching, matched.is_some());
+    let record = &import.record;
+    let wanted: &[ItemData] = if decision.add_items {
+        &record.items
+    } else {
+        &[]
+    };
+    match (decision.record, matched) {
+        (RecordAction::Ignore, None) => Ok(ImportOutcome::Skipped),
+        (RecordAction::Ignore, Some(instance)) => {
+            let (items, refused_items) = add_items_one_by_one(connection, instance, wanted)?;
+            if !items.is_empty() {
+                items_changed(tx, instance)?;
+            }
+            Ok(ImportOutcome::Matched {
+                instance,
+                items,
+                refused_items,
+            })
+        }
+        (RecordAction::CreateNew, matched) => {
+            let (_, instance) = add_work_and_instance(connection, record)?;
+            let (items, refused_items) = add_items_one_by_one(connection, instance, wanted)?;
+            reindex(tx, instance)?;
+            Ok(ImportOutcome::Created {
+                instance,
+                matched,
+                items,
+                refused_items,
+            })
+        }
+    }
+}
+
+/// The oldest stored Instance that shares a key with the record under its rule.
+fn find_match(
+    connection: &Connection,
+    import: &ImportRecord,
+) -> Result<Option<InstanceId>, StoreError> {
+    let mut best: Option<i64> = None;
+    let mut query = connection
+        .prepare_cached("SELECT min(instance_id) FROM match_keys WHERE rule = ?1 AND key = ?2")?;
+    for key in match_keys(&import.record)
+        .into_iter()
+        .filter(|key| key.rule == import.matching.rule)
+    {
+        let found: Option<i64> =
+            query.query_row(params![key.rule.code(), key.key], |row| row.get(0))?;
+        best = match (best, found) {
+            (Some(a), Some(b)) => Some(a.min(b)),
+            (a, b) => a.or(b),
+        };
+    }
+    Ok(best.map(InstanceId))
+}
+
+/// Stores Items one at a time: a refused Item is reported and the next one goes on.
+///
+/// Koha: `C4::ImportBatch::_batchCommitItems` (a barcode already in use is an error for that
+/// Item only).
+fn add_items_one_by_one(
+    connection: &Connection,
+    instance: InstanceId,
+    items: &[ItemData],
+) -> Result<(Vec<ItemId>, Vec<RefusedItem>), CommandFailed<WriteRefusal>> {
+    let mut added = Vec::new();
+    let mut refused = Vec::new();
+    for (position, item) in items.iter().enumerate() {
+        // A savepoint per Item, so a refused one leaves nothing behind (a location term
+        // created just before its barcode was found taken, for instance).
+        savepoint(connection, "SAVEPOINT import_item")?;
+        match add_item(connection, instance, item) {
+            Ok(id) => {
+                savepoint(connection, "RELEASE import_item")?;
+                added.push(id);
+            }
+            Err(CommandFailed::Rejected(WriteRefusal::Catalog(refusal))) => {
+                savepoint(connection, "ROLLBACK TO import_item; RELEASE import_item")?;
+                refused.push(RefusedItem { position, refusal });
+            }
+            Err(other) => return Err(other),
+        }
+    }
+    Ok((added, refused))
+}
+
+fn savepoint(connection: &Connection, sql: &str) -> Result<(), StoreError> {
+    Ok(connection.execute_batch(sql)?)
+}
+
+/// An Instance gained Items: the record page shows them, so its version moves, and the
+/// index is told.
+fn items_changed(tx: &WriteTx<'_>, instance: InstanceId) -> Result<(), StoreError> {
+    tx.connection().execute(
+        "UPDATE instances SET row_version = row_version + 1 WHERE id = ?1",
+        params![instance.0],
+    )?;
+    reindex(tx, instance)
+}
+
 fn add_record(
     connection: &Connection,
     record: &NewRecord,
 ) -> Result<CatalogOutput, CommandFailed<WriteRefusal>> {
+    let (work, instance) = add_work_and_instance(connection, record)?;
+    let items = record
+        .items
+        .iter()
+        .map(|item| add_item(connection, instance, item))
+        .collect::<Result<Vec<_>, _>>()?;
+    Ok(CatalogOutput::Record {
+        work,
+        instance,
+        items,
+    })
+}
+
+/// Stores the Work, its Instance, the source record and the match keys, without Items.
+fn add_work_and_instance(
+    connection: &Connection,
+    record: &NewRecord,
+) -> Result<(WorkId, InstanceId), CommandFailed<WriteRefusal>> {
     if let Some(hub) = record.hub
         && !exists(connection, "SELECT 1 FROM hubs WHERE id = ?1", hub.0)?
     {
@@ -141,16 +261,15 @@ fn add_record(
             )
             .map_err(StoreError::from)?;
     }
-    let items = record
-        .items
-        .iter()
-        .map(|item| add_item(connection, instance, item))
-        .collect::<Result<Vec<_>, _>>()?;
-    Ok(CatalogOutput::Record {
-        work: WorkId(work),
-        instance,
-        items,
-    })
+    for key in match_keys(record) {
+        connection
+            .execute(
+                "INSERT OR IGNORE INTO match_keys (rule, key, instance_id) VALUES (?1, ?2, ?3)",
+                params![key.rule.code(), key.key, instance.0],
+            )
+            .map_err(StoreError::from)?;
+    }
+    Ok((WorkId(work), instance))
 }
 
 /// Queues the Instance for reindexing once this command commits (docs/specs/catalogo/modelo-bibliografico.md, item 24).
