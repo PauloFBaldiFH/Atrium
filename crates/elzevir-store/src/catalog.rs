@@ -3,12 +3,12 @@
 
 use elzevir_app::catalog::{
     CatalogCommand, CatalogOutput, CatalogReadError, CatalogReader, CatalogRefusal, InstanceView,
-    ItemView, NewContribution, NewInstance, NewItem, NewRecord, NewSubject, NewWorkRelation,
+    ItemData, ItemView, NewContribution, NewInstance, NewRecord, NewSubject, NewWorkRelation,
 };
 use elzevir_app::commands::{WriteOutput, WriteRefusal};
 use elzevir_domain::catalog::{
     AgentKind, BranchId, HubId, IdentifierKind, InstanceId, ItemId, ItemTypeId, MaterialType,
-    SubjectKind, Vocabulary, WorkId, WorkRelationKind,
+    SourceFormat, SubjectKind, Vocabulary, WorkId, WorkRelationKind,
 };
 use rusqlite::{Connection, ErrorCode, OptionalExtension, params};
 
@@ -45,7 +45,16 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
             CatalogOutput::Hub(HubId(connection.last_insert_rowid()))
         }
         CatalogCommand::AddRecord(record) => add_record(connection, record)?,
-        CatalogCommand::AddItem(item) => CatalogOutput::Item(add_item(connection, item)?),
+        CatalogCommand::AddItem(new) => {
+            if !exists(
+                connection,
+                "SELECT 1 FROM instances WHERE id = ?1",
+                new.instance.0,
+            )? {
+                return Err(refused(CatalogRefusal::UnknownInstance(new.instance)));
+            }
+            CatalogOutput::Item(add_item(connection, new.instance, &new.item)?)
+        }
     };
     Ok(WriteOutput::Catalog(output))
 }
@@ -106,9 +115,24 @@ fn add_record(
     link_contributions(connection, work, &record.contributions)?;
     link_subjects(connection, work, &record.subjects)?;
     let instance = add_instance(connection, work, record.material_type, &record.instance)?;
+    let instance = InstanceId(instance);
+    if let Some(source) = &record.source {
+        connection
+            .execute(
+                "INSERT INTO source_records (instance_id, format, record) VALUES (?1, ?2, ?3)",
+                params![instance.0, SourceFormat::Marc21Iso2709.code(), source],
+            )
+            .map_err(StoreError::from)?;
+    }
+    let items = record
+        .items
+        .iter()
+        .map(|item| add_item(connection, instance, item))
+        .collect::<Result<Vec<_>, _>>()?;
     Ok(CatalogOutput::Record {
         work: WorkId(work),
-        instance: InstanceId(instance),
+        instance,
+        items,
     })
 }
 
@@ -271,15 +295,9 @@ fn add_instance(
 
 fn add_item(
     connection: &Connection,
-    item: &NewItem,
+    instance: InstanceId,
+    item: &ItemData,
 ) -> Result<ItemId, CommandFailed<WriteRefusal>> {
-    if !exists(
-        connection,
-        "SELECT 1 FROM instances WHERE id = ?1",
-        item.instance.0,
-    )? {
-        return Err(refused(CatalogRefusal::UnknownInstance(item.instance)));
-    }
     let branch = |code: &str| {
         lookup(connection, "SELECT id FROM branches WHERE code = ?1", code)?
             .ok_or_else(|| refused(CatalogRefusal::UnknownBranch(code.to_owned())))
@@ -301,10 +319,11 @@ fn add_item(
     let inserted = connection.execute(
         "INSERT INTO items (instance_id, barcode, inventory_number, home_branch, holding_branch,
                             item_type, call_number, location, collection, price_cents,
-                            replacement_price_cents)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+                            replacement_price_cents, copy_number, not_for_loan, damaged, lost,
+                            withdrawn, restricted, acquired_on)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18)",
         params![
-            item.instance.0,
+            instance.0,
             item.barcode,
             item.inventory_number,
             home,
@@ -314,7 +333,14 @@ fn add_item(
             location,
             collection,
             item.price.map(|m| m.0),
-            item.replacement_price.map(|m| m.0)
+            item.replacement_price.map(|m| m.0),
+            item.copy_number,
+            item.status.not_for_loan,
+            item.status.damaged,
+            item.status.lost,
+            item.status.withdrawn,
+            item.status.restricted,
+            item.acquired_on
         ],
     );
     match inserted {

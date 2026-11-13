@@ -65,6 +65,10 @@ pub struct NewRecord {
     pub subjects: Vec<NewSubject>,
     /// The Instance.
     pub instance: NewInstance,
+    /// Items of the Instance, in order.
+    pub items: Vec<ItemData>,
+    /// The record as it arrived (MARC21 ISO 2709, UTF-8), kept byte for byte.
+    pub source: Option<Vec<u8>>,
 }
 
 /// A relation from the new Work to an existing one.
@@ -135,11 +139,34 @@ pub struct NewIdentifier {
     pub qualifier: Option<String>,
 }
 
-/// A new Item.
+/// A new Item of an existing Instance.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct NewItem {
     /// The Instance it belongs to.
     pub instance: InstanceId,
+    /// The Item's data.
+    pub item: ItemData,
+}
+
+/// The circulation status numbers of an Item; 0 means normal, other values are defined by
+/// the library, as Koha's authorised values.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+pub struct ItemStatus {
+    /// Not for loan.
+    pub not_for_loan: i64,
+    /// Damaged.
+    pub damaged: i64,
+    /// Lost.
+    pub lost: i64,
+    /// Withdrawn.
+    pub withdrawn: i64,
+    /// Restricted.
+    pub restricted: i64,
+}
+
+/// An Item's own data.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ItemData {
     /// Barcode, unique when present.
     pub barcode: Option<String>,
     /// Inventory number (tombo), not necessarily unique.
@@ -160,10 +187,16 @@ pub struct NewItem {
     pub price: Option<Money>,
     /// Replacement price.
     pub replacement_price: Option<Money>,
+    /// Copy number.
+    pub copy_number: Option<String>,
+    /// Circulation status numbers.
+    pub status: ItemStatus,
+    /// Date of acquisition, ISO 8601 as written.
+    pub acquired_on: Option<String>,
 }
 
 /// What a catalog command created.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum CatalogOutput {
     /// A branch was created.
     Branch(BranchId),
@@ -177,6 +210,8 @@ pub enum CatalogOutput {
         work: WorkId,
         /// Its Instance.
         instance: InstanceId,
+        /// Its Items, in order.
+        items: Vec<ItemId>,
     },
     /// An Item was added.
     Item(ItemId),

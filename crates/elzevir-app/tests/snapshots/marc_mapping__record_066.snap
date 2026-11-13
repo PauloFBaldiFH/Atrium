@@ -1,0 +1,123 @@
+---
+source: crates/elzevir-app/tests/marc_mapping.rs
+expression: mapped
+---
+work_title: Os fundamentos da física
+material_type: book
+hub: ~
+relations: []
+classification: "530.07"
+classification_scheme: ddc
+summary: ~
+languages:
+  - por
+contributions:
+  - kind: person
+    heading: "Ramalho Júnior, Francisco"
+    role: ~
+    primary: true
+  - kind: person
+    heading: "Ferraro, Nicolau Gilberto, 1940-"
+    role: ~
+    primary: false
+  - kind: person
+    heading: "Soares, Paulo Antônio de Toledo"
+    role: ~
+    primary: false
+subjects:
+  - kind: topic
+    heading: Física -- Estudo e ensino
+    thesaurus: ~
+instance:
+  title: Os fundamentos da física
+  material_type: ~
+  edition: 6. ed
+  place: "São Paulo, SP"
+  publisher: Moderna
+  date: "1997"
+  extent: "3 v.: il.; 24 cm"
+  series: ~
+  identifiers:
+    - kind: isbn
+      value: "8516009165"
+      qualifier: v. 1
+    - kind: isbn
+      value: "8516009173"
+      qualifier: v. 2
+    - kind: isbn
+      value: "8516009181"
+      qualifier: v. 3
+items:
+  - barcode: "12766"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 530 R14
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+  - barcode: "12767"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 530 R14
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+  - barcode: "12768"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 530 R14
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+  - barcode: "7773"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 530 R14
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+source: ~

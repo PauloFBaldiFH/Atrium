@@ -1,0 +1,55 @@
+---
+source: crates/elzevir-app/tests/marc_mapping.rs
+expression: mapped
+---
+work_title: Perfil - Anuário Estatístico
+material_type: book
+hub: ~
+relations: []
+classification: "310.62"
+classification_scheme: ddc
+summary: ~
+languages:
+  - por
+contributions:
+  - kind: organization
+    heading: PREFEITURA MUNICIPAL DE FOZ DO IGUACU
+    role: ~
+    primary: true
+subjects:
+  - kind: topic
+    heading: ESTATÍSTICA FOZ DO IGUAÇU
+    thesaurus: ~
+  - kind: topic
+    heading: PARANÁ ESTATÍSTICA
+    thesaurus: ~
+instance:
+  title: Perfil - Anuário Estatístico
+  material_type: ~
+  edition: 1. ed
+  place: Foz do IGUAÇU
+  publisher: Secretaria Municipal da Coordenacao e Planejamento
+  date: "1995"
+  extent: 178 p
+  series: Parana
+  identifiers: []
+items:
+  - barcode: "1511"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 310.62 P94
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+source: ~

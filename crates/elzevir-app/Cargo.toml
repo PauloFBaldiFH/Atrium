@@ -16,5 +16,8 @@ argon2.workspace = true
 serde.workspace = true
 thiserror.workspace = true
 
+[dev-dependencies]
+insta.workspace = true
+
 [lints]
 workspace = true

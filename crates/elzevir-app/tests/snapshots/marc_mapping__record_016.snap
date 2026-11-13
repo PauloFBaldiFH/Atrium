@@ -1,0 +1,94 @@
+---
+source: crates/elzevir-app/tests/marc_mapping.rs
+expression: mapped
+---
+work_title: Discursos
+material_type: book
+hub: ~
+relations: []
+classification: ~
+classification_scheme: ~
+summary: ~
+languages:
+  - por
+contributions:
+  - kind: organization
+    heading: "Brasil Presidente (1979-1985 : Figueiredo)"
+    role: aut
+    primary: true
+subjects:
+  - kind: topic
+    heading: Administração pública
+    thesaurus: ~
+  - kind: topic
+    heading: Discurso
+    thesaurus: ~
+  - kind: place
+    heading: Brasil
+    thesaurus: ~
+instance:
+  title: Discursos
+  material_type: ~
+  edition: ~
+  place: "Brasilia,DF"
+  publisher: Presidência da República Secretária de Imprensa e Divulgação
+  date: "1984"
+  extent: ~
+  series: ~
+  identifiers: []
+items:
+  - barcode: "6908"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 320 F49
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 2
+      restricted: 0
+    acquired_on: 2025-03-24
+  - barcode: "8888"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 320 F49
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+  - barcode: "8900"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 320 F49
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 2
+      restricted: 0
+    acquired_on: 2025-03-24
+source: ~
