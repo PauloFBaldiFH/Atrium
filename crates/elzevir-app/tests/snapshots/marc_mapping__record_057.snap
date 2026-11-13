@@ -1,0 +1,61 @@
+---
+source: crates/elzevir-app/tests/marc_mapping.rs
+expression: mapped
+---
+work_title: Fundamentos estéticos da educação
+material_type: book
+hub: ~
+relations: []
+classification: "370.1"
+classification_scheme: ddc
+summary: ~
+languages:
+  - por
+contributions:
+  - kind: person
+    heading: "Duarte Júnior, João-Francisco, 1953-"
+    role: ~
+    primary: true
+subjects:
+  - kind: topic
+    heading: Educação -- Filosofia
+    thesaurus: ~
+  - kind: topic
+    heading: Arte na educação
+    thesaurus: ~
+  - kind: topic
+    heading: Arte -- Estudo e ensino
+    thesaurus: ~
+instance:
+  title: Fundamentos estéticos da educação
+  material_type: ~
+  edition: 3. ed
+  place: "Campinas, SP"
+  publisher: Papirus
+  date: "1994"
+  extent: 150 p.; 21 cm
+  series: ~
+  identifiers:
+    - kind: isbn
+      value: "8530800044"
+      qualifier: ~
+items:
+  - barcode: "1519"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 370 D87
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+source: ~

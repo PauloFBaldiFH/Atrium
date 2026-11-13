@@ -33,6 +33,7 @@ mimalloc = { version = "0.1", default-features = false }
 stats_alloc = "0.1"
 http-body-util = "0.1"
 jiff = { version = "0.2", default-features = false, features = ["std", "tz-system", "tzdb-bundle-platform", "tzdb-zoneinfo"] }
+insta = { version = "1", default-features = false, features = ["yaml"] }
 proptest = "1"
 rusqlite = { version = "0.42", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }

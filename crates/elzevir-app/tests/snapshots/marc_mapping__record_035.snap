@@ -1,0 +1,62 @@
+---
+source: crates/elzevir-app/tests/marc_mapping.rs
+expression: mapped
+---
+work_title: Seminário Internacional de Crédito Imobiliário
+material_type: book
+hub: ~
+relations: []
+classification: "363.580981"
+classification_scheme: ddc
+summary: ~
+languages:
+  - por
+contributions:
+  - kind: meeting
+    heading: "Seminário Internacional de Crédito Imobiliário São Paulo, SP) 2005 (1"
+    role: ~
+    primary: true
+  - kind: organization
+    heading: Associação Brasileira das Entidades de Crédito Imobiliário e Poupança
+    role: ~
+    primary: false
+subjects:
+  - kind: topic
+    heading: Habitação -- Financiamento -- Congressos
+    thesaurus: ~
+instance:
+  title: "Seminário Internacional de Crédito Imobiliário : As contribuições das experiências dos sistemas  imobiliários da Espanha e do México para o aperfeiçoamento do modelo brasileiro"
+  material_type: ~
+  edition: ~
+  place: Rio de Janeiro
+  publisher: Publitetto
+  date: "2007"
+  extent: "150p. : il. ; 21cm."
+  series: ~
+  identifiers:
+    - kind: isbn
+      value: "9788560342013"
+      qualifier: (broch.)
+    - kind: system_control_number
+      value: 2011071117274039med
+      qualifier: ~
+items:
+  - barcode: "14576"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 363 S47
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+source: ~

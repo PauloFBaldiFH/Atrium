@@ -8,7 +8,7 @@
 
 Regras gerais:
 
-1. **Texto**: cada valor tem espaços nas pontas removidos e a pontuação ISBD final (` /`, ` :`, ` ;`, ` =`, `,` e `.` final que não seja de abreviatura de uma letra) removida, como o Koha faz ao preencher `biblio.title` e `biblio.author`. Valor vazio depois disso é ignorado.
+1. **Texto**: cada valor tem espaços nas pontas removidos e a pontuação ISBD final (`/`, `:`, `;`, `=`, `,`, com ou sem espaço antes, e `.` final que não seja de abreviatura de uma letra nem reticências) removida, como o Koha faz ao preencher `biblio.title` e `biblio.author`. Valor vazio depois disso é ignorado.
 2. **Primeira ocorrência**: campo não repetível no modelo usa a primeira ocorrência no MARC.
 3. Campo ou subcampo que não está nas tabelas abaixo não vira coluna; continua no registro original, que é guardado inteiro (B.2 item 1).
 
@@ -43,7 +43,7 @@ A **Instância** recebe `Digital` quando a Obra não é `Digital` e o registro d
 | outras contribuições | `700`, `710`, `711`, na ordem |
 | assuntos | `600`, `610`, `611` (agente), `630` (título), `648` (cronológico), `650` (tópico), `651` (lugar), `655` (gênero/forma), na ordem |
 
-- **Cabeçalho de agente**: subcampos `a`, `b`, `c`, `d`, `q` (e `n` em `111`/`711`), unidos por espaço.
+- **Cabeçalho de agente**: subcampos `a`, `b`, `c`, `d`, `q` (e `n` em `111`/`711`), unidos por espaço como estão e limpos só no fim (`Ginzberg, Eli, 1911-2002`).
 - **Papel**: `$4` (código de relator) se houver; senão `$e` em minúsculas. Sem nenhum dos dois: sem papel.
 - **Cabeçalho de assunto**: `$a` (e `$b`, `$c`, `$d`, `$t` dos assuntos de agente), seguido das subdivisões `$v`, `$x`, `$y`, `$z` com ` -- `, na ordem do campo.
 - **Tesauro do assunto** pelo 2º indicador: `0` → `lcsh`, `1` → `lcac`, `2` → `mesh`, `3` → `nal`, `5` → `cash`, `6` → `rvm`, `7` → o valor de `$2`. Outros: sem tesauro.

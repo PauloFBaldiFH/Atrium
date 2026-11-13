@@ -1,0 +1,70 @@
+---
+source: crates/elzevir-app/tests/marc_mapping.rs
+expression: mapped
+---
+work_title: As aventuras de Karl Marx contra o Barão de Munchhausen
+material_type: book
+hub: ~
+relations: []
+classification: "316.7"
+classification_scheme: udc
+summary: ~
+languages:
+  - por
+contributions:
+  - kind: person
+    heading: "Löwy, Michael, 1938-"
+    role: ~
+    primary: true
+subjects:
+  - kind: topic
+    heading: Sociologia educacional
+    thesaurus: ~
+  - kind: topic
+    heading: Sociologia do conhecimento
+    thesaurus: ~
+  - kind: topic
+    heading: Filosofia marxista
+    thesaurus: ~
+  - kind: topic
+    heading: Socialismo
+    thesaurus: ~
+  - kind: topic
+    heading: Positivismo
+    thesaurus: ~
+instance:
+  title: "As aventuras de Karl Marx contra o Barão de Munchhausen : marxismo e positivismo na sociologia do conhecimento"
+  material_type: ~
+  edition: 3. ed
+  place: São Paulo
+  publisher: Busca Vida
+  date: "1987"
+  extent: 210 p.
+  series: ~
+  identifiers:
+    - kind: system_control_number
+      value: 0750-05160
+      qualifier: ~
+    - kind: system_control_number
+      value: (BIBLIODATA)SC000016285
+      qualifier: ~
+items:
+  - barcode: "4148"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 320 L95
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+source: ~
