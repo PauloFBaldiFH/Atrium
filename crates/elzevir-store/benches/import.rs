@@ -31,6 +31,12 @@ const STAFF_EXPORT: &[u8] =
 const COPIES: usize = 50;
 
 fn main() {
+    // `cargo bench` passes `--bench`. Test runners (`cargo nextest --all-targets`,
+    // `cargo test --all-targets`) list or run this target without it: they get no tests,
+    // instead of a long import with output they cannot parse.
+    if !std::env::args().any(|arg| arg == "--bench") {
+        return;
+    }
     let file = without_barcodes(STAFF_EXPORT).repeat(COPIES);
     let records = 200 * COPIES;
     allocations(&file, records);
