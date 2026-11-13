@@ -114,6 +114,8 @@ Spec afetada: `docs/specs/catalogo/modelo-bibliografico.md`; decisão: novo ADR 
 - **Onda 2:** depois da Onda 1, sobre a API do grafo (B.5).
 - **Pré-condição** (A.4 item 4): só começa com a parte 3 da 1.5, a 1.6 e os testes de ida e volta verdes.
 
+A interação detalhada das Ondas 1 e 2 (listagem, foco 80/20, edição no lugar, grade, mesclagem e quarentena) está em [`UI_BIBFRAME_INTERACTION_SPEC.md`](UI_BIBFRAME_INTERACTION_SPEC.md).
+
 ### B.7 Renomear para Elzevir
 
 Feito em 2026-11-12, depois da parte 2 da tarefa 1.5: crates `atrium-*` → `elzevir-*`, binário `elzevir`, `atrium.toml` → `elzevir.toml`, variáveis `ATRIUM_*` → `ELZEVIR_*`, textos e documentação. Paulo renomeou o repositório no GitHub para `Elzevir`.
