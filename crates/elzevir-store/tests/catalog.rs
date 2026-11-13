@@ -9,10 +9,13 @@
 
 use elzevir_app::catalog::{
     CatalogCommand, CatalogOutput, CatalogReader, CatalogRefusal, ItemView, NewContribution,
-    NewIdentifier, NewInstance, NewItem, NewRecord, NewSubject,
+    NewIdentifier, NewInstance, NewItem, NewRecord, NewSubject, NewWorkRelation,
 };
 use elzevir_app::commands::{WriteCommand, WriteOutput, WriteRefusal};
-use elzevir_domain::catalog::{AgentKind, IdentifierKind, InstanceId, Money, SubjectKind, WorkId};
+use elzevir_domain::catalog::{
+    AgentKind, HubId, IdentifierKind, InstanceId, MaterialType, Money, SubjectKind, WorkId,
+    WorkRelationKind,
+};
 use elzevir_store::{CommandFailed, ElzevirHandler, ElzevirStore, StoreConfig};
 
 fn open(dir: &tempfile::TempDir) -> ElzevirStore {
@@ -83,6 +86,9 @@ fn subject(heading: &str) -> NewSubject {
 fn record(title: &str) -> NewRecord {
     NewRecord {
         work_title: title.to_owned(),
+        material_type: MaterialType::Book,
+        hub: None,
+        relations: Vec::new(),
         classification: Some("869.3".to_owned()),
         classification_scheme: Some("ddc".to_owned()),
         summary: None,
@@ -124,6 +130,7 @@ fn item(instance: InstanceId, barcode: &str) -> NewItem {
     NewItem {
         instance,
         barcode: Some(barcode.to_owned()),
+        inventory_number: Some(format!("2026/{barcode}")),
         home_branch: "MAIN".to_owned(),
         holding_branch: "MAIN".to_owned(),
         item_type: "BK".to_owned(),
@@ -217,6 +224,7 @@ fn items_are_added_and_listed_in_creation_order() {
     let expected = |id, barcode: &str| ItemView {
         id,
         barcode: Some(barcode.to_owned()),
+        inventory_number: Some(format!("2026/{barcode}")),
         home_branch: "MAIN".to_owned(),
         item_type: "BK".to_owned(),
         call_number: Some("869.3 A848d".to_owned()),
@@ -296,4 +304,75 @@ fn branch_and_item_type_codes_are_unique() {
         ),
         refusal(CatalogRefusal::CodeTaken("BK".to_owned()))
     );
+}
+
+#[test]
+fn hubs_relations_and_material_types_read_back() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = open(&dir);
+    let CatalogOutput::Hub(hub) = run(
+        &store,
+        CatalogCommand::CreateHub {
+            title: "Dom Casmurro".to_owned(),
+        },
+    )
+    .unwrap() else {
+        panic!("expected a hub");
+    };
+    let (original, original_instance) = add_record(&store, "Dom Casmurro");
+    let mut translation = record("Dom Casmurro (English)");
+    translation.hub = Some(hub);
+    translation.relations = vec![NewWorkRelation {
+        kind: WorkRelationKind::TranslationOf,
+        work: original,
+    }];
+    translation.instance.material_type = Some(MaterialType::Digital);
+    let CatalogOutput::Record { work, instance } =
+        run(&store, CatalogCommand::AddRecord(Box::new(translation))).unwrap()
+    else {
+        panic!("expected a record");
+    };
+
+    let view = store.instance(instance).unwrap().unwrap();
+    assert_eq!(view.work, work);
+    assert_eq!(view.hub, Some(hub));
+    assert_eq!(view.work_material_type, Some(MaterialType::Book));
+    assert_eq!(view.material_type, Some(MaterialType::Digital));
+    assert_eq!(
+        view.relations,
+        [(WorkRelationKind::TranslationOf, original)]
+    );
+
+    let plain = store.instance(original_instance).unwrap().unwrap();
+    assert_eq!(plain.hub, None);
+    assert_eq!(
+        plain.material_type,
+        Some(MaterialType::Book),
+        "an Instance without its own category takes the Work's"
+    );
+    assert!(plain.relations.is_empty());
+}
+
+#[test]
+fn records_pointing_to_missing_hubs_or_works_are_refused() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = open(&dir);
+    let mut with_hub = record("x");
+    with_hub.hub = Some(HubId(7));
+    assert_eq!(
+        run(&store, CatalogCommand::AddRecord(Box::new(with_hub))),
+        refusal(CatalogRefusal::UnknownHub(HubId(7)))
+    );
+    let mut with_relation = record("x");
+    with_relation.relations = vec![NewWorkRelation {
+        kind: WorkRelationKind::AdaptationOf,
+        work: WorkId(7),
+    }];
+    assert_eq!(
+        run(&store, CatalogCommand::AddRecord(Box::new(with_relation))),
+        refusal(CatalogRefusal::UnknownWork(WorkId(7)))
+    );
+    // Nothing from the refused commands stayed behind.
+    let (work, _) = add_record(&store, "Dom Casmurro");
+    assert_eq!(work, WorkId(1));
 }

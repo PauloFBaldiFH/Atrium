@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! The bibliographic model: Work, Instance, Item, Agent, Subject
-//! (docs/specs/catalogo/modelo-bibliografico.md, ADR 0001).
+//! The bibliographic model: Hub, Work, Instance, Item, Agent, Subject
+//! (docs/specs/catalogo/modelo-bibliografico.md, ADR 0001 and 0002).
 //!
 //! This module holds the identities and the fixed vocabularies. Every fixed vocabulary
 //! has a stable number, which is what the database stores; never renumber a variant.
@@ -18,6 +18,8 @@ macro_rules! row_id {
 }
 
 row_id! {
+    /// A Hub: groups Works that share an origin (translations, adaptations, uniform title).
+    HubId,
     /// A Work: the intellectual content.
     WorkId,
     /// An Instance: one published edition of a Work.
@@ -123,6 +125,10 @@ stable_enum! {
         Ean = 4,
         /// Control number from another system (MARC21 035).
         SystemControlNumber = 5,
+        /// Digital Object Identifier (MARC21 024, first indicator 7, source `doi`).
+        Doi = 6,
+        /// International Standard Music Number (MARC21 024, first indicator 2).
+        Ismn = 7,
     }
 }
 
@@ -150,6 +156,48 @@ stable_enum! {
     SourceFormat {
         /// ISO 2709 (MARC21), UTF-8.
         Marc21Iso2709 = 1,
+    }
+}
+
+stable_enum! {
+    /// The category of material of a Work or an Instance. It picks the icon and the
+    /// cataloguing profile (the 12 to 20 fields the editor shows for that category).
+    MaterialType {
+        /// Books and other printed or manuscript text.
+        Book = 1,
+        /// Periodicals, newspapers and other continuing resources.
+        Periodical = 2,
+        /// Maps, atlases and other cartographic material.
+        Map = 3,
+        /// Notated music.
+        Score = 4,
+        /// Sound recordings, musical or spoken.
+        SoundRecording = 5,
+        /// Films, videos and other moving images.
+        Video = 6,
+        /// Electronic resources: e-books, files, websites, software.
+        Digital = 7,
+        /// Still images, objects and other visual material.
+        VisualMaterial = 8,
+        /// Kits and mixed materials.
+        Mixed = 9,
+    }
+}
+
+stable_enum! {
+    /// How one Work relates to another. Stored one way only: the Work that holds the
+    /// row is the translation, the adaptation, the part or the continuation.
+    WorkRelationKind {
+        /// This Work is a translation of the related Work.
+        TranslationOf = 1,
+        /// This Work is an adaptation of the related Work.
+        AdaptationOf = 2,
+        /// This Work is part of the related Work.
+        PartOf = 3,
+        /// This Work is a supplement to the related Work.
+        SupplementTo = 4,
+        /// This Work continues the related Work.
+        ContinuationOf = 5,
     }
 }
 
@@ -188,6 +236,16 @@ mod tests {
             IdentifierKind::from_code,
         );
         round_trips(Vocabulary::ALL, Vocabulary::code, Vocabulary::from_code);
+        round_trips(
+            MaterialType::ALL,
+            MaterialType::code,
+            MaterialType::from_code,
+        );
+        round_trips(
+            WorkRelationKind::ALL,
+            WorkRelationKind::code,
+            WorkRelationKind::from_code,
+        );
         round_trips(
             SourceFormat::ALL,
             SourceFormat::code,

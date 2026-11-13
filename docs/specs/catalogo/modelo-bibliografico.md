@@ -1,6 +1,6 @@
 # Modelo bibliográfico (v0)
 
-> Status: v0, tarefa 1.5. Base: decisões 4 e 5 do [doc 04](../../arquitetura/04-decisoes.md) (modelo relacional inspirado em BIBFRAME 2.0, com o MARC original preservado) e [ADR 0001](../../adr/0001-modelo-bibliografico.md). Esta versão define as entidades e as tabelas; o que cada campo MARC preenche é da tarefa 1.6.
+> Status: v0, tarefa 1.5. Base: decisões 4 e 5 do [doc 04](../../arquitetura/04-decisoes.md) (modelo relacional inspirado em BIBFRAME 2.0, com o MARC original preservado), [ADR 0001](../../adr/0001-modelo-bibliografico.md), [ADR 0002](../../adr/0002-hub-relacoes-e-categoria.md) e a [visão de arquitetura](../../ARCHITECTURE_VISION.md). Esta versão define as entidades e as tabelas; o que cada campo MARC preenche é da tarefa 1.6.
 
 ## 1. Comportamento
 
@@ -19,17 +19,22 @@
 10. Situação do exemplar (`not_for_loan`, `damaged`, `lost`, `withdrawn`, `restricted`): número, com 0 = normal. Os outros valores são definidos pela biblioteca, como os valores autorizados do Koha.
 11. Dinheiro é inteiro em centavos. Datas são texto ISO 8601.
 12. Propriedades pouco usadas vão para a coluna `extra` (JSON) da entidade, em vez de uma coluna para cada.
-13. `works`, `instances`, `items`, `branches` e `item_types` têm `row_version` (doc 05, §3).
+13. `works`, `instances`, `items`, `branches`, `item_types` e `hubs` têm `row_version` (doc 05, §3).
+14. **Hub** (`hubs`) agrupa Obras de mesma origem (traduções, adaptações, título uniforme). É opcional: a Obra aponta para no máximo um Hub (`works.hub_id`).
+15. **Relações entre Obras** (`work_relations`): tipo (`enum` estável: tradução de, adaptação de, parte de, suplemento de, continuação de) e a Obra relacionada, em ordem. Guardadas num sentido só: a linha fica na Obra que é a tradução, a adaptação, a parte.
+16. **Categoria do material** (`material_type`, `enum` estável: livro, periódico, mapa, partitura, gravação sonora, vídeo, digital, material visual, misto) na Obra e na Instância. A Instância sem categoria própria recebe a da Obra; uma edição digital de um livro impresso é `livro` na Obra e `digital` na Instância. A categoria escolhe o ícone e o perfil de campos da catalogação.
+17. **Tombo** (`items.inventory_number`, `952$i` no Koha): opcional e pode repetir, como o `stocknumber` do Koha.
+18. Identificadores também incluem DOI e ISMN.
 
 ### Comandos e leitura
 
-14. Toda escrita passa pela thread escritora como `WriteCommand::Catalog`: criar unidade, criar tipo de item, acrescentar registro (Obra + Instância) e acrescentar Item.
-15. Os comandos citam vocabulário pelo **código** (`MAIN`, `BK`, `por`); a escritora troca pelo número.
+19. Toda escrita passa pela thread escritora como `WriteCommand::Catalog`: criar unidade, criar tipo de item, criar Hub, acrescentar registro (Obra + Instância, com categoria, Hub e relações) e acrescentar Item.
+20. Os comandos citam vocabulário pelo **código** (`MAIN`, `BK`, `por`); a escritora troca pelo número.
     - Unidade e tipo de item precisam existir antes. Código desconhecido é recusado.
     - Os outros vocabulários (idioma, relator, localização, coleção, esquema, tesauro) são criados no primeiro uso, com o próprio código como rótulo.
-16. Agente e Assunto já existentes são reaproveitados (itens 5 e 6), nunca duplicados.
-17. Recusas, sem nada gravado: código de unidade ou tipo de item já usado, unidade ou tipo de item desconhecido, Instância inexistente e código de barras repetido.
-18. A leitura (`CatalogReader`) devolve uma Instância com sua Obra, contribuições, assuntos, identificadores e idiomas na ordem gravada, e os Itens de uma Instância na ordem de criação.
+21. Agente e Assunto já existentes são reaproveitados (itens 5 e 6), nunca duplicados.
+22. Recusas, sem nada gravado: código de unidade ou tipo de item já usado, unidade ou tipo de item desconhecido, Hub, Obra relacionada ou Instância inexistente e código de barras repetido.
+23. A leitura (`CatalogReader`) devolve uma Instância com sua Obra, Hub, categorias, relações, contribuições, assuntos, identificadores e idiomas na ordem gravada, e os Itens de uma Instância na ordem de criação.
 
 ## 2. Origem no Koha
 
@@ -39,7 +44,8 @@ O modelo é do Elzevir, mas cada coluna tem de onde vir numa migração e para o
 |---|---|
 | `works` + `instances` | `biblio`, `biblioitems` |
 | `source_records` | `biblio_metadata` |
-| `items` | `items` (`barcode` único, `homebranch`, `holdingbranch`, `itype`, `itemcallnumber`, `notforloan`, `damaged`, `itemlost`, `withdrawn`, `restricted`, `price`, `replacementprice`) |
+| `items` | `items` (`barcode` único, `stocknumber` → `inventory_number`, `homebranch`, `holdingbranch`, `itype`, `itemcallnumber`, `notforloan`, `damaged`, `itemlost`, `withdrawn`, `restricted`, `price`, `replacementprice`) |
+| `hubs`, `work_relations`, `material_type` | não existem no Koha: Hub e relações vêm de `130`/`240`/`7XX` e a categoria do líder e do `008`/`007` (tarefa 1.6) |
 | `branches` | `branches` |
 | `item_types` | `itemtypes` |
 | `terms` (localização, coleção) | `authorised_values` (`LOC`, `CCODE`) |
@@ -62,6 +68,8 @@ Testes: `crates/elzevir-store/src/schema.rs` (`catalog_tests`, esquema) e `crate
 5. Assunto com o mesmo cabeçalho e tipo, um com tesauro e outro sem: são dois Assuntos. Dois sem tesauro: é o mesmo.
 6. `extra` que não é JSON válido: recusado.
 7. Número de tipo fixo desconhecido lido do banco (base de versão mais nova): erro, nunca um valor padrão.
+8. Obra que se relaciona com ela mesma: recusado pelo banco. Apagar uma Obra que outras citam numa relação, ou um Hub com Obras: recusado. Apagar uma Obra leva junto as relações dela.
+9. Registros gravados antes da migração 4 não têm categoria; a leitura devolve `None` para eles. Os comandos sempre gravam a categoria.
 
 ## 5. Desvios
 
