@@ -27,3 +27,54 @@ staff-home-title = Staff interface
 staff-home-signed-in-as = Signed in as
 staff-home-administration = Administration
 staff-home-logout = Sign out
+
+## OPAC results
+opac-results-title = Search results
+opac-results-count = { $count ->
+    [one] 1 result
+   *[other] { $count } results
+}
+opac-results-none = Nothing found for “{ $query }”.
+opac-results-pages = Result pages
+opac-results-previous = Previous
+opac-results-next = Next
+opac-availability-available = { $available } of { $items } available
+opac-availability-none = No copies available
+opac-availability-no-items = No copies
+
+## OPAC record
+opac-record-contributors = Authors
+opac-record-material = Type
+opac-record-publication = Publication
+opac-record-classification = Classification
+opac-record-subjects = Subjects
+opac-record-identifiers = Identifiers
+opac-record-languages = Languages
+opac-record-summary = Summary
+opac-record-items = Copies
+opac-record-no-items = This record has no copies.
+opac-record-item-branch = Library
+opac-record-item-location = Shelf
+opac-record-item-call-number = Call number
+opac-record-item-status = Status
+opac-not-found-title = Record not found
+opac-not-found-back = Back to the catalog
+
+## Item status
+item-status-available = Available
+item-status-not-for-loan = Not for loan
+item-status-damaged = Damaged
+item-status-lost = Lost
+item-status-withdrawn = Withdrawn
+item-status-restricted = Restricted
+
+## Categories of material
+material-book = Book
+material-periodical = Periodical
+material-map = Map
+material-score = Score
+material-sound-recording = Sound recording
+material-video = Video
+material-digital = Digital resource
+material-visual-material = Visual material
+material-mixed = Mixed materials

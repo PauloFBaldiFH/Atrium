@@ -6,6 +6,7 @@ pub mod commands;
 pub mod import;
 pub mod marc_mapping;
 pub mod memory;
+pub mod opac;
 pub mod parallelism;
 pub mod search;
 pub mod staff;

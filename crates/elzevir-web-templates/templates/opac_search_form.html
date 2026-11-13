@@ -1,0 +1,7 @@
+<form class="search" action="/search" method="get" role="search"
+      hx-get="/search" hx-target="#results" hx-select="#results" hx-swap="outerHTML" hx-push-url="true">
+  <label for="q">{{ t.get("opac-home-search-label") }}</label>
+  <input id="q" name="q" type="search" value="{{ query }}" maxlength="256"
+         placeholder="{{ t.get("opac-home-search-placeholder") }}">
+  <button type="submit">{{ t.get("opac-home-search-button") }}</button>
+</form>

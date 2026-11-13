@@ -5,6 +5,8 @@
     reason = "integration test: helper functions fail the test on error"
 )]
 
+mod common;
+
 use std::sync::Arc;
 
 use axum::Router;
@@ -14,7 +16,7 @@ use elzevir_app::memory::{MemoryProbe, MemoryReport};
 use elzevir_app::staff::{
     Permission, StaffAccount, StaffDirectory, StaffDirectoryError, StaffId, hash_password,
 };
-use elzevir_web::{AppState, WebConfig, router};
+use elzevir_web::{AppState, OpacPorts, WebConfig, router};
 use elzevir_web_templates::I18n;
 use http_body_util::BodyExt;
 use tower::ServiceExt;
@@ -60,6 +62,10 @@ fn app() -> Router {
     router(AppState::new(
         Arc::new(accounts),
         Arc::new(NoCounters),
+        OpacPorts {
+            catalog: Arc::new(common::Catalog::default()),
+            index: Arc::new(common::Index::default()),
+        },
         I18n::english().unwrap(),
         config,
     ))

@@ -10,6 +10,7 @@ publish.workspace = true
 
 [dependencies]
 elzevir-app.workspace = true
+elzevir-domain.workspace = true
 elzevir-web-templates.workspace = true
 askama.workspace = true
 axum.workspace = true

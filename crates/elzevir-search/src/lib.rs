@@ -14,10 +14,11 @@ use std::sync::{Mutex, PoisonError};
 
 use elzevir_app::parallelism::Parallelism;
 use elzevir_app::search::{
-    IndexBatch, SearchDocument, SearchError, SearchHit, SearchIndex, normalized_identifier,
+    IndexBatch, SearchDocument, SearchError, SearchHit, SearchIndex, SearchResults,
+    normalized_identifier,
 };
-use elzevir_domain::catalog::{HubId, IdentifierKind, InstanceId, WorkId};
-use tantivy::collector::TopDocs;
+use elzevir_domain::catalog::{HubId, IdentifierKind, InstanceId, MaterialType, WorkId};
+use tantivy::collector::{Count, TopDocs};
 use tantivy::directory::MmapDirectory;
 use tantivy::query::{BooleanQuery, BoostQuery, Occur, Query, QueryParser, RegexQuery, TermQuery};
 use tantivy::schema::{IndexRecordOption, Value};
@@ -217,11 +218,24 @@ impl TantivyIndex {
                 .and_then(|value| value.as_u64())
                 .and_then(|n| i64::try_from(n).ok())
         };
+        let text = |field| {
+            document
+                .get_first(field)
+                .and_then(|value| value.as_str())
+                .map(str::to_owned)
+        };
         Some(SearchHit {
             instance: InstanceId(number(self.fields.instance)?),
             work: WorkId(number(self.fields.work)?),
             hub: number(self.fields.hub).map(HubId),
             score,
+            title: text(self.fields.title).unwrap_or_default(),
+            main_contributor: text(self.fields.main_contributor),
+            date: text(self.fields.date),
+            material_type: number(self.fields.material_type)
+                .and_then(|code| u8::try_from(code).ok())
+                .and_then(MaterialType::from_code),
+            call_number: text(self.fields.call_number),
         })
     }
 }
@@ -260,15 +274,30 @@ impl SearchIndex for TantivyIndex {
         self.reader.reload().map_err(error)
     }
 
-    fn search(&self, query: &str, limit: usize) -> Result<Vec<SearchHit>, SearchError> {
-        if limit == 0 {
-            return Ok(Vec::new());
-        }
+    fn search(
+        &self,
+        query: &str,
+        offset: usize,
+        limit: usize,
+    ) -> Result<SearchResults, SearchError> {
         let searcher = self.reader.searcher();
-        let found = searcher
+        let query = self.query(query);
+        if limit == 0 {
+            let total = searcher.search(&*query, &Count).map_err(error)?;
+            return Ok(SearchResults {
+                total,
+                hits: Vec::new(),
+            });
+        }
+        let (found, total) = searcher
             .search(
-                &*self.query(query),
-                &TopDocs::with_limit(limit).order_by_score(),
+                &*query,
+                &(
+                    TopDocs::with_limit(limit)
+                        .and_offset(offset)
+                        .order_by_score(),
+                    Count,
+                ),
             )
             .map_err(error)?;
         let mut hits = Vec::with_capacity(found.len());
@@ -283,7 +312,7 @@ impl SearchIndex for TantivyIndex {
                 .total_cmp(&a.score)
                 .then(a.instance.0.cmp(&b.instance.0))
         });
-        Ok(hits)
+        Ok(SearchResults { total, hits })
     }
 }
 

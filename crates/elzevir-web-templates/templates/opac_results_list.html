@@ -1,0 +1,26 @@
+<section id="results" aria-live="polite">
+  {% if query.is_empty() %}
+  {% else if total == 0 %}
+  <p class="muted">{{ t.get_with("opac-results-none", "query", query) }}</p>
+  {% else %}
+  <p class="muted">{{ count_text() }}</p>
+  <ol class="results">
+    {% for row in rows %}
+    <li class="result">
+      <a class="result-title" href="/record/{{ row.instance }}">{{ row.title }}</a>
+      <div class="result-meta">
+        {% if let Some(contributor) = row.contributor %}<span>{{ contributor }}</span>{% endif %}
+        {% if let Some(date) = row.date %}<span>{{ date }}</span>{% endif %}
+        {% if let Some(material) = row.material %}<span>{{ t.get(material) }}</span>{% endif %}
+        {% if let Some(call_number) = row.call_number %}<span class="call-number">{{ call_number }}</span>{% endif %}
+      </div>
+      <div class="availability {{ row.availability_class() }}">{{ row.availability_text(t) }}</div>
+    </li>
+    {% endfor %}
+  </ol>
+  <nav class="pages" aria-label="{{ t.get("opac-results-pages") }}">
+    {% if page > 1 %}<a href="/search?q={{ query_url() }}&amp;page={{ page - 1 }}" rel="prev">{{ t.get("opac-results-previous") }}</a>{% endif %}
+    {% if has_next %}<a href="/search?q={{ query_url() }}&amp;page={{ page + 1 }}" rel="next">{{ t.get("opac-results-next") }}</a>{% endif %}
+  </nav>
+  {% endif %}
+</section>

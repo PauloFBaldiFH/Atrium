@@ -8,6 +8,7 @@
   --elzevir-color-primary: #1f5fa8;
   --elzevir-color-primary-text: #ffffff;
   --elzevir-color-error: #a1261f;
+  --elzevir-color-available: #1d7a46;
   --elzevir-color-border: #d5dae3;
   --elzevir-radius: 6px;
   --elzevir-space: 1rem;
@@ -23,6 +24,7 @@
     --elzevir-color-primary: #6aa2e8;
     --elzevir-color-primary-text: #0b1220;
     --elzevir-color-error: #f08c84;
+    --elzevir-color-available: #6fcf97;
     --elzevir-color-border: #2c3445;
   }
 }
@@ -70,3 +72,21 @@ button {
 /* htmx request indicators (htmx's own inline styles are disabled to satisfy the CSP). */
 .htmx-indicator { opacity: 0; }
 .htmx-request .htmx-indicator, .htmx-request.htmx-indicator { opacity: 1; transition: opacity 200ms ease-in; }
+
+/* OPAC: results and record. */
+.muted { color: var(--elzevir-color-muted); }
+.results { list-style: none; padding: 0; margin: 0; }
+.result { padding: 0.75rem 0; border-bottom: 1px solid var(--elzevir-color-border); }
+.result-title { font-weight: 600; }
+.result-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; color: var(--elzevir-color-muted); font-size: 0.9em; }
+.call-number { font-variant-numeric: tabular-nums; }
+.available { color: var(--elzevir-color-available); }
+.unavailable { color: var(--elzevir-color-muted); }
+.pages { display: flex; justify-content: space-between; padding: var(--elzevir-space) 0; }
+.record-fields { display: grid; grid-template-columns: max-content 1fr; gap: 0.25rem var(--elzevir-space); }
+.record-fields dt { color: var(--elzevir-color-muted); }
+.record-fields dd { margin: 0; }
+.chip { display: inline-block; margin: 0 0.25rem 0.25rem 0; padding: 0 0.5rem; border: 1px solid var(--elzevir-color-border); border-radius: var(--elzevir-radius); }
+.items { width: 100%; border-collapse: collapse; }
+.items th, .items td { text-align: left; padding: 0.25rem 0.5rem; border-bottom: 1px solid var(--elzevir-color-border); }
+@media (max-width: 30rem) { .record-fields { grid-template-columns: 1fr; } }

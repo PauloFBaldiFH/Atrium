@@ -246,9 +246,49 @@ fn items_are_added_and_listed_in_creation_order() {
         item_type: "BK".to_owned(),
         call_number: Some("869.3 A848d".to_owned()),
         location: Some("GEN".to_owned()),
+        status: ItemStatus::default(),
     };
     assert_eq!(items, [expected(first, "0001"), expected(second, "0002")]);
     assert!(store.items(InstanceId(instance.0 + 1)).unwrap().is_empty());
+}
+
+#[test]
+fn adding_an_item_moves_the_record_version_and_statuses_come_per_page() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = open(&dir);
+    setup(&store);
+    let (_, first) = add_record(&store, "Dom Casmurro");
+    let (_, second) = add_record(&store, "Quincas Borba");
+    let before = store.record_version(first).unwrap().unwrap();
+    run(
+        &store,
+        CatalogCommand::AddItem(Box::new(item(first, "0001"))),
+    )
+    .unwrap();
+    let lost = changed(first, "0002", |data| data.status.lost = 1);
+    run(&store, CatalogCommand::AddItem(Box::new(lost))).unwrap();
+    assert!(store.record_version(first).unwrap().unwrap() > before);
+    assert_eq!(
+        store.record_version(InstanceId(second.0 + 1)).unwrap(),
+        None
+    );
+
+    let mut statuses = store.item_statuses(&[first, second]).unwrap();
+    statuses.sort_by_key(|(_, status)| status.lost);
+    assert_eq!(
+        statuses,
+        [
+            (first, ItemStatus::default()),
+            (
+                first,
+                ItemStatus {
+                    lost: 1,
+                    ..ItemStatus::default()
+                }
+            ),
+        ]
+    );
+    assert!(store.item_statuses(&[]).unwrap().is_empty());
 }
 
 #[test]

@@ -88,6 +88,16 @@ impl I18n {
         args.set(name, FluentValue::from(value));
         self.format(key, Some(&args))
     }
+
+    /// Formats `key` with named numbers, so that plural forms are chosen by the language.
+    #[must_use]
+    pub fn get_numbers(&self, key: &str, numbers: &[(&str, u64)]) -> String {
+        let mut args = fluent_bundle::FluentArgs::new();
+        for (name, value) in numbers {
+            args.set(*name, FluentValue::from(*value));
+        }
+        self.format(key, Some(&args))
+    }
 }
 
 /// OPAC home page.
@@ -96,6 +106,180 @@ impl I18n {
 pub struct OpacHome<'a> {
     /// Interface texts.
     pub t: &'a I18n,
+    /// Text of the search box (empty on the home page).
+    pub query: &'a str,
+}
+
+/// One search result as the list shows it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ResultLine {
+    /// Instance id, for the link to the record.
+    pub instance: i64,
+    /// Title.
+    pub title: String,
+    /// Main contributor.
+    pub contributor: Option<String>,
+    /// Date of publication.
+    pub date: Option<String>,
+    /// Message key of the category of material.
+    pub material: Option<&'static str>,
+    /// Call number of the first Item.
+    pub call_number: Option<String>,
+    /// Items of the Instance.
+    pub items: u32,
+    /// Items available.
+    pub available: u32,
+}
+
+impl ResultLine {
+    /// CSS class of the availability line.
+    #[must_use]
+    pub const fn availability_class(&self) -> &'static str {
+        if self.available > 0 {
+            "available"
+        } else {
+            "unavailable"
+        }
+    }
+
+    /// Availability, as a sentence.
+    #[must_use]
+    pub fn availability_text(&self, t: &I18n) -> String {
+        if self.items == 0 {
+            t.get("opac-availability-no-items")
+        } else if self.available == 0 {
+            t.get("opac-availability-none")
+        } else {
+            t.get_numbers(
+                "opac-availability-available",
+                &[
+                    ("available", u64::from(self.available)),
+                    ("items", u64::from(self.items)),
+                ],
+            )
+        }
+    }
+}
+
+/// The list of search results with its page links: a whole page, or only the fragment
+/// that HTMX swaps in.
+#[derive(Template)]
+#[template(path = "opac_results.html", blocks = ["results"])]
+pub struct OpacResults<'a> {
+    /// Interface texts.
+    pub t: &'a I18n,
+    /// The query as used.
+    pub query: &'a str,
+    /// Matching records in all.
+    pub total: usize,
+    /// This page, from 1.
+    pub page: usize,
+    /// Whether a next page exists.
+    pub has_next: bool,
+    /// The results of this page.
+    pub rows: Vec<ResultLine>,
+}
+
+impl OpacResults<'_> {
+    /// How many records matched, as a sentence.
+    #[must_use]
+    pub fn count_text(&self) -> String {
+        self.t.get_numbers(
+            "opac-results-count",
+            &[("count", u64::try_from(self.total).unwrap_or(u64::MAX))],
+        )
+    }
+
+    /// The query, encoded for a URL.
+    #[must_use]
+    pub fn query_url(&self) -> String {
+        url_encode(self.query)
+    }
+}
+
+/// One Item as the record shows it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ItemLine {
+    /// Home branch.
+    pub branch: String,
+    /// Shelving location.
+    pub location: Option<String>,
+    /// Call number.
+    pub call_number: Option<String>,
+    /// Whether it is available.
+    pub available: bool,
+    /// Message key of its status.
+    pub status: &'static str,
+}
+
+/// The body of a record page. It depends only on the record, so it is rendered once per
+/// record version and kept (docs/specs/opac/busca-e-registro.md).
+#[derive(Template)]
+#[template(path = "opac_record_body.html")]
+pub struct OpacRecordBody<'a> {
+    /// Interface texts.
+    pub t: &'a I18n,
+    /// Title.
+    pub title: &'a str,
+    /// The Work's title, when it differs from the Instance's.
+    pub work_title: Option<&'a str>,
+    /// Contributor headings.
+    pub contributors: Vec<&'a str>,
+    /// Message key of the category of material.
+    pub material: Option<&'static str>,
+    /// Publisher and date.
+    pub publication: Option<String>,
+    /// Classification number.
+    pub classification: Option<&'a str>,
+    /// Subject headings.
+    pub subjects: Vec<&'a str>,
+    /// Identifiers.
+    pub identifiers: Vec<&'a str>,
+    /// Language codes.
+    pub languages: Vec<&'a str>,
+    /// Summary.
+    pub summary: Option<&'a str>,
+    /// Items.
+    pub items: Vec<ItemLine>,
+}
+
+/// A record page around an already rendered body.
+#[derive(Template)]
+#[template(path = "opac_record.html")]
+pub struct OpacRecord<'a> {
+    /// Interface texts.
+    pub t: &'a I18n,
+    /// Title, for `<title>`.
+    pub title: &'a str,
+    /// The rendered [`OpacRecordBody`].
+    pub body: &'a str,
+}
+
+/// The page for a record that does not exist.
+#[derive(Template)]
+#[template(path = "opac_not_found.html")]
+pub struct OpacNotFound<'a> {
+    /// Interface texts.
+    pub t: &'a I18n,
+}
+
+/// Percent-encodes `text` for a query string: unreserved characters stay, everything else
+/// becomes `%XX` per UTF-8 byte.
+#[must_use]
+pub fn url_encode(text: &str) -> String {
+    let hex = |nibble: u8| char::from_digit(u32::from(nibble), 16).map(|c| c.to_ascii_uppercase());
+    let mut encoded = String::with_capacity(text.len());
+    for byte in text.bytes() {
+        if byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'.' | b'_' | b'~') {
+            encoded.push(char::from(byte));
+        } else {
+            encoded.push('%');
+            // Both nibbles are below 16, so `from_digit` always gives a character.
+            encoded.extend(hex(byte >> 4));
+            encoded.extend(hex(byte & 0x0f));
+        }
+    }
+    encoded
 }
 
 /// Staff sign-in page.
@@ -137,6 +321,12 @@ mod tests {
         let templates = [
             include_str!("../templates/base.html"),
             include_str!("../templates/opac_home.html"),
+            include_str!("../templates/opac_search_form.html"),
+            include_str!("../templates/opac_results.html"),
+            include_str!("../templates/opac_results_list.html"),
+            include_str!("../templates/opac_record.html"),
+            include_str!("../templates/opac_record_body.html"),
+            include_str!("../templates/opac_not_found.html"),
             include_str!("../templates/staff_login.html"),
             include_str!("../templates/staff_home.html"),
         ];
@@ -179,6 +369,26 @@ mod tests {
         assert!(page.contains("Invalid username or password."));
         assert!(page.contains("&#60;script&#62;") || page.contains("&lt;script&gt;"));
         assert!(!page.contains("<script>\""));
+    }
+
+    #[test]
+    fn queries_are_encoded_for_urls() {
+        assert_eq!(url_encode("café & pão"), "caf%C3%A9%20%26%20p%C3%A3o");
+        assert_eq!(url_encode("310.62 P94"), "310.62%20P94");
+        assert_eq!(url_encode("a-b_c~d"), "a-b_c~d");
+    }
+
+    #[test]
+    fn plurals_follow_the_number() {
+        let t = I18n::english().unwrap();
+        assert_eq!(
+            t.get_numbers("opac-results-count", &[("count", 1)]),
+            "1 result"
+        );
+        assert_eq!(
+            t.get_numbers("opac-results-count", &[("count", 2)]),
+            "2 results"
+        );
     }
 
     #[test]
