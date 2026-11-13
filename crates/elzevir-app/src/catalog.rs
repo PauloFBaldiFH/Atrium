@@ -266,6 +266,10 @@ pub struct InstanceView {
     pub publisher: Option<String>,
     /// Date of publication.
     pub date: Option<String>,
+    /// The Work's classification number, such as a DDC number.
+    pub classification: Option<String>,
+    /// The Work's summary.
+    pub summary: Option<String>,
     /// Contributor headings with their kind, in order.
     pub contributors: Vec<(AgentKind, String)>,
     /// Subject headings with their kind, in order.
@@ -291,6 +295,8 @@ pub struct ItemView {
     pub item_type: String,
     /// Call number.
     pub call_number: Option<String>,
+    /// Shelving location code.
+    pub location: Option<String>,
 }
 
 /// Port: reading the catalog.

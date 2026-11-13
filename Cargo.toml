@@ -18,6 +18,7 @@ elzevir-data = { path = "crates/elzevir-data" }
 elzevir-domain = { path = "crates/elzevir-domain" }
 elzevir-marc = { path = "crates/elzevir-marc" }
 elzevir-scenarios = { path = "crates/elzevir-scenarios" }
+elzevir-search = { path = "crates/elzevir-search" }
 elzevir-sip2 = { path = "crates/elzevir-sip2" }
 elzevir-store = { path = "crates/elzevir-store" }
 elzevir-web = { path = "crates/elzevir-web" }
@@ -31,6 +32,7 @@ fluent-bundle = "0.16"
 getrandom = "0.4"
 mimalloc = { version = "0.1", default-features = false }
 stats_alloc = "0.1"
+tantivy = { version = "0.27", default-features = false, features = ["mmap", "stemmer"] }
 http-body-util = "0.1"
 jiff = { version = "0.2", default-features = false, features = ["std", "tz-system", "tzdb-bundle-platform", "tzdb-zoneinfo"] }
 insta = { version = "1", default-features = false, features = ["yaml"] }
