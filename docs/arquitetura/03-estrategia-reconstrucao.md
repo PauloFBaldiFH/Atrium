@@ -338,6 +338,25 @@ Prioridade da Fase 0: workspace, CI, `elzevir-store` e `elzevir-marc` primeiro. 
 
 A tarefa 1.12 adianta um pedaço da Fase 3 de propósito: ela valida, cedo e de ponta a ponta, o ciclo cenário → oráculo → sonda → livro-razão, que é o coração do método.
 
+### Fase 2: catálogo e busca (Onda 1)
+
+> Status: **proposta** (2026-11-13), aguardando aprovação de Paulo. Escopo do doc 01, §5.2 (Tantivy, outbox, OPAC, editor de catalogação, autoridades básicas), com a interface da Onda 1 de [`UI_BIBFRAME_INTERACTION_SPEC.md`](../UI_BIBFRAME_INTERACTION_SPEC.md), §14. Tantivy, outbox e OPAC mínimo já vieram na Fase 1 (1.7 a 1.9); a Fase 2 é sobretudo a catalogação na equipe.
+
+| # | Tarefa | Base | Pronto quando |
+|---|---|---|---|
+| 2.0 | Fixture de ida e volta com `952` repetido, `082`/`090` e acentos, exportada da equipe do oráculo com leitor fictício | Visão B.4 | Importar → exportar igual byte a byte; editar um campo mapeado muda só ele |
+| 2.1 | Lacunas do modelo usadas pelos perfis livro e periódico: notas (500, 505, 590), público-alvo (521), `instance_contributions`, `quarantined_at` | Spec de UI §10 | Migração 6, mapeamento MARC dos dois lados e teste de ida e volta para cada campo |
+| 2.2 | Comandos `catalog.update_work` e `catalog.update_instance` com `row_version` (`CatalogRefusal::Stale`), `audit_log`, `effect_outbox` e permissão de catalogação | Spec de UI §9 | Editar e exportar: o MARC muda só nos campos editados; edição concorrente recusada |
+| 2.3 | Onda 1a: listagem da equipe (linha-família só leitura, semáforo, busca e listagem na mesma tela) | Spec de UI §2, §8; 1.8, 1.9 | 1 milhão de registros: p95 < 50 ms por página no servidor |
+| 2.4 | Onda 1a: foco 80/20, cordinhas, trilha, `Esc` e atalhos de teclado | Spec de UI §3, §13 | Navegação completa só por teclado; transição sem quadro perdido em Chrome e Firefox |
+| 2.5 | Onda 1b: edição no lugar com perfis livro e periódico (um arquivo tipado por perfil) | Spec de UI §4; 2.1, 2.2 | Editar pela tela e exportar muda só os campos editados; edição pendente nunca é descartada em silêncio |
+| 2.6 | Onda 1b: "+ Nova" e catalogação contínua (`catalog.add_instance`, `Ctrl+N`) | Spec de UI §6.1, §6.2 | Registro criado pela tela exporta MARC válido e entra no índice |
+| 2.7 | Onda 1c: grade de exemplares `<elz-item-grid>` e `catalog.save_items` em lote | Spec de UI §5 | 50 exemplares bipados seguidos sem perder leitura; recusa por célula |
+| 2.8 | Onda 1d: rascunho por ISBN da própria base | Spec de UI §6.3; 1.10 | ISBN bipado de livro já existente leva à grade dele |
+| 2.9 | Onda 1e: autoridades básicas (`agent_identifiers`, `catalog.update_agent`, coluna de Autoridades, ligação por papel, aviso de alcance ao renomear) | Spec de UI §16 | Renomear um agente sobe o `row_version` das Instâncias ligadas e aparece no OPAC e no MARC exportado |
+
+Fica para depois da Fase 2: Z39.50/SRU (Fase 4), estação de IA, circulação no muro (Fase 3) e a Onda 2 (mesclagem e quarentena pela tela).
+
 ### Ordem e trilha crítica
 
 ```mermaid
