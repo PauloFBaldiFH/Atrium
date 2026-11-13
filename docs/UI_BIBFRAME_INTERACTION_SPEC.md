@@ -1,6 +1,6 @@
 # Interface BIBFRAME: listagem, catalogação e exemplares (especificação conceitual)
 
-> Status: v0, estudo conceitual pedido por Paulo em 2026-11-13, a partir do esboço interativo `bibframe-E.html` ("Esboço Teórico v4"). **Não há código de produção aqui.** É o contrato de interação para a Onda 1 e a Onda 2 do frontend ([visão de arquitetura](ARCHITECTURE_VISION.md), A.3 e B.6) e para as rotas e comandos que as servem.
+> Status: v1. A v0 (2026-11-13) partiu do esboço interativo `bibframe-E.html` ("Esboço Teórico v4"); a v1 incorpora o esboço `elzevir-esboco-v9.html` (coluna de Autoridades, estações de captura no bloco, muro Acervo ↔ Leitores, `Esc` direto para a visão geral), com os ajustes aprovados por Paulo em 2026-11-13 (§16 a §19). **Não há código de produção aqui.** É o contrato de interação para a Onda 1 e a Onda 2 do frontend ([visão de arquitetura](ARCHITECTURE_VISION.md), A.3 e B.6) e para as rotas e comandos que as servem.
 >
 > Pré-condição de implementação (visão, A.4 item 4): núcleo BIBFRAME e testes de ida e volta MARC21 verdes (tarefas 1.5 e 1.6).
 
@@ -21,6 +21,10 @@
 13. [Atalhos de teclado](#13-atalhos-de-teclado)
 14. [Fases e critérios de aceite](#14-fases-e-critérios-de-aceite)
 15. [O que muda em relação ao esboço](#15-o-que-muda-em-relação-ao-esboço)
+16. [Coluna de Autoridades e ligação por papel](#16-coluna-de-autoridades-e-ligação-por-papel)
+17. [Estações de captura no bloco: Z39.50/SRU e IA](#17-estações-de-captura-no-bloco-z3950sru-e-ia)
+18. [Muro Acervo ↔ Leitores e empréstimo](#18-muro-acervo--leitores-e-empréstimo)
+19. [Decisões do esboço v9](#19-decisões-do-esboço-v9)
 
 ## 1. Princípios
 
@@ -41,7 +45,7 @@ Cada linha da listagem é uma **família**: o menor conjunto ligado que faz sent
 
 | Coluna | Conteúdo no modo geral | Origem no banco |
 |---|---|---|
-| Entidades | Agentes (nome autorizado, datas, papel) e, em segundo plano, os assuntos | `agents` via `contributions` (Obra) e contribuições da Instância (§10) |
+| Autoridades | Agentes (nome autorizado, datas, papel) e assuntos ligados à família; botão "+ Autoridade" com busca (§16) | `agents` via `contributions` (Obra) e contribuições da Instância (§10); `subjects` via `work_subjects` |
 | Matriz (Hub) | Título uniforme e criador | `hubs` |
 | Obra | Título, agentes, CDD, idioma, etiquetas, até 3 assuntos e "+N" | `works`, `work_languages`, `work_subjects` |
 | Instância | Capa (§6.4), título, imprenta, ISBN, edição, ícone da categoria | `instances`, `instance_identifiers` |
@@ -79,8 +83,9 @@ A tela é uma máquina de estados pequena, guardada na URL (para voltar, recarre
 - **Só uma família em foco por vez.** As outras linhas continuam na lista, com opacidade reduzida, e não respondem a teclas de edição.
 - **Escurecimento seletivo** (*dimming*): no foco de Instância e na grade, as Instâncias irmãs e seus exemplares ficam com opacidade 0,35 e `inert`, para ninguém tombar no exemplar errado.
 - **Expansão vertical**: o bloco focado cresce para baixo e vira formulário (§4). A linha da família cresce junto; as linhas de baixo descem, sem sobrepor.
-- **Trilha superior**: `Acervo › Matriz › Obra › Instância › Exemplares`, com o nível atual em destaque e níveis ausentes (sem Hub) omitidos. Cada item é um link para o estado correspondente; `Esc` sobe um nível, e `Esc` no nível geral limpa o foco.
-- **Edição pendente**: sair de um bloco com alterações não salvas salva automaticamente se o formulário é válido; se não é, a saída é bloqueada com o campo inválido destacado (sem diálogo do navegador).
+- **Trilha superior**: `Autoridades › Matriz › Obra › Instância › Exemplares`, com o nível atual em destaque e níveis ausentes (sem Hub) omitidos. Cada item é um link para o estado correspondente: é a trilha que faz os saltos intermediários.
+- **`Esc` em camadas** (v1, esboço v9): `Esc` fecha primeiro o que é passageiro, nesta ordem: a célula em edição da grade, a minicaixinha de empréstimo (§18), a estação de captura (§17), o diálogo de mesclagem. Sem nada passageiro aberto, `Esc` volta **direto à visão geral**, sem subir nível por nível. No lado do leitor (§18), `Esc` atravessa o muro de volta ao acervo. "Concluir" e clicar no fundo da linha fazem o mesmo que esse último `Esc`.
+- **Edição pendente**: sair de um bloco com alterações não salvas (por `Esc`, "Concluir", clique no fundo ou na trilha) salva automaticamente se o formulário é válido; se não é, a saída é bloqueada com o campo inválido destacado (sem diálogo do navegador). Edição pendente nunca é descartada em silêncio.
 
 ## 4. Edição no lugar e perfis por categoria
 
@@ -162,7 +167,7 @@ Depois de **Concluir**, `Ctrl+N` abre outra família nova com os mesmos valores 
 
 ### 6.3 Catalogação derivada (ISBN, Z39.50, SRU)
 
-É o ponto de extensão "fontes de rascunho" do doc 04.
+É o ponto de extensão "fontes de rascunho" do doc 04. Na v1, a busca externa e a IA acontecem **dentro do bloco** focado, como estações de captura (§17); os passos abaixo continuam valendo para o primeiro campo da família nova.
 
 1. Na família nova, o primeiro campo aceita **ISBN bipado** ou texto.
 2. O servidor consulta as fontes configuradas (a própria base primeiro, para detectar duplicata; depois SRU/Z39.50 na Fase 4).
@@ -251,6 +256,10 @@ O esboço mostra coisas que o esquema de hoje (migração 4) ainda não guarda. 
 | Capa | arquivo em cache por Instância, fora do SQLite | — |
 | Emprestado (amarelo) | `loans` (Fase 3) | 952 `$q` no Koha, calculado |
 | Campos específicos de perfis (escala, ISMN, duração…) | colunas ou `extra` tipado, um por vez, com teste de ida e volta | 255, 024, 306… |
+| Identificador de autoridade externa (VIAF, LCNAF, BN) | `agent_identifiers (agent_id, source, value)` e o mesmo para `subjects`, únicos por fonte | `$0`/`$1` nos 1XX/6XX/7XX; 024 nas autoridades |
+| Local de publicação como autoridade | ligação opcional `instances.place_id → subjects` (Lugar), mantendo o texto da imprenta | 264 `$a` com `$0` |
+| Origem de um rascunho aprovado | `source_records.origin` (`marc_file`, `z3950:<servidor>`, `sru:<servidor>`, `ai:<modelo>`) e, para IA, a marca por campo no `audit_log` | — |
+| Ficha do leitor | `patrons` (Fase 3), com CPF guardado completo e mostrado mascarado; sem campo de "perfil de leitura"; histórico só com consentimento | — |
 
 ## 11. Renderização e desempenho
 
@@ -277,13 +286,20 @@ Meta: 60 FPS nas transições e resposta perceptível < 100 ms num computador si
 
 **Dados**: a linha geral pede ao SQLite uma consulta por página para disponibilidade; o resto da família vem do índice e do cache de fragmentos. Foco carrega a família inteira numa leitura do pool.
 
+**Esboço v9** (decisões aprovadas):
+
+- A animação de `grid-template-columns` roda só na família focada; as outras linhas não mudam de layout.
+- O autocomplete de autoridades consulta o índice (prefixo por classe), nunca uma lista carregada no navegador.
+- Cordinhas só dentro da família. Uma autoridade ligada a muitos registros mostra a contagem ("+2.998 obras") em vez de desenhar um fio por registro.
+- Nada de `onclick` ou `<script>` inline (a CSP proíbe): o comportamento vem de listeners delegados num módulo JS da tela.
+
 ## 12. Acessibilidade, idioma e privacidade
 
 - Listagem como `role="feed"` de `article`s; cada bloco é focável e tem nome acessível ("Obra: Um estudo em vermelho, Doyle"). As cordinhas são decorativas (`aria-hidden`); a relação é dita no nome do bloco ("Instância, edição de …").
 - Semáforo com ícone e texto, nunca só cor; contraste AA nos dois temas.
 - Toda ação de arrastar tem alternativa por teclado (§7.1); a grade segue o padrão de *grid* do WAI-ARIA.
 - Textos só pelo Fluent (inglês primeiro, depois pt-BR), incluindo rótulos das cordinhas e nomes dos campos dos perfis.
-- **LGPD** (visão, A.2): nada de leitor nas linhas, pílulas ou cordinhas. Na grade, o empréstimo mostra só "emprestado até 20/11"; quem emprestou aparece só com permissão de circulação e por ação explícita. O OPAC usa a mesma anatomia de família **sem** edição, grade, quarentena nem dados de circulação além de disponível/indisponível.
+- **LGPD** (visão, A.2): nada de leitor nas linhas, pílulas ou cordinhas; os dados do leitor só existem do outro lado do muro (§18). Na grade, o empréstimo mostra só "emprestado até 20/11"; quem emprestou aparece só com permissão de circulação e por ação explícita. O OPAC usa a mesma anatomia de família **sem** edição, grade, quarentena nem dados de circulação além de disponível/indisponível.
 
 ## 13. Atalhos de teclado
 
@@ -293,7 +309,7 @@ Meta: 60 FPS nas transições e resposta perceptível < 100 ms num computador si
 | `↑` / `↓` | Família anterior / seguinte |
 | `←` / `→` | Bloco à esquerda / à direita na família (Entidades ↔ Hub ↔ Obra ↔ Instância ↔ Exemplares) |
 | `Enter` | Focar o bloco (80/20) / abrir a grade a partir de um exemplar |
-| `Esc` | Sair da célula, do foco, ou subir um nível na trilha |
+| `Esc` | Fechar o que é passageiro (célula, minicaixinha, estação, diálogo); sem nada aberto, voltar à visão geral; no lado do leitor, voltar ao acervo (§3) |
 | `E` ou `F2` | Editar o bloco focado |
 | `Ctrl+Enter` | Concluir (salvar) o bloco ou o lote da grade |
 | `Ctrl+N` | Novo bloco na coluna focada; sem foco, família nova (catalogação contínua) |
@@ -312,7 +328,10 @@ Atalhos de letra só valem fora de campos de texto. Nenhum atalho conflita com o
 | Onda 1a: lista e busca | Linha-família só leitura, semáforo (verde/vermelho/cinza), busca unificada, foco 80/20 com cordinhas e trilha | 1.8 (Tantivy), 1.9 | 1 milhão de registros: p95 < 50 ms por página de busca no servidor; transição de foco sem quadro perdido em Chrome e Firefox num PC de balcão de referência; navegação completa só por teclado |
 | Onda 1b: edição | Edição no lugar, perfis livro e periódico, `update_work`/`update_instance` com `row_version`, catalogação contínua | 1.6, lacunas de §10 que o perfil usar | Editar e exportar: o MARC muda só nos campos editados (teste de ida e volta) |
 | Onda 1c: grade | `<elz-item-grid>`, bipe, lote, `save_items` | 1.5 | 50 exemplares bipados seguidos sem perder leitura; recusa por célula |
-| Onda 1d: derivada | Rascunhos por ISBN da própria base; SRU/Z39.50 na Fase 4 | 1.7, Fase 4 | ISBN bipado de livro já existente leva à grade dele |
+| Onda 1d: derivada | Rascunhos por ISBN da própria base; estação Z39.50/SRU (§17) na Fase 4 | 1.7, 1.10 (matching), Fase 4 | ISBN bipado de livro já existente leva à grade dele |
+| Onda 1e: autoridades | Coluna de Autoridades, "+ Autoridade" com autocomplete, ligação por papel (§16), aviso de alcance ao renomear | `agent_identifiers`, `update_agent` | Renomear um agente reflete em todas as páginas de registro e no MARC exportado |
+| Estação de IA | Estação de IA (§17.2), ligada pela configuração quando a porta de fontes de rascunho existe | porta `DraftSource`, Onda 1d | Nenhum campo gravado sem aprovação; ISBN com dígito inválido recusado; cada campo com a marca de origem |
+| Circulação no muro | Minicaixinha de empréstimo, lado do leitor, cordinhas laranja (§18) | Fase 3 (circulação, CalcDateDue) | Data de devolução igual à do Koha; recusas na minicaixinha; dados do leitor ausentes do HTML do acervo |
 | Onda 2: grafo e mesclagem | Arraste de cordinha, decisão, quarentena, desfazer; canvas horizontal completo | Onda 1, `merge` | Mesclar e desfazer deixam banco e MARC exportado como antes |
 
 ## 15. O que muda em relação ao esboço
@@ -330,3 +349,126 @@ Refinado ou acrescentado:
 7. **Capa pelo servidor**, com cache, sem o navegador chamar terceiros.
 8. **OPAC** reaproveita a anatomia, sem edição nem dados internos.
 9. O esboço mostra contribuidor da edição e etiquetas, que o modelo ainda não tem: ficam em §10, para entrar com migração e mapeamento antes da tela.
+
+## 16. Coluna de Autoridades e ligação por papel
+
+A primeira coluna da família deixa de ser só leitura (esboço v9): é a coluna de **Autoridades**, com as entidades compartilhadas que o núcleo já trata como tabelas próprias (`agents`, `subjects`).
+
+### 16.1 Criar e buscar
+
+- Botão **"+ Autoridade"** no topo da coluna, com seletor de classe e busca instantânea:
+
+| Classe na tela | BIBFRAME | Modelo |
+|---|---|---|
+| Pessoa | `bf:Person` | `agents`, `AgentKind::Person` |
+| Família | `bf:Family` | `agents`, `AgentKind::Family` |
+| Instituição | `bf:Organization` | `agents`, `AgentKind::Organization` |
+| Evento | `bf:Meeting` | `agents`, `AgentKind::Meeting` |
+| Assunto (tópico, gênero/forma, período) | `bf:Topic`, `bf:GenreForm`, `bf:Temporal` | `subjects`, `SubjectKind` correspondente |
+| Lugar | `bf:Place` | `subjects`, `SubjectKind::Place` |
+
+- O autocomplete consulta o índice por prefixo na classe escolhida; o último item é sempre "Criar … 'texto digitado'", explícito, como em §4.1 item 6.
+- **Série não é autoridade desta coluna**: uma série ("Coleção Vaga-Lume") é uma Obra ou um Hub ao qual a Obra se liga por `work_relations` (`PartOf`), criada pela coluna Obra. **Coleção local** ("Acervo Histórico de Palotina") é atributo do exemplar (vocabulário `Collection`, 952 `$8` no Koha) e se aplica na grade (§5), nunca com cordinha.
+
+### 16.2 Ligar por papel
+
+A validação de onde uma cordinha pode cair é por **papel da ligação**, não pela classe da autoridade. A mesma Pessoa pode ser autora de uma Obra e assunto de outra (um livro sobre Doyle); um Evento pode ser autor de anais; um Lugar pode ser assunto ou local de publicação.
+
+| Papel | Autoridades aceitas | Destinos válidos | Modelo |
+|---|---|---|---|
+| Contribuição (autor, ilustrador, tradutor…) | Pessoa, Família, Instituição, Evento | Obra; Instância (contribuidor da edição); Hub (criador) | `contributions` com `relator`; `instance_contributions` (§10) |
+| Assunto | todas | Obra | `work_subjects` (agente como assunto: `SubjectKind::Agent`) |
+| Local de publicação | Lugar | Instância | `instances.place_id` (§10) |
+
+- Ao começar a arrastar, o papel padrão vem da classe (agentes: contribuição; assuntos e lugares: assunto), e só os destinos válidos para **algum** papel se iluminam. Ao soltar num destino que aceita mais de um papel, aparece uma escolha curta de papel (lista com setas, `Enter` confirma), já marcada no padrão; o papel de contribuição pede o termo relator (autocomplete em `terms`, vocabulário `Relator`).
+- A regra vive no comando (`catalog.link_authority { authority, target, role, relator }`), não no JavaScript: a tela só ilumina o que o servidor mandou como válido para aquela classe e mostra a recusa se o comando discordar.
+
+### 16.3 Editar e renomear
+
+- Editar uma autoridade muda **todos** os registros ligados. O bloco focado mostra o alcance antes de salvar ("afeta 3.012 registros") e o comando (`catalog.update_agent`, `catalog.update_subject`) recusa com `row_version` velho, como os demais.
+- O mesmo comando, na mesma transação, **sobe o `row_version` de todas as Instâncias ligadas** e grava um efeito de reindexação para cada uma. Sem isso, o cache de páginas do OPAC por versão do registro (spec `docs/specs/opac/busca-e-registro.md`, item 9) mostraria o nome antigo. A reindexação vai em lotes pelo indexador (tarefa 1.8), sem travar a escritora.
+- Mesclar autoridades segue §7 (Agente → Agente), e o cabeçalho de origem vira forma variante.
+- Identificadores externos (VIAF, LCNAF, BN) ficam em `agent_identifiers` (§10) e aparecem no bloco focado como chips com link para a fonte.
+
+## 17. Estações de captura no bloco: Z39.50/SRU e IA
+
+Um bloco focado de Autoridade, Obra ou Instância pode trocar o seu corpo por uma **estação de captura**: os campos normais somem enquanto ela está aberta, para não poluir a tela, e voltam ao fechar (botão "← Voltar" ou `Esc`). Nada de modal nem de bloco solto.
+
+### 17.1 Porta comum: fontes de rascunho
+
+- Z39.50, SRU e IA são **fontes de rascunho** do doc 04 atrás de uma só porta da camada de aplicação (`DraftSource`): recebem uma consulta (texto, título/autor/ISBN, fotos) e devolvem rascunhos com a origem. Rodam **só no servidor**; o navegador nunca fala com servidores externos (CSP, privacidade, funcionamento sem internet no balcão).
+- Cada fonte tem tempo-limite próprio; as fontes configuradas são consultadas em paralelo e os resultados chegam à estação conforme ficam prontos (HTMX com polling curto ou SSE). Uma fonte lenta ou fora do ar aparece como "sem resposta", sem segurar as outras.
+- Configuração no `elzevir.toml`, por instituição: servidores com host, porta, base, sintaxe e codificação, em ordem de prioridade. O botão "⚙️ Servidores" mostra e liga/desliga os da instituição; editar a lista é tarefa de administração.
+- **Aprovar** (`✓ Aprovar`) nunca grava direto:
+  - autoridade: preenche o bloco da Autoridade com o nome autorizado, datas e o identificador da fonte (`agent_identifiers`);
+  - registro bibliográfico: o MARC recebido passa por `marc_to_bibframe` (mesmo caminho da importação) e pelo **matching** da tarefa 1.10, que propõe pendurar a Instância numa Obra existente (outra edição) em vez de criar Obra nova. Duplicata de ISBN leva à grade da Instância existente (§6.3 item 5). O MARC recebido vira o registro de origem, com `origin = z3950:<servidor>` ou `sru:<servidor>` (§10).
+- Contexto por bloco: na Autoridade, busca nas bases de autoridade (BN, VIAF, LCNAF); na Obra e na Instância, busca bibliográfica por título, autor e ISBN.
+
+### 17.2 Estação de IA (multimodal)
+
+Especificada agora para ser ligada assim que a porta de fontes de rascunho existir (decisão de Paulo, 2026-11-13). Entra desligada por padrão.
+
+1. **Entradas**: fotos (capa, folha de rosto, ficha catalográfica) e um prompt opcional para aquele exemplar.
+2. **Ordem do pipeline**, para reduzir invenção:
+   1. ler a ficha catalográfica (CIP) e a folha de rosto;
+   2. extrair o ISBN e validar o dígito verificador; ISBN inválido é descartado e marcado;
+   3. buscar pelo ISBN na própria base (duplicata) e nas fontes Z39.50/SRU configuradas;
+   4. só então pedir ao modelo que preencha as **lacunas** que nem a ficha nem as fontes cobriram.
+3. **Saída em esquema fixo**: o modelo devolve JSON validado contra um esquema do Elzevir (campos de Obra e Instância do perfil da categoria), que vira um rascunho igual aos outros. O texto de instrução da biblioteca complementa o pedido, mas não troca o formato; saída fora do esquema é descartada com aviso.
+4. **Marca de origem por campo**: cada valor do rascunho mostra **"lido da foto"**, **"da fonte <servidor>"** ou **"sugerido"**. CDD, Cutter e assuntos sugeridos aparecem como sugestão, nunca como valor pronto. A marca vai para o `audit_log` quando o rascunho é aprovado; o registro de origem leva `origin = ai:<modelo>`.
+5. **Nenhuma gravação sem aprovação** humana, campo a campo editável antes de aprovar.
+6. **Configuração** no `elzevir.toml`, por instituição:
+   - provedor e modelo como **texto livre** (sem lista fixa no código, que envelhece);
+   - chave de API só no servidor (variável de ambiente ou arquivo de segredo referenciado), nunca enviada ao navegador nem gravada no banco;
+   - suporte a modelo local (Ollama) para quem não quer mandar fotos para fora;
+   - padrão descritivo e de classificação (RDA ou AACR2, CDD com a edição, tabela Cutter da biblioteca, como PHA) e a instrução permanente da biblioteca.
+7. **Fotos**: usadas na chamada e descartadas, a não ser a capa, que pode virar a capa da Instância (§6.4) se o catalogador aprovar.
+
+## 18. Muro Acervo ↔ Leitores e empréstimo
+
+O acervo e o leitor ficam em lados opostos de um **muro** visual na borda direita do acervo. O muro existe **no servidor**, não só no CSS.
+
+### 18.1 Regras do muro
+
+- **Lado do acervo**: a mesma tela de sempre (§2 a §8), sem nenhum dado de leitor no HTML.
+- **Lado do leitor**: rota própria, `/equipe/leitores/{id}`, carregada só ao atravessar o muro, com **permissão de circulação**; cada abertura da ficha fica no `audit_log` (quem viu qual leitor e quando). Ao voltar, o lado do leitor sai do DOM; dado de leitor não fica escondido fora da tela.
+- A animação de deslizar entre os lados é só transição (View Transitions); o que muda de verdade é a rota e o fragmento carregado.
+
+### 18.2 Fluxo 1: emprestar a partir do exemplar
+
+1. Pílula verde (disponível) mostra o botão **"⇄ Emprestar"** para quem tem permissão de circulação.
+2. O botão abre uma **minicaixinha** na própria pílula com o campo do `cardnumber` (leitor de código de barras ou digitação); `Enter` envia.
+3. O servidor aplica as **regras de circulação** (Fase 3): data de devolução calculada com paridade com o Koha (CalcDateDue), bloqueios, débito acima do limite, reserva de outro leitor. A data vem da resposta, nunca do navegador.
+4. Sucesso: a pílula vira amarela com **"Dev. DD/MM"** e uma seta **→** encostada no muro. Recusa: o motivo aparece dentro da minicaixinha (por exemplo, "Débito de R$ 12,00 acima do limite"), e a pílula continua verde.
+5. A seta → só aparece com permissão de circulação e atravessa o muro para a ficha daquele leitor. O aviso de sucesso no acervo mostra o leitor só para quem tem essa permissão.
+
+### 18.3 Fluxo 2: a partir do leitor
+
+1. Do outro lado do muro, a **ficha do leitor** fica à direita, com a caixa de empréstimo por código de barras **dentro do próprio bloco do leitor**.
+2. À esquerda, só os exemplares **emprestados a esse leitor**, ligados à ficha por cordinhas laranja, nada mais do acervo.
+3. Cada bipe envia o empréstimo pelas mesmas regras do fluxo 1; no sucesso, o exemplar entra na lista e a cordinha nova se desenha animada; na recusa, o motivo aparece na caixa.
+4. Renovar e devolver ficam em cada exemplar da lista, também pelos comandos de circulação.
+
+### 18.4 Ficha do leitor e LGPD
+
+- CPF mostrado **mascarado** (`***.419.829-**`); o completo só por ação explícita, registrada no `audit_log`.
+- **Nenhum campo de perfil de leitura** (nada como "retira romances policiais quinzenalmente"): hábito de leitura é dado sensível.
+- Histórico de empréstimos só com **consentimento** do leitor, como a preferência de privacidade do Koha (`privacy`).
+- Fixtures e esboços usam leitores fictícios (`CLAUDE.md`).
+
+## 19. Decisões do esboço v9
+
+Aprovadas por Paulo em 2026-11-13, a partir da análise do esboço `elzevir-esboco-v9.html`:
+
+1. **Coluna de Autoridades** à esquerda, com "+ Autoridade", seletor de classe e autocomplete pelo índice (§16.1).
+2. **Validação por papel**, não por classe: contribuição, assunto e local de publicação, cada um com seus destinos (§16.2).
+3. **Série** é relação entre Obras (`PartOf`); **coleção local** é atributo do exemplar, aplicado na grade (§16.1).
+4. **Identificador externo de autoridade** em `agent_identifiers`, junto das formas variantes (§10).
+5. **Renomear autoridade** avisa o alcance e sobe a versão de todas as Instâncias ligadas, por causa do cache por versão do OPAC (§16.3).
+6. **Estações de captura dentro do bloco** (Z39.50/SRU e IA), no servidor, atrás da porta de fontes de rascunho, com tempo-limite por fonte e aprovação pelo matching da 1.10 (§17.1).
+7. **IA** com pipeline híbrido (CIP, ISBN validado, fontes, só depois lacunas), esquema fixo, marca "lido da foto" / "da fonte" / "sugerido", sem gravação sem aprovação, chave e modelo em texto livre no `elzevir.toml`, Ollama local. A estação fica especificada junto da captura derivada para ser ligada quando a porta existir (§17.2).
+8. **Muro no servidor**: rota própria do leitor, permissão de circulação, `audit_log` de cada acesso, nada de leitor no DOM do acervo (§18.1).
+9. **Empréstimo inline** pelas regras de circulação do servidor, com recusas na minicaixinha e seta → só com permissão (§18.2).
+10. **Ficha do leitor**: CPF mascarado, sem perfil de leitura, histórico só com consentimento (§18.4).
+11. **`Esc` em camadas**: fecha o passageiro primeiro e depois volta direto à visão geral; edição pendente nunca é descartada em silêncio (§3).
+12. **Desempenho**: animação só na família focada, autocomplete pelo índice, cordinhas só dentro da família com contagem para autoridades muito ligadas, sem JS inline (§11).
