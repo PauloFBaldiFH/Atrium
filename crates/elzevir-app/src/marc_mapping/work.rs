@@ -91,14 +91,26 @@ fn split_codes(joined: &str) -> Vec<String> {
         .collect()
 }
 
+/// Tags of the contribution fields: main entries first, then added entries.
+pub(super) const CONTRIBUTION_TAGS: [&[u8; 3]; 6] =
+    [b"100", b"110", b"111", b"700", b"710", b"711"];
+
+/// Tags of the subject fields.
+pub(super) const SUBJECT_TAGS: [&[u8; 3]; 8] = [
+    b"600", b"610", b"611", b"630", b"648", b"650", b"651", b"655",
+];
+
 fn contributions(marc: &Marc<'_>) -> Vec<NewContribution> {
-    let main = marc
-        .data_in(&[b"100", b"110", b"111"])
-        .filter_map(|(tag, field)| contribution(*tag, field, true));
-    let added = marc
-        .data_in(&[b"700", b"710", b"711"])
-        .filter_map(|(tag, field)| contribution(*tag, field, false));
-    main.chain(added).collect()
+    let (main, added): (Vec<_>, Vec<_>) = marc
+        .data_in(&CONTRIBUTION_TAGS)
+        .filter_map(|(tag, field)| contribution_of(*tag, field))
+        .partition(|contribution| contribution.primary);
+    main.into_iter().chain(added).collect()
+}
+
+/// The contribution one field describes; `1XX` is the main entry.
+pub(super) fn contribution_of(tag: [u8; 3], field: DataField<'_>) -> Option<NewContribution> {
+    contribution(tag, field, tag[0] == b'1')
 }
 
 fn contribution(tag: [u8; 3], field: DataField<'_>, primary: bool) -> Option<NewContribution> {
@@ -127,21 +139,22 @@ fn contribution(tag: [u8; 3], field: DataField<'_>, primary: bool) -> Option<New
 }
 
 fn subjects(marc: &Marc<'_>) -> Vec<NewSubject> {
-    marc.data_in(&[
-        b"600", b"610", b"611", b"630", b"648", b"650", b"651", b"655",
-    ])
-    .filter_map(|(tag, field)| {
-        let kind = match tag {
-            b"630" => SubjectKind::Title,
-            b"648" => SubjectKind::Temporal,
-            b"650" => SubjectKind::Topic,
-            b"651" => SubjectKind::Place,
-            b"655" => SubjectKind::GenreForm,
-            _ => SubjectKind::Agent,
-        };
-        subject(kind, field)
-    })
-    .collect()
+    marc.data_in(&SUBJECT_TAGS)
+        .filter_map(|(tag, field)| subject_of(*tag, field))
+        .collect()
+}
+
+/// The subject one field describes.
+pub(super) fn subject_of(tag: [u8; 3], field: DataField<'_>) -> Option<NewSubject> {
+    let kind = match &tag {
+        b"630" => SubjectKind::Title,
+        b"648" => SubjectKind::Temporal,
+        b"650" => SubjectKind::Topic,
+        b"651" => SubjectKind::Place,
+        b"655" => SubjectKind::GenreForm,
+        _ => SubjectKind::Agent,
+    };
+    subject(kind, field)
 }
 
 fn subject(kind: SubjectKind, field: DataField<'_>) -> Option<NewSubject> {
