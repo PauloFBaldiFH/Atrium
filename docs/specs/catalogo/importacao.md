@@ -43,9 +43,11 @@ O Koha importa por `tools/stage-marc-import.pl` e `tools/manage-marc-import.pl` 
 | Importação completa, 4 threads | ~3.750 registros/s | |
 | Só leitura e mapeamento, uma thread | ~78.000 registros/s | |
 | Alocações na leitura | 1 no arquivo inteiro | |
-| Alocações na leitura + mapeamento | 141 por registro | < 5 por registro |
+| Alocações na leitura + mapeamento | 141 por registro (linha de base) | < 5 por registro (suspenso) |
 
-A escritora é o gargalo: o mapeamento é 20 vezes mais rápido que a gravação, por isso o paralelismo não muda o total. As alocações do mapeamento custam cerca de 5% do tempo; arena e *interning* (doc 03, §2.2 item 5) só entram quando a medida mostrar que valem.
+A escritora é o gargalo: o mapeamento é 20 vezes mais rápido que a gravação, por isso o paralelismo não muda o total.
+
+**Linha de base das alocações** (decisão de Paulo, 2026-11-13): as 141 alocações por registro ficam registradas como linha de base, e o critério de menos de 5 do doc 03 fica suspenso. O mapeamento custa cerca de 5% do tempo da importação, então reescrevê-lo agora seria otimização prematura. Arena e *interning* (doc 03, §2.2 item 5) só entram quando um perfil de memória ou de CPU mostrar necessidade real.
 
 ## 5. Casos de borda
 
