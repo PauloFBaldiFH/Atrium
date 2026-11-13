@@ -66,26 +66,32 @@ fn series(marc: &Marc<'_>) -> Option<String> {
         .or_else(|| marc.first_text(b"440", b'a'))
 }
 
+/// Tags of the identifier fields.
+pub(super) const IDENTIFIER_TAGS: [&[u8; 3]; 5] = [b"010", b"020", b"022", b"024", b"035"];
+
 fn identifiers(marc: &Marc<'_>) -> Vec<NewIdentifier> {
-    marc.data_in(&[b"010", b"020", b"022", b"024", b"035"])
-        .filter_map(|(tag, field)| {
-            let kind = match tag {
-                b"010" => IdentifierKind::Lccn,
-                b"020" => IdentifierKind::Isbn,
-                b"022" => IdentifierKind::Issn,
-                b"035" => IdentifierKind::SystemControlNumber,
-                _ => standard_number_kind(field)?,
-            };
-            let written = field.raw(b'a')?;
-            let (value, in_parentheses) = split_qualifier(&written);
-            let qualifier = in_parentheses.or_else(|| field.raw(b'q'));
-            Some(NewIdentifier {
-                kind,
-                value,
-                qualifier,
-            })
-        })
+    marc.data_in(&IDENTIFIER_TAGS)
+        .filter_map(|(tag, field)| identifier_of(*tag, field))
         .collect()
+}
+
+/// The identifier one field holds, if it is one the model knows.
+pub(super) fn identifier_of(tag: [u8; 3], field: DataField<'_>) -> Option<NewIdentifier> {
+    let kind = match &tag {
+        b"010" => IdentifierKind::Lccn,
+        b"020" => IdentifierKind::Isbn,
+        b"022" => IdentifierKind::Issn,
+        b"035" => IdentifierKind::SystemControlNumber,
+        _ => standard_number_kind(field)?,
+    };
+    let written = field.raw(b'a')?;
+    let (value, in_parentheses) = split_qualifier(&written);
+    let qualifier = in_parentheses.or_else(|| field.raw(b'q'));
+    Some(NewIdentifier {
+        kind,
+        value,
+        qualifier,
+    })
 }
 
 /// `024`: the first indicator (and `$2`) says which standard number it is.

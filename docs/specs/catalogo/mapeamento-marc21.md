@@ -1,6 +1,6 @@
-# Mapeamento MARC21 → modelo bibliográfico (v0)
+# Mapeamento MARC21 ↔ modelo bibliográfico (v0)
 
-> Status: v0, tarefa 1.6, parte 1 (importação). Base: [visão de arquitetura](../../ARCHITECTURE_VISION.md) (A.1, B.2 e B.4, aprovadas por Paulo em 2026-11-12), [modelo bibliográfico](modelo-bibliografico.md) e o framework MARC21 padrão do Koha 26.05.05 (`installer/data/mysql/en/marcflavour/marc21/mandatory/marc21_framework_DEFAULT.yml`). A exportação (`bibframe_to_marc`) e os testes de ida e volta com edição são a parte 2.
+> Status: v0, tarefa 1.6 (importação e exportação). Base: [visão de arquitetura](../../ARCHITECTURE_VISION.md) (A.1, B.2 e B.4, aprovadas por Paulo em 2026-11-12), [modelo bibliográfico](modelo-bibliografico.md) e o framework MARC21 padrão do Koha 26.05.05 (`installer/data/mysql/en/marcflavour/marc21/mandatory/marc21_framework_DEFAULT.yml`).
 
 ## 1. Comportamento
 
@@ -84,6 +84,20 @@ Hub e relações entre Obras não são criados na importação desta versão (AD
 
 Os outros subcampos do `952` são dados que o Koha calcula ou mantém sozinho (`$9` número interno, `$6` ordenação do número de chamada, `$l`, `$m`, `$s`, `$r`, `$w`, `$q` de circulação e controle). Não viram colunas; ficam no registro original.
 
+### 1.5 Exportação (`bibframe_to_marc`)
+
+1. O ponto de partida é o registro original (`source_records`). Sem ele, um registro novo com líder `00000nam a2200000 i 4500`.
+2. Cada parte do modelo é comparada com o que o original mapeia. **Só as partes diferentes são reescritas**; o resto do registro fica byte a byte.
+3. Partes de um campo só (título, edição, publicação, descrição física, série, classificação, resumo): o subcampo é trocado no primeiro campo da etiqueta, mantendo os outros subcampos (o `245$c` fica). Valor apagado remove o subcampo; campo sem subcampos sai.
+   - Título da Instância: `245$a` e `$b` (separados no ` : `); `$n` e `$p` saem.
+   - Título da Obra: `130$a` se o registro tem `130`, senão `240$a` (criado só se difere do título principal).
+   - Publicação: no `264` de 2º indicador `1`, ou no `260` quando é o que o registro usa.
+4. Listas (contribuições, assuntos, identificadores, exemplares): cada valor do modelo reaproveita, sem mudança, o campo original que mapeia exatamente para ele, com `$0`, `$1`, `$9` e o que mais tiver. Só valores novos ou alterados geram campo novo, no lugar do primeiro campo da lista.
+   - Exemplar alterado com o mesmo código de barras: o `952` original é mantido e só os subcampos mapeados mudam (`$9`, `$6`, `$l`, `$r`... ficam).
+   - Exemplar novo: `952` novo depois dos outros.
+5. Categoria: posições 06 e 07 do líder pela tabela de §1.1 ao contrário (livro `am`, periódico `as`, mapa `em`, partitura `cm`, gravação sonora `jm`, vídeo `gm`, digital `mm`, visual `km`, misto `pc`). Instância digital sem `007` ganha `007` = `cr`.
+6. Texto gerado sai sem pontuação ISBD; o registro novo é válido, mas não reproduz a pontuação que um catalogador digitaria.
+
 ## 2. Origem no Koha
 
 - `Koha::Item` e o framework MARC21 padrão (`kohafield` de cada subcampo do `952`).
@@ -92,7 +106,10 @@ Os outros subcampos do `952` são dados que o Koha calcula ou mantém sozinho (`
 
 ## 3. Paridade
 
-`livre` para o modelo; `exigida` para a exportação, que a parte 2 prova. Prova desta parte: snapshots `insta` do resultado do mapeamento para os registros de amostra, e testes de unidade para cada regra das tabelas.
+`livre` para o modelo; `exigida` para a exportação, que a parte 2 prova. Prova (`crates/elzevir-app/tests/`):
+
+- `marc_mapping.rs`: os 200 registros mapeiam; snapshots `insta` de 11 registros variados.
+- `marc_round_trip.rs` (critério A.4, item 3): os 200 registros, importados e exportados sem edição, saem **iguais byte a byte** em ISO 2709, com `952`, `082`/`090` e acentuação; um registro escrito do zero a partir do modelo mapeia de volta para o mesmo modelo; editar o título muda só o `245`; editar um exemplar muda só o `$o` daquele `952`; um exemplar novo vira um `952` novo; editar uma lista mantém os outros campos com seus links de autoridade.
 
 ## 4. Casos de borda
 
@@ -109,7 +126,8 @@ Nenhum (área livre).
 
 ## 6. Fora do escopo
 
-- Exportação e ida e volta com edição: parte 2 desta tarefa.
+- Exportar Hub e relações entre Obras.
+- Contribuição alterada (por exemplo, o papel) é gerada de novo e perde `$d`, `$0` e `$1` do campo original; manter esses subcampos fica para quando houver autoridades.
 - Hub a partir de título uniforme e relações a partir de `76X`–`78X` (`775` aparece no corpus): depois, com teste próprio.
 - Autoridades (`$0`, `$9`): fase seguinte.
 - Registros UNIMARC: Fase 4.
