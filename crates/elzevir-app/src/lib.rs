@@ -5,6 +5,7 @@ pub mod catalog;
 pub mod commands;
 pub mod import;
 pub mod marc_mapping;
+pub mod matching;
 pub mod memory;
 pub mod opac;
 pub mod parallelism;

@@ -75,6 +75,7 @@ fn options(parallelism: Parallelism, chunk: usize) -> ImportOptions {
         limits: Limits::default(),
         parallelism,
         chunk: NonZeroUsize::new(chunk).unwrap(),
+        matching: None,
     }
 }
 

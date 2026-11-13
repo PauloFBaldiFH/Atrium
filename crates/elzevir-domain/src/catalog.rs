@@ -201,6 +201,77 @@ stable_enum! {
     }
 }
 
+stable_enum! {
+    /// A rule for finding a stored record equal to one being imported (Koha's default
+    /// matching rules, docs/specs/catalogo/casamento.md).
+    MatchRule {
+        /// Same ISBN, normalized to ISBN-13.
+        Isbn = 1,
+        /// Same ISSN.
+        Issn = 2,
+        /// Same Koha `biblionumber` (`999 $c` of the source record).
+        KohaBiblionumber = 3,
+    }
+}
+
+/// The ISBN as a match key: ISBN-13 digits when `text` holds a valid ISBN-10 or ISBN-13,
+/// otherwise `None`. Only digits and `X` count, so hyphens, spaces and stray words are
+/// ignored.
+///
+/// Koha: `Koha::Util::Normalize::ISBN` (`C4::Koha::NormalizeISBN` with `ISBN-13` and no
+/// hyphens). Koha also checks the group and publisher ranges; this checks the digit.
+#[must_use]
+pub fn isbn13(text: &str) -> Option<String> {
+    let symbols: Vec<u32> = text
+        .chars()
+        .filter_map(|c| match c {
+            'X' | 'x' => Some(10),
+            _ => c.to_digit(10),
+        })
+        .collect();
+    match symbols.as_slice() {
+        [first9 @ .., check] if symbols.len() == 10 => {
+            if first9.contains(&10) || isbn10_check(first9) != *check {
+                return None;
+            }
+            let mut digits = vec![9, 7, 8];
+            digits.extend_from_slice(first9);
+            let check = isbn13_check(&digits);
+            digits.push(check);
+            Some(digits_to_string(&digits))
+        }
+        [first12 @ .., check] if symbols.len() == 13 => {
+            let prefix_ok = first12.starts_with(&[9, 7, 8]) || first12.starts_with(&[9, 7, 9]);
+            (prefix_ok && !symbols.contains(&10) && isbn13_check(first12) == *check)
+                .then(|| digits_to_string(&symbols))
+        }
+        _ => None,
+    }
+}
+
+/// Check digit of an ISBN-10 from its first nine digits; 10 stands for `X`.
+fn isbn10_check(digits: &[u32]) -> u32 {
+    let sum: u32 = digits.iter().zip((2..=10).rev()).map(|(d, w)| d * w).sum();
+    (11 - sum % 11) % 11
+}
+
+/// Check digit of an ISBN-13 (EAN-13) from its first twelve digits.
+fn isbn13_check(digits: &[u32]) -> u32 {
+    let sum: u32 = digits
+        .iter()
+        .zip([1, 3].into_iter().cycle())
+        .map(|(d, w)| d * w)
+        .sum();
+    (10 - sum % 10) % 10
+}
+
+fn digits_to_string(digits: &[u32]) -> String {
+    digits
+        .iter()
+        .filter_map(|&d| char::from_digit(d, 10))
+        .collect()
+}
+
 /// An amount of money in cents. Never a float.
 #[derive(
     Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize, serde::Deserialize,
@@ -251,5 +322,30 @@ mod tests {
             SourceFormat::code,
             SourceFormat::from_code,
         );
+        round_trips(MatchRule::ALL, MatchRule::code, MatchRule::from_code);
+    }
+
+    #[test]
+    fn isbns_become_isbn13() {
+        // ISBN-10 with and without hyphens, and with X as check digit.
+        assert_eq!(isbn13("85-60342-01-X").as_deref(), Some("9788560342013"));
+        assert_eq!(isbn13("856034201x").as_deref(), Some("9788560342013"));
+        assert_eq!(isbn13("0-8044-2957-X").as_deref(), Some("9780804429573"));
+        assert_eq!(isbn13("080442957x").as_deref(), Some("9780804429573"));
+        // ISBN-13 stays, hyphens and spaces go.
+        assert_eq!(
+            isbn13("978-85-60342-01-3").as_deref(),
+            Some("9788560342013")
+        );
+        assert_eq!(
+            isbn13("979 10 90636 07 1").as_deref(),
+            Some("9791090636071")
+        );
+        // Wrong check digit, wrong prefix, wrong length, X inside.
+        assert_eq!(isbn13("8560342013"), None);
+        assert_eq!(isbn13("9778560342013"), None);
+        assert_eq!(isbn13("978856034201"), None);
+        assert_eq!(isbn13("85603X2016"), None);
+        assert_eq!(isbn13(""), None);
     }
 }

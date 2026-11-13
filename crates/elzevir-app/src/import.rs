@@ -9,10 +9,12 @@ use std::collections::VecDeque;
 use std::io::BufRead;
 use std::num::NonZeroUsize;
 
+use elzevir_domain::catalog::InstanceId;
 use elzevir_marc::{DetectedEncoding, Limits, MarcReader, ReadError, Record, RecordRef};
 
-use crate::catalog::{CatalogOutput, CatalogRefusal, NewRecord};
+use crate::catalog::{CatalogOutput, CatalogRefusal, ImportOutcome, NewRecord, RefusedItem};
 use crate::marc_mapping::{MappingError, marc_to_bibframe};
+use crate::matching::Matching;
 pub use crate::parallelism::Parallelism;
 
 /// Settings of one import.
@@ -24,6 +26,9 @@ pub struct ImportOptions {
     pub parallelism: Parallelism,
     /// Records read and mapped together before they are handed to the writer.
     pub chunk: NonZeroUsize,
+    /// How records are matched with stored ones; `None` stores every record
+    /// (docs/specs/catalogo/casamento.md).
+    pub matching: Option<Matching>,
 }
 
 impl Default for ImportOptions {
@@ -32,6 +37,7 @@ impl Default for ImportOptions {
             limits: Limits::default(),
             parallelism: Parallelism::Serial,
             chunk: NonZeroUsize::new(1024).unwrap_or(NonZeroUsize::MIN),
+            matching: None,
         }
     }
 }
@@ -42,12 +48,17 @@ pub trait RecordSink {
     type Pending: PendingRecord;
 
     /// Queues one record, waiting while the queue is full. Records are applied in the
-    /// order they are queued.
+    /// order they are queued. With `matching`, the writer matches the record with the
+    /// stored ones and decides what to store.
     ///
     /// # Errors
     ///
     /// [`SinkClosed`] when the writer has stopped.
-    fn submit(&self, record: NewRecord) -> Result<Self::Pending, SinkClosed>;
+    fn submit(
+        &self,
+        record: NewRecord,
+        matching: Option<Matching>,
+    ) -> Result<Self::Pending, SinkClosed>;
 }
 
 /// The answer to one queued record.
@@ -114,10 +125,36 @@ pub struct ImportReport {
     pub read: u64,
     /// Records stored.
     pub imported: u64,
-    /// Items stored with them.
+    /// Items stored, with new records or added to matched ones.
     pub items: u64,
+    /// Records that matched a stored one, whether they were stored again or not.
+    pub matched: Vec<MatchedRecord>,
+    /// Records that matched nothing and were not stored (`on_no_match = Ignore`).
+    pub skipped: u64,
     /// Records not stored, in file order.
     pub failures: Vec<FailedRecord>,
+    /// Items refused one by one while the rest of their record went in, in file order.
+    pub item_failures: Vec<FailedItem>,
+}
+
+/// A record of the file that matched a stored one.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct MatchedRecord {
+    /// Position of the record in the file (0-based).
+    pub index: u64,
+    /// The stored Instance it matched.
+    pub instance: InstanceId,
+}
+
+/// An Item that was refused on its own.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FailedItem {
+    /// Position of the record in the file (0-based).
+    pub index: u64,
+    /// Position of the Item in the record (0-based).
+    pub position: usize,
+    /// Why it was refused.
+    pub refusal: CatalogRefusal,
 }
 
 /// Why an import stopped before the end of the file. Records already stored stay.
@@ -166,7 +203,9 @@ pub fn import_marc21<R: BufRead, S: RecordSink>(
         collect(&mut waiting, &mut report);
         for (place, result) in mapped {
             match result {
-                Ok(record) => waiting.push_back((place, sink.submit(record)?)),
+                Ok(record) => {
+                    waiting.push_back((place, sink.submit(record, options.matching)?));
+                }
                 Err(failure) => report.failures.push(place.failed(failure)),
             }
         }
@@ -276,10 +315,58 @@ fn collect<P: PendingRecord>(waiting: &mut VecDeque<(RawPlace, P)>, report: &mut
                     .items
                     .saturating_add(u64::try_from(items.len()).unwrap_or(u64::MAX));
             }
+            Ok(CatalogOutput::Imported(outcome)) => record_outcome(place, outcome, report),
             Ok(_) => report.imported = report.imported.saturating_add(1),
             Err(rejected) => report
                 .failures
                 .push(place.failed(RecordFailure::Rejected(rejected))),
         }
     }
+}
+
+fn record_outcome(place: RawPlace, outcome: ImportOutcome, report: &mut ImportReport) {
+    let (items, refused) = match outcome {
+        ImportOutcome::Created {
+            matched,
+            items,
+            refused_items,
+            ..
+        } => {
+            report.imported = report.imported.saturating_add(1);
+            if let Some(instance) = matched {
+                report.matched.push(MatchedRecord {
+                    index: place.index,
+                    instance,
+                });
+            }
+            (items, refused_items)
+        }
+        ImportOutcome::Matched {
+            instance,
+            items,
+            refused_items,
+        } => {
+            report.matched.push(MatchedRecord {
+                index: place.index,
+                instance,
+            });
+            (items, refused_items)
+        }
+        ImportOutcome::Skipped => {
+            report.skipped = report.skipped.saturating_add(1);
+            return;
+        }
+    };
+    report.items = report
+        .items
+        .saturating_add(u64::try_from(items.len()).unwrap_or(u64::MAX));
+    report.item_failures.extend(
+        refused
+            .into_iter()
+            .map(|RefusedItem { position, refusal }| FailedItem {
+                index: place.index,
+                position,
+                refusal,
+            }),
+    );
 }

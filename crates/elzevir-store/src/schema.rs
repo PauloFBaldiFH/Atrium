@@ -9,7 +9,9 @@
 use std::path::Path;
 use std::time::Duration;
 
-use rusqlite::{Connection, OpenFlags};
+use elzevir_app::matching::{identifier_key, koha_biblionumber_key};
+use elzevir_domain::catalog::IdentifierKind;
+use rusqlite::{Connection, OpenFlags, params};
 
 use crate::StoreError;
 
@@ -183,7 +185,20 @@ const MIGRATIONS: &[&str] = &[
      ALTER TABLE items ADD COLUMN inventory_number TEXT;
      CREATE INDEX items_by_inventory_number ON items (inventory_number)
          WHERE inventory_number IS NOT NULL;",
+    // 5: match keys for importing without duplicates (docs/specs/catalogo/casamento.md).
+    // The keys of records stored before this migration are filled in by
+    // `backfill_match_keys`, because computing them needs Rust (ISBN-13, MARC 999).
+    "CREATE TABLE match_keys (
+         rule        INTEGER NOT NULL CHECK (rule BETWEEN 1 AND 255),
+         key         TEXT NOT NULL,
+         instance_id INTEGER NOT NULL REFERENCES instances (id) ON DELETE CASCADE,
+         PRIMARY KEY (rule, key, instance_id)
+     ) STRICT, WITHOUT ROWID;
+     CREATE INDEX match_keys_by_instance ON match_keys (instance_id);",
 ];
+
+/// The migration that creates `match_keys`.
+const MATCH_KEYS_VERSION: i64 = 5;
 
 /// How long a connection waits on a lock before failing. With a single writer this only
 /// covers checkpoints and external tools; it is not part of normal operation.
@@ -232,10 +247,39 @@ fn migrate(connection: &mut Connection) -> Result<(), StoreError> {
     for (version, sql) in (1_i64..).zip(MIGRATIONS) {
         if version > current {
             tx.execute_batch(sql)?;
+            if version == MATCH_KEYS_VERSION {
+                backfill_match_keys(&tx)?;
+            }
             tx.pragma_update(None, "user_version", version)?;
         }
     }
     tx.commit()?;
+    Ok(())
+}
+
+/// Computes the match keys of every record already stored when `match_keys` is created.
+fn backfill_match_keys(connection: &Connection) -> Result<(), StoreError> {
+    let mut insert = connection
+        .prepare("INSERT OR IGNORE INTO match_keys (rule, key, instance_id) VALUES (?1, ?2, ?3)")?;
+    let mut identifiers =
+        connection.prepare("SELECT instance_id, kind, value FROM instance_identifiers")?;
+    let mut rows = identifiers.query([])?;
+    while let Some(row) = rows.next()? {
+        let kind: u8 = row.get(1)?;
+        let value: String = row.get(2)?;
+        let key = IdentifierKind::from_code(kind).and_then(|kind| identifier_key(kind, &value));
+        if let Some(key) = key {
+            insert.execute(params![key.rule.code(), key.key, row.get::<_, i64>(0)?])?;
+        }
+    }
+    let mut sources = connection.prepare("SELECT instance_id, record FROM source_records")?;
+    let mut rows = sources.query([])?;
+    while let Some(row) = rows.next()? {
+        let record: Vec<u8> = row.get(1)?;
+        if let Some(key) = koha_biblionumber_key(&record) {
+            insert.execute(params![key.rule.code(), key.key, row.get::<_, i64>(0)?])?;
+        }
+    }
     Ok(())
 }
 

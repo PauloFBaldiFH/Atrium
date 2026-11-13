@@ -12,6 +12,8 @@ use elzevir_domain::catalog::{
 };
 use serde::{Deserialize, Serialize};
 
+use crate::matching::Matching;
+
 /// Catalog commands.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CatalogCommand {
@@ -38,6 +40,54 @@ pub enum CatalogCommand {
     AddRecord(Box<NewRecord>),
     /// Adds an Item to an Instance.
     AddItem(Box<NewItem>),
+    /// Imports one record, matching it with a stored one first
+    /// (docs/specs/catalogo/casamento.md).
+    ImportRecord(Box<ImportRecord>),
+}
+
+/// A record to import with a matching rule.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ImportRecord {
+    /// The record, as mapped from the file.
+    pub record: NewRecord,
+    /// How it is matched and what happens then.
+    pub matching: Matching,
+}
+
+/// What importing one record did.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ImportOutcome {
+    /// A new record was stored.
+    Created {
+        /// The new Instance.
+        instance: InstanceId,
+        /// The stored Instance it matched, when it matched and was created anyway.
+        matched: Option<InstanceId>,
+        /// Items stored, in order.
+        items: Vec<ItemId>,
+        /// Items refused.
+        refused_items: Vec<RefusedItem>,
+    },
+    /// The record matched a stored one, which was kept.
+    Matched {
+        /// The stored Instance.
+        instance: InstanceId,
+        /// Items added to it, in order.
+        items: Vec<ItemId>,
+        /// Items refused.
+        refused_items: Vec<RefusedItem>,
+    },
+    /// The record matched nothing and was not stored.
+    Skipped,
+}
+
+/// One Item of an imported record that was not stored; the others were.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RefusedItem {
+    /// Position of the Item in the record (0-based).
+    pub position: usize,
+    /// Why it was refused.
+    pub refusal: CatalogRefusal,
 }
 
 /// A new Work with its first Instance.
@@ -231,6 +281,8 @@ pub enum CatalogOutput {
     },
     /// An Item was added.
     Item(ItemId),
+    /// A record was imported.
+    Imported(ImportOutcome),
 }
 
 /// Why a catalog command was refused.
