@@ -1,0 +1,61 @@
+---
+source: crates/elzevir-app/tests/marc_mapping.rs
+expression: mapped
+---
+work_title: Economia aplicada
+material_type: periodical
+hub: ~
+relations: []
+classification: ~
+classification_scheme: ~
+summary: ~
+languages:
+  - por
+contributions:
+  - kind: organization
+    heading: Universidade de São Paulo. Departamento de Economia. Fundação Instituto de Pesquisas Econômicas (SP)
+    role: ~
+    primary: false
+subjects:
+  - kind: topic
+    heading: Economia
+    thesaurus: ~
+  - kind: place
+    heading: Brasil -- Condições econômicas
+    thesaurus: ~
+  - kind: place
+    heading: Brasil -- Política econômica
+    thesaurus: ~
+instance:
+  title: "Economia aplicada : EA / [Universidade de Sao Paulo, Departamento de Economia; Fundacao Instituto de Pesquisas Economicas]"
+  material_type: ~
+  edition: ~
+  place: São Paulo
+  publisher: "Departamento de Economia da Universidade de Sao Paulo : FIPE"
+  date: 1997-
+  extent: ~
+  series: ~
+  identifiers:
+    - kind: issn
+      value: 1413-8050
+      qualifier: ~
+items:
+  - barcode: "16273"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 330 D47
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+source: ~

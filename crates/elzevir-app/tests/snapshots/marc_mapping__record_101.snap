@@ -1,0 +1,58 @@
+---
+source: crates/elzevir-app/tests/marc_mapping.rs
+expression: mapped
+---
+work_title: Stories for the heart
+material_type: book
+hub: ~
+relations: []
+classification: "242"
+classification_scheme: ddc
+summary: ~
+languages:
+  - por
+contributions:
+  - kind: person
+    heading: "Gray, Alice, 1939-"
+    role: ~
+    primary: false
+subjects:
+  - kind: topic
+    heading: Vida cristã
+    thesaurus: ~
+instance:
+  title: "Histórias para o coração : mais de 100 histórias que tocam seu coração"
+  material_type: ~
+  edition: ~
+  place: "Campinas, SP"
+  publisher: United Press
+  date: "2001"
+  extent: "268, [8]p. ; 21cm."
+  series: ~
+  identifiers:
+    - kind: isbn
+      value: "8524302542"
+      qualifier: (broch.)
+    - kind: system_control_number
+      value: 2003071718541389med
+      qualifier: ~
+items:
+  - barcode: "16756"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 242 G77
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+source: ~

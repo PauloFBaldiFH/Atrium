@@ -8,8 +8,8 @@
 )]
 
 use elzevir_app::catalog::{
-    CatalogCommand, CatalogOutput, CatalogReader, CatalogRefusal, ItemView, NewContribution,
-    NewIdentifier, NewInstance, NewItem, NewRecord, NewSubject, NewWorkRelation,
+    CatalogCommand, CatalogOutput, CatalogReader, CatalogRefusal, ItemData, ItemStatus, ItemView,
+    NewContribution, NewIdentifier, NewInstance, NewItem, NewRecord, NewSubject, NewWorkRelation,
 };
 use elzevir_app::commands::{WriteCommand, WriteOutput, WriteRefusal};
 use elzevir_domain::catalog::{
@@ -98,6 +98,8 @@ fn record(title: &str) -> NewRecord {
             contribution("Bosi, Alfredo", false),
         ],
         subjects: vec![subject("Ficção brasileira"), subject("Rio de Janeiro (RJ)")],
+        items: Vec::new(),
+        source: None,
         instance: NewInstance {
             title: title.to_owned(),
             publisher: Some("Garnier".to_owned()),
@@ -121,7 +123,7 @@ fn record(title: &str) -> NewRecord {
 
 fn add_record(store: &ElzevirStore, title: &str) -> (WorkId, InstanceId) {
     match run(store, CatalogCommand::AddRecord(Box::new(record(title)))).unwrap() {
-        CatalogOutput::Record { work, instance } => (work, instance),
+        CatalogOutput::Record { work, instance, .. } => (work, instance),
         other => panic!("unexpected output {other:?}"),
     }
 }
@@ -129,6 +131,12 @@ fn add_record(store: &ElzevirStore, title: &str) -> (WorkId, InstanceId) {
 fn item(instance: InstanceId, barcode: &str) -> NewItem {
     NewItem {
         instance,
+        item: item_data(barcode),
+    }
+}
+
+fn item_data(barcode: &str) -> ItemData {
+    ItemData {
         barcode: Some(barcode.to_owned()),
         inventory_number: Some(format!("2026/{barcode}")),
         home_branch: "MAIN".to_owned(),
@@ -139,7 +147,16 @@ fn item(instance: InstanceId, barcode: &str) -> NewItem {
         collection: None,
         price: Some(Money(4590)),
         replacement_price: None,
+        copy_number: None,
+        status: ItemStatus::default(),
+        acquired_on: None,
     }
+}
+
+fn changed(instance: InstanceId, barcode: &str, change: impl FnOnce(&mut ItemData)) -> NewItem {
+    let mut new = item(instance, barcode);
+    change(&mut new.item);
+    new
 }
 
 #[test]
@@ -256,24 +273,15 @@ fn item_refusals_name_the_problem() {
         refusal(CatalogRefusal::UnknownInstance(missing))
     );
     assert_eq!(
-        add(NewItem {
-            home_branch: "NOPE".to_owned(),
-            ..item(instance, "0003")
-        }),
+        add(changed(instance, "0003", |i| i.home_branch = "NOPE".to_owned())),
         refusal(CatalogRefusal::UnknownBranch("NOPE".to_owned()))
     );
     assert_eq!(
-        add(NewItem {
-            holding_branch: "AWAY".to_owned(),
-            ..item(instance, "0004")
-        }),
+        add(changed(instance, "0004", |i| i.holding_branch = "AWAY".to_owned())),
         refusal(CatalogRefusal::UnknownBranch("AWAY".to_owned()))
     );
     assert_eq!(
-        add(NewItem {
-            item_type: "DVD".to_owned(),
-            ..item(instance, "0005")
-        }),
+        add(changed(instance, "0005", |i| i.item_type = "DVD".to_owned())),
         refusal(CatalogRefusal::UnknownItemType("DVD".to_owned()))
     );
     assert_eq!(store.items(instance).unwrap().len(), 1);
@@ -327,7 +335,7 @@ fn hubs_relations_and_material_types_read_back() {
         work: original,
     }];
     translation.instance.material_type = Some(MaterialType::Digital);
-    let CatalogOutput::Record { work, instance } =
+    let CatalogOutput::Record { work, instance, .. } =
         run(&store, CatalogCommand::AddRecord(Box::new(translation))).unwrap()
     else {
         panic!("expected a record");
@@ -375,4 +383,43 @@ fn records_pointing_to_missing_hubs_or_works_are_refused() {
     // Nothing from the refused commands stayed behind.
     let (work, _) = add_record(&store, "Dom Casmurro");
     assert_eq!(work, WorkId(1));
+}
+
+#[test]
+fn a_record_brings_its_items_and_source_or_nothing() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = open(&dir);
+    setup(&store);
+    let mut new = record("Dom Casmurro");
+    new.items = vec![item_data("0001"), item_data("0002")];
+    new.source = Some(b"00026nam a2200025 a 4500\x1e\x1d".to_vec());
+    let CatalogOutput::Record {
+        instance, items, ..
+    } = run(&store, CatalogCommand::AddRecord(Box::new(new.clone()))).unwrap()
+    else {
+        panic!("expected a record");
+    };
+    assert_eq!(items.len(), 2);
+    assert_eq!(
+        store
+            .items(instance)
+            .unwrap()
+            .iter()
+            .map(|i| i.id)
+            .collect::<Vec<_>>(),
+        items
+    );
+
+    // A repeated barcode refuses the whole record: no second Work, Instance or source.
+    new.work_title = "Outra".to_owned();
+    assert_eq!(
+        run(&store, CatalogCommand::AddRecord(Box::new(new))),
+        refusal(CatalogRefusal::BarcodeTaken("0001".to_owned()))
+    );
+    drop(store);
+    let connection = rusqlite::Connection::open(dir.path().join("elzevir.db")).unwrap();
+    let count = |sql: &str| -> i64 { connection.query_row(sql, [], |row| row.get(0)).unwrap() };
+    assert_eq!(count("SELECT count(*) FROM works"), 1);
+    assert_eq!(count("SELECT count(*) FROM source_records"), 1);
+    assert_eq!(count("SELECT count(*) FROM items"), 2);
 }

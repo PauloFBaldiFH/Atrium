@@ -1,0 +1,68 @@
+---
+source: crates/elzevir-app/tests/marc_mapping.rs
+expression: mapped
+---
+work_title: Argemiro de Figueirêdo
+material_type: book
+hub: ~
+relations: []
+classification: "320.089"
+classification_scheme: ddc
+summary: "Compilação da trajetória e produção parlamentar do advogado, magistrado, governador da Paraíba e senador Argemiro de Figueirêdo. A obra reúne pronunciamentos, apartes, relatórios, projetos de lei, votos e conferências proferidos entre as décadas de 1930 e 1970, destacando a sua atuação em defesa do Estado de Direito, do municipalismo, das liberdades democráticas, da autonomia dos Estados da federação e do desenvolvimento socioeconómico da região Nordeste"
+languages:
+  - por
+contributions:
+  - kind: person
+    heading: "Figueirêdo, Argemiro de, 1901-1982"
+    role: ~
+    primary: true
+  - kind: organization
+    heading: Brasil. Congresso Nacional. Senado Federal. Subsecretaria de Edições Técnicas
+    role: ~
+    primary: false
+subjects:
+  - kind: agent
+    heading: "Figueirêdo, Argemiro de, 1901-1982 -- Atuação parlamentar"
+    thesaurus: ~
+  - kind: topic
+    heading: Discursos parlamentares -- Brasil
+    thesaurus: ~
+  - kind: place
+    heading: Brasil -- Política e governo -- 1930-1980
+    thesaurus: ~
+  - kind: place
+    heading: Paraíba -- Política e governo
+    thesaurus: ~
+instance:
+  title: Argemiro de Figueirêdo
+  material_type: ~
+  edition: ~
+  place: "Brasília, DF"
+  publisher: "Senado Federal, Subsecretaria de Edições Técnicas"
+  date: "1998"
+  extent: "529 p. : il., retr. ; 23 cm."
+  series: Grandes vultos que honraram o Senado ; 3
+  identifiers:
+    - kind: isbn
+      value: "8570181515"
+      qualifier: coleção
+items:
+  - barcode: "10255"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 320 C26
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+source: ~

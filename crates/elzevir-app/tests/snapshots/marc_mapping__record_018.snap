@@ -1,0 +1,62 @@
+---
+source: crates/elzevir-app/tests/marc_mapping.rs
+expression: mapped
+---
+work_title: A Presença inquietante
+material_type: book
+hub: ~
+relations: []
+classification: "301.451"
+classification_scheme: ddc
+summary: ~
+languages:
+  - por
+contributions:
+  - kind: person
+    heading: "Ginzberg, Eli, 1911-2002"
+    role: aut
+    primary: true
+  - kind: person
+    heading: "Eichner, Alfred S., 1937-1988"
+    role: autor
+    primary: false
+subjects:
+  - kind: topic
+    heading: Racismo -- Estados Unidos
+    thesaurus: ~
+  - kind: topic
+    heading: Negros -- história -- Estados Unidos
+    thesaurus: ~
+instance:
+  title: "A Presença inquietante : a democracia norte-americana e o negro"
+  material_type: ~
+  edition: ~
+  place: "Rio de Janeiro,RJ"
+  publisher: O Cruzeiro
+  date: "1964"
+  extent: 308 p.
+  series: Politica & atualidade. coleção de assuntos de interesse mundial ; 7
+  identifiers:
+    - kind: system_control_number
+      value: "000002219"
+      qualifier: ~
+items:
+  - barcode: "9261"
+    inventory_number: ~
+    home_branch: MAIN
+    holding_branch: MAIN
+    item_type: BK
+    call_number: 320 G41
+    location: GEN
+    collection: ~
+    price: ~
+    replacement_price: ~
+    copy_number: ~
+    status:
+      not_for_loan: 0
+      damaged: 0
+      lost: 0
+      withdrawn: 0
+      restricted: 0
+    acquired_on: 2025-03-24
+source: ~
