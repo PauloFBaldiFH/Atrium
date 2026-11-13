@@ -3,12 +3,12 @@
 
 use elzevir_app::catalog::{
     CatalogCommand, CatalogOutput, CatalogReadError, CatalogReader, CatalogRefusal, InstanceView,
-    ItemView, NewContribution, NewInstance, NewItem, NewRecord, NewSubject,
+    ItemView, NewContribution, NewInstance, NewItem, NewRecord, NewSubject, NewWorkRelation,
 };
 use elzevir_app::commands::{WriteOutput, WriteRefusal};
 use elzevir_domain::catalog::{
-    AgentKind, BranchId, IdentifierKind, InstanceId, ItemId, ItemTypeId, SubjectKind, Vocabulary,
-    WorkId,
+    AgentKind, BranchId, HubId, IdentifierKind, InstanceId, ItemId, ItemTypeId, MaterialType,
+    SubjectKind, Vocabulary, WorkId, WorkRelationKind,
 };
 use rusqlite::{Connection, ErrorCode, OptionalExtension, params};
 
@@ -37,6 +37,12 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
                 description,
             )?;
             CatalogOutput::ItemType(ItemTypeId(connection.last_insert_rowid()))
+        }
+        CatalogCommand::CreateHub { title } => {
+            connection
+                .execute("INSERT INTO hubs (title) VALUES (?1)", params![title])
+                .map_err(StoreError::from)?;
+            CatalogOutput::Hub(HubId(connection.last_insert_rowid()))
         }
         CatalogCommand::AddRecord(record) => add_record(connection, record)?,
         CatalogCommand::AddItem(item) => CatalogOutput::Item(add_item(connection, item)?),
@@ -69,6 +75,11 @@ fn add_record(
     connection: &Connection,
     record: &NewRecord,
 ) -> Result<CatalogOutput, CommandFailed<WriteRefusal>> {
+    if let Some(hub) = record.hub
+        && !exists(connection, "SELECT 1 FROM hubs WHERE id = ?1", hub.0)?
+    {
+        return Err(refused(CatalogRefusal::UnknownHub(hub)));
+    }
     let scheme = optional_term(
         connection,
         Vocabulary::ClassificationScheme,
@@ -76,10 +87,13 @@ fn add_record(
     )?;
     connection
         .execute(
-            "INSERT INTO works (title, classification, classification_scheme, summary)
-             VALUES (?1, ?2, ?3, ?4)",
+            "INSERT INTO works (title, material_type, hub_id, classification,
+                                classification_scheme, summary)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
             params![
                 record.work_title,
+                record.material_type.code(),
+                record.hub.map(|hub| hub.0),
                 record.classification,
                 scheme,
                 record.summary
@@ -87,14 +101,46 @@ fn add_record(
         )
         .map_err(StoreError::from)?;
     let work = connection.last_insert_rowid();
+    link_relations(connection, work, &record.relations)?;
     link_languages(connection, work, &record.languages)?;
     link_contributions(connection, work, &record.contributions)?;
     link_subjects(connection, work, &record.subjects)?;
-    let instance = add_instance(connection, work, &record.instance)?;
+    let instance = add_instance(connection, work, record.material_type, &record.instance)?;
     Ok(CatalogOutput::Record {
         work: WorkId(work),
         instance: InstanceId(instance),
     })
+}
+
+fn exists(connection: &Connection, sql: &str, id: i64) -> Result<bool, StoreError> {
+    Ok(connection
+        .query_row(sql, params![id], |_| Ok(()))
+        .optional()?
+        .is_some())
+}
+
+fn link_relations(
+    connection: &Connection,
+    work: i64,
+    relations: &[NewWorkRelation],
+) -> Result<(), CommandFailed<WriteRefusal>> {
+    for (relation, position) in relations.iter().zip(0_i64..) {
+        if !exists(
+            connection,
+            "SELECT 1 FROM works WHERE id = ?1",
+            relation.work.0,
+        )? {
+            return Err(refused(CatalogRefusal::UnknownWork(relation.work)));
+        }
+        connection
+            .execute(
+                "INSERT INTO work_relations (work_id, position, kind, related_work_id)
+                 VALUES (?1, ?2, ?3, ?4)",
+                params![work, position, relation.kind.code(), relation.work.0],
+            )
+            .map_err(StoreError::from)?;
+    }
+    Ok(())
 }
 
 fn link_languages(
@@ -182,15 +228,19 @@ fn link_subjects(
 fn add_instance(
     connection: &Connection,
     work: i64,
+    work_material_type: MaterialType,
     instance: &NewInstance,
 ) -> Result<i64, CommandFailed<WriteRefusal>> {
+    let material_type = instance.material_type.unwrap_or(work_material_type);
     connection
         .execute(
-            "INSERT INTO instances (work_id, title, edition, place, publisher, date, extent, series)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
+            "INSERT INTO instances (work_id, title, material_type, edition, place, publisher, date,
+                                    extent, series)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
             params![
                 work,
                 instance.title,
+                material_type.code(),
                 instance.edition,
                 instance.place,
                 instance.publisher,
@@ -223,15 +273,11 @@ fn add_item(
     connection: &Connection,
     item: &NewItem,
 ) -> Result<ItemId, CommandFailed<WriteRefusal>> {
-    let exists = connection
-        .query_row(
-            "SELECT 1 FROM instances WHERE id = ?1",
-            params![item.instance.0],
-            |_| Ok(()),
-        )
-        .optional()
-        .map_err(StoreError::from)?;
-    if exists.is_none() {
+    if !exists(
+        connection,
+        "SELECT 1 FROM instances WHERE id = ?1",
+        item.instance.0,
+    )? {
         return Err(refused(CatalogRefusal::UnknownInstance(item.instance)));
     }
     let branch = |code: &str| {
@@ -253,12 +299,14 @@ fn add_item(
         item.collection.as_deref(),
     )?;
     let inserted = connection.execute(
-        "INSERT INTO items (instance_id, barcode, home_branch, holding_branch, item_type,
-                            call_number, location, collection, price_cents, replacement_price_cents)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+        "INSERT INTO items (instance_id, barcode, inventory_number, home_branch, holding_branch,
+                            item_type, call_number, location, collection, price_cents,
+                            replacement_price_cents)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
         params![
             item.instance.0,
             item.barcode,
+            item.inventory_number,
             home,
             holding,
             item_type,
@@ -329,7 +377,8 @@ impl CatalogReader for ElzevirStore {
         self.readers()
             .read(|c| {
                 let mut statement = c.prepare(
-                    "SELECT items.id, barcode, branches.code, item_types.code, call_number
+                    "SELECT items.id, barcode, inventory_number, branches.code, item_types.code,
+                            call_number
                      FROM items
                      JOIN branches ON branches.id = items.home_branch
                      JOIN item_types ON item_types.id = items.item_type
@@ -340,9 +389,10 @@ impl CatalogReader for ElzevirStore {
                         Ok(ItemView {
                             id: ItemId(row.get(0)?),
                             barcode: row.get(1)?,
-                            home_branch: row.get(2)?,
-                            item_type: row.get(3)?,
-                            call_number: row.get(4)?,
+                            inventory_number: row.get(2)?,
+                            home_branch: row.get(3)?,
+                            item_type: row.get(4)?,
+                            call_number: row.get(5)?,
                         })
                     })?
                     .collect::<Result<Vec<_>, _>>()
@@ -361,26 +411,31 @@ enum ReadFailure {
 }
 
 fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>, ReadFailure> {
-    let Some((work, work_title, title, publisher, date)) = c
+    let Some(row) = c
         .query_row(
-            "SELECT works.id, works.title, instances.title, publisher, date
+            "SELECT works.id, works.title, instances.title, publisher, date, works.hub_id,
+                    works.material_type, instances.material_type
              FROM instances JOIN works ON works.id = instances.work_id
              WHERE instances.id = ?1",
             params![id.0],
             |row| {
-                Ok((
-                    row.get(0)?,
-                    row.get(1)?,
-                    row.get(2)?,
-                    row.get(3)?,
-                    row.get(4)?,
-                ))
+                Ok(InstanceRow {
+                    work: row.get(0)?,
+                    work_title: row.get(1)?,
+                    title: row.get(2)?,
+                    publisher: row.get(3)?,
+                    date: row.get(4)?,
+                    hub: row.get(5)?,
+                    work_material_type: row.get(6)?,
+                    material_type: row.get(7)?,
+                })
             },
         )
         .optional()?
     else {
         return Ok(None);
     };
+    let work = row.work;
     let contributors = coded_list(
         c,
         "SELECT agents.kind, agents.heading FROM contributions
@@ -406,6 +461,7 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
         "identifier kind",
         IdentifierKind::from_code,
     )?;
+    let relations = work_relations(c, work)?;
     let mut statement = c.prepare(
         "SELECT terms.code FROM work_languages JOIN terms ON terms.id = work_languages.language
          WHERE work_id = ?1 ORDER BY position",
@@ -416,15 +472,65 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
     Ok(Some(InstanceView {
         id,
         work: WorkId(work),
-        work_title,
-        title,
-        publisher,
-        date,
+        work_title: row.work_title,
+        hub: row.hub.map(HubId),
+        work_material_type: material_type(row.work_material_type)?,
+        material_type: material_type(row.material_type)?,
+        relations,
+        title: row.title,
+        publisher: row.publisher,
+        date: row.date,
         contributors,
         subjects,
         identifiers,
         languages,
     }))
+}
+
+/// The columns of one Instance and its Work.
+struct InstanceRow {
+    work: i64,
+    work_title: String,
+    title: String,
+    publisher: Option<String>,
+    date: Option<String>,
+    hub: Option<i64>,
+    work_material_type: Option<u8>,
+    material_type: Option<u8>,
+}
+
+fn material_type(code: Option<u8>) -> Result<Option<MaterialType>, ReadFailure> {
+    code.map(|code| {
+        MaterialType::from_code(code).ok_or(ReadFailure::UnknownCode {
+            what: "material type",
+            code,
+        })
+    })
+    .transpose()
+}
+
+fn work_relations(
+    c: &Connection,
+    work: i64,
+) -> Result<Vec<(WorkRelationKind, WorkId)>, ReadFailure> {
+    let mut statement = c.prepare(
+        "SELECT kind, related_work_id FROM work_relations WHERE work_id = ?1 ORDER BY position",
+    )?;
+    let rows = statement
+        .query_map(params![work], |row| {
+            Ok((row.get::<_, u8>(0)?, row.get::<_, i64>(1)?))
+        })?
+        .collect::<Result<Vec<_>, _>>()?;
+    rows.into_iter()
+        .map(|(code, related)| {
+            WorkRelationKind::from_code(code)
+                .map(|kind| (kind, WorkId(related)))
+                .ok_or(ReadFailure::UnknownCode {
+                    what: "work relation kind",
+                    code,
+                })
+        })
+        .collect()
 }
 
 /// Rows of `(stable number, text)` for one parent id, with the number decoded.

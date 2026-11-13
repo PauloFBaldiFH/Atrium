@@ -7,7 +7,8 @@
 //! thesauri) are created on first use with the code as their label.
 
 use elzevir_domain::catalog::{
-    AgentKind, BranchId, IdentifierKind, InstanceId, ItemId, ItemTypeId, Money, SubjectKind, WorkId,
+    AgentKind, BranchId, HubId, IdentifierKind, InstanceId, ItemId, ItemTypeId, MaterialType,
+    Money, SubjectKind, WorkId, WorkRelationKind,
 };
 use serde::{Deserialize, Serialize};
 
@@ -28,6 +29,11 @@ pub enum CatalogCommand {
         /// Display description.
         description: String,
     },
+    /// Creates a Hub that Works can join.
+    CreateHub {
+        /// Title shared by the Works of the Hub, such as a uniform title.
+        title: String,
+    },
     /// Adds one bibliographic record: a new Work and its first Instance.
     AddRecord(Box<NewRecord>),
     /// Adds an Item to an Instance.
@@ -39,6 +45,12 @@ pub enum CatalogCommand {
 pub struct NewRecord {
     /// Preferred title of the Work.
     pub work_title: String,
+    /// Category of material of the Work.
+    pub material_type: MaterialType,
+    /// The Hub the Work belongs to, if any.
+    pub hub: Option<HubId>,
+    /// Relations from this Work to existing Works, in order.
+    pub relations: Vec<NewWorkRelation>,
     /// Classification number, such as a DDC number.
     pub classification: Option<String>,
     /// Classification scheme code, such as `ddc`.
@@ -53,6 +65,15 @@ pub struct NewRecord {
     pub subjects: Vec<NewSubject>,
     /// The Instance.
     pub instance: NewInstance,
+}
+
+/// A relation from the new Work to an existing one.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct NewWorkRelation {
+    /// How the new Work relates to `work`.
+    pub kind: WorkRelationKind,
+    /// The existing Work.
+    pub work: WorkId,
 }
 
 /// One contributor of a Work.
@@ -84,6 +105,9 @@ pub struct NewSubject {
 pub struct NewInstance {
     /// Title as on the publication.
     pub title: String,
+    /// Category of material of the Instance; `None` takes the Work's (a digital
+    /// edition of a printed book says `Digital` here).
+    pub material_type: Option<MaterialType>,
     /// Edition statement.
     pub edition: Option<String>,
     /// Place of publication.
@@ -118,6 +142,8 @@ pub struct NewItem {
     pub instance: InstanceId,
     /// Barcode, unique when present.
     pub barcode: Option<String>,
+    /// Inventory number (tombo), not necessarily unique.
+    pub inventory_number: Option<String>,
     /// Home branch code.
     pub home_branch: String,
     /// Holding branch code.
@@ -143,6 +169,8 @@ pub enum CatalogOutput {
     Branch(BranchId),
     /// An item type was created.
     ItemType(ItemTypeId),
+    /// A Hub was created.
+    Hub(HubId),
     /// A record was added.
     Record {
         /// The new Work.
@@ -169,6 +197,12 @@ pub enum CatalogRefusal {
     /// No Instance has this id.
     #[error("unknown instance {}", .0.0)]
     UnknownInstance(InstanceId),
+    /// No Hub has this id.
+    #[error("unknown hub {}", .0.0)]
+    UnknownHub(HubId),
+    /// No Work has this id.
+    #[error("unknown work {}", .0.0)]
+    UnknownWork(WorkId),
     /// Another Item has this barcode.
     #[error("barcode `{0}` is already in use")]
     BarcodeTaken(String),
@@ -183,6 +217,14 @@ pub struct InstanceView {
     pub work: WorkId,
     /// The Work's preferred title.
     pub work_title: String,
+    /// The Work's Hub, if any.
+    pub hub: Option<HubId>,
+    /// The Work's category of material; `None` only for rows written before it existed.
+    pub work_material_type: Option<MaterialType>,
+    /// The Instance's category of material; `None` as for the Work.
+    pub material_type: Option<MaterialType>,
+    /// Relations from the Work to other Works, in order.
+    pub relations: Vec<(WorkRelationKind, WorkId)>,
     /// The Instance's title.
     pub title: String,
     /// Publisher.
@@ -206,6 +248,8 @@ pub struct ItemView {
     pub id: ItemId,
     /// Barcode.
     pub barcode: Option<String>,
+    /// Inventory number (tombo).
+    pub inventory_number: Option<String>,
     /// Home branch code.
     pub home_branch: String,
     /// Item type code.
