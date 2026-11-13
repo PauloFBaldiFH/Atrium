@@ -12,7 +12,9 @@ use std::num::NonZeroUsize;
 use elzevir_domain::catalog::InstanceId;
 use elzevir_marc::{DetectedEncoding, Limits, MarcReader, ReadError, Record, RecordRef};
 
-use crate::catalog::{CatalogOutput, CatalogRefusal, ImportOutcome, NewRecord, RefusedItem};
+use crate::catalog::{
+    CatalogOutput, CatalogRefusal, ImportOutcome, ImportedItems, NewRecord, RefusedItem,
+};
 use crate::marc_mapping::{MappingError, marc_to_bibframe};
 use crate::matching::Matching;
 pub use crate::parallelism::Parallelism;
@@ -127,8 +129,12 @@ pub struct ImportReport {
     pub imported: u64,
     /// Items stored, with new records or added to matched ones.
     pub items: u64,
+    /// Stored Items overwritten by imported ones with the same barcode.
+    pub replaced_items: u64,
     /// Records that matched a stored one, whether they were stored again or not.
     pub matched: Vec<MatchedRecord>,
+    /// Matched records whose description was replaced (`on_match = Replace`).
+    pub replaced: u64,
     /// Records that matched nothing and were not stored (`on_no_match = Ignore`).
     pub skipped: u64,
     /// Records not stored, in file order.
@@ -325,41 +331,46 @@ fn collect<P: PendingRecord>(waiting: &mut VecDeque<(RawPlace, P)>, report: &mut
 }
 
 fn record_outcome(place: RawPlace, outcome: ImportOutcome, report: &mut ImportReport) {
-    let (items, refused) = match outcome {
+    let mut matched = |instance| {
+        report.matched.push(MatchedRecord {
+            index: place.index,
+            instance,
+        });
+    };
+    let items = match outcome {
         ImportOutcome::Created {
-            matched,
+            matched: found,
             items,
-            refused_items,
             ..
         } => {
-            report.imported = report.imported.saturating_add(1);
-            if let Some(instance) = matched {
-                report.matched.push(MatchedRecord {
-                    index: place.index,
-                    instance,
-                });
+            if let Some(instance) = found {
+                matched(instance);
             }
-            (items, refused_items)
+            report.imported = report.imported.saturating_add(1);
+            items
         }
-        ImportOutcome::Matched {
-            instance,
-            items,
-            refused_items,
-        } => {
-            report.matched.push(MatchedRecord {
-                index: place.index,
-                instance,
-            });
-            (items, refused_items)
+        ImportOutcome::Replaced { instance, items } => {
+            matched(instance);
+            report.replaced = report.replaced.saturating_add(1);
+            items
+        }
+        ImportOutcome::Matched { instance, items } => {
+            matched(instance);
+            items
         }
         ImportOutcome::Skipped => {
             report.skipped = report.skipped.saturating_add(1);
             return;
         }
     };
-    report.items = report
-        .items
-        .saturating_add(u64::try_from(items.len()).unwrap_or(u64::MAX));
+    let ImportedItems {
+        added,
+        replaced,
+        refused,
+    } = items;
+    let count = |ids: &[_]| u64::try_from(ids.len()).unwrap_or(u64::MAX);
+    report.items = report.items.saturating_add(count(&added));
+    report.replaced_items = report.replaced_items.saturating_add(count(&replaced));
     report.item_failures.extend(
         refused
             .into_iter()

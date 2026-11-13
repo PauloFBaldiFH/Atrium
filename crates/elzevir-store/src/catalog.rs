@@ -2,12 +2,12 @@
 //! Catalog commands and reads on SQLite (docs/specs/catalogo/modelo-bibliografico.md).
 
 use elzevir_app::catalog::{
-    CatalogCommand, CatalogOutput, CatalogReadError, CatalogReader, CatalogRefusal, ImportOutcome,
-    ImportRecord, InstanceView, ItemData, ItemStatus, ItemView, NewContribution, NewInstance,
-    NewRecord, NewSubject, NewWorkRelation, RefusedItem,
+    CatalogCommand, CatalogOutput, CatalogReadError, CatalogReader, CatalogRefusal, InstanceView,
+    ItemData, ItemStatus, ItemView, NewContribution, NewIdentifier, NewInstance, NewRecord,
+    NewSubject, NewWorkRelation,
 };
 use elzevir_app::commands::{WriteOutput, WriteRefusal};
-use elzevir_app::matching::{RecordAction, decide, match_keys};
+use elzevir_app::matching::match_keys;
 use elzevir_app::search::REINDEX_INSTANCE;
 use elzevir_domain::catalog::{
     AgentKind, BranchId, HubId, IdentifierKind, InstanceId, ItemId, ItemTypeId, MaterialType,
@@ -54,7 +54,20 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
             }
             output
         }
-        CatalogCommand::ImportRecord(import) => CatalogOutput::Imported(import_record(tx, import)?),
+        CatalogCommand::ImportRecord(import) => {
+            CatalogOutput::Imported(crate::matching::import_record(tx, import)?)
+        }
+        CatalogCommand::ReplaceRecord { instance, record } => {
+            if !exists(
+                connection,
+                "SELECT 1 FROM instances WHERE id = ?1",
+                instance.0,
+            )? {
+                return Err(refused(CatalogRefusal::UnknownInstance(*instance)));
+            }
+            crate::matching::replace_description(tx, *instance, record)?;
+            CatalogOutput::Replaced(*instance)
+        }
         CatalogCommand::AddItem(new) => {
             if !exists(
                 connection,
@@ -64,14 +77,14 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
                 return Err(refused(CatalogRefusal::UnknownInstance(new.instance)));
             }
             let item = add_item(connection, new.instance, &new.item)?;
-            items_changed(tx, new.instance)?;
+            record_changed(tx, new.instance)?;
             CatalogOutput::Item(item)
         }
     };
     Ok(WriteOutput::Catalog(output))
 }
 
-fn refused(refusal: CatalogRefusal) -> CommandFailed<WriteRefusal> {
+pub(crate) fn refused(refusal: CatalogRefusal) -> CommandFailed<WriteRefusal> {
     CommandFailed::Rejected(WriteRefusal::Catalog(refusal))
 }
 
@@ -93,105 +106,9 @@ fn insert_coded(
 }
 
 /// Imports one record with its matching rule (docs/specs/catalogo/casamento.md).
-fn import_record(
-    tx: &WriteTx<'_>,
-    import: &ImportRecord,
-) -> Result<ImportOutcome, CommandFailed<WriteRefusal>> {
-    let connection = tx.connection();
-    let matched = find_match(connection, import)?;
-    let decision = decide(&import.matching, matched.is_some());
-    let record = &import.record;
-    let wanted: &[ItemData] = if decision.add_items {
-        &record.items
-    } else {
-        &[]
-    };
-    match (decision.record, matched) {
-        (RecordAction::Ignore, None) => Ok(ImportOutcome::Skipped),
-        (RecordAction::Ignore, Some(instance)) => {
-            let (items, refused_items) = add_items_one_by_one(connection, instance, wanted)?;
-            if !items.is_empty() {
-                items_changed(tx, instance)?;
-            }
-            Ok(ImportOutcome::Matched {
-                instance,
-                items,
-                refused_items,
-            })
-        }
-        (RecordAction::CreateNew, matched) => {
-            let (_, instance) = add_work_and_instance(connection, record)?;
-            let (items, refused_items) = add_items_one_by_one(connection, instance, wanted)?;
-            reindex(tx, instance)?;
-            Ok(ImportOutcome::Created {
-                instance,
-                matched,
-                items,
-                refused_items,
-            })
-        }
-    }
-}
-
-/// The oldest stored Instance that shares a key with the record under its rule.
-fn find_match(
-    connection: &Connection,
-    import: &ImportRecord,
-) -> Result<Option<InstanceId>, StoreError> {
-    let mut best: Option<i64> = None;
-    let mut query = connection
-        .prepare_cached("SELECT min(instance_id) FROM match_keys WHERE rule = ?1 AND key = ?2")?;
-    for key in match_keys(&import.record)
-        .into_iter()
-        .filter(|key| key.rule == import.matching.rule)
-    {
-        let found: Option<i64> =
-            query.query_row(params![key.rule.code(), key.key], |row| row.get(0))?;
-        best = match (best, found) {
-            (Some(a), Some(b)) => Some(a.min(b)),
-            (a, b) => a.or(b),
-        };
-    }
-    Ok(best.map(InstanceId))
-}
-
-/// Stores Items one at a time: a refused Item is reported and the next one goes on.
-///
-/// Koha: `C4::ImportBatch::_batchCommitItems` (a barcode already in use is an error for that
-/// Item only).
-fn add_items_one_by_one(
-    connection: &Connection,
-    instance: InstanceId,
-    items: &[ItemData],
-) -> Result<(Vec<ItemId>, Vec<RefusedItem>), CommandFailed<WriteRefusal>> {
-    let mut added = Vec::new();
-    let mut refused = Vec::new();
-    for (position, item) in items.iter().enumerate() {
-        // A savepoint per Item, so a refused one leaves nothing behind (a location term
-        // created just before its barcode was found taken, for instance).
-        savepoint(connection, "SAVEPOINT import_item")?;
-        match add_item(connection, instance, item) {
-            Ok(id) => {
-                savepoint(connection, "RELEASE import_item")?;
-                added.push(id);
-            }
-            Err(CommandFailed::Rejected(WriteRefusal::Catalog(refusal))) => {
-                savepoint(connection, "ROLLBACK TO import_item; RELEASE import_item")?;
-                refused.push(RefusedItem { position, refusal });
-            }
-            Err(other) => return Err(other),
-        }
-    }
-    Ok((added, refused))
-}
-
-fn savepoint(connection: &Connection, sql: &str) -> Result<(), StoreError> {
-    Ok(connection.execute_batch(sql)?)
-}
-
-/// An Instance gained Items: the record page shows them, so its version moves, and the
-/// index is told.
-fn items_changed(tx: &WriteTx<'_>, instance: InstanceId) -> Result<(), StoreError> {
+/// A record changed (its description, or Items it shows): its version moves, so the OPAC
+/// renders it again, and the index is told.
+pub(crate) fn record_changed(tx: &WriteTx<'_>, instance: InstanceId) -> Result<(), StoreError> {
     tx.connection().execute(
         "UPDATE instances SET row_version = row_version + 1 WHERE id = ?1",
         params![instance.0],
@@ -217,7 +134,7 @@ fn add_record(
 }
 
 /// Stores the Work, its Instance, the source record and the match keys, without Items.
-fn add_work_and_instance(
+pub(crate) fn add_work_and_instance(
     connection: &Connection,
     record: &NewRecord,
 ) -> Result<(WorkId, InstanceId), CommandFailed<WriteRefusal>> {
@@ -253,34 +170,40 @@ fn add_work_and_instance(
     link_subjects(connection, work, &record.subjects)?;
     let instance = add_instance(connection, work, record.material_type, &record.instance)?;
     let instance = InstanceId(instance);
-    if let Some(source) = &record.source {
-        connection
-            .execute(
-                "INSERT INTO source_records (instance_id, format, record) VALUES (?1, ?2, ?3)",
-                params![instance.0, SourceFormat::Marc21Iso2709.code(), source],
-            )
-            .map_err(StoreError::from)?;
-    }
-    for key in match_keys(record) {
-        connection
-            .execute(
-                "INSERT OR IGNORE INTO match_keys (rule, key, instance_id) VALUES (?1, ?2, ?3)",
-                params![key.rule.code(), key.key, instance.0],
-            )
-            .map_err(StoreError::from)?;
-    }
+    store_source_and_keys(connection, instance, record)?;
     Ok((WorkId(work), instance))
 }
 
+/// Stores the source record and the match keys of `record` for `instance`.
+pub(crate) fn store_source_and_keys(
+    connection: &Connection,
+    instance: InstanceId,
+    record: &NewRecord,
+) -> Result<(), StoreError> {
+    if let Some(source) = &record.source {
+        connection.execute(
+            "INSERT INTO source_records (instance_id, format, record) VALUES (?1, ?2, ?3)",
+            params![instance.0, SourceFormat::Marc21Iso2709.code(), source],
+        )?;
+    }
+    for key in match_keys(record) {
+        connection.execute(
+            "INSERT OR IGNORE INTO match_keys (rule, key, instance_id) VALUES (?1, ?2, ?3)",
+            params![key.rule.code(), key.key, instance.0],
+        )?;
+    }
+    Ok(())
+}
+
 /// Queues the Instance for reindexing once this command commits (docs/specs/catalogo/modelo-bibliografico.md, item 24).
-fn reindex(tx: &WriteTx<'_>, instance: InstanceId) -> Result<(), StoreError> {
+pub(crate) fn reindex(tx: &WriteTx<'_>, instance: InstanceId) -> Result<(), StoreError> {
     tx.emit_effect(
         REINDEX_INSTANCE,
         &serde_json::json!({ "instance": instance.0 }),
     )
 }
 
-fn exists(connection: &Connection, sql: &str, id: i64) -> Result<bool, StoreError> {
+pub(crate) fn exists(connection: &Connection, sql: &str, id: i64) -> Result<bool, StoreError> {
     Ok(connection
         .query_row(sql, params![id], |_| Ok(()))
         .optional()?
@@ -311,7 +234,7 @@ fn link_relations(
     Ok(())
 }
 
-fn link_languages(
+pub(crate) fn link_languages(
     connection: &Connection,
     work: i64,
     languages: &[String],
@@ -328,7 +251,7 @@ fn link_languages(
     Ok(())
 }
 
-fn link_contributions(
+pub(crate) fn link_contributions(
     connection: &Connection,
     work: i64,
     contributions: &[NewContribution],
@@ -357,7 +280,7 @@ fn link_contributions(
     Ok(())
 }
 
-fn link_subjects(
+pub(crate) fn link_subjects(
     connection: &Connection,
     work: i64,
     subjects: &[NewSubject],
@@ -419,29 +342,45 @@ fn add_instance(
         )
         .map_err(StoreError::from)?;
     let instance_id = connection.last_insert_rowid();
-    for (identifier, position) in instance.identifiers.iter().zip(0_i64..) {
-        connection
-            .execute(
-                "INSERT INTO instance_identifiers (instance_id, position, kind, value, qualifier)
-                 VALUES (?1, ?2, ?3, ?4, ?5)",
-                params![
-                    instance_id,
-                    position,
-                    identifier.kind.code(),
-                    identifier.value,
-                    identifier.qualifier
-                ],
-            )
-            .map_err(StoreError::from)?;
-    }
+    insert_identifiers(connection, instance_id, &instance.identifiers)?;
     Ok(instance_id)
 }
 
-fn add_item(
+pub(crate) fn insert_identifiers(
     connection: &Connection,
-    instance: InstanceId,
+    instance: i64,
+    identifiers: &[NewIdentifier],
+) -> Result<(), StoreError> {
+    for (identifier, position) in identifiers.iter().zip(0_i64..) {
+        connection.execute(
+            "INSERT INTO instance_identifiers (instance_id, position, kind, value, qualifier)
+             VALUES (?1, ?2, ?3, ?4, ?5)",
+            params![
+                instance,
+                position,
+                identifier.kind.code(),
+                identifier.value,
+                identifier.qualifier
+            ],
+        )?;
+    }
+    Ok(())
+}
+
+/// The numeric identities an Item refers to, resolved from its codes.
+pub(crate) struct ItemCodes {
+    pub(crate) home: i64,
+    pub(crate) holding: i64,
+    pub(crate) item_type: i64,
+    pub(crate) location: Option<i64>,
+    pub(crate) collection: Option<i64>,
+}
+
+/// Resolves the codes of `item`; an unknown branch or item type refuses it.
+pub(crate) fn item_codes(
+    connection: &Connection,
     item: &ItemData,
-) -> Result<ItemId, CommandFailed<WriteRefusal>> {
+) -> Result<ItemCodes, CommandFailed<WriteRefusal>> {
     let branch = |code: &str| {
         lookup(connection, "SELECT id FROM branches WHERE code = ?1", code)?
             .ok_or_else(|| refused(CatalogRefusal::UnknownBranch(code.to_owned())))
@@ -460,6 +399,27 @@ fn add_item(
         Vocabulary::Collection,
         item.collection.as_deref(),
     )?;
+    Ok(ItemCodes {
+        home,
+        holding,
+        item_type,
+        location,
+        collection,
+    })
+}
+
+pub(crate) fn add_item(
+    connection: &Connection,
+    instance: InstanceId,
+    item: &ItemData,
+) -> Result<ItemId, CommandFailed<WriteRefusal>> {
+    let ItemCodes {
+        home,
+        holding,
+        item_type,
+        location,
+        collection,
+    } = item_codes(connection, item)?;
     let inserted = connection.execute(
         "INSERT INTO items (instance_id, barcode, inventory_number, home_branch, holding_branch,
                             item_type, call_number, location, collection, price_cents,
@@ -527,7 +487,7 @@ fn term(connection: &Connection, vocabulary: Vocabulary, code: &str) -> Result<i
     )?)
 }
 
-fn optional_term(
+pub(crate) fn optional_term(
     connection: &Connection,
     vocabulary: Vocabulary,
     code: Option<&str>,

@@ -20,6 +20,7 @@ mod effects;
 mod elzevir;
 mod error;
 mod import;
+mod matching;
 mod readers;
 mod schema;
 mod writer;

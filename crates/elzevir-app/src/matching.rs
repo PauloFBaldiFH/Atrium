@@ -71,6 +71,8 @@ pub enum OnMatch {
     Ignore,
     /// Store the imported record as a new one anyway.
     CreateNew,
+    /// Replace the stored record's description with the imported one, keeping its Items.
+    Replace,
 }
 
 /// What to do with an imported record that matches nothing.
@@ -91,6 +93,9 @@ pub enum ItemAction {
     AddOnlyForMatches,
     /// Store them only when the record did not match.
     AddOnlyForNew,
+    /// Only when the record matched: an Item whose barcode is stored overwrites that
+    /// Item where it is; the others are stored.
+    Replace,
     /// Never store them.
     Ignore,
 }
@@ -127,7 +132,20 @@ impl Matching {
 pub enum RecordAction {
     /// A new record is stored.
     CreateNew,
+    /// The matched record's description is replaced.
+    Replace,
     /// Nothing is stored for the record.
+    Ignore,
+}
+
+/// What happens to the Items of the record.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ItemsDecision {
+    /// They are stored; a barcode already stored refuses that Item.
+    Add,
+    /// They are stored; a barcode already stored overwrites that Item.
+    Replace,
+    /// None is stored.
     Ignore,
 }
 
@@ -136,9 +154,9 @@ pub enum RecordAction {
 pub struct Decision {
     /// What happens to the record.
     pub record: RecordAction,
-    /// Whether its Items are stored: on the new record, or on the matched one when the
-    /// record is ignored.
-    pub add_items: bool,
+    /// What happens to its Items: they go to the new record, or to the matched one when
+    /// the record is replaced or ignored.
+    pub items: ItemsDecision,
 }
 
 /// Decides what to do with a record, given whether it matched a stored one.
@@ -151,11 +169,13 @@ pub const fn decide(matching: &Matching, matched: bool) -> Decision {
             record: match matching.on_match {
                 OnMatch::Ignore => RecordAction::Ignore,
                 OnMatch::CreateNew => RecordAction::CreateNew,
+                OnMatch::Replace => RecordAction::Replace,
             },
-            add_items: matches!(
-                matching.items,
-                ItemAction::AlwaysAdd | ItemAction::AddOnlyForMatches
-            ),
+            items: match matching.items {
+                ItemAction::AlwaysAdd | ItemAction::AddOnlyForMatches => ItemsDecision::Add,
+                ItemAction::Replace => ItemsDecision::Replace,
+                ItemAction::AddOnlyForNew | ItemAction::Ignore => ItemsDecision::Ignore,
+            },
         }
     } else {
         Decision {
@@ -163,10 +183,12 @@ pub const fn decide(matching: &Matching, matched: bool) -> Decision {
                 OnNoMatch::CreateNew => RecordAction::CreateNew,
                 OnNoMatch::Ignore => RecordAction::Ignore,
             },
-            add_items: matches!(
-                matching.items,
-                ItemAction::AlwaysAdd | ItemAction::AddOnlyForNew
-            ),
+            items: match matching.items {
+                ItemAction::AlwaysAdd | ItemAction::AddOnlyForNew => ItemsDecision::Add,
+                ItemAction::AddOnlyForMatches | ItemAction::Replace | ItemAction::Ignore => {
+                    ItemsDecision::Ignore
+                }
+            },
         }
     }
 }
@@ -260,7 +282,8 @@ mod tests {
 
     #[test]
     fn decisions_follow_koha() {
-        use ItemAction::{AddOnlyForMatches, AddOnlyForNew, AlwaysAdd, Ignore};
+        use ItemAction::{AddOnlyForMatches, AddOnlyForNew, AlwaysAdd, Ignore, Replace};
+        use ItemsDecision as D;
         let with = |items, on_match, on_no_match| Matching {
             rule: MatchRule::Isbn,
             on_match,
@@ -268,19 +291,20 @@ mod tests {
             items,
         };
         let expected = [
-            // items, add when matched, add when new
-            (AlwaysAdd, true, true),
-            (AddOnlyForMatches, true, false),
-            (AddOnlyForNew, false, true),
-            (Ignore, false, false),
+            // items, when matched, when new
+            (AlwaysAdd, D::Add, D::Add),
+            (AddOnlyForMatches, D::Add, D::Ignore),
+            (AddOnlyForNew, D::Ignore, D::Add),
+            (Replace, D::Replace, D::Ignore),
+            (Ignore, D::Ignore, D::Ignore),
         ];
-        for (items, matched_adds, new_adds) in expected {
+        for (items, when_matched, when_new) in expected {
             let matching = with(items, OnMatch::Ignore, OnNoMatch::CreateNew);
             assert_eq!(
                 decide(&matching, true),
                 Decision {
                     record: RecordAction::Ignore,
-                    add_items: matched_adds
+                    items: when_matched
                 },
                 "{items:?}"
             );
@@ -288,7 +312,7 @@ mod tests {
                 decide(&matching, false),
                 Decision {
                     record: RecordAction::CreateNew,
-                    add_items: new_adds
+                    items: when_new
                 },
                 "{items:?}"
             );
@@ -296,5 +320,8 @@ mod tests {
         let flipped = with(AlwaysAdd, OnMatch::CreateNew, OnNoMatch::Ignore);
         assert_eq!(decide(&flipped, true).record, RecordAction::CreateNew);
         assert_eq!(decide(&flipped, false).record, RecordAction::Ignore);
+        let replace = with(AlwaysAdd, OnMatch::Replace, OnNoMatch::CreateNew);
+        assert_eq!(decide(&replace, true).record, RecordAction::Replace);
+        assert_eq!(decide(&replace, false).record, RecordAction::CreateNew);
     }
 }
