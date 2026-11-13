@@ -44,7 +44,13 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
                 .map_err(StoreError::from)?;
             CatalogOutput::Hub(HubId(connection.last_insert_rowid()))
         }
-        CatalogCommand::AddRecord(record) => add_record(connection, record)?,
+        CatalogCommand::AddRecord(record) => {
+            let output = add_record(connection, record)?;
+            if let CatalogOutput::Record { instance, .. } = &output {
+                reindex(tx, *instance)?;
+            }
+            output
+        }
         CatalogCommand::AddItem(new) => {
             if !exists(
                 connection,
@@ -53,7 +59,9 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
             )? {
                 return Err(refused(CatalogRefusal::UnknownInstance(new.instance)));
             }
-            CatalogOutput::Item(add_item(connection, new.instance, &new.item)?)
+            let item = add_item(connection, new.instance, &new.item)?;
+            reindex(tx, new.instance)?;
+            CatalogOutput::Item(item)
         }
     };
     Ok(WriteOutput::Catalog(output))
@@ -134,6 +142,17 @@ fn add_record(
         instance,
         items,
     })
+}
+
+/// Effect kind asking the search index to rebuild one Instance's document after commit.
+pub(crate) const REINDEX_INSTANCE: &str = "catalog.reindex_instance";
+
+/// Queues the Instance for reindexing once this command commits (docs/specs/catalogo/modelo-bibliografico.md, item 24).
+fn reindex(tx: &WriteTx<'_>, instance: InstanceId) -> Result<(), StoreError> {
+    tx.emit_effect(
+        REINDEX_INSTANCE,
+        &serde_json::json!({ "instance": instance.0 }),
+    )
 }
 
 fn exists(connection: &Connection, sql: &str, id: i64) -> Result<bool, StoreError> {

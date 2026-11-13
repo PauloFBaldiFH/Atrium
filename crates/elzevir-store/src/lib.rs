@@ -15,8 +15,10 @@
 
 mod catalog;
 mod config;
+mod digest;
 mod elzevir;
 mod error;
+mod import;
 mod readers;
 mod schema;
 mod writer;
@@ -24,6 +26,7 @@ mod writer;
 pub use config::StoreConfig;
 pub use elzevir::{ElzevirHandler, ElzevirStore};
 pub use error::{CommandFailed, StoreError, SubmitError};
+pub use import::PendingAdd;
 pub use readers::ReadPool;
 pub use writer::{CommandHandler, Pending, WriteTx};
 
@@ -60,6 +63,27 @@ impl<H: CommandHandler> Store<H> {
     /// [`SubmitError::Closed`] when the writer has stopped. Never blocks.
     pub fn submit(&self, command: H::Command) -> Result<Pending<H>, SubmitError> {
         self.writer.submit(command)
+    }
+
+    /// Queues `command`, waiting while the queue is full. For batch work (an import) that
+    /// runs on its own thread and should slow down to the writer's pace instead of failing.
+    /// Must not be called from async code: it blocks the thread.
+    ///
+    /// # Errors
+    ///
+    /// [`SubmitError::Closed`] when the writer has stopped.
+    pub fn submit_waiting(&self, command: H::Command) -> Result<Pending<H>, SubmitError> {
+        self.writer.submit_waiting(command)
+    }
+
+    /// A digest of every table's content, for comparing two databases built from the same
+    /// commands (docs/arquitetura/03-estrategia-reconstrucao.md, §1.2 item 8).
+    ///
+    /// # Errors
+    ///
+    /// Fails if a read fails.
+    pub fn digest(&self) -> Result<String, StoreError> {
+        self.readers.read(digest::database)
     }
 
     /// The read-only connection pool.

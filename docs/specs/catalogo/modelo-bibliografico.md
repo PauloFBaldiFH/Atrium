@@ -35,6 +35,7 @@
 21. Agente e Assunto já existentes são reaproveitados (itens 5 e 6), nunca duplicados.
 22. Recusas, sem nada gravado: código de unidade ou tipo de item já usado, unidade ou tipo de item desconhecido, Hub, Obra relacionada ou Instância inexistente e código de barras repetido.
 23. A leitura (`CatalogReader`) devolve uma Instância com sua Obra, Hub, categorias, relações, contribuições, assuntos, identificadores e idiomas na ordem gravada, e os Itens de uma Instância na ordem de criação.
+24. Acrescentar registro ou Item grava, na mesma transação, o efeito `catalog.reindex_instance` (`{"instance": id}`) em `effect_outbox`, para o indexador (tarefa 1.8) refazer o documento daquela Instância depois do commit. Comando recusado não deixa efeito.
 
 ## 2. Origem no Koha
 

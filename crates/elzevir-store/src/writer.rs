@@ -144,6 +144,17 @@ impl<H: CommandHandler> WriterHandle<H> {
     }
 }
 
+impl<H: CommandHandler> WriterHandle<H> {
+    pub(crate) fn submit_waiting(&self, command: H::Command) -> Result<Pending<H>, SubmitError> {
+        let queue = self.queue.as_ref().ok_or(SubmitError::Closed)?;
+        let (reply, receiver) = oneshot::channel();
+        queue
+            .send(Request { command, reply })
+            .map_err(|_| SubmitError::Closed)?;
+        Ok(Pending { reply: receiver })
+    }
+}
+
 impl<H: CommandHandler> Drop for WriterHandle<H> {
     fn drop(&mut self) {
         // Closing the queue ends the writer loop after it drains what is already queued.
