@@ -1,6 +1,6 @@
 # Visão de arquitetura: núcleo BIBFRAME 2.0, borda MARC21/Koha e frontend
 
-> Status: aprovada por Paulo como direção em 2026-11-12 (21:59 BRT), junto com o novo nome do projeto, **Elzevir**. A parte A é a especificação dele, sem cortes de conteúdo. A parte B é o plano de integração com o código existente. Onde B diverge de A, a divergência está dita e justificada, para Paulo confirmar.
+> Status: aprovada por Paulo como direção em 2026-11-12 (21:59 BRT), junto com o novo nome do projeto, **Elzevir**. A parte A é a especificação dele, sem cortes de conteúdo. A parte B é o plano de integração com o código existente. Onde B diverge de A, a divergência está dita e justificada; Paulo aprovou o plano na íntegra, com as escolhas de B.2, em 2026-11-12 (22:07 BRT).
 >
 > Quando aplicar: na tarefa 1.5 (parte 3) e 1.6 (núcleo e mapeamento), 1.8 e 1.9 (busca e listagem), 1.11 (round-trip), Fase 2 (Onda 1) e depois dela (Onda 2). Nada aqui interrompe a tarefa em andamento.
 
@@ -62,11 +62,11 @@ Auditoria feita em 2026-11-12 sobre `main` + PR #21 + a parte 2 da tarefa 1.5 (l
 
 | Peça | Onde | Situação diante de A.1 |
 |---|---|---|
-| Work, Instance, Item, Agente, Assunto, identificadores | `crates/atrium-store/src/schema.rs` (migração 3), `crates/atrium-domain/src/catalog.rs` | Já são tabelas tipadas sem nome de etiqueta MARC. Item tem `call_number`, `copy_number`, unidades, tipo, localização, coleção, situação, preços. |
+| Work, Instance, Item, Agente, Assunto, identificadores | `crates/elzevir-store/src/schema.rs` (migração 3), `crates/elzevir-domain/src/catalog.rs` | Já são tabelas tipadas sem nome de etiqueta MARC. Item tem `call_number`, `copy_number`, unidades, tipo, localização, coleção, situação, preços. |
 | Papéis das contribuições | `contributions.role` → `terms` (vocabulário relator) | Já semântico: guarda o código de relator (`aut`, `trl`, `ill`); o rótulo "escrito por" vem da tradução do código. |
-| MARC só na borda | `crates/atrium-marc` (leitor ISO 2709, escrita ISO 2709/MARCXML, MARC-8/ISO 5426) | Já isolado: só `atrium-store` e `atrium-app` podem depender dele (`tools/layers.json`); o domínio não conhece MARC. |
+| MARC só na borda | `crates/elzevir-marc` (leitor ISO 2709, escrita ISO 2709/MARCXML, MARC-8/ISO 5426) | Já isolado: só `elzevir-store` e `elzevir-app` podem depender dele (`tools/layers.json`); o domínio não conhece MARC. |
 | Registro preservado | `source_records` (MARC original, byte a byte, por Instância) | Cobre o objetivo de `raw_marc_extra` com folga (ver B.2). |
-| Escrita única e leitura em pool | `atrium-store` (thread escritora + `ReadPool`) | Base das respostas rápidas do grafo. |
+| Escrita única e leitura em pool | `elzevir-store` (thread escritora + `ReadPool`) | Base das respostas rápidas do grafo. |
 | Circulação no Item | `due_date.rs`, `calendar.rs` (domínio puro) | Ainda sem tabela de empréstimo; quando vier (Fase 3), referencia `items.id`. |
 
 Nada do que existe precisa ser desfeito. O plano **acrescenta**.
@@ -91,7 +91,7 @@ Spec afetada: `docs/specs/catalogo/modelo-bibliografico.md`; decisão: novo ADR 
 
 ### B.4 Borda MARC21/Koha (tarefas 1.6, 1.10 e 1.11)
 
-- **Onde mora:** módulo de mapeamento em `atrium-app` (função pura `marc_to_bibframe(&Record) -> NewRecord + Vec<NewItem>`) e o inverso `bibframe_to_marc`. O nome segue a especificação; nenhuma outra crate lê etiqueta MARC.
+- **Onde mora:** módulo de mapeamento em `elzevir-app` (função pura `marc_to_bibframe(&Record) -> NewRecord + Vec<NewItem>`) e o inverso `bibframe_to_marc`. O nome segue a especificação; nenhuma outra crate lê etiqueta MARC.
 - **Tabela de mapeamento** explícita, testada com snapshots `insta` (já previsto na 1.6), cobrindo a lista de A.1 e as correções de B.2.
 - **Testes de ida e volta obrigatórios** (A.4 item 3), em `cargo test`:
   - registro com `952` repetido (vários exemplares), `082` e `090`, acentuação UTF-8 (`ç`, `ã`, `é`) e registro MARC-8 convertido;
@@ -101,7 +101,7 @@ Spec afetada: `docs/specs/catalogo/modelo-bibliografico.md`; decisão: novo ADR 
 
 ### B.5 API, busca e circulação
 
-- **Grafo (JSON):** rotas em `atrium-web` (`/api/v1/nodes/{tipo}/{id}` devolve o nó e a vizinhança imediata), lendo por uma porta nova em `atrium-app` (`GraphReader`) implementada em `atrium-store`. Respeita as camadas: a web não toca o banco.
+- **Grafo (JSON):** rotas em `elzevir-web` (`/api/v1/nodes/{tipo}/{id}` devolve o nó e a vizinhança imediata), lendo por uma porta nova em `elzevir-app` (`GraphReader`) implementada em `elzevir-store`. Respeita as camadas: a web não toca o banco.
   - Meta de desempenho: < 1 ms no servidor para a vizinhança de um nó, medida com `criterion`, conforme a regra de otimizar só com benchmark.
 - **Listagem de balcão (1.8/1.9):** o esquema Tantivy guarda título, autor principal, número de chamada, categoria e localização; a contagem disponível/emprestado vem do SQLite numa consulta por página (já previsto na 1.9). Tela de balcão na Fase 2.
 - **Circulação (Fase 3):** `loans` e `holds` referenciam `items.id`. Nenhuma coluna de circulação em `works`/`instances`.
@@ -116,7 +116,7 @@ Spec afetada: `docs/specs/catalogo/modelo-bibliografico.md`; decisão: novo ADR 
 
 ### B.7 Renomear para Elzevir
 
-PR próprio, mecânico, depois da parte 2 da tarefa 1.5: crates `atrium-*` → `elzevir-*`, binário `elzevir`, `atrium.toml` → `elzevir.toml`, variáveis `ATRIUM_*` → `ELZEVIR_*`, textos e documentação. O nome do repositório no GitHub é com Paulo (Settings → Rename); o GitHub redireciona o endereço antigo.
+Feito em 2026-11-12, depois da parte 2 da tarefa 1.5: crates `atrium-*` → `elzevir-*`, binário `elzevir`, `atrium.toml` → `elzevir.toml`, variáveis `ATRIUM_*` → `ELZEVIR_*`, textos e documentação. Paulo renomeou o repositório no GitHub para `Elzevir`.
 
 ### B.8 Ordem
 

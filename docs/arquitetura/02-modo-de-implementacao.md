@@ -1,4 +1,4 @@
-# Atrium: modo de implementação e melhorias propostas
+# Elzevir: modo de implementação e melhorias propostas
 
 > Status: proposta para discussão. Complementa [01-avaliacao-da-arquitetura.md](01-avaliacao-da-arquitetura.md).
 > Data: 2026-11-12. Licença do projeto: GPL-3.0-or-later.
@@ -9,7 +9,7 @@ O documento 01 diz **o que** construir e **com quais peças**. Este diz **como**
 
 ## 1. Princípios de código
 
-1. **O domínio é puro.** `atrium-domain` não faz I/O: não lê relógio, banco, rede nem disco. Recebe tudo como parâmetro (inclusive "agora" e o calendário) e devolve decisões. Isso torna regras como vencimento, multa e fila de reservas testáveis em microssegundos e sem mocks.
+1. **O domínio é puro.** `elzevir-domain` não faz I/O: não lê relógio, banco, rede nem disco. Recebe tudo como parâmetro (inclusive "agora" e o calendário) e devolve decisões. Isso torna regras como vencimento, multa e fila de reservas testáveis em microssegundos e sem mocks.
 2. **Estados impossíveis não compilam.** Usar `enum`s e *newtypes* em vez de strings e `bool`s soltos: `ItemStatus::OnLoan { loan_id, due }` em vez de `onloan: Option<Date>` + `itemlost: i32` + `withdrawn: i32`, como no Koha.
 3. **Erros são tipados e fazem parte da regra.** Um empréstimo negado devolve `Err(CheckoutRefusal::PatronDebtOverLimit { owed, limit })`, que a interface traduz em mensagem. Nada de `panic!` em caminho de requisição.
 4. **Uma regra, um lugar.** Cada política (quantos empréstimos, quantas renovações, quanto de multa) é resolvida por uma única função de resolução de regras (§4). O Koha espalha isso por dezenas de lugares.
@@ -20,24 +20,24 @@ O documento 01 diz **o que** construir e **com quais peças**. Este diz **como**
 
 ```mermaid
 flowchart LR
-    WEB["atrium-web / api / protocols"] --> APP["atrium-app"]
-    APP --> DOM["atrium-domain"]
+    WEB["elzevir-web / api / protocols"] --> APP["elzevir-app"]
+    APP --> DOM["elzevir-domain"]
     APP --> PORTS["traits: repositórios, índice, relógio, e-mail"]
-    STORE["atrium-store"] -. implementa .-> PORTS
-    SEARCH["atrium-search"] -. implementa .-> PORTS
+    STORE["elzevir-store"] -. implementa .-> PORTS
+    SEARCH["elzevir-search"] -. implementa .-> PORTS
     STORE --> DOM
     SEARCH --> DOM
 ```
 
-- `atrium-domain` não depende de nenhuma outra crate do Atrium.
-- `atrium-app` conhece só os *traits* (portas). As implementações concretas (SQLite, Tantivy, SMTP) são injetadas no binário.
+- `elzevir-domain` não depende de nenhuma outra crate do Elzevir.
+- `elzevir-app` conhece só os *traits* (portas). As implementações concretas (SQLite, Tantivy, SMTP) são injetadas no binário.
 - A web nunca acessa o banco diretamente: sempre passa por um caso de uso.
 - O CI verifica essas regras (por exemplo, com `cargo-deny` *bans* ou um teste simples sobre `cargo metadata`).
 
 Exemplo do formato esperado de um caso de uso:
 
 ```rust
-// atrium-app: emprestar um item
+// elzevir-app: emprestar um item
 pub fn checkout(
     tx: &mut WriteTx,           // transação de escrita (SQLite)
     clock: &dyn Clock,
@@ -134,7 +134,7 @@ flowchart LR
 | Unidade e propriedade | `cargo nextest`, `proptest` | Regras puras do domínio, parsers | Todo push |
 | Snapshot | `insta` | Conversões MARC ↔ modelo, saída de RDF, HTML de fragmentos | Todo push |
 | Repositório | SQLite em memória ou arquivo temporário | SQL, migrações, transações | Todo push |
-| Aceitação | Cenários das specs (dado/quando/então) executados contra `atrium-app` | Comportamento de cada módulo | Todo push |
+| Aceitação | Cenários das specs (dado/quando/então) executados contra `elzevir-app` | Comportamento de cada módulo | Todo push |
 | Diferencial | Koha em container + dados-oráculo gravados | Equivalência com o Koha | Noturno, e ao mudar o módulo |
 | Ponta a ponta | Playwright | Telas HTMX críticas: balcão de circulação, catalogação, busca do OPAC | Antes do merge na main |
 | Fuzzing | `cargo-fuzz` | Parsers MARC, MARCXML, consultas de busca | Noturno |
@@ -159,21 +159,21 @@ flowchart LR
 
 ### Fase 0: fundações (estimativa: 2 a 3 semanas de uma pessoa)
 
-1. Workspace Cargo com as crates `atrium-domain`, `atrium-marc`, `atrium-store`, `atrium-app`, `atrium-web` e o binário `atrium`.
+1. Workspace Cargo com as crates `elzevir-domain`, `elzevir-marc`, `elzevir-store`, `elzevir-app`, `elzevir-web` e o binário `elzevir`.
 2. CI no GitHub Actions: `fmt`, `clippy -D warnings`, `nextest`, `cargo-deny`, verificação das regras de dependência.
 3. ADRs 0001 a 0007 a partir das decisões do §7 do documento 01.
-4. `atrium-store`: abertura do banco com os PRAGMAs, thread escritora, pool de leitura, migrações, backup antes de migrar.
-5. `atrium-web`: axum com layout base Askama, HTMX, Fluent (inglês primeiro, depois pt-BR), sessões, CSRF, login com Argon2id, página "olá".
+4. `elzevir-store`: abertura do banco com os PRAGMAs, thread escritora, pool de leitura, migrações, backup antes de migrar.
+5. `elzevir-web`: axum com layout base Askama, HTMX, Fluent (inglês primeiro, depois pt-BR), sessões, CSRF, login com Argon2id, página "olá".
 6. Configuração TOML tipada, logs estruturados com `tracing`, endpoint `/health`.
 7. Inventário de telas: listar as capturas em `Data/` por módulo e marcar o que entra na v1 (vira o índice das specs).
 
 ### Fase 1: MARC e modelo bibliográfico (estimativa: 4 a 6 semanas)
 
-1. Spec `marc-21-leitura-escrita` → `atrium-marc`: ISO 2709 tolerante, MARCXML em streaming, MARC-8 → UTF-8, ida e volta byte a byte nos casos válidos, fuzzing.
+1. Spec `marc-21-leitura-escrita` → `elzevir-marc`: ISO 2709 tolerante, MARCXML em streaming, MARC-8 → UTF-8, ida e volta byte a byte nos casos válidos, fuzzing.
 2. Spec `modelo-bibliografico` → `Work`, `Instance`, `Item`, `Agent`, `Subject`, `Identifier` no domínio, tabelas e versões.
 3. Spec `mapeamento-marc21` → tabelas de mapeamento MARC21 ↔ modelo, com snapshots.
 4. Exportação sem perdas (registro de origem preservado) com teste de propriedade: "importar e exportar sem editar devolve o mesmo MARC".
-5. CLI `atrium import` e `atrium export`, com relatório de erros e meta de vazão.
+5. CLI `elzevir import` e `elzevir export`, com relatório de erros e meta de vazão.
 6. Serialização BIBFRAME (JSON-LD e Turtle) a partir do modelo.
 
 ## 9. Melhorias adicionais propostas
@@ -188,7 +188,7 @@ Além do que já está no documento 01:
 6. **Extensões via WebAssembly (fase posterior).** Se plugins forem necessários, usar componentes WASM (`wasmtime`) com uma API pequena e isolada, em vez de carregar código arbitrário no processo, como o Koha faz com Perl.
 7. **OpenTelemetry.** Traces de cada requisição até a transação SQLite e a consulta Tantivy, exportáveis para qualquer ferramenta. Ajuda a cumprir as metas de desempenho com evidência.
 8. **Importação incremental e idempotente.** Toda importação tem um identificador de lote e pode ser repetida sem duplicar registros, e desfeita como um todo (o Koha tem "reverter lote"; aqui é nativo).
-9. **Instalador de um comando.** Binário estático (musl) + `atrium init` que cria a configuração, o banco, o primeiro usuário administrador e um serviço systemd. Mais um pacote `.deb` e uma imagem de container. Facilidade de instalação é o maior diferencial possível frente ao Koha.
+9. **Instalador de um comando.** Binário estático (musl) + `elzevir init` que cria a configuração, o banco, o primeiro usuário administrador e um serviço systemd. Mais um pacote `.deb` e uma imagem de container. Facilidade de instalação é o maior diferencial possível frente ao Koha.
 10. **Acessibilidade e mobile no OPAC.** Testes automáticos de acessibilidade (axe-core via Playwright) no CI. O OPAC deve funcionar bem em celular, que é como a maioria dos leitores acessa.
 
 ## 10. Riscos do modo de implementação e mitigações

@@ -85,8 +85,8 @@ sub circulation_rule_kinds {
 
 # Koha: installer/data/mysql/mandatory/sysprefs.sql (defaults) and the staff interface's
 # preference screens, koha-tmpl/intranet-tmpl/prog/en/modules/admin/preferences/*.pref
-# (tab and section). Inventory only: Atrium does not copy Koha's preferences, it triages
-# them into atrium.toml (task 0.11).
+# (tab and section). Inventory only: Elzevir does not copy Koha's preferences, it triages
+# them into elzevir.toml (task 0.11).
 sub sysprefs {
     my ($dir) = @_;
     my $sql_file = 'installer/data/mysql/mandatory/sysprefs.sql';

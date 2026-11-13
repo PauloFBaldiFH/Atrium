@@ -1,0 +1,72 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Design tokens: the only place colours, spacing and type are defined. Institutions will
+   override these (docs/arquitetura/04-decisoes.md, §8). */
+:root {
+  --elzevir-color-bg: #ffffff;
+  --elzevir-color-text: #1d2433;
+  --elzevir-color-muted: #5b6475;
+  --elzevir-color-primary: #1f5fa8;
+  --elzevir-color-primary-text: #ffffff;
+  --elzevir-color-error: #a1261f;
+  --elzevir-color-border: #d5dae3;
+  --elzevir-radius: 6px;
+  --elzevir-space: 1rem;
+  --elzevir-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --elzevir-measure: 42rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --elzevir-color-bg: #12161f;
+    --elzevir-color-text: #e6e9ef;
+    --elzevir-color-muted: #a3abba;
+    --elzevir-color-primary: #6aa2e8;
+    --elzevir-color-primary-text: #0b1220;
+    --elzevir-color-error: #f08c84;
+    --elzevir-color-border: #2c3445;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--elzevir-color-bg);
+  color: var(--elzevir-color-text);
+  font-family: var(--elzevir-font);
+  line-height: 1.5;
+}
+.topbar {
+  display: flex;
+  gap: var(--elzevir-space);
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--elzevir-space) / 2) var(--elzevir-space);
+  border-bottom: 1px solid var(--elzevir-color-border);
+}
+.topbar nav { display: flex; gap: var(--elzevir-space); }
+.brand { font-weight: 700; text-decoration: none; color: inherit; }
+a { color: var(--elzevir-color-primary); }
+main { max-width: var(--elzevir-measure); margin: 0 auto; padding: var(--elzevir-space); }
+form { display: grid; gap: calc(var(--elzevir-space) / 2); }
+input {
+  font: inherit;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--elzevir-color-border);
+  border-radius: var(--elzevir-radius);
+  background: transparent;
+  color: inherit;
+}
+button {
+  font: inherit;
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: var(--elzevir-radius);
+  background: var(--elzevir-color-primary);
+  color: var(--elzevir-color-primary-text);
+  cursor: pointer;
+  justify-self: start;
+}
+.error { color: var(--elzevir-color-error); }
+/* htmx request indicators (htmx's own inline styles are disabled to satisfy the CSP). */
+.htmx-indicator { opacity: 0; }
+.htmx-request .htmx-indicator, .htmx-request.htmx-indicator { opacity: 1; transition: opacity 200ms ease-in; }

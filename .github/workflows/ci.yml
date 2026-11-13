@@ -51,25 +51,25 @@ jobs:
       - name: Install the pinned toolchain (rust-toolchain.toml)
         run: rustup toolchain install
       - uses: Swatinem/rust-cache@v2
-      - run: cargo build --locked -p atrium
+      - run: cargo build --locked -p elzevir
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Install Playwright and Chromium
         working-directory: e2e
         run: npm install --no-audit --no-fund && npx playwright install --with-deps chromium
-      - name: Start Atrium with a test account
+      - name: Start Elzevir with a test account
         env:
-          ATRIUM_STAFF_PASSWORD: e2e-password-123
+          ELZEVIR_STAFF_PASSWORD: e2e-password-123
         run: |
-          ./target/debug/atrium staff add --data-dir "$RUNNER_TEMP/atrium" --login admin --admin
-          ./target/debug/atrium serve --data-dir "$RUNNER_TEMP/atrium" --listen 127.0.0.1:8080 --insecure-cookies &
+          ./target/debug/elzevir staff add --data-dir "$RUNNER_TEMP/elzevir" --login admin --admin
+          ./target/debug/elzevir serve --data-dir "$RUNNER_TEMP/elzevir" --listen 127.0.0.1:8080 --insecure-cookies &
           for _ in $(seq 50); do curl -sf -o /dev/null http://127.0.0.1:8080/ && break; sleep 0.2; done
       - name: Sign in and out in Chromium
         working-directory: e2e
         env:
-          ATRIUM_URL: http://127.0.0.1:8080
-          ATRIUM_PASSWORD: e2e-password-123
+          ELZEVIR_URL: http://127.0.0.1:8080
+          ELZEVIR_PASSWORD: e2e-password-123
         run: npm run staff-login
 
   test:

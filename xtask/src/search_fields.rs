@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Generates Koha's default MARC21 search fields in `atrium-data` from
+//! Generates Koha's default MARC21 search fields in `elzevir-data` from
 //! `data/koha-<series>/search_fields.json` (task 1.1). UNIMARC mappings are left out until
 //! UNIMARC import exists.
 

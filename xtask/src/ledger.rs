@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Port ledger v0 (task 0.10): which Koha subs the Atrium code says it reproduces.
+//! Port ledger v0 (task 0.10): which Koha subs the Elzevir code says it reproduces.
 //!
 //! The convention (CLAUDE.md) is a doc comment `/// Koha: C4::Module::sub` on the Rust item
 //! that ports the behaviour. This command lists every Koha sub in `reference/koha` and every
 //! such comment, and reports coverage per Koha module.
 //!
 //! - `cargo xtask ledger`: coverage report (Markdown).
-//! - `cargo xtask ledger where <Koha::Name>`: Atrium places that cite a Koha name.
+//! - `cargo xtask ledger where <Koha::Name>`: Elzevir places that cite a Koha name.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
-/// A citation of a Koha name in Atrium code.
+/// A citation of a Koha name in Elzevir code.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct Citation {
     pub(crate) koha_name: String,
@@ -28,7 +28,7 @@ pub(crate) fn run(root: &Path, args: &[String]) -> Result<(), String> {
         );
     }
     let subs = koha_subs(&koha)?;
-    let citations = atrium_citations(root)?;
+    let citations = elzevir_citations(root)?;
     match args {
         [] => {
             print!("{}", report(&subs, &citations));
@@ -37,7 +37,7 @@ pub(crate) fn run(root: &Path, args: &[String]) -> Result<(), String> {
         [command, name] if command == "where" => {
             let found: Vec<_> = citations.iter().filter(|c| c.koha_name == *name).collect();
             if found.is_empty() {
-                println!("{name}: not cited in Atrium");
+                println!("{name}: not cited in Elzevir");
             }
             for c in found {
                 println!("{}:{}", c.file.display(), c.line);
@@ -89,7 +89,7 @@ pub(crate) fn subs_in(perl: &str) -> Vec<String> {
 }
 
 /// Every Koha name cited in a `Koha:` doc comment under `crates/`.
-fn atrium_citations(root: &Path) -> Result<Vec<Citation>, String> {
+fn elzevir_citations(root: &Path) -> Result<Vec<Citation>, String> {
     let mut files = Vec::new();
     collect(&root.join("crates"), "rs", &mut files)?;
     let mut citations = Vec::new();

@@ -33,9 +33,9 @@
 
 ## 2. Origem no Koha
 
-O modelo é do Atrium, mas cada coluna tem de onde vir numa migração e para onde ir numa exportação. Tabelas em `reference/koha/installer/data/mysql/kohastructure.sql`:
+O modelo é do Elzevir, mas cada coluna tem de onde vir numa migração e para onde ir numa exportação. Tabelas em `reference/koha/installer/data/mysql/kohastructure.sql`:
 
-| Atrium | Koha |
+| Elzevir | Koha |
 |---|---|
 | `works` + `instances` | `biblio`, `biblioitems` |
 | `source_records` | `biblio_metadata` |
@@ -51,7 +51,7 @@ O Koha não tem Agente nem Assunto como tabela bibliográfica: guarda `biblio.au
 
 `livre`: é modelo interno. A paridade exigida é a da **exportação MARC** (tarefas 1.6 e 1.11), que este modelo sustenta com o registro de origem preservado.
 
-Testes: `crates/atrium-store/src/schema.rs` (`catalog_tests`, esquema) e `crates/atrium-store/tests/catalog.rs` (comandos e leitura).
+Testes: `crates/elzevir-store/src/schema.rs` (`catalog_tests`, esquema) e `crates/elzevir-store/tests/catalog.rs` (comandos e leitura).
 
 ## 4. Casos de borda
 

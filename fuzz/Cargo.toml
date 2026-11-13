@@ -1,6 +1,6 @@
 [package]
-name = "atrium-fuzz"
-description = "Fuzz targets for Atrium parsers (cargo-fuzz, nightly). Outside the workspace."
+name = "elzevir-fuzz"
+description = "Fuzz targets for Elzevir parsers (cargo-fuzz, nightly). Outside the workspace."
 version = "0.0.0"
 edition = "2024"
 license = "GPL-3.0-or-later"
@@ -10,7 +10,7 @@ publish = false
 cargo-fuzz = true
 
 [dependencies]
-atrium-marc = { path = "../crates/atrium-marc" }
+elzevir-marc = { path = "../crates/elzevir-marc" }
 libfuzzer-sys = "0.4"
 
 [[bin]]

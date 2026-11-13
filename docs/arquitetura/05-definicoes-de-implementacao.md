@@ -1,4 +1,4 @@
-# Atrium: definições de implementação
+# Elzevir: definições de implementação
 
 > Status: aprovado por Paulo em 2026-11-12, junto com o início da Fase 0. Complementa [04-decisoes.md](04-decisoes.md); onde houver diferença com os docs 01 a 03, vale este documento.
 
@@ -75,7 +75,7 @@ Uma spec por funcionalidade em `docs/specs/<area>/<nome>.md`, com estas seções
 
 ### Cenário diferencial (YAML)
 
-Em `scenarios/<area>/<nome>.yaml`, executado contra o Atrium e contra o oráculo gravado do Koha:
+Em `scenarios/<area>/<nome>.yaml`, executado contra o Elzevir e contra o oráculo gravado do Koha:
 
 ```yaml
 id: circ-due-date-default-loan
@@ -91,16 +91,16 @@ then:
 ```
 
 - O oráculo é uma instância real com **relógio real** (doc 04, §3): não dá para fixar a data. Por isso o cenário não traz `now`. Quem grava anota o instante da operação, e a gravação guarda esse instante.
-- A gravação também guarda as **entradas efetivas** que o Koha usou: a regra de circulação resolvida para o contexto (`issuelength`, `lengthunit`, `daysmode`, `hardduedate` e afins), o calendário da biblioteca (dias da semana fechados, feriados fixos e datas avulsas) e as preferências que a sub consulta. O Atrium refaz o cálculo a partir dessas entradas e deve chegar à mesma saída.
-- `then` diz o que comparar; o valor esperado vem da gravação (`recorded`). Quando o cenário fixa um valor (por exemplo, uma recusa), ele precisa bater com a gravação e com o Atrium.
+- A gravação também guarda as **entradas efetivas** que o Koha usou: a regra de circulação resolvida para o contexto (`issuelength`, `lengthunit`, `daysmode`, `hardduedate` e afins), o calendário da biblioteca (dias da semana fechados, feriados fixos e datas avulsas) e as preferências que a sub consulta. O Elzevir refaz o cálculo a partir dessas entradas e deve chegar à mesma saída.
+- `then` diz o que comparar; o valor esperado vem da gravação (`recorded`). Quando o cenário fixa um valor (por exemplo, uma recusa), ele precisa bater com a gravação e com o Elzevir.
 - Nomes de regras e campos seguem o Koha (`issuelength`, `categorycode`) para o executor traduzir sem tabela de apelidos.
 - Só dados fictícios ou o cadastro de exemplo autorizado; o gravador nunca lê outros leitores.
 
 ### Gravação do oráculo
 
 - Arquivo `scenarios/<area>/<nome>.koha.json`, ao lado do cenário, com: versão do Koha (bate com o `koha-lock.json`), hash do cenário, instante da operação com fuso, entradas efetivas e saídas.
-- O gravador (`atrium-scenarios`, binário `oracle-record`) lê a URL e as credenciais de variáveis de ambiente, faz a operação pela API REST e pelas telas da equipe, e **desfaz o que fez** (devolve o exemplar, apaga regra criada).
-- O CI comum nunca acessa a instância. Ele confere que cada gravação corresponde ao cenário atual (hash) e que o Atrium reproduz as saídas.
+- O gravador (`elzevir-scenarios`, binário `oracle-record`) lê a URL e as credenciais de variáveis de ambiente, faz a operação pela API REST e pelas telas da equipe, e **desfaz o que fez** (devolve o exemplar, apaga regra criada).
+- O CI comum nunca acessa a instância. Ele confere que cada gravação corresponde ao cenário atual (hash) e que o Elzevir reproduz as saídas.
 - Cenário alterado exige gravação nova; sem acesso ao oráculo, o executor acusa a gravação desatualizada em vez de passar.
 
 ### Logs (`tracing`)
@@ -116,7 +116,7 @@ then:
 
 - **Rust fixado** em `rust-toolchain.toml` (1.97.0), **edition 2024**, `rust-version` igual no workspace. Atualizar a versão é um PR próprio.
 - **Lints do workspace** em `Cargo.toml`, herdados por todas as crates com `[lints] workspace = true`:
-  - `unsafe_code = "forbid"` em todas as crates. Se o `atrium-marc` um dia precisar de `unsafe` (só com benchmark), ele troca os lints só dele, num PR que explique o motivo.
+  - `unsafe_code = "forbid"` em todas as crates. Se o `elzevir-marc` um dia precisar de `unsafe` (só com benchmark), ele troca os lints só dele, num PR que explique o motivo.
   - Proibidos em código de produção: `unwrap_used`, `expect_used`, `panic`, `todo`, `unimplemented`, `unreachable`, `indexing_slicing`, `string_slice`, `exit`, `dbg_macro`, `print_stderr`, `float_arithmetic`.
   - `allow_attributes` e `allow_attributes_without_reason`: exceção só com `#[expect(lint, reason = "...")]`, que também falha quando deixa de ser necessária.
   - `clippy::pedantic` como aviso, e o CI roda com `-D warnings`.

@@ -1,0 +1,299 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+//! Catalog commands and the catalog read port, through the real writer
+//! (docs/specs/catalogo/modelo-bibliografico.md).
+#![expect(
+    clippy::unwrap_used,
+    clippy::panic,
+    reason = "integration test: helper functions fail the test on error"
+)]
+
+use elzevir_app::catalog::{
+    CatalogCommand, CatalogOutput, CatalogReader, CatalogRefusal, ItemView, NewContribution,
+    NewIdentifier, NewInstance, NewItem, NewRecord, NewSubject,
+};
+use elzevir_app::commands::{WriteCommand, WriteOutput, WriteRefusal};
+use elzevir_domain::catalog::{AgentKind, IdentifierKind, InstanceId, Money, SubjectKind, WorkId};
+use elzevir_store::{CommandFailed, ElzevirHandler, ElzevirStore, StoreConfig};
+
+fn open(dir: &tempfile::TempDir) -> ElzevirStore {
+    ElzevirStore::open(
+        &dir.path().join("elzevir.db"),
+        &StoreConfig::default(),
+        ElzevirHandler,
+    )
+    .unwrap()
+}
+
+fn run(
+    store: &ElzevirStore,
+    command: CatalogCommand,
+) -> Result<CatalogOutput, CommandFailed<WriteRefusal>> {
+    store
+        .submit(WriteCommand::Catalog(command))
+        .unwrap()
+        .wait()
+        .map(|output| {
+            let WriteOutput::Catalog(output) = output else {
+                panic!("unexpected output {output:?}");
+            };
+            output
+        })
+}
+
+fn refusal(refusal: CatalogRefusal) -> Result<CatalogOutput, CommandFailed<WriteRefusal>> {
+    Err(CommandFailed::Rejected(WriteRefusal::Catalog(refusal)))
+}
+
+fn setup(store: &ElzevirStore) {
+    run(
+        store,
+        CatalogCommand::CreateBranch {
+            code: "MAIN".to_owned(),
+            name: "Castro Alves".to_owned(),
+        },
+    )
+    .unwrap();
+    run(
+        store,
+        CatalogCommand::CreateItemType {
+            code: "BK".to_owned(),
+            description: "Livro".to_owned(),
+        },
+    )
+    .unwrap();
+}
+
+fn contribution(heading: &str, primary: bool) -> NewContribution {
+    NewContribution {
+        kind: AgentKind::Person,
+        heading: heading.to_owned(),
+        role: Some("aut".to_owned()),
+        primary,
+    }
+}
+
+fn subject(heading: &str) -> NewSubject {
+    NewSubject {
+        kind: SubjectKind::Topic,
+        heading: heading.to_owned(),
+        thesaurus: Some("lcsh".to_owned()),
+    }
+}
+
+fn record(title: &str) -> NewRecord {
+    NewRecord {
+        work_title: title.to_owned(),
+        classification: Some("869.3".to_owned()),
+        classification_scheme: Some("ddc".to_owned()),
+        summary: None,
+        languages: vec!["por".to_owned(), "eng".to_owned()],
+        contributions: vec![
+            contribution("Assis, Machado de, 1839-1908", true),
+            contribution("Bosi, Alfredo", false),
+        ],
+        subjects: vec![subject("Ficção brasileira"), subject("Rio de Janeiro (RJ)")],
+        instance: NewInstance {
+            title: title.to_owned(),
+            publisher: Some("Garnier".to_owned()),
+            date: Some("1899".to_owned()),
+            identifiers: vec![
+                NewIdentifier {
+                    kind: IdentifierKind::Isbn,
+                    value: "9788535910667".to_owned(),
+                    qualifier: None,
+                },
+                NewIdentifier {
+                    kind: IdentifierKind::SystemControlNumber,
+                    value: "(OCoLC)123".to_owned(),
+                    qualifier: None,
+                },
+            ],
+            ..NewInstance::default()
+        },
+    }
+}
+
+fn add_record(store: &ElzevirStore, title: &str) -> (WorkId, InstanceId) {
+    match run(store, CatalogCommand::AddRecord(Box::new(record(title)))).unwrap() {
+        CatalogOutput::Record { work, instance } => (work, instance),
+        other => panic!("unexpected output {other:?}"),
+    }
+}
+
+fn item(instance: InstanceId, barcode: &str) -> NewItem {
+    NewItem {
+        instance,
+        barcode: Some(barcode.to_owned()),
+        home_branch: "MAIN".to_owned(),
+        holding_branch: "MAIN".to_owned(),
+        item_type: "BK".to_owned(),
+        call_number: Some("869.3 A848d".to_owned()),
+        location: Some("GEN".to_owned()),
+        collection: None,
+        price: Some(Money(4590)),
+        replacement_price: None,
+    }
+}
+
+#[test]
+fn record_reads_back_in_order() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = open(&dir);
+    let (work, instance) = add_record(&store, "Dom Casmurro");
+
+    let view = store.instance(instance).unwrap().unwrap();
+    assert_eq!(view.id, instance);
+    assert_eq!(view.work, work);
+    assert_eq!(view.work_title, "Dom Casmurro");
+    assert_eq!(view.publisher.as_deref(), Some("Garnier"));
+    assert_eq!(view.date.as_deref(), Some("1899"));
+    assert_eq!(view.languages, ["por", "eng"]);
+    assert_eq!(
+        view.contributors,
+        [
+            (AgentKind::Person, "Assis, Machado de, 1839-1908".to_owned()),
+            (AgentKind::Person, "Bosi, Alfredo".to_owned()),
+        ]
+    );
+    assert_eq!(
+        view.subjects,
+        [
+            (SubjectKind::Topic, "Ficção brasileira".to_owned()),
+            (SubjectKind::Topic, "Rio de Janeiro (RJ)".to_owned()),
+        ]
+    );
+    assert_eq!(
+        view.identifiers,
+        [
+            (IdentifierKind::Isbn, "9788535910667".to_owned()),
+            (IdentifierKind::SystemControlNumber, "(OCoLC)123".to_owned()),
+        ]
+    );
+    assert_eq!(store.instance(InstanceId(instance.0 + 1)).unwrap(), None);
+}
+
+#[test]
+fn agents_subjects_and_terms_are_shared_between_records() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = open(&dir);
+    let (first_work, first) = add_record(&store, "Dom Casmurro");
+    let (second_work, second) = add_record(&store, "Quincas Borba");
+    assert_ne!(first_work, second_work);
+    assert_ne!(first, second);
+    drop(store);
+
+    let connection = rusqlite::Connection::open(dir.path().join("elzevir.db")).unwrap();
+    let count = |sql: &str| -> i64 { connection.query_row(sql, [], |row| row.get(0)).unwrap() };
+    assert_eq!(count("SELECT count(*) FROM agents"), 2);
+    assert_eq!(count("SELECT count(*) FROM subjects"), 2);
+    assert_eq!(count("SELECT count(*) FROM contributions"), 4);
+    // por, eng, aut, lcsh and ddc, each created once with its code as label.
+    assert_eq!(count("SELECT count(*) FROM terms"), 5);
+    assert_eq!(count("SELECT count(*) FROM terms WHERE label <> code"), 0);
+}
+
+#[test]
+fn items_are_added_and_listed_in_creation_order() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = open(&dir);
+    setup(&store);
+    let (_, instance) = add_record(&store, "Dom Casmurro");
+
+    let first = run(
+        &store,
+        CatalogCommand::AddItem(Box::new(item(instance, "0001"))),
+    )
+    .unwrap();
+    let second = run(
+        &store,
+        CatalogCommand::AddItem(Box::new(item(instance, "0002"))),
+    )
+    .unwrap();
+    let (CatalogOutput::Item(first), CatalogOutput::Item(second)) = (first, second) else {
+        panic!("unexpected outputs");
+    };
+
+    let items = store.items(instance).unwrap();
+    let expected = |id, barcode: &str| ItemView {
+        id,
+        barcode: Some(barcode.to_owned()),
+        home_branch: "MAIN".to_owned(),
+        item_type: "BK".to_owned(),
+        call_number: Some("869.3 A848d".to_owned()),
+    };
+    assert_eq!(items, [expected(first, "0001"), expected(second, "0002")]);
+    assert!(store.items(InstanceId(instance.0 + 1)).unwrap().is_empty());
+}
+
+#[test]
+fn item_refusals_name_the_problem() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = open(&dir);
+    setup(&store);
+    let (_, instance) = add_record(&store, "Dom Casmurro");
+    run(
+        &store,
+        CatalogCommand::AddItem(Box::new(item(instance, "0001"))),
+    )
+    .unwrap();
+
+    let add = |item: NewItem| run(&store, CatalogCommand::AddItem(Box::new(item)));
+    assert_eq!(
+        add(item(instance, "0001")),
+        refusal(CatalogRefusal::BarcodeTaken("0001".to_owned()))
+    );
+    let missing = InstanceId(instance.0 + 1);
+    assert_eq!(
+        add(item(missing, "0002")),
+        refusal(CatalogRefusal::UnknownInstance(missing))
+    );
+    assert_eq!(
+        add(NewItem {
+            home_branch: "NOPE".to_owned(),
+            ..item(instance, "0003")
+        }),
+        refusal(CatalogRefusal::UnknownBranch("NOPE".to_owned()))
+    );
+    assert_eq!(
+        add(NewItem {
+            holding_branch: "AWAY".to_owned(),
+            ..item(instance, "0004")
+        }),
+        refusal(CatalogRefusal::UnknownBranch("AWAY".to_owned()))
+    );
+    assert_eq!(
+        add(NewItem {
+            item_type: "DVD".to_owned(),
+            ..item(instance, "0005")
+        }),
+        refusal(CatalogRefusal::UnknownItemType("DVD".to_owned()))
+    );
+    assert_eq!(store.items(instance).unwrap().len(), 1);
+}
+
+#[test]
+fn branch_and_item_type_codes_are_unique() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = open(&dir);
+    setup(&store);
+    assert_eq!(
+        run(
+            &store,
+            CatalogCommand::CreateBranch {
+                code: "MAIN".to_owned(),
+                name: "Other".to_owned(),
+            }
+        ),
+        refusal(CatalogRefusal::CodeTaken("MAIN".to_owned()))
+    );
+    assert_eq!(
+        run(
+            &store,
+            CatalogCommand::CreateItemType {
+                code: "BK".to_owned(),
+                description: "Other".to_owned(),
+            }
+        ),
+        refusal(CatalogRefusal::CodeTaken("BK".to_owned()))
+    );
+}

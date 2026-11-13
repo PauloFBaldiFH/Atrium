@@ -1,4 +1,4 @@
-# Atrium: avaliação da arquitetura e plano de reconstrução
+# Elzevir: avaliação da arquitetura e plano de reconstrução
 
 > Status: proposta para discussão (fase conceitual, nada implementado ainda).
 > Data: 2026-11-12.
@@ -10,12 +10,12 @@ A stack escolhida (Rust, tokio, axum, Askama + HTMX, SQLite em WAL, Tantivy) é 
 
 Os riscos reais do projeto **não estão na stack**, e sim em quatro pontos:
 
-1. **Licença.** **Decidido:** o Atrium é **GPLv3** (GPL-3.0-or-later), a mesma licença do Koha. Assim não há conflito jurídico em estudar o código do Koha que está no repositório. O método de "reconstrução limpa" (§3) continua valendo, mas por qualidade técnica, não por exigência legal.
+1. **Licença.** **Decidido:** o Elzevir é **GPLv3** (GPL-3.0-or-later), a mesma licença do Koha. Assim não há conflito jurídico em estudar o código do Koha que está no repositório. O método de "reconstrução limpa" (§3) continua valendo, mas por qualidade técnica, não por exigência legal.
 2. **BIBFRAME 2.0 como núcleo.** É uma ótima direção, mas BIBFRAME é um vocabulário RDF (grafo), e a conversão MARC → BIBFRAME → MARC **perde informação**. Proponho um modelo de domínio *tipado e relacional inspirado em BIBFRAME*, com o registro MARC de origem preservado para garantir exportação fiel (ver §2.5).
 3. **Escopo.** O Koha tem 303 tabelas, ~935 preferências de sistema e ~110 grupos de endpoints REST. Reescrever tudo é um projeto de anos. É preciso um MVP fechado e fases bem definidas (ver §5).
-4. **Ecossistema MARC em Rust é fino.** Não há crate madura para UNIMARC, e MARC-8 / ISO 5426 (codificações legadas) são armadilhas clássicas. Vamos precisar de uma crate própria `atrium-marc`, com fuzzing e testes de ida e volta.
+4. **Ecossistema MARC em Rust é fino.** Não há crate madura para UNIMARC, e MARC-8 / ISO 5426 (codificações legadas) são armadilhas clássicas. Vamos precisar de uma crate própria `elzevir-marc`, com fuzzing e testes de ida e volta.
 
-Também proponho três adições que não estavam no plano e que, na minha avaliação, decidem se o projeto será adotado: **um migrador Koha → Atrium**, **testes diferenciais contra uma instância real do Koha** (o Koha vira um oráculo de comportamento) e **SIP2 + Z39.50/SRU** cedo no roadmap, porque bibliotecas reais dependem deles.
+Também proponho três adições que não estavam no plano e que, na minha avaliação, decidem se o projeto será adotado: **um migrador Koha → Elzevir**, **testes diferenciais contra uma instância real do Koha** (o Koha vira um oráculo de comportamento) e **SIP2 + Z39.50/SRU** cedo no roadmap, porque bibliotecas reais dependem deles.
 
 ---
 
@@ -29,7 +29,7 @@ Também proponho três adições que não estavam no plano e que, na minha avali
 | `Data/mandatory/sysprefs.sql` | ~935 preferências de sistema | A maior fonte de complexidade acidental do Koha. |
 | `Data/localization/` | Dados de localização | |
 
-Recomendação: mover `koha/` e `Data/` para um repositório separado de referência (por exemplo `atrium-reference`) ou para uma pasta `reference/` claramente fora do workspace Cargo. Isso reduz o tamanho do repositório (168 MB hoje), separa o que é "nosso" do que é "deles" e facilita a disciplina descrita em §3.
+Recomendação: mover `koha/` e `Data/` para um repositório separado de referência (por exemplo `elzevir-reference`) ou para uma pasta `reference/` claramente fora do workspace Cargo. Isso reduz o tamanho do repositório (168 MB hoje), separa o que é "nosso" do que é "deles" e facilita a disciplina descrita em §3.
 
 ---
 
@@ -89,7 +89,7 @@ Limites que precisam ser aceitos conscientemente:
 
 ### 2.5 BIBFRAME 2.0 como núcleo interno ⚠️ (o ponto mais importante)
 
-É uma escolha moderna e diferencial: separa Obra (Work), Manifestação/Instância (Instance) e Item, se alinha a dados ligados e coloca o Atrium à frente do Koha, que ainda é MARC no núcleo. Mas há quatro armadilhas:
+É uma escolha moderna e diferencial: separa Obra (Work), Manifestação/Instância (Instance) e Item, se alinha a dados ligados e coloca o Elzevir à frente do Koha, que ainda é MARC no núcleo. Mas há quatro armadilhas:
 
 1. **BIBFRAME é um vocabulário RDF, não um esquema de banco.** Guardar triplas genéricas em SQLite (um "triple store" caseiro) tornaria consultas simples lentas e o código difícil de entender.
 2. **A ida e volta MARC → BIBFRAME → MARC perde informação.** Nem os conversores oficiais da Library of Congress (`marc2bibframe2` e `bibframe2marc`) são sem perdas. Bibliotecas **precisam** exportar MARC fiel: catálogo coletivo, cópia de catalogação via Z39.50, envio para outros sistemas.
@@ -108,7 +108,7 @@ Limites que precisam ser aceitos conscientemente:
 
 ### 2.6 MARC21 / MARCXML / UNIMARC ⚠️
 
-- **Crate própria `atrium-marc`.** O ecossistema Rust tem opções para MARC21 (`marc`, `marctk`, `marc-record`), mas nenhuma cobre UNIMARC, e o MARC é o coração da interoperabilidade. ISO 2709 é um formato simples; vale ter o controle. As crates existentes servem de comparação nos testes.
+- **Crate própria `elzevir-marc`.** O ecossistema Rust tem opções para MARC21 (`marc`, `marctk`, `marc-record`), mas nenhuma cobre UNIMARC, e o MARC é o coração da interoperabilidade. ISO 2709 é um formato simples; vale ter o controle. As crates existentes servem de comparação nos testes.
 - **Codificações legadas:** MARC-8 (MARC21, posição 09 do líder em branco) e ISO 5426/6937 (UNIMARC antigo). Muitos acervos brasileiros têm registros antigos com essas codificações. Isso precisa entrar no MVP de importação.
 - **Leitura tolerante, escrita estrita.** Registros reais vêm quebrados (comprimentos errados, diretórios inconsistentes). Importar com relatório de erros por registro, sem abortar o lote.
 - **MARCXML** com `quick-xml` em modo streaming, para lotes de milhões de registros sem carregar tudo em memória.
@@ -140,14 +140,14 @@ A ideia está certa: **não traduzir Perl para Rust**. Traduzir carregaria junto
 
 ### 3.2 Licença: GPLv3 (decidido)
 
-O Atrium é licenciado sob **GPL-3.0-or-later**, a mesma do Koha ("versão 3 ou posterior"). O texto está em `LICENSE`, na raiz do repositório.
+O Elzevir é licenciado sob **GPL-3.0-or-later**, a mesma do Koha ("versão 3 ou posterior"). O texto está em `LICENSE`, na raiz do repositório.
 
 Consequências práticas:
 
 - **Estudar o Koha é livre.** Ler o código, reaproveitar ideias, mapeamentos, textos de mensagens e até trechos não cria problema de licença. Quando algo vier diretamente do Koha, registrar a origem no commit ou na spec, por cortesia e rastreabilidade.
 - **O método do §3.1 continua.** A regra "não traduzir Perl" é técnica: evita carregar decisões acidentais e reduz comportamento inventado.
 - **Dependências:** crates MIT, Apache-2.0, BSD, MPL-2.0 e LGPL são compatíveis com GPLv3. O `cargo-deny` no CI deve barrar licenças incompatíveis, como Apache-1.1 e algumas licenças "source-available".
-- **Uso como serviço:** a GPLv3 não obriga quem hospeda o Atrium como serviço web a publicar modificações. Se isso importar no futuro, a AGPLv3 fecha essa brecha, e a migração da GPL-3.0-or-later para a AGPLv3 é permitida pela própria licença.
+- **Uso como serviço:** a GPLv3 não obriga quem hospeda o Elzevir como serviço web a publicar modificações. Se isso importar no futuro, a AGPLv3 fecha essa brecha, e a migração da GPL-3.0-or-later para a AGPLv3 é permitida pela própria licença.
 - **Cabeçalho:** cada arquivo-fonte leva um identificador SPDX curto: `// SPDX-License-Identifier: GPL-3.0-or-later`.
 
 ---
@@ -156,7 +156,7 @@ Consequências práticas:
 
 ### 4.1 Forma geral: monólito modular, binário único
 
-Um único executável `atrium` serve OPAC, interface da equipe, API REST e tarefas em segundo plano, com um diretório de dados (`atrium.db`, `index/`, `uploads/`). Instalação = copiar um binário e um arquivo de configuração. Escala vertical simples, backup simples.
+Um único executável `elzevir` serve OPAC, interface da equipe, API REST e tarefas em segundo plano, com um diretório de dados (`elzevir.db`, `index/`, `uploads/`). Instalação = copiar um binário e um arquivo de configuração. Escala vertical simples, backup simples.
 
 Internamente, arquitetura hexagonal: o domínio não conhece SQLite, HTTP nem Tantivy.
 
@@ -168,17 +168,17 @@ flowchart TB
         EXT["Integrações: REST, SIP2, Z39.50/SRU, OAI-PMH"]
     end
 
-    subgraph Atrium["Binário atrium"]
-        WEB["atrium-web: axum + Askama + HTMX"]
-        API["atrium-api: REST JSON + OpenAPI"]
-        PROTO["atrium-protocols: SIP2, SRU, OAI-PMH"]
-        APP["atrium-app: casos de uso / serviços de aplicação"]
-        DOM["atrium-domain: entidades e regras puras"]
-        BF["atrium-bibframe: modelo + RDF + mapeamentos"]
-        MARC["atrium-marc: ISO 2709, MARCXML, MARC-8, UNIMARC"]
-        STORE["atrium-store: repositórios SQLite + migrações"]
-        SEARCH["atrium-search: Tantivy + indexador"]
-        JOBS["atrium-jobs: fila em SQLite, agendador"]
+    subgraph Elzevir["Binário elzevir"]
+        WEB["elzevir-web: axum + Askama + HTMX"]
+        API["elzevir-api: REST JSON + OpenAPI"]
+        PROTO["elzevir-protocols: SIP2, SRU, OAI-PMH"]
+        APP["elzevir-app: casos de uso / serviços de aplicação"]
+        DOM["elzevir-domain: entidades e regras puras"]
+        BF["elzevir-bibframe: modelo + RDF + mapeamentos"]
+        MARC["elzevir-marc: ISO 2709, MARCXML, MARC-8, UNIMARC"]
+        STORE["elzevir-store: repositórios SQLite + migrações"]
+        SEARCH["elzevir-search: Tantivy + indexador"]
+        JOBS["elzevir-jobs: fila em SQLite, agendador"]
     end
 
     DB[("SQLite WAL")]
@@ -209,22 +209,22 @@ Começar com poucas crates e dividir quando doer. Sugestão inicial:
 
 | Crate | Responsabilidade | Depende de |
 |---|---|---|
-| `atrium-domain` | Entidades, objetos de valor, regras (circulação, multas, calendário). Puro, sem I/O. | nada |
-| `atrium-marc` | Leitura/escrita ISO 2709 e MARCXML, MARC-8, UNIMARC, validação. | nada |
-| `atrium-bibframe` | Modelo bibliográfico, mapeamentos MARC ↔ modelo, serialização RDF. | domain, marc |
-| `atrium-store` | Repositórios SQLite, migrações, ator de escrita, outbox. | domain |
-| `atrium-search` | Esquema Tantivy, analisadores pt/en, indexador, consultas e facetas. | domain |
-| `atrium-app` | Casos de uso (emprestar, devolver, importar lote, ...), transações, permissões. | todas acima |
-| `atrium-web` | Rotas axum, templates Askama, fragmentos HTMX, i18n. | app |
-| `atrium` (bin) | Configuração, inicialização, CLI (`import`, `reindex`, `migrate`, `admin`). | todas |
+| `elzevir-domain` | Entidades, objetos de valor, regras (circulação, multas, calendário). Puro, sem I/O. | nada |
+| `elzevir-marc` | Leitura/escrita ISO 2709 e MARCXML, MARC-8, UNIMARC, validação. | nada |
+| `elzevir-bibframe` | Modelo bibliográfico, mapeamentos MARC ↔ modelo, serialização RDF. | domain, marc |
+| `elzevir-store` | Repositórios SQLite, migrações, ator de escrita, outbox. | domain |
+| `elzevir-search` | Esquema Tantivy, analisadores pt/en, indexador, consultas e facetas. | domain |
+| `elzevir-app` | Casos de uso (emprestar, devolver, importar lote, ...), transações, permissões. | todas acima |
+| `elzevir-web` | Rotas axum, templates Askama, fragmentos HTMX, i18n. | app |
+| `elzevir` (bin) | Configuração, inicialização, CLI (`import`, `reindex`, `migrate`, `admin`). | todas |
 
-`atrium-api`, `atrium-protocols` e `atrium-jobs` nascem quando as fases correspondentes chegarem.
+`elzevir-api`, `elzevir-protocols` e `elzevir-jobs` nascem quando as fases correspondentes chegarem.
 
 ### 4.3 Fluxo de dados de uma importação MARC
 
 ```mermaid
 flowchart LR
-    A["Arquivo MARC21 / MARCXML / UNIMARC"] --> B["atrium-marc: leitura em streaming"]
+    A["Arquivo MARC21 / MARCXML / UNIMARC"] --> B["elzevir-marc: leitura em streaming"]
     B --> C{"Registro válido?"}
     C -- não --> R["Relatório de erros do lote"]
     C -- sim --> D["Detectar codificação e converter para UTF-8"]
@@ -276,7 +276,7 @@ Aquisições, periódicos (serials), ERM, empréstimo entre bibliotecas (ILL), r
 ```mermaid
 flowchart TB
     F0["Fase 0: Fundações<br/>workspace, CI, licença, ADRs, esqueleto axum, SQLite, migrações, i18n"]
-    F1["Fase 1: MARC e modelo bibliográfico<br/>atrium-marc, MARC-8, modelo inspirado em BIBFRAME, mapeamento MARC21, exportação sem perdas"]
+    F1["Fase 1: MARC e modelo bibliográfico<br/>elzevir-marc, MARC-8, modelo inspirado em BIBFRAME, mapeamento MARC21, exportação sem perdas"]
     F2["Fase 2: Catálogo e busca<br/>Tantivy, outbox, OPAC, editor de catalogação, autoridades básicas"]
     F3["Fase 3: Usuários e circulação<br/>leitores, regras de circulação, calendário, empréstimo, devolução, renovação, reservas, multas, avisos"]
     F4["Fase 4: Interoperabilidade<br/>SIP2, Z39.50/SRU cliente e servidor, OAI-PMH, API REST, UNIMARC"]
@@ -289,7 +289,7 @@ flowchart TB
     F5 -. "substituto real do Koha" .-> P3(["Marco: 1.0"])
 ```
 
-O **migrador Koha → Atrium** (Fase 5) é o que transforma o Atrium de "projeto interessante" em "alternativa real": nenhuma biblioteca troca de sistema se tiver que redigitar leitores, empréstimos em aberto e histórico. O esquema em `Data/kohastructure.sql` é a referência para esse migrador.
+O **migrador Koha → Elzevir** (Fase 5) é o que transforma o Elzevir de "projeto interessante" em "alternativa real": nenhuma biblioteca troca de sistema se tiver que redigitar leitores, empréstimos em aberto e histórico. O esquema em `Data/kohastructure.sql` é a referência para esse migrador.
 
 ---
 
@@ -326,11 +326,11 @@ flowchart TB
     E5 -- sim --> D1
 
     subgraph Implementacao["3. Implementação"]
-        D1["Modelar tipos e regras em atrium-domain, sem I/O"]
+        D1["Modelar tipos e regras em elzevir-domain, sem I/O"]
         D2["Testes unitários e de propriedade do domínio"]
         D3["Repositórios SQLite e migrações"]
         D4["Indexação e busca, se aplicável"]
-        D5["Casos de uso em atrium-app"]
+        D5["Casos de uso em elzevir-app"]
         D6["Telas Askama + HTMX e endpoints"]
         D1 --> D2 --> D3 --> D4 --> D5 --> D6
     end
@@ -372,7 +372,7 @@ Todas as decisões abaixo foram tomadas em 2026-11-12. O registro completo, com 
 
 | # | Decisão | Resultado |
 |---|---|---|
-| 1 | Licença do Atrium | **Decidido:** GPL-3.0-or-later (ver §3.2) |
+| 1 | Licença do Elzevir | **Decidido:** GPL-3.0-or-later (ver §3.2) |
 | 2 | Porte-alvo da v1 | **Decidido:** biblioteca única e redes de bibliotecas (várias unidades numa instituição, até ~20 unidades e ~2 milhões de itens por base SQLite), mais várias instituições independentes por servidor |
 | 3 | Onde fica o código do Koha | **Decidido:** `reference/` fora do workspace Cargo (pode virar um repositório separado mais tarde) |
 | 4 | Formatos | **Decidido:** importação e exportação em MARC21, MARCXML e UNIMARC; a base interna é BIBFRAME 2.0. MARC21 primeiro, UNIMARC na Fase 4 |
@@ -384,7 +384,7 @@ Todas as decisões abaixo foram tomadas em 2026-11-12. O registro completo, com 
 
 1. ~~Fechar as decisões do §7.~~ Feito; ver [04-decisoes.md](04-decisoes.md).
 2. Registrar cada decisão como ADR em `docs/adr/`.
-3. Escrever a primeira spec pelo fluxo do §6: **`atrium-marc` (leitura e escrita MARC21)**, que não depende de nada e destrava todo o resto.
+3. Escrever a primeira spec pelo fluxo do §6: **`elzevir-marc` (leitura e escrita MARC21)**, que não depende de nada e destrava todo o resto.
 4. Fase 0: criar o workspace Cargo, CI e o esqueleto do servidor.
 
 O modo de implementação detalhado (regras de código, modelagem, transações, testes, primeiras tarefas e melhorias adicionais) está em [02-modo-de-implementacao.md](02-modo-de-implementacao.md).
