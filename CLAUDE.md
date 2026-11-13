@@ -12,6 +12,7 @@ O Elzevir é um sistema de bibliotecas em Rust que reconstrói o **comportamento
 - Fontes de verdade, nesta ordem: [`docs/arquitetura/04-decisoes.md`](docs/arquitetura/04-decisoes.md) e [`05-definicoes-de-implementacao.md`](docs/arquitetura/05-definicoes-de-implementacao.md) > 03 > 02 > 01. Se o código contradiz o doc 04, o código está errado ou o doc 04 precisa de um PR primeiro.
 - **Nome: Elzevir** (Paulo, 2026-11-12). O projeto se chamava Atrium; documentos e commits antigos ainda usam o nome anterior.
 - **Antes de mexer no núcleo BIBFRAME (Hub, Work, Instance, Item), no mapeamento MARC21/Koha ou no frontend, leia [`docs/ARCHITECTURE_VISION.md`](docs/ARCHITECTURE_VISION.md)**: a especificação de Paulo (regra de ouro: nenhuma etiqueta MARC no núcleo, MARC só na borda, ida e volta sem perdas) e o plano de integração com o código, com a ordem das etapas.
+- **Antes de mexer na interface do acervo (listagem, busca, catalogação, grade de exemplares, mesclagem), leia [`docs/UI_BIBFRAME_INTERACTION_SPEC.md`](docs/UI_BIBFRAME_INTERACTION_SPEC.md)**: o contrato de interação (foco 80/20, cordinhas, perfis por categoria, comandos por ação).
 - `reference/koha/` é **referência de leitura** (GPLv3, submódulo fixado no Koha 26.05.05), não código do Elzevir, e fica fora do workspace Cargo. Baixe com `git submodule update --init --depth 1 reference/koha`.
 
 ## Como trabalhar numa tarefa
