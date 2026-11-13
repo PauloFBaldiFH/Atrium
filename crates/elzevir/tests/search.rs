@@ -5,71 +5,19 @@
     reason = "integration test: helper functions fail the test on error"
 )]
 
+mod common;
+
 use std::collections::BTreeSet;
 use std::num::NonZeroUsize;
 
-use elzevir_app::catalog::{CatalogCommand, CatalogReader};
-use elzevir_app::commands::WriteCommand;
-use elzevir_app::import::{ImportOptions, import_marc21};
-use elzevir_app::marc_mapping::marc_to_bibframe;
+use elzevir_app::catalog::CatalogReader;
 use elzevir_app::parallelism::Parallelism;
 use elzevir_app::search::{IndexOptions, SearchIndex, index_pending};
 use elzevir_domain::catalog::InstanceId;
-use elzevir_marc::{Limits, Record, RecordRef};
 use elzevir_search::TantivyIndex;
-use elzevir_store::{ElzevirHandler, ElzevirStore, StoreConfig};
+use elzevir_store::ElzevirStore;
 
-const STAFF_EXPORT: &[u8] =
-    include_bytes!("../../elzevir-app/tests/data/koha-staff-bibs-1-200.mrc");
-
-/// A store with the 200 records of the staff export, and the temporary directory it lives in.
-fn imported() -> (tempfile::TempDir, ElzevirStore) {
-    let dir = tempfile::tempdir().unwrap();
-    let store = ElzevirStore::open(
-        &dir.path().join("elzevir.db"),
-        &StoreConfig::default(),
-        ElzevirHandler,
-    )
-    .unwrap();
-    let mut branches = BTreeSet::new();
-    let mut item_types = BTreeSet::new();
-    for raw in STAFF_EXPORT
-        .split_inclusive(|&b| b == 0x1d)
-        .filter(|raw| raw.len() > 1)
-    {
-        let mut record = Record::from_ref(&RecordRef::parse(raw, &Limits::default()).unwrap());
-        record.marc21_to_utf8();
-        for item in marc_to_bibframe(&record, None).unwrap().items {
-            branches.insert(item.home_branch);
-            branches.insert(item.holding_branch);
-            item_types.insert(item.item_type);
-        }
-    }
-    let setup = branches
-        .into_iter()
-        .map(|code| CatalogCommand::CreateBranch {
-            name: code.clone(),
-            code,
-        })
-        .chain(
-            item_types
-                .into_iter()
-                .map(|code| CatalogCommand::CreateItemType {
-                    description: code.clone(),
-                    code,
-                }),
-        );
-    for command in setup {
-        store
-            .submit(WriteCommand::Catalog(command))
-            .unwrap()
-            .wait()
-            .unwrap();
-    }
-    let report = import_marc21(STAFF_EXPORT, &store, &ImportOptions::default()).unwrap();
-    assert_eq!(report.imported, 200);
-    (dir, store)
-}
+use common::imported;
 
 fn options(parallelism: Parallelism, batch: usize) -> IndexOptions {
     IndexOptions {
@@ -94,8 +42,9 @@ fn indexed(store: &ElzevirStore, parallelism: Parallelism, batch: usize) -> Tant
 
 fn titles(store: &ElzevirStore, index: &TantivyIndex, query: &str) -> Vec<String> {
     index
-        .search(query, 10)
+        .search(query, 0, 10)
         .unwrap()
+        .hits
         .into_iter()
         .map(|hit| store.instance(hit.instance).unwrap().unwrap().title)
         .collect()
@@ -155,10 +104,31 @@ fn words_match_without_accents_or_case() {
 }
 
 #[test]
+fn results_come_in_pages_with_the_total_and_the_list_fields() {
+    let (_dir, store) = imported();
+    let index = indexed(&store, Parallelism::Serial, 1024);
+    let all = index.search("medici", 0, 50).unwrap();
+    assert_eq!((all.total, all.hits.len()), (5, 5));
+    let page = index.search("medici", 2, 2).unwrap();
+    assert_eq!(page.total, 5);
+    assert_eq!(page.hits.len(), 2);
+    let first = &index.search("anuario estatistico", 0, 1).unwrap().hits[0];
+    assert_eq!(first.title, "Perfil - Anuário Estatístico");
+    assert_eq!(
+        first.main_contributor.as_deref(),
+        Some("PREFEITURA MUNICIPAL DE FOZ DO IGUACU")
+    );
+    assert_eq!(first.date.as_deref(), Some("1995"));
+    assert_eq!(first.call_number.as_deref(), Some("310.62 P94"));
+    assert!(first.material_type.is_some());
+    assert_eq!(index.search("medici", 0, 0).unwrap().total, 5);
+}
+
+#[test]
 fn codes_match_exactly_and_come_first() {
     let (_dir, store) = imported();
     let index = indexed(&store, Parallelism::Serial, 1024);
-    let first = |query: &str| -> InstanceId { index.search(query, 5).unwrap()[0].instance };
+    let first = |query: &str| -> InstanceId { index.search(query, 0, 5).unwrap().hits[0].instance };
     let perfil = first("anuario estatistico");
     // Barcode, call number (any case) and classification of the first record.
     assert_eq!(first("1511"), perfil);
@@ -179,7 +149,7 @@ fn codes_match_exactly_and_come_first() {
 fn a_classification_prefix_finds_the_class() {
     let (_dir, store) = imported();
     let index = indexed(&store, Parallelism::Serial, 1024);
-    let hits = index.search("310*", 50).unwrap();
+    let hits = index.search("310*", 0, 50).unwrap().hits;
     assert!(!hits.is_empty());
     for hit in hits {
         let classification = store
@@ -245,8 +215,9 @@ fn reference_queries_find_what_koha_finds() {
         let koha = ids(koha);
         // Instance ids follow the file, and the file is biblionumbers 1 to 200 in order.
         let ours: BTreeSet<i64> = index
-            .search(query, 200)
+            .search(query, 0, 200)
             .unwrap()
+            .hits
             .into_iter()
             .map(|hit| hit.instance.0)
             .collect();

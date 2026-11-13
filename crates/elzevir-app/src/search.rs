@@ -184,6 +184,25 @@ pub struct SearchHit {
     pub hub: Option<HubId>,
     /// Relevance; higher is better.
     pub score: f32,
+    /// The Instance's title, as stored in the index.
+    pub title: String,
+    /// The first contributor.
+    pub main_contributor: Option<String>,
+    /// Date of publication.
+    pub date: Option<String>,
+    /// Category of material.
+    pub material_type: Option<MaterialType>,
+    /// The first call number of its Items.
+    pub call_number: Option<String>,
+}
+
+/// One page of results.
+#[derive(Debug, Clone, PartialEq)]
+pub struct SearchResults {
+    /// How many Instances match in all.
+    pub total: usize,
+    /// The requested page, best first.
+    pub hits: Vec<SearchHit>,
 }
 
 /// Port: the full-text index.
@@ -203,12 +222,18 @@ pub trait SearchIndex: Send + Sync {
     /// When the index cannot be written.
     fn apply(&self, batch: IndexBatch) -> Result<(), SearchError>;
 
-    /// Up to `limit` Instances matching `query`, best first; equal scores by Instance id.
+    /// The Instances matching `query`, best first, skipping `offset` and returning at most
+    /// `limit`, with the total count.
     ///
     /// # Errors
     ///
     /// When the index cannot be read.
-    fn search(&self, query: &str, limit: usize) -> Result<Vec<SearchHit>, SearchError>;
+    fn search(
+        &self,
+        query: &str,
+        offset: usize,
+        limit: usize,
+    ) -> Result<SearchResults, SearchError>;
 }
 
 /// The index failed.
@@ -380,6 +405,17 @@ mod tests {
         fn items(&self, _: InstanceId) -> Result<Vec<ItemView>, CatalogReadError> {
             Ok(Vec::new())
         }
+
+        fn record_version(&self, _: InstanceId) -> Result<Option<i64>, CatalogReadError> {
+            Ok(None)
+        }
+
+        fn item_statuses(
+            &self,
+            _: &[InstanceId],
+        ) -> Result<Vec<(InstanceId, crate::catalog::ItemStatus)>, CatalogReadError> {
+            Ok(Vec::new())
+        }
     }
 
     impl SearchIndex for Fake {
@@ -400,8 +436,11 @@ mod tests {
             Ok(())
         }
 
-        fn search(&self, _: &str, _: usize) -> Result<Vec<SearchHit>, SearchError> {
-            Ok(Vec::new())
+        fn search(&self, _: &str, _: usize, _: usize) -> Result<SearchResults, SearchError> {
+            Ok(SearchResults {
+                total: 0,
+                hits: Vec::new(),
+            })
         }
     }
 

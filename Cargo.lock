@@ -601,10 +601,12 @@ dependencies = [
  "elzevir-store",
  "elzevir-web",
  "elzevir-web-templates",
+ "http-body-util",
  "mimalloc",
  "stats_alloc",
  "tempfile",
  "tokio",
+ "tower",
 ]
 
 [[package]]
@@ -700,6 +702,7 @@ dependencies = [
  "askama",
  "axum",
  "elzevir-app",
+ "elzevir-domain",
  "elzevir-web-templates",
  "getrandom 0.4.3",
  "http-body-util",

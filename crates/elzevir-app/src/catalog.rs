@@ -164,6 +164,22 @@ pub struct ItemStatus {
     pub restricted: i64,
 }
 
+impl ItemStatus {
+    /// Whether the Item can be lent and is on the shelf as far as the catalog knows: every
+    /// status is 0. Loans arrive with circulation (Phase 3) and will also count.
+    ///
+    /// Koha: the OPAC shows an Item as available unless it is not for loan, damaged, lost,
+    /// withdrawn or restricted (`opac-detail.pl`, `Koha::Item`).
+    #[must_use]
+    pub const fn is_available(&self) -> bool {
+        self.not_for_loan == 0
+            && self.damaged == 0
+            && self.lost == 0
+            && self.withdrawn == 0
+            && self.restricted == 0
+    }
+}
+
 /// An Item's own data.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ItemData {
@@ -297,6 +313,8 @@ pub struct ItemView {
     pub call_number: Option<String>,
     /// Shelving location code.
     pub location: Option<String>,
+    /// Circulation status numbers.
+    pub status: ItemStatus,
 }
 
 /// Port: reading the catalog.
@@ -314,6 +332,25 @@ pub trait CatalogReader: Send + Sync {
     ///
     /// When storage fails.
     fn items(&self, instance: InstanceId) -> Result<Vec<ItemView>, CatalogReadError>;
+
+    /// The version of an Instance's record: it grows whenever the Instance, its Work or its
+    /// Items change, so a page rendered for one version is valid until the next. `None` if
+    /// the Instance does not exist.
+    ///
+    /// # Errors
+    ///
+    /// When storage fails.
+    fn record_version(&self, id: InstanceId) -> Result<Option<i64>, CatalogReadError>;
+
+    /// The status of every Item of these Instances, in one read, for a page of results.
+    ///
+    /// # Errors
+    ///
+    /// When storage fails.
+    fn item_statuses(
+        &self,
+        instances: &[InstanceId],
+    ) -> Result<Vec<(InstanceId, ItemStatus)>, CatalogReadError>;
 }
 
 /// The catalog could not be read.

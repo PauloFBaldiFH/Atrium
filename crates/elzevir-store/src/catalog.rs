@@ -3,7 +3,8 @@
 
 use elzevir_app::catalog::{
     CatalogCommand, CatalogOutput, CatalogReadError, CatalogReader, CatalogRefusal, InstanceView,
-    ItemData, ItemView, NewContribution, NewInstance, NewRecord, NewSubject, NewWorkRelation,
+    ItemData, ItemStatus, ItemView, NewContribution, NewInstance, NewRecord, NewSubject,
+    NewWorkRelation,
 };
 use elzevir_app::commands::{WriteOutput, WriteRefusal};
 use elzevir_app::search::REINDEX_INSTANCE;
@@ -61,6 +62,13 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
                 return Err(refused(CatalogRefusal::UnknownInstance(new.instance)));
             }
             let item = add_item(connection, new.instance, &new.item)?;
+            // The record page shows the Items, so a new Item is a new record version.
+            connection
+                .execute(
+                    "UPDATE instances SET row_version = row_version + 1 WHERE id = ?1",
+                    params![new.instance.0],
+                )
+                .map_err(StoreError::from)?;
             reindex(tx, new.instance)?;
             CatalogOutput::Item(item)
         }
@@ -421,7 +429,8 @@ impl CatalogReader for ElzevirStore {
             .read(|c| {
                 let mut statement = c.prepare(
                     "SELECT items.id, barcode, inventory_number, branches.code, item_types.code,
-                            call_number, terms.code
+                            call_number, terms.code, not_for_loan, damaged, lost, withdrawn,
+                            restricted
                      FROM items
                      JOIN branches ON branches.id = items.home_branch
                      JOIN item_types ON item_types.id = items.item_type
@@ -438,12 +447,63 @@ impl CatalogReader for ElzevirStore {
                             item_type: row.get(4)?,
                             call_number: row.get(5)?,
                             location: row.get(6)?,
+                            status: status_at(row, 7)?,
                         })
                     })?
                     .collect::<Result<Vec<_>, _>>()
             })
             .map_err(|e: rusqlite::Error| CatalogReadError(e.to_string()))
     }
+
+    fn record_version(&self, id: InstanceId) -> Result<Option<i64>, CatalogReadError> {
+        self.readers()
+            .read(|c| {
+                c.query_row(
+                    "SELECT row_version FROM instances WHERE id = ?1",
+                    params![id.0],
+                    |row| row.get(0),
+                )
+                .optional()
+            })
+            .map_err(|e: rusqlite::Error| CatalogReadError(e.to_string()))
+    }
+
+    fn item_statuses(
+        &self,
+        instances: &[InstanceId],
+    ) -> Result<Vec<(InstanceId, ItemStatus)>, CatalogReadError> {
+        if instances.is_empty() {
+            return Ok(Vec::new());
+        }
+        // One placeholder per Instance: the values are still bound as parameters.
+        let placeholders = vec!["?"; instances.len()].join(", ");
+        let sql = format!(
+            "SELECT instance_id, not_for_loan, damaged, lost, withdrawn, restricted
+             FROM items WHERE instance_id IN ({placeholders}) ORDER BY id"
+        );
+        self.readers()
+            .read(|c| {
+                let mut statement = c.prepare(&sql)?;
+                statement
+                    .query_map(
+                        rusqlite::params_from_iter(instances.iter().map(|id| id.0)),
+                        |row| Ok((InstanceId(row.get(0)?), status_at(row, 1)?)),
+                    )?
+                    .collect::<Result<Vec<_>, _>>()
+            })
+            .map_err(|e: rusqlite::Error| CatalogReadError(e.to_string()))
+    }
+}
+
+/// The five status columns, starting at `first`.
+fn status_at(row: &rusqlite::Row<'_>, first: usize) -> Result<ItemStatus, rusqlite::Error> {
+    Ok(ItemStatus {
+        not_for_loan: row.get(first)?,
+        damaged: row.get(first + 1)?,
+        lost: row.get(first + 2)?,
+        withdrawn: row.get(first + 3)?,
+        restricted: row.get(first + 4)?,
+    })
 }
 
 /// Why reading an Instance failed.

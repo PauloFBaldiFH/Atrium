@@ -10,15 +10,20 @@ mod memory;
 
 use std::io::BufRead;
 use std::net::SocketAddr;
+use std::num::NonZeroUsize;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 use std::sync::Arc;
+use std::time::Duration;
 
 use clap::{Parser, Subcommand};
 use elzevir_app::commands::{StaffCommand, WriteCommand, WriteOutput};
+use elzevir_app::parallelism::Parallelism;
+use elzevir_app::search::{IndexOptions, index_pending};
 use elzevir_app::staff::{Permission, hash_password};
+use elzevir_search::TantivyIndex;
 use elzevir_store::{ElzevirHandler, ElzevirStore, StoreConfig};
-use elzevir_web::{AppState, WebConfig};
+use elzevir_web::{AppState, OpacPorts, WebConfig};
 use elzevir_web_templates::I18n;
 
 /// Elzevir library system.
@@ -98,16 +103,68 @@ fn open_store(data_dir: &Path) -> Result<ElzevirStore, String> {
     .map_err(|e| e.to_string())
 }
 
+/// How often the indexer looks for new effects in the outbox.
+const INDEX_INTERVAL: Duration = Duration::from_secs(1);
+
+/// Effects read per indexing batch.
+const INDEX_BATCH: NonZeroUsize = NonZeroUsize::new(1024).unwrap();
+
+/// Opens the search index in `data_dir/index`.
+fn open_index(data_dir: &Path) -> Result<(TantivyIndex, Parallelism), String> {
+    let directory = data_dir.join("index");
+    std::fs::create_dir_all(&directory)
+        .map_err(|e| format!("cannot create {}: {e}", directory.display()))?;
+    let cores = std::thread::available_parallelism().unwrap_or(NonZeroUsize::MIN);
+    let switch = std::env::var("ELZEVIR_SERIAL").ok();
+    let parallelism = Parallelism::from_serial_switch(switch.as_deref(), "index", cores);
+    let index = TantivyIndex::open(&directory, parallelism).map_err(|e| e.to_string())?;
+    Ok((index, parallelism))
+}
+
+/// Keeps the index up to date with the outbox, in its own thread, for as long as the
+/// process runs. A failed run is reported and tried again on the next tick: the cursor
+/// only moves with a successful commit, so nothing is lost.
+fn spawn_indexer(
+    store: Arc<ElzevirStore>,
+    index: Arc<TantivyIndex>,
+    parallelism: Parallelism,
+) -> Result<(), String> {
+    let options = IndexOptions {
+        parallelism,
+        batch: INDEX_BATCH,
+    };
+    std::thread::Builder::new()
+        .name("elzevir-indexer".to_owned())
+        .spawn(move || {
+            loop {
+                if let Err(e) = index_pending(&*store, &*store, &*index, &options) {
+                    eprintln!("elzevir: indexing failed, retrying: {e}");
+                }
+                std::thread::sleep(INDEX_INTERVAL);
+            }
+        })
+        .map(drop)
+        .map_err(|e| format!("cannot start the indexer: {e}"))
+}
+
 fn serve(data_dir: &Path, listen: SocketAddr, insecure_cookies: bool) -> Result<(), String> {
     let store = Arc::new(open_store(data_dir)?);
+    let (index, parallelism) = open_index(data_dir)?;
+    let index = Arc::new(index);
+    spawn_indexer(Arc::clone(&store), Arc::clone(&index), parallelism)?;
     let i18n = I18n::english().map_err(|e| e.to_string())?;
     let config = WebConfig {
         secure_cookies: !insecure_cookies,
         ..WebConfig::default()
     };
+    let opac = OpacPorts {
+        catalog: Arc::clone(&store) as _,
+        index,
+    };
     let app = elzevir_web::router(AppState::new(
         store,
         Arc::new(memory::AllocatorProbe),
+        opac,
         i18n,
         config,
     ));

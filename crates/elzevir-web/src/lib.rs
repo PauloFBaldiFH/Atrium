@@ -6,6 +6,7 @@
 //! `elzevir-app` ports; it never opens the database.
 
 mod assets;
+mod opac;
 mod security;
 mod session;
 mod staff;
@@ -23,6 +24,7 @@ use elzevir_app::memory::MemoryProbe;
 use elzevir_app::staff::StaffDirectory;
 use elzevir_web_templates::{I18n, OpacHome};
 
+pub use opac::OpacPorts;
 pub use session::Sessions;
 
 /// Web settings.
@@ -52,6 +54,8 @@ pub struct AppState {
 struct Inner {
     staff: Arc<dyn StaffDirectory>,
     memory: Arc<dyn MemoryProbe>,
+    opac: OpacPorts,
+    records: opac::RecordCache,
     sessions: Sessions,
     i18n: I18n,
     config: WebConfig,
@@ -63,6 +67,7 @@ impl AppState {
     pub fn new(
         staff: Arc<dyn StaffDirectory>,
         memory: Arc<dyn MemoryProbe>,
+        opac: OpacPorts,
         i18n: I18n,
         config: WebConfig,
     ) -> Self {
@@ -70,6 +75,8 @@ impl AppState {
             inner: Arc::new(Inner {
                 staff,
                 memory,
+                opac,
+                records: opac::RecordCache::default(),
                 sessions: Sessions::new(config.session_idle),
                 i18n,
                 config,
@@ -82,6 +89,8 @@ impl AppState {
 pub fn router(state: AppState) -> Router {
     Router::new()
         .route("/", get(opac_home))
+        .route("/search", get(opac::search))
+        .route("/record/{id}", get(opac::record))
         .route("/static/elzevir.css", get(assets::stylesheet))
         .route("/static/htmx.min.js", get(assets::htmx))
         .route("/equipe", get(staff::home))
@@ -95,6 +104,7 @@ pub fn router(state: AppState) -> Router {
 async fn opac_home(State(state): State<AppState>) -> Response {
     render(&OpacHome {
         t: &state.inner.i18n,
+        query: "",
     })
 }
 

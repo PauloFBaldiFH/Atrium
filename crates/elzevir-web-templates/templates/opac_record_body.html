@@ -1,0 +1,46 @@
+<article class="record">
+  <h1>{{ title }}</h1>
+  {% if let Some(work_title) = work_title %}<p class="muted">{{ work_title }}</p>{% endif %}
+  <dl class="record-fields">
+    {% if !contributors.is_empty() %}
+    <dt>{{ t.get("opac-record-contributors") }}</dt>
+    <dd>{% for contributor in contributors %}<span class="chip">{{ contributor }}</span>{% endfor %}</dd>
+    {% endif %}
+    {% if let Some(material) = material %}<dt>{{ t.get("opac-record-material") }}</dt><dd>{{ t.get(material) }}</dd>{% endif %}
+    {% if let Some(publication) = publication %}<dt>{{ t.get("opac-record-publication") }}</dt><dd>{{ publication }}</dd>{% endif %}
+    {% if let Some(classification) = classification %}<dt>{{ t.get("opac-record-classification") }}</dt><dd>{{ classification }}</dd>{% endif %}
+    {% if !subjects.is_empty() %}
+    <dt>{{ t.get("opac-record-subjects") }}</dt>
+    <dd>{% for subject in subjects %}<span class="chip">{{ subject }}</span>{% endfor %}</dd>
+    {% endif %}
+    {% if !identifiers.is_empty() %}
+    <dt>{{ t.get("opac-record-identifiers") }}</dt>
+    <dd>{% for identifier in identifiers %}<span class="chip">{{ identifier }}</span>{% endfor %}</dd>
+    {% endif %}
+    {% if !languages.is_empty() %}<dt>{{ t.get("opac-record-languages") }}</dt><dd>{{ languages.join(", ") }}</dd>{% endif %}
+    {% if let Some(summary) = summary %}<dt>{{ t.get("opac-record-summary") }}</dt><dd>{{ summary }}</dd>{% endif %}
+  </dl>
+  <h2>{{ t.get("opac-record-items") }}</h2>
+  {% if items.is_empty() %}
+  <p class="muted">{{ t.get("opac-record-no-items") }}</p>
+  {% else %}
+  <table class="items">
+    <thead><tr>
+      <th>{{ t.get("opac-record-item-branch") }}</th>
+      <th>{{ t.get("opac-record-item-location") }}</th>
+      <th>{{ t.get("opac-record-item-call-number") }}</th>
+      <th>{{ t.get("opac-record-item-status") }}</th>
+    </tr></thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.branch }}</td>
+        <td>{% if let Some(location) = item.location %}{{ location }}{% endif %}</td>
+        <td>{% if let Some(call_number) = item.call_number %}{{ call_number }}{% endif %}</td>
+        <td class="{% if item.available %}available{% else %}unavailable{% endif %}">{{ t.get(item.status) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</article>

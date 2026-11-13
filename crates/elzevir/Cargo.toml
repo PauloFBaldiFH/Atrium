@@ -13,6 +13,7 @@ elzevir-app.workspace = true
 elzevir-store.workspace = true
 elzevir-web.workspace = true
 elzevir-sip2.workspace = true
+elzevir-search.workspace = true
 elzevir-web-templates.workspace = true
 axum.workspace = true
 clap.workspace = true
@@ -23,8 +24,13 @@ tokio = { workspace = true, features = ["rt-multi-thread", "net", "signal", "mac
 [dev-dependencies]
 elzevir-domain.workspace = true
 elzevir-marc.workspace = true
-elzevir-search.workspace = true
+http-body-util.workspace = true
 tempfile.workspace = true
+tower.workspace = true
+
+[[bench]]
+name = "opac"
+harness = false
 
 [features]
 # Counts every allocation (small overhead); shown at /equipe/admin/memory.
