@@ -43,6 +43,15 @@ pub enum CatalogCommand {
     /// Imports one record, matching it with a stored one first
     /// (docs/specs/catalogo/casamento.md).
     ImportRecord(Box<ImportRecord>),
+    /// Replaces the description of a stored record (its Instance and Work) with `record`,
+    /// keeping the ids, the Items, the Hub and the relations between Works. The Items of
+    /// `record` are not used (docs/specs/catalogo/casamento.md, item 16).
+    ReplaceRecord {
+        /// The Instance to replace.
+        instance: InstanceId,
+        /// The new description.
+        record: Box<NewRecord>,
+    },
 }
 
 /// A record to import with a matching rule.
@@ -63,22 +72,36 @@ pub enum ImportOutcome {
         instance: InstanceId,
         /// The stored Instance it matched, when it matched and was created anyway.
         matched: Option<InstanceId>,
-        /// Items stored, in order.
-        items: Vec<ItemId>,
-        /// Items refused.
-        refused_items: Vec<RefusedItem>,
+        /// What happened to its Items.
+        items: ImportedItems,
+    },
+    /// The record matched a stored one, whose description it replaced.
+    Replaced {
+        /// The stored Instance, now with the imported description.
+        instance: InstanceId,
+        /// What happened to its Items.
+        items: ImportedItems,
     },
     /// The record matched a stored one, which was kept.
     Matched {
         /// The stored Instance.
         instance: InstanceId,
-        /// Items added to it, in order.
-        items: Vec<ItemId>,
-        /// Items refused.
-        refused_items: Vec<RefusedItem>,
+        /// What happened to its Items.
+        items: ImportedItems,
     },
     /// The record matched nothing and was not stored.
     Skipped,
+}
+
+/// What happened to the Items of an imported record.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct ImportedItems {
+    /// Items stored, in order.
+    pub added: Vec<ItemId>,
+    /// Stored Items overwritten by an imported one with the same barcode, in order.
+    pub replaced: Vec<ItemId>,
+    /// Items refused; the others went in.
+    pub refused: Vec<RefusedItem>,
 }
 
 /// One Item of an imported record that was not stored; the others were.
@@ -283,6 +306,8 @@ pub enum CatalogOutput {
     Item(ItemId),
     /// A record was imported.
     Imported(ImportOutcome),
+    /// A record's description was replaced.
+    Replaced(InstanceId),
 }
 
 /// Why a catalog command was refused.

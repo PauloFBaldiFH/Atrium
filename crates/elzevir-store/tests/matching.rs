@@ -323,3 +323,188 @@ fn migration_5_computes_the_keys_of_older_databases() {
     assert_eq!(again.imported, 0);
     assert_eq!(catalog_state(&store), before);
 }
+
+/// The export with every `tag $code` changed by `change`.
+fn edited(file: &[u8], tag: [u8; 3], code: u8, change: impl Fn(&[u8]) -> Vec<u8>) -> Vec<u8> {
+    let mut out = Vec::new();
+    for raw in records(file) {
+        let mut record = Record::from_ref(&RecordRef::parse(raw, &Limits::default()).unwrap());
+        for field in &mut record.fields {
+            if let Field::Data {
+                tag: field_tag,
+                subfields,
+                ..
+            } = field
+                && *field_tag.as_bytes() == tag
+            {
+                for subfield in subfields.iter_mut().filter(|s| s.code == code) {
+                    subfield.value = change(&subfield.value);
+                }
+            }
+        }
+        record.write_iso2709(&mut out).unwrap();
+    }
+    out
+}
+
+fn texts(store: &ElzevirStore, sql: &str) -> Vec<String> {
+    store
+        .readers()
+        .read(|c| {
+            c.prepare(sql)?
+                .query_map([], |row| row.get(0))?
+                .collect::<Result<Vec<String>, _>>()
+        })
+        .unwrap()
+}
+
+#[test]
+fn a_match_can_replace_the_stored_description() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = ready(&dir);
+    import(&store, STAFF_EXPORT, None);
+    let versions = count(&store, "SELECT sum(row_version) FROM instances");
+    let renamed = edited(STAFF_EXPORT, *b"245", b'a', |title| {
+        [b"Revised: ".as_slice(), title].concat()
+    });
+    let matching = Matching {
+        on_match: OnMatch::Replace,
+        ..Matching::new(MatchRule::KohaBiblionumber)
+    };
+
+    let report = import(&store, &renamed, Some(matching));
+    assert_eq!(report.imported, 0);
+    assert_eq!(report.replaced, 200);
+    assert_eq!(report.matched.len(), 200);
+    assert_eq!(duplicate_barcodes(&report), 253);
+    // Same records and Items, new descriptions, new versions.
+    assert_eq!(count(&store, "SELECT count(*) FROM works"), 200);
+    assert_eq!(count(&store, "SELECT count(*) FROM instances"), 200);
+    assert_eq!(count(&store, "SELECT count(*) FROM items"), 253);
+    assert_eq!(
+        count(
+            &store,
+            "SELECT count(*) FROM instances WHERE title LIKE 'Revised: %'"
+        ),
+        200
+    );
+    assert_eq!(
+        count(&store, "SELECT sum(row_version) FROM instances"),
+        versions + 200
+    );
+    // The source record is the imported one, so its keys still match next time.
+    let again = import(
+        &store,
+        &renamed,
+        Some(Matching::new(MatchRule::KohaBiblionumber)),
+    );
+    assert_eq!(again.matched.len(), 200);
+    assert_eq!(count(&store, "SELECT count(*) FROM source_records"), 200);
+}
+
+#[test]
+fn replacing_items_overwrites_them_by_barcode_where_they_are() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = ready(&dir);
+    import(&store, STAFF_EXPORT, None);
+    let owners = texts(
+        &store,
+        "SELECT barcode || ':' || instance_id || ':' || id FROM items ORDER BY id",
+    );
+    let versions = count(&store, "SELECT sum(row_version) FROM instances");
+    let recalled = edited(STAFF_EXPORT, *b"952", b'o', |_| b"NEW 001".to_vec());
+    let matching = Matching {
+        items: ItemAction::Replace,
+        ..Matching::new(MatchRule::KohaBiblionumber)
+    };
+
+    let report = import(&store, &recalled, Some(matching));
+    assert_eq!(report.imported, 0);
+    assert_eq!(report.items, 0);
+    assert_eq!(report.replaced_items, 253);
+    assert!(report.item_failures.is_empty());
+    assert_eq!(
+        count(
+            &store,
+            "SELECT count(*) FROM items WHERE call_number = 'NEW 001'"
+        ),
+        253
+    );
+    // Same ids, same Instances; each Instance with Items has a new version.
+    assert_eq!(
+        texts(
+            &store,
+            "SELECT barcode || ':' || instance_id || ':' || id FROM items ORDER BY id",
+        ),
+        owners
+    );
+    let with_items = count(&store, "SELECT count(DISTINCT instance_id) FROM items");
+    assert_eq!(
+        count(&store, "SELECT sum(row_version) FROM instances"),
+        versions + with_items
+    );
+}
+
+#[test]
+fn replacing_items_of_a_record_without_a_match_stores_nothing() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = ready(&dir);
+    let matching = Matching {
+        items: ItemAction::Replace,
+        ..Matching::new(MatchRule::KohaBiblionumber)
+    };
+    let report = import(&store, STAFF_EXPORT, Some(matching));
+    assert_eq!(report.imported, 200);
+    assert_eq!(report.items, 0);
+    assert_eq!(count(&store, "SELECT count(*) FROM items"), 0);
+}
+
+#[test]
+fn the_replace_command_keeps_ids_and_items_and_recomputes_keys() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = ready(&dir);
+    import(&store, STAFF_EXPORT, None);
+    let raw = *records(STAFF_EXPORT).get(1).unwrap();
+    let mut marc = Record::from_ref(&RecordRef::parse(raw, &Limits::default()).unwrap());
+    marc.marc21_to_utf8();
+    let mut source = Vec::new();
+    marc.write_iso2709(&mut source).unwrap();
+    let second = marc_to_bibframe(&marc, Some(source)).unwrap();
+    let items_of_1 = count(&store, "SELECT count(*) FROM items WHERE instance_id = 1");
+
+    let replace = |instance| {
+        store
+            .submit(WriteCommand::Catalog(CatalogCommand::ReplaceRecord {
+                instance: elzevir_domain::catalog::InstanceId(instance),
+                record: Box::new(second.clone()),
+            }))
+            .unwrap()
+            .wait()
+    };
+    replace(1).unwrap();
+    let title_of_2 = texts(&store, "SELECT title FROM instances WHERE id = 2");
+    assert_eq!(
+        texts(&store, "SELECT title FROM instances WHERE id = 1"),
+        title_of_2
+    );
+    assert_eq!(
+        count(&store, "SELECT count(*) FROM items WHERE instance_id = 1"),
+        items_of_1
+    );
+    assert_eq!(
+        texts(
+            &store,
+            "SELECT rule || ':' || key FROM match_keys WHERE instance_id = 1 ORDER BY 1"
+        ),
+        texts(
+            &store,
+            "SELECT rule || ':' || key FROM match_keys WHERE instance_id = 2 ORDER BY 1"
+        )
+    );
+    assert!(matches!(
+        replace(9999),
+        Err(elzevir_store::CommandFailed::Rejected(
+            elzevir_app::commands::WriteRefusal::Catalog(CatalogRefusal::UnknownInstance(_))
+        ))
+    ));
+}
