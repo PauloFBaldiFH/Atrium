@@ -340,7 +340,7 @@ A tarefa 1.12 adianta um pedaço da Fase 3 de propósito: ela valida, cedo e de 
 
 ### Fase 2: catálogo e busca (Onda 1)
 
-> Status: **proposta** (2026-11-13), aguardando aprovação de Paulo. Escopo do doc 01, §5.2 (Tantivy, outbox, OPAC, editor de catalogação, autoridades básicas), com a interface da Onda 1 de [`UI_BIBFRAME_INTERACTION_SPEC.md`](../UI_BIBFRAME_INTERACTION_SPEC.md), §14. Tantivy, outbox e OPAC mínimo já vieram na Fase 1 (1.7 a 1.9); a Fase 2 é sobretudo a catalogação na equipe.
+> Status: **aprovado** por Paulo em 2026-11-13, começando pela 2.1. Escopo do doc 01, §5.2 (Tantivy, outbox, OPAC, editor de catalogação, autoridades básicas), com a interface da Onda 1 de [`UI_BIBFRAME_INTERACTION_SPEC.md`](../UI_BIBFRAME_INTERACTION_SPEC.md), §14. Tantivy, outbox e OPAC mínimo já vieram na Fase 1 (1.7 a 1.9); a Fase 2 é sobretudo a catalogação na equipe.
 
 | # | Tarefa | Base | Pronto quando |
 |---|---|---|---|
