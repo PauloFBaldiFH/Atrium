@@ -1,6 +1,6 @@
 # Importação em lote de MARC21 (v0)
 
-> Status: v0, tarefa 1.7. Base: [doc 03](../../arquitetura/03-estrategia-reconstrucao.md) §1.2 (itens 2, 3 e 8) e §2.2, [mapeamento MARC21](mapeamento-marc21.md) e [modelo bibliográfico](modelo-bibliografico.md). A linha de comando `elzevir import` é a tarefa 1.11; o casamento com registros já existentes, a 1.10.
+> Status: v0, tarefa 1.7. Base: [doc 03](../../arquitetura/03-estrategia-reconstrucao.md) §1.2 (itens 2, 3 e 8) e §2.2, [mapeamento MARC21](mapeamento-marc21.md) e [modelo bibliográfico](modelo-bibliografico.md). A linha de comando `elzevir import` é a tarefa 1.11 ([linha de comando](linha-de-comando.md)); o casamento com registros já existentes, a 1.10.
 
 ## 1. Comportamento
 
@@ -59,5 +59,5 @@ A escritora é o gargalo: o mapeamento é 20 vezes mais rápido que a gravação
 ## 6. Fora do escopo
 
 - Casamento com registros existentes e reimportação sem duplicar: tarefa 1.10.
-- Linha de comando, MARCXML e UNIMARC na importação: tarefas 1.11 e Fase 4.
+- MARCXML e UNIMARC na importação: Fase 4. A linha de comando está em [linha de comando](linha-de-comando.md).
 - Acelerar a escritora (por exemplo, não serializar os bytes do registro de origem como lista JSON no `audit_log`): quando um caso real pedir.
