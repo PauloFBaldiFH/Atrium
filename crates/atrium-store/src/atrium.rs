@@ -36,6 +36,7 @@ impl CommandHandler for AtriumHandler {
                 password_hash,
                 permissions,
             }) => create_staff(tx, login, password_hash, permissions),
+            WriteCommand::Catalog(command) => crate::catalog::apply(tx, command),
         }
     }
 }

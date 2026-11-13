@@ -21,6 +21,16 @@
 12. Propriedades pouco usadas vão para a coluna `extra` (JSON) da entidade, em vez de uma coluna para cada.
 13. `works`, `instances`, `items`, `branches` e `item_types` têm `row_version` (doc 05, §3).
 
+### Comandos e leitura
+
+14. Toda escrita passa pela thread escritora como `WriteCommand::Catalog`: criar unidade, criar tipo de item, acrescentar registro (Obra + Instância) e acrescentar Item.
+15. Os comandos citam vocabulário pelo **código** (`MAIN`, `BK`, `por`); a escritora troca pelo número.
+    - Unidade e tipo de item precisam existir antes. Código desconhecido é recusado.
+    - Os outros vocabulários (idioma, relator, localização, coleção, esquema, tesauro) são criados no primeiro uso, com o próprio código como rótulo.
+16. Agente e Assunto já existentes são reaproveitados (itens 5 e 6), nunca duplicados.
+17. Recusas, sem nada gravado: código de unidade ou tipo de item já usado, unidade ou tipo de item desconhecido, Instância inexistente e código de barras repetido.
+18. A leitura (`CatalogReader`) devolve uma Instância com sua Obra, contribuições, assuntos, identificadores e idiomas na ordem gravada, e os Itens de uma Instância na ordem de criação.
+
 ## 2. Origem no Koha
 
 O modelo é do Atrium, mas cada coluna tem de onde vir numa migração e para onde ir numa exportação. Tabelas em `reference/koha/installer/data/mysql/kohastructure.sql`:
@@ -41,6 +51,8 @@ O Koha não tem Agente nem Assunto como tabela bibliográfica: guarda `biblio.au
 
 `livre`: é modelo interno. A paridade exigida é a da **exportação MARC** (tarefas 1.6 e 1.11), que este modelo sustenta com o registro de origem preservado.
 
+Testes: `crates/atrium-store/src/schema.rs` (`catalog_tests`, esquema) e `crates/atrium-store/tests/catalog.rs` (comandos e leitura).
+
 ## 4. Casos de borda
 
 1. Apagar uma Obra que tem Instâncias, uma Instância que tem Itens, ou uma unidade ou tipo de item em uso: o banco recusa.
@@ -58,6 +70,6 @@ Nenhum (paridade livre).
 ## 6. Fora do escopo
 
 - Mapeamento MARC21 ↔ modelo, incluindo títulos variantes, notas e séries estruturadas: tarefa 1.6.
-- Comandos de escrita e repositório de leitura: segunda parte da tarefa 1.5.
+- Edição e exclusão de Obras, Instâncias e Itens pelos comandos: quando a catalogação na interface existir.
 - Autoridades (registro de autoridade por Agente e Assunto), fusão de Obras e serialização BIBFRAME em RDF: fases seguintes.
 - Empréstimos, reservas e leitores: Fase 3.

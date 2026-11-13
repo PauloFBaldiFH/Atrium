@@ -156,6 +156,7 @@ dependencies = [
  "atrium-data",
  "jiff",
  "proptest",
+ "serde",
  "thiserror",
 ]
 

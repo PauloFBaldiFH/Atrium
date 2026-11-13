@@ -11,6 +11,7 @@ publish.workspace = true
 [dependencies]
 atrium-data.workspace = true
 jiff.workspace = true
+serde.workspace = true
 thiserror.workspace = true
 
 [dev-dependencies]
