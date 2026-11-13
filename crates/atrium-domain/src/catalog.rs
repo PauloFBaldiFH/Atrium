@@ -9,7 +9,10 @@
 macro_rules! row_id {
     ($(#[$doc:meta] $name:ident),+ $(,)?) => {$(
         #[$doc]
-        #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+        #[derive(
+            Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash,
+            serde::Serialize, serde::Deserialize,
+        )]
         pub struct $name(pub i64);
     )+};
 }
@@ -41,7 +44,11 @@ macro_rules! stable_enum {
         }
     ) => {
         $(#[$doc])*
-        #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+        #[derive(
+            Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash,
+            serde::Serialize, serde::Deserialize,
+        )]
+        #[serde(rename_all = "snake_case")]
         pub enum $name {
             $($(#[$variant_doc])* $variant,)+
         }
@@ -147,7 +154,9 @@ stable_enum! {
 }
 
 /// An amount of money in cents. Never a float.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize, serde::Deserialize,
+)]
 pub struct Money(pub i64);
 
 #[cfg(test)]

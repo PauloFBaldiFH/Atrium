@@ -14,6 +14,7 @@
 //!   `effect_outbox` inside the same transaction as the change that causes them.
 
 mod atrium;
+mod catalog;
 mod config;
 mod error;
 mod readers;

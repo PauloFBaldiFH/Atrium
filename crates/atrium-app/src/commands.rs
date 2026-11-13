@@ -9,6 +9,7 @@ use std::collections::BTreeSet;
 
 use serde::{Deserialize, Serialize};
 
+use crate::catalog::{CatalogCommand, CatalogOutput, CatalogRefusal};
 use crate::staff::{Permission, StaffId};
 
 /// Every write the application can make.
@@ -16,6 +17,8 @@ use crate::staff::{Permission, StaffId};
 pub enum WriteCommand {
     /// Staff account management.
     Staff(StaffCommand),
+    /// Catalog: records, items and their vocabularies.
+    Catalog(CatalogCommand),
 }
 
 /// Staff account commands.
@@ -37,6 +40,8 @@ pub enum StaffCommand {
 pub enum WriteOutput {
     /// A staff account was created.
     StaffCreated(StaffId),
+    /// A catalog command succeeded.
+    Catalog(CatalogOutput),
 }
 
 /// Why a command was refused.
@@ -45,6 +50,9 @@ pub enum WriteRefusal {
     /// The login is already taken.
     #[error("login `{0}` is already in use")]
     LoginTaken(String),
+    /// A catalog command was refused.
+    #[error(transparent)]
+    Catalog(#[from] CatalogRefusal),
 }
 
 impl WriteCommand {
@@ -53,6 +61,10 @@ impl WriteCommand {
     pub const fn kind(&self) -> &'static str {
         match self {
             Self::Staff(StaffCommand::Create { .. }) => "staff.create",
+            Self::Catalog(CatalogCommand::CreateBranch { .. }) => "catalog.create_branch",
+            Self::Catalog(CatalogCommand::CreateItemType { .. }) => "catalog.create_item_type",
+            Self::Catalog(CatalogCommand::AddRecord(_)) => "catalog.add_record",
+            Self::Catalog(CatalogCommand::AddItem(_)) => "catalog.add_item",
         }
     }
 }

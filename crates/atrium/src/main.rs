@@ -161,7 +161,9 @@ fn add_staff(data_dir: &Path, login: &str, admin: bool) -> Result<(), String> {
         .map_err(|e| e.to_string())?
         .wait()
         .map_err(|e| e.to_string())?;
-    let WriteOutput::StaffCreated(id) = outcome;
+    let WriteOutput::StaffCreated(id) = outcome else {
+        return Err(format!("unexpected answer from the writer: {outcome:?}"));
+    };
     println!("atrium: staff account `{login}` created (id {})", id.0);
     Ok(())
 }
