@@ -4,6 +4,7 @@
 //! This is the only place, with the export that will mirror it, that reads MARC tags.
 //! Everything it does not map stays in the preserved source record.
 
+mod export;
 mod instance;
 mod items;
 mod text;
@@ -12,6 +13,8 @@ mod work;
 use elzevir_marc::{Field, Record, Subfield};
 
 use crate::catalog::NewRecord;
+
+pub use export::bibframe_to_marc;
 
 /// Why a MARC21 record could not be mapped.
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
