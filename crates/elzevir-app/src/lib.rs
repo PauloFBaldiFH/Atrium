@@ -3,6 +3,7 @@
 
 pub mod catalog;
 pub mod commands;
+pub mod import;
 pub mod marc_mapping;
 pub mod memory;
 pub mod staff;

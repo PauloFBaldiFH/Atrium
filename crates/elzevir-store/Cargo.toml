@@ -18,8 +18,14 @@ thiserror.workspace = true
 tokio = { workspace = true, features = ["sync"] }
 
 [dev-dependencies]
+elzevir-marc.workspace = true
+stats_alloc.workspace = true
 tempfile.workspace = true
 tokio = { workspace = true, features = ["sync", "rt", "macros"] }
+
+[[bench]]
+name = "import"
+harness = false
 
 [lints]
 workspace = true

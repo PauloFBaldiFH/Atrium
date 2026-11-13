@@ -43,6 +43,12 @@ impl<R: BufRead> MarcReader<R> {
         }
     }
 
+    /// Byte offset where the next record starts (the bytes consumed so far).
+    #[must_use]
+    pub fn offset(&self) -> u64 {
+        self.offset
+    }
+
     /// Reads the next record. `None` at the end of the input.
     ///
     /// A rejected record yields `Some(Err(ReadError::Record { .. }))` and the following

@@ -473,9 +473,11 @@ version = "0.0.0"
 dependencies = [
  "elzevir-app",
  "elzevir-domain",
+ "elzevir-marc",
  "rusqlite",
  "serde",
  "serde_json",
+ "stats_alloc",
  "tempfile",
  "thiserror",
  "tokio",
