@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Elzevir entry point: one binary, several roles (`serve`, `staff`, and later `import`,
-//! `worker` and `panel`).
+//! Elzevir entry point: one binary, several roles (`serve`, `staff`, `import`, `export`,
+//! and later `worker` and `panel`).
 #![expect(
     clippy::print_stderr,
     reason = "the command line reports errors on the terminal"
 )]
 
+mod catalog_cli;
 mod memory;
 
 use std::io::BufRead;
@@ -51,6 +52,10 @@ enum Command {
     /// Manages staff accounts.
     #[command(subcommand)]
     Staff(StaffAction),
+    /// Imports a MARC21 file (ISO 2709) into the catalog.
+    Import(catalog_cli::ImportArgs),
+    /// Exports the catalog as MARC21 (ISO 2709, UTF-8).
+    Export(catalog_cli::ExportArgs),
 }
 
 #[derive(Subcommand)]
@@ -82,6 +87,8 @@ fn main() -> ExitCode {
             login,
             admin,
         }) => add_staff(&data_dir, &login, admin),
+        Command::Import(args) => catalog_cli::import(&args),
+        Command::Export(args) => catalog_cli::export(&args),
     };
     match result {
         Ok(()) => ExitCode::SUCCESS,
@@ -92,15 +99,38 @@ fn main() -> ExitCode {
     }
 }
 
-fn open_store(data_dir: &Path) -> Result<ElzevirStore, String> {
+/// An open data directory: the store, and the lock that keeps other Elzevir processes out
+/// while it is open, so that there is only ever one writer (CLAUDE.md, single writer).
+/// Fields drop in order, so the store closes before the lock is released.
+pub(crate) struct DataDir {
+    pub(crate) store: ElzevirStore,
+    _lock: std::fs::File,
+}
+
+pub(crate) fn open_store(data_dir: &Path) -> Result<DataDir, String> {
     std::fs::create_dir_all(data_dir)
         .map_err(|e| format!("cannot create {}: {e}", data_dir.display()))?;
-    ElzevirStore::open(
+    let lock_path = data_dir.join("elzevir.lock");
+    let lock = std::fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .write(true)
+        .open(&lock_path)
+        .map_err(|e| format!("cannot open {}: {e}", lock_path.display()))?;
+    lock.try_lock().map_err(|e| match e {
+        std::fs::TryLockError::WouldBlock => format!(
+            "another Elzevir process is using {}; stop it first",
+            data_dir.display()
+        ),
+        std::fs::TryLockError::Error(e) => format!("cannot lock {}: {e}", lock_path.display()),
+    })?;
+    let store = ElzevirStore::open(
         &data_dir.join("elzevir.db"),
         &StoreConfig::default(),
         ElzevirHandler,
     )
-    .map_err(|e| e.to_string())
+    .map_err(|e| e.to_string())?;
+    Ok(DataDir { store, _lock: lock })
 }
 
 /// How often the indexer looks for new effects in the outbox.
@@ -148,7 +178,8 @@ fn spawn_indexer(
 }
 
 fn serve(data_dir: &Path, listen: SocketAddr, insecure_cookies: bool) -> Result<(), String> {
-    let store = Arc::new(open_store(data_dir)?);
+    let DataDir { store, _lock } = open_store(data_dir)?;
+    let store = Arc::new(store);
     let (index, parallelism) = open_index(data_dir)?;
     let index = Arc::new(index);
     spawn_indexer(Arc::clone(&store), Arc::clone(&index), parallelism)?;
@@ -208,8 +239,9 @@ fn add_staff(data_dir: &Path, login: &str, admin: bool) -> Result<(), String> {
         permissions.insert(Permission::Administration);
     }
     let password_hash = hash_password(&password).map_err(|e| e.to_string())?;
-    let store = open_store(data_dir)?;
-    let outcome = store
+    let data = open_store(data_dir)?;
+    let outcome = data
+        .store
         .submit(WriteCommand::Staff(StaffCommand::Create {
             login: login.to_owned(),
             password_hash,

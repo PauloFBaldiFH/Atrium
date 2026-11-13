@@ -575,7 +575,10 @@ impl CatalogReader for ElzevirStore {
 }
 
 /// The five status columns, starting at `first`.
-fn status_at(row: &rusqlite::Row<'_>, first: usize) -> Result<ItemStatus, rusqlite::Error> {
+pub(crate) fn status_at(
+    row: &rusqlite::Row<'_>,
+    first: usize,
+) -> Result<ItemStatus, rusqlite::Error> {
     Ok(ItemStatus {
         not_for_loan: row.get(first)?,
         damaged: row.get(first + 1)?,
@@ -587,7 +590,7 @@ fn status_at(row: &rusqlite::Row<'_>, first: usize) -> Result<ItemStatus, rusqli
 
 /// Why reading an Instance failed.
 #[derive(Debug, thiserror::Error)]
-enum ReadFailure {
+pub(crate) enum ReadFailure {
     #[error(transparent)]
     Sql(#[from] rusqlite::Error),
     #[error("unknown {what} number {code} in the database (newer schema?)")]
@@ -700,7 +703,7 @@ fn material_type(code: Option<u8>) -> Result<Option<MaterialType>, ReadFailure> 
     .transpose()
 }
 
-fn work_relations(
+pub(crate) fn work_relations(
     c: &Connection,
     work: i64,
 ) -> Result<Vec<(WorkRelationKind, WorkId)>, ReadFailure> {

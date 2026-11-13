@@ -10,6 +10,8 @@ publish.workspace = true
 
 [dependencies]
 elzevir-app.workspace = true
+elzevir-domain.workspace = true
+elzevir-marc.workspace = true
 elzevir-store.workspace = true
 elzevir-web.workspace = true
 elzevir-sip2.workspace = true
@@ -22,8 +24,6 @@ stats_alloc = { workspace = true, optional = true }
 tokio = { workspace = true, features = ["rt-multi-thread", "net", "signal", "macros"] }
 
 [dev-dependencies]
-elzevir-domain.workspace = true
-elzevir-marc.workspace = true
 http-body-util.workspace = true
 tempfile.workspace = true
 tower.workspace = true

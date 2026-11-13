@@ -3,6 +3,7 @@
 
 pub mod catalog;
 pub mod commands;
+pub mod export;
 pub mod import;
 pub mod marc_mapping;
 pub mod matching;

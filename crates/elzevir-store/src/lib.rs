@@ -19,6 +19,7 @@ mod digest;
 mod effects;
 mod elzevir;
 mod error;
+mod export;
 mod import;
 mod matching;
 mod readers;
