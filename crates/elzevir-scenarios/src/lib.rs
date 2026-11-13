@@ -7,9 +7,14 @@
 
 #![forbid(unsafe_code)]
 
+mod koha_tests;
 mod model;
 mod replay;
 
+pub use koha_tests::{
+    Case, CaseError, EventSpec, Expect, KohaTestScenario, StateSpec, load_koha_test, run_case,
+    run_koha_test,
+};
 pub use model::{
     CalendarSnapshot, Checkout, Expected, Given, ItemGiven, LoanRecorded, PatronGiven,
     RecordedInputs, RecordedOutput, Recording, RuleSnapshot, Scenario, Step,
@@ -41,7 +46,11 @@ pub fn find(root: &Path) -> std::io::Result<Vec<ScenarioFiles>> {
         }
         for entry in std::fs::read_dir(&area)? {
             let scenario = entry?.path();
-            if scenario.extension().is_some_and(|e| e == "yaml") {
+            // `.t.yaml` files are converted Koha tests, which need no recording.
+            let converted = scenario
+                .file_name()
+                .is_some_and(|name| name.to_string_lossy().ends_with(".t.yaml"));
+            if scenario.extension().is_some_and(|e| e == "yaml") && !converted {
                 let recording = scenario.with_extension("koha.json");
                 found.push(ScenarioFiles {
                     scenario,
@@ -114,4 +123,30 @@ fn read(path: &Path) -> Result<String, LoadError> {
         path: path.to_owned(),
         source,
     })
+}
+
+/// Every converted Koha test (`<area>/<name>.t.yaml`) under `root`, sorted by path.
+///
+/// # Errors
+///
+/// Fails if a directory cannot be listed.
+pub fn find_koha_tests(root: &Path) -> std::io::Result<Vec<PathBuf>> {
+    let mut found = Vec::new();
+    for area in std::fs::read_dir(root)? {
+        let area = area?.path();
+        if !area.is_dir() {
+            continue;
+        }
+        for entry in std::fs::read_dir(&area)? {
+            let path = entry?.path();
+            if path
+                .file_name()
+                .is_some_and(|name| name.to_string_lossy().ends_with(".t.yaml"))
+            {
+                found.push(path);
+            }
+        }
+    }
+    found.sort();
+    Ok(found)
 }

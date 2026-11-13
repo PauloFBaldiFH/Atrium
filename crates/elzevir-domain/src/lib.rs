@@ -5,4 +5,6 @@
 
 pub mod calendar;
 pub mod catalog;
+pub mod circulation;
 pub mod due_date;
+pub mod fine;

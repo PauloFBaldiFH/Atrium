@@ -1,0 +1,191 @@
+# Asserções de t/db_dependent/Circulation/CalcDateDue.t, uma por caso, com as entradas
+# explícitas. O teste muda preferências e feriados em sequência; cada caso traz o estado
+# em vigor no momento da asserção.
+id: calcdatedue-t
+spec: docs/specs/circulacao/vencimento.md
+parity: required
+source: t/db_dependent/Circulation/CalcDateDue.t
+defaults:
+  rule: { issuelength: 10, renewalperiod: 5, lengthunit: days }
+  ConsiderLibraryHoursInCirculation: ignore
+  ManualRenewalPeriodBase: now
+  dateexpiry: "2013-01-01"
+cases:
+  - name: date expiry
+    context: { ReturnBeforeExpiry: 1, useDaysMode: Days }
+    state: available
+    event: !checkout { at: "2013-02-09T00:00" }
+    expect: { due: "2013-01-01T23:59" }
+  - name: date expiry with useDaysMode to noDays
+    context: { ReturnBeforeExpiry: 1, useDaysMode: noDays }
+    state: available
+    event: !checkout { at: "2013-02-09T00:00" }
+    expect: { due: "2013-01-01T23:59" }
+  - name: date expiry should be 2013-01-01 -1 day
+    context:
+      ReturnBeforeExpiry: 1
+      useDaysMode: noDays
+      calendar: { closed: ["2013-01-01"] }
+    state: available
+    event: !checkout { at: "2013-02-09T00:00" }
+    expect: { due: "2012-12-31T23:59" }
+  - name: date expiry should be 2013-01-01 -2 day
+    context:
+      ReturnBeforeExpiry: 1
+      useDaysMode: noDays
+      calendar: { closed: ["2013-01-01", "2012-12-31"] }
+    state: available
+    event: !checkout { at: "2013-02-09T00:00" }
+    expect: { due: "2012-12-30T23:59" }
+  - name: date expiry ( 9 + 10 )
+    context: { ReturnBeforeExpiry: 0, useDaysMode: Days }
+    state: available
+    event: !checkout { at: "2013-02-09T00:00" }
+    expect: { due: "2013-02-19T23:59" }
+  - name: date expiry ( 9 + 5 )
+    context: { ReturnBeforeExpiry: 0, useDaysMode: Days }
+    state: !on_loan { due: "2013-02-19T23:59" }
+    event: !renew { at: "2013-02-09T00:00" }
+    expect: { due: "2013-02-14T23:59" }
+  - name: useDaysMode = Dayweek, no closed days, issue date expiry ( start + 10 )
+    context: { ReturnBeforeExpiry: 0, useDaysMode: Dayweek }
+    state: available
+    event: !checkout { at: "2013-02-09T00:00" }
+    expect: { due: "2013-02-19T23:59" }
+  - name: useDaysMode = Dayweek, no closed days, renewal date expiry ( start + 5 )
+    context: { ReturnBeforeExpiry: 0, useDaysMode: Dayweek }
+    state: !on_loan { due: "2013-02-19T23:59" }
+    event: !renew { at: "2013-02-09T00:00" }
+    expect: { due: "2013-02-14T23:59" }
+  - name: useDaysMode = Dayweek, closed on due date, 10 day loan (should not trigger 7 day roll forward)
+    context:
+      ReturnBeforeExpiry: 0
+      useDaysMode: Dayweek
+      calendar: { closed: ["2013-01-01", "2012-12-31", "2013-02-19"] }
+    state: available
+    event: !checkout { at: "2013-02-09T00:00" }
+    expect: { due: "2013-02-20T23:59" }
+  - name: useDaysMode = Dayweek, closed on due date, 5 day renewal (should not trigger 7 day roll forward)
+    context:
+      ReturnBeforeExpiry: 0
+      useDaysMode: Dayweek
+      calendar: { closed: ["2013-01-01", "2012-12-31", "2013-02-14"] }
+    state: !on_loan { due: "2013-02-19T23:59" }
+    event: !renew { at: "2013-02-09T00:00" }
+    expect: { due: "2013-02-15T23:59" }
+  - name: useDaysMode = Dayweek, closed on due date, 14 day loan (should trigger 7 day roll forward)
+    context:
+      ReturnBeforeExpiry: 0
+      useDaysMode: Dayweek
+      rule: { issuelength: 14, renewalperiod: 7 }
+      calendar: { closed: ["2013-01-01", "2012-12-31", "2013-02-23"] }
+    state: available
+    event: !checkout { at: "2013-02-09T00:00" }
+    expect: { due: "2013-03-02T23:59" }
+  - name: useDaysMode = Dayweek, closed on due date, 7 day renewal (should trigger 7 day roll forward)
+    context:
+      ReturnBeforeExpiry: 0
+      useDaysMode: Dayweek
+      rule: { issuelength: 14, renewalperiod: 7 }
+      calendar: { closed: ["2013-01-01", "2012-12-31", "2013-02-16"] }
+    state: !on_loan { due: "2013-02-23T23:59" }
+    event: !renew { at: "2013-02-09T00:00" }
+    expect: { due: "2013-02-23T23:59" }
+  - name: useDaysMode = Dayweek, closed on due date and two subsequent due dates, 14 day loan
+    context:
+      ReturnBeforeExpiry: 0
+      useDaysMode: Dayweek
+      rule: { issuelength: 14, renewalperiod: 7 }
+      calendar: { closed: ["2013-01-01", "2012-12-31", "2013-02-16", "2013-02-23", "2013-03-02"] }
+    state: available
+    event: !checkout { at: "2013-02-09T00:00" }
+    expect: { due: "2013-03-09T23:59" }
+  - name: useDaysMode = Dayweek, closed on due date and three subsequent due dates, 7 day renewal
+    context:
+      ReturnBeforeExpiry: 0
+      useDaysMode: Dayweek
+      rule: { issuelength: 14, renewalperiod: 7 }
+      calendar: { closed: ["2013-01-01", "2012-12-31", "2013-02-16", "2013-02-23", "2013-03-02"] }
+    state: !on_loan { due: "2013-02-23T23:59" }
+    event: !renew { at: "2013-02-09T00:00" }
+    expect: { due: "2013-03-09T23:59" }
+  - name: useDaysMode = Dayweek, due on Saturday, closed on Saturdays, 14 day loan (1 day roll forward)
+    context:
+      ReturnBeforeExpiry: 0
+      useDaysMode: Dayweek
+      rule: { issuelength: 14, renewalperiod: 7 }
+      calendar: { weekly_closed: [6], closed: ["2013-01-01", "2012-12-31"] }
+    state: available
+    event: !checkout { at: "2013-02-09T00:00" }
+    expect: { due: "2013-02-24T23:59" }
+  - name: useDaysMode = Dayweek, due on Saturday, closed on Saturdays, 7 day renewal (1 day roll forward)
+    context:
+      ReturnBeforeExpiry: 0
+      useDaysMode: Dayweek
+      rule: { issuelength: 14, renewalperiod: 7 }
+      calendar: { weekly_closed: [6], closed: ["2013-01-01", "2012-12-31"] }
+    state: !on_loan { due: "2013-02-24T23:59" }
+    event: !renew { at: "2013-02-09T00:00" }
+    expect: { due: "2013-02-17T23:59" }
+  # O teste do Koha chama `$start_date->add(...)` na asserção anterior, o que muda a data
+  # de início para 2013-02-17 nos dois casos seguintes.
+  - name: Dates should match for renewalperiod of 0
+    context:
+      ReturnBeforeExpiry: 0
+      useDaysMode: Dayweek
+      rule: { issuelength: 9999, renewalperiod: 0, daysmode: Days }
+    state: !on_loan { due: "2013-02-24T23:59" }
+    event: !renew { at: "2013-02-17T00:00" }
+    expect: { due: "2013-02-17T23:59" }
+  - name: Renewal period of "" should trigger fallover to issuelength for renewal
+    context:
+      ReturnBeforeExpiry: 0
+      useDaysMode: Dayweek
+      rule: { issuelength: 7, renewalperiod: "", daysmode: Days }
+    state: !on_loan { due: "2013-02-24T23:59" }
+    event: !renew { at: "2013-02-17T00:00" }
+    expect: { due: "2013-02-24T23:59" }
+  # Empréstimo por hora numa outra biblioteca, aberta das 10h às 16h todos os dias. A regra
+  # de 18 horas que o teste grava depois é de outra categoria e não vale para este leitor,
+  # por isso a regra de 3 horas continua em vigor nos quatro casos.
+  - name: Loan period was shortened because ConsiderLibraryHoursInCirculation is set to close time
+    context: &hourly
+      ReturnBeforeExpiry: 0
+      useDaysMode: Days
+      ConsiderLibraryHoursInCirculation: close
+      rule: { issuelength: 3, renewalperiod: "", lengthunit: hours, daysmode: "" }
+      library_hours:
+        - { day: 0, open: "10:00", close: "16:00" }
+        - { day: 1, open: "10:00", close: "16:00" }
+        - { day: 2, open: "10:00", close: "16:00" }
+        - { day: 3, open: "10:00", close: "16:00" }
+        - { day: 4, open: "10:00", close: "16:00" }
+        - { day: 5, open: "10:00", close: "16:00" }
+        - { day: 6, open: "10:00", close: "16:00" }
+    state: available
+    event: !checkout { at: "2023-05-01T14:00" }
+    expect: { due: "2023-05-01T16:00" }
+  - name: Loan period was extended because ConsiderLibraryHoursInCirculation is set to open time
+    context:
+      <<: *hourly
+      ConsiderLibraryHoursInCirculation: open
+    state: available
+    event: !checkout { at: "2023-05-01T14:00" }
+    expect: { due: "2023-05-02T10:00" }
+  - name: Loan period was shortened (but considers the holiday) because ConsiderLibraryHoursInCirculation is set to close time
+    context:
+      <<: *hourly
+      useDaysMode: Calendar
+      calendar: { closed: ["2023-05-02"] }
+    state: available
+    event: !checkout { at: "2023-05-01T14:00" }
+    expect: { due: "2023-05-01T16:00" }
+  - name: Loan period was extended (but considers the holiday) because ConsiderLibraryHoursInCirculation is set to open time
+    context:
+      <<: *hourly
+      useDaysMode: Calendar
+      ConsiderLibraryHoursInCirculation: open
+      calendar: { closed: ["2023-05-02"] }
+    state: available
+    event: !checkout { at: "2023-05-01T14:00" }
+    expect: { due: "2023-05-03T10:00" }

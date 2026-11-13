@@ -1,0 +1,69 @@
+# Asserções de t/db_dependent/Circulation/CalcFine.t, uma por caso. O teste chama
+# `CalcFine` direto; aqui a multa vem da devolução com `CalculateFinesOnReturn`.
+id: calcfine-t
+spec: docs/specs/circulacao/multa.md
+parity: required
+source: t/db_dependent/Circulation/CalcFine.t
+defaults:
+  CalculateFinesOnReturn: 1
+  rule: { issuelength: 10, fine: "1.00", lengthunit: days, firstremind: 0, chargeperiod: 1, cap_fine_to_replacement_price: 0 }
+  replacementprice: "5.00"
+  defaultreplacecost: "6.00"
+cases:
+  - name: Test basic functionality
+    state: !on_loan { due: "2000-01-01T00:00" }
+    event: !checkin { at: "2000-01-30T00:00" }
+    expect: { fine: "29.00" }
+  - name: Overdue fines cap should be disabled when value is 0
+    context: { rule: { overduefinescap: "0" } }
+    state: !on_loan { due: "2000-01-01T00:00" }
+    event: !checkin { at: "2000-01-30T00:00" }
+    expect: { fine: "29.00" }
+  - name: Overdue fines cap should be disabled when value is 0.00
+    context: { rule: { overduefinescap: "0.00" } }
+    state: !on_loan { due: "2000-01-01T00:00" }
+    event: !checkin { at: "2000-01-30T00:00" }
+    expect: { fine: "29.00" }
+  # O teste só confere que não há aviso; com `fine` vazio o Koha cobra zero.
+  - name: Test with fine amount empty
+    context: { rule: { fine: "", cap_fine_to_replacement_price: 1 } }
+    state: !on_loan { due: "2000-01-01T00:00" }
+    event: !checkin { at: "2000-01-30T00:00" }
+    expect: { fine: "0.00" }
+  - name: Test cap_fine_to_replacement_price
+    context: { useDefaultReplacementCost: 1, rule: { cap_fine_to_replacement_price: 1 } }
+    state: !on_loan { due: "2000-01-01T00:00" }
+    event: !checkin { at: "2000-01-30T00:00" }
+    expect: { fine: "5.00" }
+  - name: Use default replacement cost (useDefaultReplacementCost) is item's replacement price is 0
+    context:
+      useDefaultReplacementCost: 1
+      replacementprice: "0"
+      rule: { cap_fine_to_replacement_price: 1 }
+    state: !on_loan { due: "2000-01-01T00:00" }
+    event: !checkin { at: "2000-01-30T00:00" }
+    expect: { fine: "6.00" }
+  - name: Got the lesser of overduefinescap and replacement price where overduefinescap < replacement price
+    context:
+      useDefaultReplacementCost: 1
+      rule: { overduefinescap: "3", cap_fine_to_replacement_price: 1 }
+    state: !on_loan { due: "2000-01-01T00:00" }
+    event: !checkin { at: "2000-01-30T00:00" }
+    expect: { fine: "3.00" }
+  - name: Get the lesser of overduefinescap and replacement price where overduefinescap > replacement price
+    context:
+      useDefaultReplacementCost: 1
+      rule: { overduefinescap: "6", cap_fine_to_replacement_price: 1 }
+    state: !on_loan { due: "2000-01-01T00:00" }
+    event: !checkin { at: "2000-01-30T00:00" }
+    expect: { fine: "5.00" }
+  - name: Use recall fine amount specified in circulation rules
+    context: { overdue_recall: true, rule: { recall_overdue_fine: "5.00" } }
+    state: !on_loan { due: "2000-01-01T00:00" }
+    event: !checkin { at: "2000-01-06T00:00" }
+    expect: { fine: "25.00" }
+  - name: With no recall, use normal fine amount
+    context: { rule: { recall_overdue_fine: "5.00" } }
+    state: !on_loan { due: "2000-01-01T00:00" }
+    event: !checkin { at: "2000-01-06T00:00" }
+    expect: { fine: "5.00" }
