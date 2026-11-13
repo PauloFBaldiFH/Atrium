@@ -20,6 +20,12 @@ mimalloc.workspace = true
 stats_alloc = { workspace = true, optional = true }
 tokio = { workspace = true, features = ["rt-multi-thread", "net", "signal", "macros"] }
 
+[dev-dependencies]
+elzevir-domain.workspace = true
+elzevir-marc.workspace = true
+elzevir-search.workspace = true
+tempfile.workspace = true
+
 [features]
 # Counts every allocation (small overhead); shown at /equipe/admin/memory.
 alloc-count = ["dep:stats_alloc"]

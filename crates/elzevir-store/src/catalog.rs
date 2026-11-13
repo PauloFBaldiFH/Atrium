@@ -6,6 +6,7 @@ use elzevir_app::catalog::{
     ItemData, ItemView, NewContribution, NewInstance, NewRecord, NewSubject, NewWorkRelation,
 };
 use elzevir_app::commands::{WriteOutput, WriteRefusal};
+use elzevir_app::search::REINDEX_INSTANCE;
 use elzevir_domain::catalog::{
     AgentKind, BranchId, HubId, IdentifierKind, InstanceId, ItemId, ItemTypeId, MaterialType,
     SourceFormat, SubjectKind, Vocabulary, WorkId, WorkRelationKind,
@@ -143,9 +144,6 @@ fn add_record(
         items,
     })
 }
-
-/// Effect kind asking the search index to rebuild one Instance's document after commit.
-pub(crate) const REINDEX_INSTANCE: &str = "catalog.reindex_instance";
 
 /// Queues the Instance for reindexing once this command commits (docs/specs/catalogo/modelo-bibliografico.md, item 24).
 fn reindex(tx: &WriteTx<'_>, instance: InstanceId) -> Result<(), StoreError> {
@@ -423,10 +421,11 @@ impl CatalogReader for ElzevirStore {
             .read(|c| {
                 let mut statement = c.prepare(
                     "SELECT items.id, barcode, inventory_number, branches.code, item_types.code,
-                            call_number
+                            call_number, terms.code
                      FROM items
                      JOIN branches ON branches.id = items.home_branch
                      JOIN item_types ON item_types.id = items.item_type
+                     LEFT JOIN terms ON terms.id = items.location
                      WHERE instance_id = ?1 ORDER BY items.id",
                 )?;
                 statement
@@ -438,6 +437,7 @@ impl CatalogReader for ElzevirStore {
                             home_branch: row.get(3)?,
                             item_type: row.get(4)?,
                             call_number: row.get(5)?,
+                            location: row.get(6)?,
                         })
                     })?
                     .collect::<Result<Vec<_>, _>>()
@@ -459,7 +459,7 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
     let Some(row) = c
         .query_row(
             "SELECT works.id, works.title, instances.title, publisher, date, works.hub_id,
-                    works.material_type, instances.material_type
+                    works.material_type, instances.material_type, works.classification
              FROM instances JOIN works ON works.id = instances.work_id
              WHERE instances.id = ?1",
             params![id.0],
@@ -473,6 +473,7 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
                     hub: row.get(5)?,
                     work_material_type: row.get(6)?,
                     material_type: row.get(7)?,
+                    classification: row.get(8)?,
                 })
             },
         )
@@ -525,6 +526,7 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
         title: row.title,
         publisher: row.publisher,
         date: row.date,
+        classification: row.classification,
         contributors,
         subjects,
         identifiers,
@@ -542,6 +544,7 @@ struct InstanceRow {
     hub: Option<i64>,
     work_material_type: Option<u8>,
     material_type: Option<u8>,
+    classification: Option<String>,
 }
 
 fn material_type(code: Option<u8>) -> Result<Option<MaterialType>, ReadFailure> {

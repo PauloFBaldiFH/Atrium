@@ -13,34 +13,7 @@ use elzevir_marc::{DetectedEncoding, Limits, MarcReader, ReadError, Record, Reco
 
 use crate::catalog::{CatalogOutput, CatalogRefusal, NewRecord};
 use crate::marc_mapping::{MappingError, marc_to_bibframe};
-
-/// How the pure part of the import (decoding and mapping) runs.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Parallelism {
-    /// On the calling thread.
-    Serial,
-    /// On this many threads at once.
-    Threads(NonZeroUsize),
-}
-
-impl Parallelism {
-    /// Serial when the `ELZEVIR_SERIAL` switch (`import,index`, any order, any case) names
-    /// `import`; otherwise one thread per core. The caller reads the variable: this layer
-    /// does not touch the environment.
-    #[must_use]
-    pub fn from_serial_switch(switch: Option<&str>, cores: NonZeroUsize) -> Self {
-        let serial = switch.is_some_and(|value| {
-            value
-                .split(',')
-                .any(|part| part.trim().eq_ignore_ascii_case("import"))
-        });
-        if serial {
-            Self::Serial
-        } else {
-            Self::Threads(cores)
-        }
-    }
-}
+pub use crate::parallelism::Parallelism;
 
 /// Settings of one import.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -261,47 +234,9 @@ fn map_chunk(
     chunk: Vec<RawRecord>,
     options: &ImportOptions,
 ) -> Vec<(RawPlace, Result<NewRecord, RecordFailure>)> {
-    let threads = match options.parallelism {
-        Parallelism::Threads(threads) if threads.get() > 1 && chunk.len() > 1 => threads.get(),
-        _ => {
-            return chunk
-                .into_iter()
-                .map(|raw| prepare(raw, &options.limits))
-                .collect();
-        }
-    };
-    // Contiguous slices, joined in order: the result is the serial result, computed faster.
-    let per_thread = chunk.len().div_ceil(threads);
-    let mut parts: Vec<Vec<RawRecord>> = Vec::with_capacity(threads);
-    let mut rest = chunk.into_iter();
-    loop {
-        let part: Vec<RawRecord> = rest.by_ref().take(per_thread).collect();
-        if part.is_empty() {
-            break;
-        }
-        parts.push(part);
-    }
-    std::thread::scope(|scope| {
-        let handles: Vec<_> = parts
-            .into_iter()
-            .map(|part| {
-                scope.spawn(|| {
-                    part.into_iter()
-                        .map(|raw| prepare(raw, &options.limits))
-                        .collect::<Vec<_>>()
-                })
-            })
-            .collect();
-        handles
-            .into_iter()
-            .flat_map(|handle| match handle.join() {
-                Ok(mapped) => mapped,
-                // Mapping is total (no panics in production code); a panic here is a bug,
-                // so it is surfaced instead of hidden.
-                Err(payload) => std::panic::resume_unwind(payload),
-            })
-            .collect()
-    })
+    options
+        .parallelism
+        .map(chunk, |raw| prepare(raw, &options.limits))
 }
 
 /// Decodes and maps one record. Pure: the same bytes give the same result on any thread.
@@ -346,31 +281,5 @@ fn collect<P: PendingRecord>(waiting: &mut VecDeque<(RawPlace, P)>, report: &mut
                 .failures
                 .push(place.failed(RecordFailure::Rejected(rejected))),
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn the_serial_switch_names_import() {
-        let cores = NonZeroUsize::new(8).unwrap_or(NonZeroUsize::MIN);
-        assert_eq!(
-            Parallelism::from_serial_switch(None, cores),
-            Parallelism::Threads(cores)
-        );
-        assert_eq!(
-            Parallelism::from_serial_switch(Some("import"), cores),
-            Parallelism::Serial
-        );
-        assert_eq!(
-            Parallelism::from_serial_switch(Some("index, IMPORT"), cores),
-            Parallelism::Serial
-        );
-        assert_eq!(
-            Parallelism::from_serial_switch(Some("index"), cores),
-            Parallelism::Threads(cores)
-        );
     }
 }

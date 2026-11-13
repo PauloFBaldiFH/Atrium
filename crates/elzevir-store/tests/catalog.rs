@@ -245,6 +245,7 @@ fn items_are_added_and_listed_in_creation_order() {
         home_branch: "MAIN".to_owned(),
         item_type: "BK".to_owned(),
         call_number: Some("869.3 A848d".to_owned()),
+        location: Some("GEN".to_owned()),
     };
     assert_eq!(items, [expected(first, "0001"), expected(second, "0002")]);
     assert!(store.items(InstanceId(instance.0 + 1)).unwrap().is_empty());
