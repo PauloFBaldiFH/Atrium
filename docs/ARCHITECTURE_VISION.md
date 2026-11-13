@@ -78,7 +78,7 @@ Nada do que existe precisa ser desfeito. O plano **acrescenta**.
 3. **Tombo.** No Koha o tombo costuma ir em `952$i` (`stocknumber`, "número de inventário"). Entra como coluna `inventory_number` em `items`.
 4. **Nomes dos papéis.** Os relacionamentos usam códigos estáveis em inglês no banco (`translation_of`, relator `trl`); a interface mostra "tradução de", "traduzido por" pelo Fluent, como manda o `CLAUDE.md`.
 
-### B.3 Mudanças no núcleo (tarefa 1.5, parte 3: migração 4, antes da 1.6)
+### B.3 Mudanças no núcleo (tarefa 1.5, parte 3: migração 4, antes da 1.6; feita em 2026-11-12, [ADR 0002](adr/0002-hub-relacoes-e-categoria.md))
 
 1. **`hubs`**: `id`, `title`, `extra`, `row_version`; `works.hub_id` opcional (`REFERENCES hubs`). Na v1 nenhum registro importado cria Hub sozinho; Hub nasce de título uniforme (`130`/`240`) só quando a 1.6 decidir com teste, ou à mão.
 2. **`work_relations`**: `(work_id, kind, related_work_id, position)` com `kind` como `enum` estável no domínio (`TranslationOf`, `AdaptationOf`, `HasPart`...).

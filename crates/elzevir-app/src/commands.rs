@@ -63,6 +63,7 @@ impl WriteCommand {
             Self::Staff(StaffCommand::Create { .. }) => "staff.create",
             Self::Catalog(CatalogCommand::CreateBranch { .. }) => "catalog.create_branch",
             Self::Catalog(CatalogCommand::CreateItemType { .. }) => "catalog.create_item_type",
+            Self::Catalog(CatalogCommand::CreateHub { .. }) => "catalog.create_hub",
             Self::Catalog(CatalogCommand::AddRecord(_)) => "catalog.add_record",
             Self::Catalog(CatalogCommand::AddItem(_)) => "catalog.add_item",
         }

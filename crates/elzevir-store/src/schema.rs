@@ -160,6 +160,29 @@ const MIGRATIONS: &[&str] = &[
          row_version       INTEGER NOT NULL DEFAULT 1
      ) STRICT;
      CREATE INDEX items_by_instance ON items (instance_id);",
+    // 4: Hubs, relations between Works, material types and inventory numbers (ADR 0002).
+    "CREATE TABLE hubs (
+         id          INTEGER PRIMARY KEY,
+         title       TEXT NOT NULL,
+         extra       TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(extra)),
+         row_version INTEGER NOT NULL DEFAULT 1
+     ) STRICT;
+     ALTER TABLE works ADD COLUMN hub_id INTEGER REFERENCES hubs (id);
+     CREATE INDEX works_by_hub ON works (hub_id) WHERE hub_id IS NOT NULL;
+     ALTER TABLE works ADD COLUMN material_type INTEGER;
+     ALTER TABLE instances ADD COLUMN material_type INTEGER;
+     CREATE TABLE work_relations (
+         work_id         INTEGER NOT NULL REFERENCES works (id) ON DELETE CASCADE,
+         position        INTEGER NOT NULL,
+         kind            INTEGER NOT NULL,
+         related_work_id INTEGER NOT NULL REFERENCES works (id),
+         CHECK (work_id <> related_work_id),
+         PRIMARY KEY (work_id, position)
+     ) STRICT, WITHOUT ROWID;
+     CREATE INDEX work_relations_by_related ON work_relations (related_work_id);
+     ALTER TABLE items ADD COLUMN inventory_number TEXT;
+     CREATE INDEX items_by_inventory_number ON items (inventory_number)
+         WHERE inventory_number IS NOT NULL;",
 ];
 
 /// How long a connection waits on a lock before failing. With a single writer this only
@@ -369,6 +392,63 @@ mod catalog_tests {
             "two subjects without thesaurus are the same"
         );
         assert!(subject(Some(9)).is_err());
+    }
+
+    #[test]
+    fn work_relations_and_hubs_keep_the_graph_consistent() {
+        let (_dir, connection) = catalog();
+        connection
+            .execute_batch(
+                "INSERT INTO hubs (id, title) VALUES (1, 'Dom Casmurro');
+                 UPDATE works SET hub_id = 1 WHERE id = 1;
+                 INSERT INTO works (id, title, hub_id) VALUES (2, 'Dom Casmurro (inglês)', 1);
+                 INSERT INTO work_relations (work_id, position, kind, related_work_id)
+                     VALUES (2, 0, 1, 1);",
+            )
+            .unwrap();
+        let relate = |from: i64, to: i64| {
+            connection.execute(
+                "INSERT INTO work_relations (work_id, position, kind, related_work_id)
+                 VALUES (?1, 1, 1, ?2)",
+                params![from, to],
+            )
+        };
+        assert!(relate(1, 1).is_err(), "a Work never relates to itself");
+        assert!(relate(1, 99).is_err(), "the related Work must exist");
+        assert!(
+            connection
+                .execute("DELETE FROM works WHERE id = 1", [])
+                .is_err(),
+            "a Work that others relate to cannot be deleted"
+        );
+        assert!(
+            connection
+                .execute("DELETE FROM hubs WHERE id = 1", [])
+                .is_err(),
+            "a Hub with Works cannot be deleted"
+        );
+        connection
+            .execute("DELETE FROM works WHERE id = 2", [])
+            .unwrap();
+        let relations: i64 = connection
+            .query_row("SELECT count(*) FROM work_relations", [], |row| row.get(0))
+            .unwrap();
+        assert_eq!(relations, 0, "deleting a Work takes its own relations");
+    }
+
+    #[test]
+    fn inventory_numbers_may_repeat() {
+        let (_dir, connection) = catalog();
+        for barcode in ["1", "2"] {
+            connection
+                .execute(
+                    "INSERT INTO items (instance_id, barcode, inventory_number, home_branch,
+                                        holding_branch, item_type)
+                     VALUES (1, ?1, '2024/0001', 1, 1, 1)",
+                    params![barcode],
+                )
+                .unwrap();
+        }
     }
 
     #[test]
