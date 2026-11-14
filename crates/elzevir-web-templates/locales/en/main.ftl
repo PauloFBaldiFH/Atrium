@@ -104,7 +104,6 @@ shelf-signal-out-of-circulation = Out of circulation
 staff-cord-work = work
 staff-cord-edition = edition
 staff-cord-items = items
-staff-catalog-legend = Item status
 staff-column-hub = Hub
 staff-catalog-columns = Columns shown
 staff-column-authorities = Authorities

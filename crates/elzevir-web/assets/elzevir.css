@@ -178,9 +178,6 @@ main:has(.wide) { max-width: none; padding: 0; }
 .catalog-search { display: flex; gap: 8px; flex: 1 1 28rem; }
 .catalog-search input { flex: 1; background: var(--card-bg); border-radius: 10px; }
 .catalog-search button { border-radius: 10px; font-weight: 700; }
-.legend { list-style: none; display: flex; flex-wrap: wrap; gap: 12px; padding: 0; margin: 0; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
-.legend li { display: flex; align-items: center; gap: 5px; }
-.dot { display: inline-block; flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--signal-border, var(--hub-border)); }
 .count { margin: 14px 0 0; font-size: 0.85rem; }
 .families { list-style: none; padding: 0; margin: 0; }
 .family {
@@ -295,6 +292,11 @@ a.field-value:hover { text-decoration: underline; }
 }
 .item-pill:hover { transform: translateX(2px); box-shadow: 0 4px 10px rgba(15, 23, 42, 0.1); }
 .item-pill-text { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* The icon is the material type of the Instance, in the colour of the item's signal; the
+   signal is written out beside it, so colour is never the only cue. */
+.item-icon { flex: none; width: 16px; height: 16px; color: var(--signal-border, var(--text-muted)); }
+.item-signal { flex: none; font-weight: 800; }
+.item-signal::after { content: " ·"; font-weight: 600; opacity: 0.6; }
 .item-pill.more-items { justify-content: center; border: 1.5px dashed var(--inst-accent); background: var(--hub-bg); font-weight: 700; }
 .item-pill.more-items a { color: inherit; text-decoration: none; }
 .item-pill.item-none { border-style: dashed; color: var(--text-muted); font-weight: 500; }

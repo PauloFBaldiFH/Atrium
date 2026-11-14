@@ -204,7 +204,7 @@ async fn the_first_page_shows_families_with_pills_and_a_loader_for_the_next() {
     assert!(html.contains("Assis, Machado de"));
     assert!(html.contains("Garnier, 1899"));
     assert!(html.contains(
-        r#"<span class="visually-hidden">Out of circulation:</span> <span class="item-pill-text">MAIN | 869.3 A848d | T1</span></li>"#
+        r#"<use href="/static/elzevir-icons.svg#book"></use></svg><span class="item-signal">Out of circulation</span> <span class="item-pill-text">MAIN | 869.3 A848d | T1</span></li>"#
     ));
     assert!(html.contains(r#"hx-get="/equipe/acervo?after=w30.030""#));
     // Blocks name their parent, for the cords drawn by the page's script.
@@ -219,6 +219,9 @@ async fn the_first_page_shows_families_with_pills_and_a_loader_for_the_next() {
     // Toggles for the Hub and Authorities columns stay hidden until the script runs.
     assert!(html.contains(r#"data-toggle="auth" aria-pressed="true" hidden>Authorities</button>"#));
     assert!(html.contains(r#"data-toggle="hub" aria-pressed="true" hidden>Hub</button>"#));
+    let icons = send(&app, get("/static/elzevir-icons.svg", None, None)).await;
+    assert_eq!(icons.status(), StatusCode::OK);
+    assert!(body(icons).await.contains(r#"<symbol id="periodical""#));
     let script = send(&app, get("/static/elzevir-catalog.js", None, None)).await;
     assert_eq!(script.status(), StatusCode::OK);
     assert!(body(script).await.contains("ResizeObserver"));

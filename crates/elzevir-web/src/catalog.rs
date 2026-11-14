@@ -13,6 +13,7 @@ use elzevir_app::listing::{
     self, CatalogListing, FamilyCursor, FamilyHead, FamilyRow, InstanceRow, ItemPill, Match,
     WorkRow,
 };
+use elzevir_domain::catalog::MaterialType;
 use elzevir_web_templates::{
     AuthorityLine, FamilyLine, HubLine, InstanceLine, PillLine, StaffCatalog, WorkLine, url_encode,
 };
@@ -177,6 +178,7 @@ fn instance_line(instance: &InstanceRow) -> InstanceLine {
         imprint,
         isbn: instance.isbn.clone(),
         material: instance.material_type.map(material_key),
+        icon: instance.material_type.map_or("book", material_icon),
         found: instance.matched == Match::Found,
         // Neighbouring editions get different colours; the cover itself is a placeholder
         // until real covers arrive (UI spec §6.4).
@@ -199,6 +201,21 @@ fn pill_line(pill: &ItemPill) -> PillLine {
         text: parts.into_iter().flatten().collect::<Vec<_>>().join(" | "),
         signal_class,
         signal_key,
+    }
+}
+
+/// The icon of a material type in `elzevir-icons.svg`; a record without one gets the book.
+const fn material_icon(material: MaterialType) -> &'static str {
+    match material {
+        MaterialType::Book => "book",
+        MaterialType::Periodical => "periodical",
+        MaterialType::Map => "map",
+        MaterialType::Score => "score",
+        MaterialType::SoundRecording => "sound-recording",
+        MaterialType::Video => "video",
+        MaterialType::Digital => "digital",
+        MaterialType::VisualMaterial => "visual-material",
+        MaterialType::Mixed => "mixed",
     }
 }
 

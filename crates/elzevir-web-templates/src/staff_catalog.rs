@@ -101,6 +101,8 @@ pub struct InstanceLine {
     pub isbn: Option<String>,
     /// Message key of the category of material.
     pub material: Option<&'static str>,
+    /// Icon of its material type in `/static/elzevir-icons.svg`, shown on each item.
+    pub icon: &'static str,
     /// Whether the search found it.
     pub found: bool,
     /// Which of the cover colours it gets.
