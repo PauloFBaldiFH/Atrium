@@ -68,6 +68,53 @@ impl WriteCommand {
             Self::Catalog(CatalogCommand::AddItem(_)) => "catalog.add_item",
             Self::Catalog(CatalogCommand::ImportRecord(_)) => "catalog.import_record",
             Self::Catalog(CatalogCommand::ReplaceRecord { .. }) => "catalog.replace_record",
+            Self::Catalog(CatalogCommand::UpdateWork(_)) => "catalog.update_work",
+            Self::Catalog(CatalogCommand::UpdateInstance(_)) => "catalog.update_instance",
+        }
+    }
+
+    /// The permission a staff member needs to submit this command. Checked where a person's
+    /// request becomes a command; the writer trusts what it receives.
+    #[must_use]
+    pub const fn permission(&self) -> Permission {
+        match self {
+            Self::Staff(_) => Permission::Administration,
+            Self::Catalog(_) => Permission::Cataloguing,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::catalog::WorkUpdate;
+    use elzevir_domain::catalog::WorkId;
+
+    #[test]
+    fn catalog_edits_need_cataloguing_and_staff_accounts_need_administration() {
+        let edit = WriteCommand::Catalog(CatalogCommand::UpdateWork(Box::new(WorkUpdate {
+            work: WorkId(1),
+            row_version: 1,
+            changes: Vec::new(),
+        })));
+        assert_eq!(edit.permission(), Permission::Cataloguing);
+        assert_eq!(edit.kind(), "catalog.update_work");
+        let account = WriteCommand::Staff(StaffCommand::Create {
+            login: "ana".to_owned(),
+            password_hash: String::new(),
+            permissions: BTreeSet::new(),
+        });
+        assert_eq!(account.permission(), Permission::Administration);
+    }
+
+    #[test]
+    fn permission_names_round_trip() {
+        for permission in [
+            Permission::StaffInterface,
+            Permission::Administration,
+            Permission::Cataloguing,
+        ] {
+            assert_eq!(Permission::from_name(permission.as_str()), Some(permission));
         }
     }
 }

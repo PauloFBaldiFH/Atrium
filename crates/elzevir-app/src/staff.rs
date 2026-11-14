@@ -30,6 +30,10 @@ pub enum Permission {
     StaffInterface,
     /// May change institution settings and staff accounts.
     Administration,
+    /// May add and edit records and Items.
+    ///
+    /// Koha: the `editcatalogue` permission.
+    Cataloguing,
 }
 
 impl Permission {
@@ -39,6 +43,7 @@ impl Permission {
         match self {
             Self::StaffInterface => "staff_interface",
             Self::Administration => "administration",
+            Self::Cataloguing => "cataloguing",
         }
     }
 
@@ -48,6 +53,7 @@ impl Permission {
         match name {
             "staff_interface" => Some(Self::StaffInterface),
             "administration" => Some(Self::Administration),
+            "cataloguing" => Some(Self::Cataloguing),
             _ => None,
         }
     }

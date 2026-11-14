@@ -28,12 +28,12 @@
 
 ### Comandos e leitura
 
-19. Toda escrita passa pela thread escritora como `WriteCommand::Catalog`: criar unidade, criar tipo de item, criar Hub, acrescentar registro (Obra + Instância, com categoria, Hub e relações) e acrescentar Item.
+19. Toda escrita passa pela thread escritora como `WriteCommand::Catalog`: criar unidade, criar tipo de item, criar Hub, acrescentar registro (Obra + Instância, com categoria, Hub e relações), acrescentar Item e editar Obra ou Instância ([edição](edicao.md), tarefa 2.2).
 20. Os comandos citam vocabulário pelo **código** (`MAIN`, `BK`, `por`); a escritora troca pelo número.
     - Unidade e tipo de item precisam existir antes. Código desconhecido é recusado.
     - Os outros vocabulários (idioma, relator, localização, coleção, esquema, tesauro) são criados no primeiro uso, com o próprio código como rótulo.
 21. Agente e Assunto já existentes são reaproveitados (itens 5 e 6), nunca duplicados.
-22. Recusas, sem nada gravado: código de unidade ou tipo de item já usado, unidade ou tipo de item desconhecido, Hub, Obra relacionada ou Instância inexistente e código de barras repetido.
+22. Recusas, sem nada gravado: código de unidade ou tipo de item já usado, unidade ou tipo de item desconhecido, Hub, Obra relacionada ou Instância inexistente, código de barras repetido e edição lida numa versão antiga (`Stale`).
 23. A leitura (`CatalogReader`) devolve uma Instância com sua Obra, Hub, categorias, relações, contribuições, assuntos, identificadores, notas e idiomas na ordem gravada, e os Itens de uma Instância na ordem de criação.
 24. Acrescentar registro ou Item grava, na mesma transação, o efeito `catalog.reindex_instance` (`{"instance": id}`) em `effect_outbox`, para o indexador (tarefa 1.8) refazer o documento daquela Instância depois do commit. Comando recusado não deixa efeito.
 

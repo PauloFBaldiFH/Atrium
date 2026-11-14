@@ -16,6 +16,7 @@
 mod catalog;
 mod config;
 mod digest;
+mod editing;
 mod effects;
 mod elzevir;
 mod error;
