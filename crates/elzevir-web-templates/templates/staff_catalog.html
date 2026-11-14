@@ -97,7 +97,15 @@
         {% for work in family.works %}{% for instance in work.instances %}
         <article class="card card-instance{% if instance.found %} found{% endif %}" data-node="i{{ instance.id }}"
                  data-parent="w{{ work.id }}" data-cord-label="{{ t.get("staff-cord-edition") }}">
-          <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-instance") }}{% if let Some(edition) = instance.edition %} • {{ edition }}{% endif %}</span></div>
+          <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-instance") }}{% if let Some(edition) = instance.edition %} • {{ edition }}{% endif %}</span>
+            <details class="export-menu">
+              <summary>{{ t.get("staff-export") }}</summary>
+              <ul>
+                <li><a href="/equipe/acervo/instancia/{{ instance.id }}/marc?format=marc21" download>MARC21</a></li>
+                <li><a href="/equipe/acervo/instancia/{{ instance.id }}/marc?format=marcxml" download>MARCXML</a></li>
+              </ul>
+            </details>
+          </div>
           <div class="instance-body">
             <div class="book-cover cover-{{ instance.cover }}" aria-hidden="true">
               <span>{{ instance.title }}</span>

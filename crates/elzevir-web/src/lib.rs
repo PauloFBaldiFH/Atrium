@@ -102,6 +102,10 @@ pub fn router(state: AppState) -> Router {
         .route("/static/elzevir-icons.svg", get(assets::icons))
         .route("/equipe", get(staff::home))
         .route("/equipe/acervo", get(catalog::catalog))
+        .route(
+            "/equipe/acervo/instancia/{id}/marc",
+            get(catalog::export_marc),
+        )
         .route("/equipe/login", get(staff::login_form).post(staff::log_in))
         .route("/equipe/logout", post(staff::log_out))
         .route("/equipe/admin/memory", get(staff::memory))

@@ -115,6 +115,7 @@ staff-row-shape = { $works ->
 }
 staff-row-available = { $available } of { $items } available
 staff-catalog-focus-label = Family in focus
+staff-export = Export
 staff-column-authorities = Authorities
 staff-column-work = Work
 staff-column-instance = Instance

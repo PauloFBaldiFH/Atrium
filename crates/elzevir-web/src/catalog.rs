@@ -5,15 +5,18 @@
 use std::sync::Arc;
 
 use askama::Template;
-use axum::extract::{Query, State};
-use axum::http::{HeaderMap, StatusCode};
+use axum::extract::{Path, Query, State};
+use axum::http::{HeaderMap, StatusCode, header};
 use axum::response::{Html, IntoResponse, Redirect, Response};
 use elzevir_app::catalog::ShelfSignal;
+use elzevir_app::export::{
+    ExportOptions, RecordExportError, RecordFormat, RecordSource, export_record,
+};
 use elzevir_app::listing::{
     self, CatalogListing, FamilyCursor, FamilyHead, FamilyRow, InstanceRow, ItemPill, Match,
     WorkRow,
 };
-use elzevir_domain::catalog::MaterialType;
+use elzevir_domain::catalog::{InstanceId, MaterialType};
 use elzevir_web_templates::{
     AuthorityLine, FamilyLine, HubLine, InstanceLine, PillLine, StaffCatalog, WorkLine, url_encode,
 };
@@ -28,6 +31,8 @@ use crate::{AppState, render};
 pub struct StaffPorts {
     /// Families of the catalog.
     pub listing: Arc<dyn CatalogListing>,
+    /// Stored records, for exporting one.
+    pub records: Arc<dyn RecordSource + Send + Sync>,
 }
 
 /// Query string of `/equipe/acervo`.
@@ -126,6 +131,67 @@ fn opened(mut rows: Vec<FamilyLine>) -> Vec<FamilyLine> {
         first.open = true;
     }
     rows
+}
+
+/// Query string of the one-record export.
+#[derive(Deserialize)]
+pub(crate) struct ExportParams {
+    format: Option<String>,
+}
+
+/// `GET /equipe/acervo/instancia/{id}/marc?format=marc21|marcxml`: one record as an
+/// attachment (docs/specs/catalogo/listagem.md, items 33 to 36).
+pub(crate) async fn export_marc(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(id): Path<i64>,
+    Query(params): Query<ExportParams>,
+) -> Response {
+    if current_session(&state, &headers).is_none() {
+        return Redirect::to("/equipe/login").into_response();
+    }
+    let (format, content_type, extension) = match params.format.as_deref() {
+        None | Some("marc21") => (RecordFormat::Marc21, "application/marc", "mrc"),
+        Some("marcxml") => (
+            RecordFormat::MarcXml,
+            "application/marcxml+xml; charset=utf-8",
+            "xml",
+        ),
+        Some(_) => return (StatusCode::BAD_REQUEST, "unknown format").into_response(),
+    };
+    let records = Arc::clone(&state.inner.staff_ports.records);
+    let written = tokio::task::spawn_blocking(move || {
+        export_record(
+            &*records,
+            InstanceId(id),
+            format,
+            &ExportOptions::default().limits,
+        )
+    })
+    .await;
+    match written {
+        Ok(Ok(Some(bytes))) => (
+            [
+                (header::CONTENT_TYPE, content_type.to_owned()),
+                (
+                    header::CONTENT_DISPOSITION,
+                    format!("attachment; filename=\"elzevir-{id}.{extension}\""),
+                ),
+            ],
+            bytes,
+        )
+            .into_response(),
+        Ok(Ok(None)) => (StatusCode::NOT_FOUND, "no such record").into_response(),
+        // Staff only: the reason helps the cataloguer find what to fix in the record.
+        Ok(Err(RecordExportError::Failure(failure))) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("the record cannot be exported: {failure}"),
+        )
+            .into_response(),
+        Ok(Err(RecordExportError::Read(_))) | Err(_) => {
+            (StatusCode::SERVICE_UNAVAILABLE, "catalog unavailable").into_response()
+        }
+    }
 }
 
 fn family_line(row: &FamilyRow) -> FamilyLine {

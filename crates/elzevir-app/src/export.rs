@@ -134,6 +134,63 @@ pub fn export_marc21<W: Write, S: RecordSource>(
     Ok(report)
 }
 
+/// The format of a one-record export (docs/specs/catalogo/listagem.md, item 34).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RecordFormat {
+    /// ISO 2709, UTF-8.
+    Marc21,
+    /// A MARCXML document with one `<record>`.
+    MarcXml,
+}
+
+/// Why one record could not be exported.
+#[derive(Debug, thiserror::Error)]
+pub enum RecordExportError {
+    /// The catalog could not be read.
+    #[error(transparent)]
+    Read(#[from] CatalogReadError),
+    /// The record could not be written.
+    #[error(transparent)]
+    Failure(#[from] ExportFailure),
+}
+
+/// One stored record in `format`, written as the batch export writes it; `None` when the
+/// Instance does not exist.
+///
+/// # Errors
+///
+/// [`RecordExportError`] when reading the catalog or writing the record fails.
+pub fn export_record<S: RecordSource + ?Sized>(
+    source: &S,
+    instance: InstanceId,
+    format: RecordFormat,
+    limits: &Limits,
+) -> Result<Option<Vec<u8>>, RecordExportError> {
+    // Records are read in Instance order, so the one after the id just below is this one,
+    // when it exists.
+    let after = instance.0.checked_sub(1).map(InstanceId);
+    let Some(stored) = source
+        .records_after(after, NonZeroUsize::MIN)?
+        .into_iter()
+        .find(|stored| stored.instance == instance)
+    else {
+        return Ok(None);
+    };
+    let mut marc21 = Vec::new();
+    to_marc(&stored.record, limits, &mut marc21)?;
+    match format {
+        RecordFormat::Marc21 => Ok(Some(marc21)),
+        RecordFormat::MarcXml => {
+            let record = RecordRef::parse(&marc21, limits).map_err(ExportFailure::Source)?;
+            let mut xml = String::new();
+            Record::from_ref(&record)
+                .write_marcxml_document(&mut xml)
+                .map_err(ExportFailure::Write)?;
+            Ok(Some(xml.into_bytes()))
+        }
+    }
+}
+
 fn to_marc(record: &NewRecord, limits: &Limits, out: &mut Vec<u8>) -> Result<(), ExportFailure> {
     let Some(source) = record.source.as_deref() else {
         return bibframe_to_marc(record, None)
