@@ -11,6 +11,10 @@
            placeholder="{{ t.get("staff-catalog-search-placeholder") }}">
     <button type="submit">{{ t.get("staff-catalog-search-button") }}</button>
   </form>
+  <div class="column-toggles" role="group" aria-label="{{ t.get("staff-catalog-columns") }}">
+    <button type="button" class="toggle" data-toggle="auth" aria-pressed="true" hidden>{{ t.get("staff-column-authorities") }}</button>
+    <button type="button" class="toggle" data-toggle="hub" aria-pressed="true" hidden>{{ t.get("staff-column-hub") }}</button>
+  </div>
   <ul class="legend" aria-label="{{ t.get("staff-catalog-legend") }}">
     <li><span class="dot signal-available"></span>{{ t.get("shelf-signal-available") }}</li>
     <li><span class="dot signal-not-for-loan"></span>{{ t.get("shelf-signal-not-for-loan") }}</li>
@@ -82,8 +86,9 @@
         </article>
         {% endfor %}
       </div>
-      <div class="track track-instance">
+      <div class="track track-editions">
         <div class="col-header">{{ t.get("staff-column-instance") }}</div>
+        <div class="col-header">{{ t.get("staff-column-items") }}</div>
         {% for work in family.works %}{% for instance in work.instances %}
         <article class="card card-instance{% if instance.found %} found{% endif %}" data-node="i{{ instance.id }}"
                  data-parent="w{{ work.id }}" data-cord-label="{{ t.get("staff-cord-edition") }}">
@@ -119,11 +124,6 @@
             </div>
           </div>
         </article>
-        {% endfor %}{% endfor %}
-      </div>
-      <div class="track track-items">
-        <div class="col-header">{{ t.get("staff-column-items") }}</div>
-        {% for work in family.works %}{% for instance in work.instances %}
         <ul class="items-stack">
           {% for pill in instance.pills %}
           <li class="item-pill {{ pill.signal_class }}" data-parent="i{{ instance.id }}"{% if loop.first %} data-cord-label="{{ t.get("staff-cord-items") }}"{% endif %}><span class="dot {{ pill.signal_class }}"></span><span class="visually-hidden">{{ t.get(pill.signal_key) }}:</span> <span class="item-pill-text">{{ pill.text }}</span></li>

@@ -194,7 +194,21 @@ main:has(.wide) { max-width: none; padding: 0; }
 }
 .family.no-hub { grid-template-columns: var(--catalog-tracks-no-hub); }
 .family.no-hub > .track-hub { display: none; }
-.family > .cords { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 2; }
+.catalog.hide-hub .family { grid-template-columns: var(--catalog-tracks-no-hub); }
+.catalog.hide-hub .track-hub { display: none; }
+.catalog.hide-auth .family { grid-template-columns: 0.85fr 1.25fr 1.3fr 1.55fr; }
+.catalog.hide-auth .family.no-hub, .catalog.hide-auth.hide-hub .family { grid-template-columns: 1.4fr 1.45fr 1.7fr; }
+.catalog.hide-auth .track-auth { display: none; }
+.column-toggles { display: flex; gap: 6px; }
+.column-toggles .toggle {
+  padding: 4px 10px; border: 1px dashed var(--hub-border); border-radius: 8px;
+  background: transparent; color: var(--text-muted);
+  font-size: 0.75rem; font-weight: 700;
+}
+.column-toggles .toggle[aria-pressed="true"] { border-style: solid; background: var(--card-bg); color: var(--text-main); }
+.column-toggles .toggle[aria-pressed="true"]::before { content: "✓ "; }
+/* Above the blocks, so ports show whole; cords never cross a block (see the script). */
+.family > .cords { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 4; }
 .cord-path { fill: none; stroke: var(--cord); stroke-width: 2; }
 .cord-path.primary { stroke: var(--cord-primary); stroke-width: 2.2; }
 .cord-path.dashed { stroke: var(--cord-auth); stroke-dasharray: 5 4; }
@@ -203,6 +217,12 @@ main:has(.wide) { max-width: none; padding: 0; }
 .cord-label-bg { fill: var(--cord-label-bg); stroke: var(--cord-label-border); stroke-width: 1; }
 .cord-label-text { fill: var(--cord-label-text); font: 600 11px var(--elzevir-font); }
 .track { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+/* Instances and their items share rows, so each stack of items sits beside its Instance. */
+.track-editions {
+  grid-column: span 2;
+  display: grid; grid-template-columns: subgrid; column-gap: var(--catalog-gap); row-gap: 12px;
+  align-items: start;
+}
 .col-header {
   padding: 0 2px; margin-bottom: -2px;
   font-size: 0.71rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
@@ -263,7 +283,6 @@ a.field-value:hover { text-decoration: underline; }
 .cover-2 { background: linear-gradient(135deg, #166534 0%, #052e16 100%); }
 .cover-3 { background: linear-gradient(135deg, #6b21a8 0%, #3b0764 100%); }
 .items-stack { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0; margin: 0; }
-.items-stack + .items-stack { margin-top: 14px; }
 .item-pill {
   position: relative; z-index: 3;
   display: flex; align-items: center; gap: 6px; min-width: 0;
@@ -284,7 +303,10 @@ a.field-value:hover { text-decoration: underline; }
 .signal-out-of-circulation { --signal-bg: var(--elzevir-color-out-bg); --signal-border: var(--elzevir-color-signal-out); --signal-text: var(--elzevir-color-out-text); }
 .next-page { padding: 22px 0; text-align: center; }
 @media (max-width: 60rem) {
-  .family, .family.no-hub { grid-template-columns: 1fr; gap: 12px; }
+  .family, .family.no-hub, .catalog.hide-hub .family, .catalog.hide-auth .family,
+  .catalog.hide-auth .family.no-hub, .catalog.hide-auth.hide-hub .family { grid-template-columns: 1fr; gap: 12px; }
+  .track-editions { grid-column: auto; grid-template-columns: 1fr; }
+  .track-editions > .col-header + .col-header { display: none; }
   .track-auth { flex-direction: row; flex-wrap: wrap; }
   .track-auth > .col-header { flex-basis: 100%; }
   .card:hover, .item-pill:hover { transform: none; }

@@ -216,6 +216,9 @@ async fn the_first_page_shows_families_with_pills_and_a_loader_for_the_next() {
     assert!(html.contains(r#"<article class="card card-auth" data-node="a0">"#));
     assert!(html.contains(r#"data-parent="a0""#));
     assert!(html.contains(r#"data-cord-label="written by""#));
+    // Toggles for the Hub and Authorities columns stay hidden until the script runs.
+    assert!(html.contains(r#"data-toggle="auth" aria-pressed="true" hidden>Authorities</button>"#));
+    assert!(html.contains(r#"data-toggle="hub" aria-pressed="true" hidden>Hub</button>"#));
     let script = send(&app, get("/static/elzevir-catalog.js", None, None)).await;
     assert_eq!(script.status(), StatusCode::OK);
     assert!(body(script).await.contains("ResizeObserver"));
