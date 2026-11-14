@@ -620,6 +620,7 @@ dependencies = [
  "insta",
  "serde",
  "thiserror",
+ "unicode-normalization",
 ]
 
 [[package]]

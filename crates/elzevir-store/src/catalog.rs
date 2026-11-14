@@ -7,6 +7,7 @@ use elzevir_app::catalog::{
     NewRecord, NewSubject, NewWorkRelation,
 };
 use elzevir_app::commands::{WriteOutput, WriteRefusal};
+use elzevir_app::listing::sort_key;
 use elzevir_app::matching::match_keys;
 use elzevir_app::search::REINDEX_INSTANCE;
 use elzevir_domain::catalog::{
@@ -43,7 +44,10 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
         }
         CatalogCommand::CreateHub { title } => {
             connection
-                .execute("INSERT INTO hubs (title) VALUES (?1)", params![title])
+                .execute(
+                    "INSERT INTO hubs (title, sort_key) VALUES (?1, ?2)",
+                    params![title, sort_key(title)],
+                )
                 .map_err(StoreError::from)?;
             CatalogOutput::Hub(HubId(connection.last_insert_rowid()))
         }
@@ -153,8 +157,8 @@ pub(crate) fn add_work_and_instance(
     connection
         .execute(
             "INSERT INTO works (title, material_type, hub_id, classification,
-                                classification_scheme, summary, audience)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+                                classification_scheme, summary, audience, sort_key)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
             params![
                 record.work_title,
                 record.material_type.code(),
@@ -162,7 +166,8 @@ pub(crate) fn add_work_and_instance(
                 record.classification,
                 scheme,
                 record.summary,
-                record.audience
+                record.audience,
+                sort_key(&record.work_title)
             ],
         )
         .map_err(StoreError::from)?;
@@ -729,7 +734,7 @@ struct InstanceRow {
     work_version: i64,
 }
 
-fn material_type(code: Option<u8>) -> Result<Option<MaterialType>, ReadFailure> {
+pub(crate) fn material_type(code: Option<u8>) -> Result<Option<MaterialType>, ReadFailure> {
     code.map(|code| {
         MaterialType::from_code(code).ok_or(ReadFailure::UnknownCode {
             what: "material type",

@@ -348,6 +348,33 @@ impl ItemStatus {
     }
 }
 
+/// The counter signal of an Item in the staff listing (UI spec
+/// §2). Loans, transit and holds arrive with circulation (Phase 3) and add variants.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum ShelfSignal {
+    /// Every status is 0: it can be lent.
+    Available,
+    /// Not for loan or restricted, but on the shelf.
+    NotForLoan,
+    /// Withdrawn, lost or damaged.
+    OutOfCirculation,
+}
+
+impl ItemStatus {
+    /// The signal shown for an Item with this status. Out of circulation wins over not
+    /// for loan: a lost reference book is not on the shelf.
+    #[must_use]
+    pub const fn signal(&self) -> ShelfSignal {
+        if self.withdrawn != 0 || self.lost != 0 || self.damaged != 0 {
+            ShelfSignal::OutOfCirculation
+        } else if self.not_for_loan != 0 || self.restricted != 0 {
+            ShelfSignal::NotForLoan
+        } else {
+            ShelfSignal::Available
+        }
+    }
+}
+
 /// An Item's own data.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ItemData {

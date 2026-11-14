@@ -147,7 +147,7 @@ fn migrations_6_and_7_read_the_notes_and_audience_of_older_databases() {
     connection
         .execute_batch(
             "DROP TABLE instance_notes; ALTER TABLE works DROP COLUMN audience;
-             PRAGMA user_version = 5;",
+             DROP INDEX works_in_listing; DROP INDEX hubs_in_listing; ALTER TABLE works DROP COLUMN sort_key; ALTER TABLE hubs DROP COLUMN sort_key; PRAGMA user_version = 5;",
         )
         .unwrap();
     drop(connection);

@@ -15,6 +15,7 @@ elzevir-marc.workspace = true
 argon2.workspace = true
 serde.workspace = true
 thiserror.workspace = true
+unicode-normalization.workspace = true
 
 [dev-dependencies]
 insta.workspace = true
