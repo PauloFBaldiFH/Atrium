@@ -87,7 +87,7 @@ pub(crate) fn update_instance(tx: &WriteTx<'_>, update: &InstanceUpdate) -> Edit
     })
 }
 
-fn check_version(read: i64, current: i64) -> Result<(), CommandFailed<WriteRefusal>> {
+pub(crate) fn check_version(read: i64, current: i64) -> Result<(), CommandFailed<WriteRefusal>> {
     if read == current {
         Ok(())
     } else {
@@ -95,7 +95,11 @@ fn check_version(read: i64, current: i64) -> Result<(), CommandFailed<WriteRefus
     }
 }
 
-fn version(connection: &Connection, sql: &str, id: i64) -> Result<Option<i64>, StoreError> {
+pub(crate) fn version(
+    connection: &Connection,
+    sql: &str,
+    id: i64,
+) -> Result<Option<i64>, StoreError> {
     Ok(connection
         .query_row(sql, params![id], |row| row.get(0))
         .optional()?)

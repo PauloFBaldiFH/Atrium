@@ -12,6 +12,7 @@ use elzevir_domain::catalog::{
 };
 use serde::{Deserialize, Serialize};
 
+use crate::items::{ItemsUpdate, RowRefusal};
 use crate::matching::Matching;
 
 /// Catalog commands.
@@ -61,6 +62,9 @@ pub enum CatalogCommand {
     /// Adds an Instance, without Items, to an existing Work
     /// (docs/specs/catalogo/criacao.md).
     AddInstance(Box<NewInstanceOfWork>),
+    /// Saves an Instance's Items in one batch, all or nothing
+    /// (docs/specs/catalogo/exemplares.md).
+    SaveItems(Box<ItemsUpdate>),
 }
 
 /// A new Instance of a stored Work.
@@ -456,6 +460,15 @@ pub enum CatalogOutput {
         /// Its record's new version.
         row_version: i64,
     },
+    /// A batch of Items was saved; the record is now at `row_version`.
+    ItemsSaved {
+        /// The Instance.
+        instance: InstanceId,
+        /// Its record's new version.
+        row_version: i64,
+        /// The Items of the batch's rows, in the batch's order.
+        items: Vec<ItemId>,
+    },
     /// An Instance was added to a Work.
     InstanceAdded {
         /// The Work.
@@ -489,6 +502,9 @@ pub enum CatalogRefusal {
     /// Another Item has this barcode.
     #[error("barcode `{0}` is already in use")]
     BarcodeTaken(String),
+    /// Cells of an Item batch that cannot be stored, all of them.
+    #[error("{} cells of the item batch were refused", .0.len())]
+    ItemRows(Vec<RowRefusal>),
     /// Someone changed the row after the editor read it.
     #[error("changed by someone else (version {current}, edit read {read}); reload")]
     Stale {

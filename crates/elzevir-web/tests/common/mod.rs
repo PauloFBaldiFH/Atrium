@@ -156,6 +156,7 @@ impl elzevir_app::editing::CatalogEditor for Editor {
         let read = match &edit {
             Edit::Work(update) => update.row_version,
             Edit::Instance(update) => update.row_version,
+            Edit::Items(update) => update.row_version,
             Edit::NewInstance(new) if new.work.0 == 404 => {
                 return Err(EditFailed::Refused(CatalogRefusal::UnknownWork(new.work)));
             }
@@ -180,6 +181,14 @@ impl elzevir_app::editing::CatalogEditor for Editor {
                 work: WorkId(900),
                 instance: InstanceId(901),
                 items: Vec::new(),
+            },
+            Edit::Items(update) => CatalogOutput::ItemsSaved {
+                instance: update.instance,
+                row_version: 2,
+                items: (500..)
+                    .zip(&update.rows)
+                    .map(|(new, row)| row.id.unwrap_or(elzevir_domain::catalog::ItemId(new)))
+                    .collect(),
             },
             Edit::NewInstance(new) => CatalogOutput::InstanceAdded {
                 work: new.work,

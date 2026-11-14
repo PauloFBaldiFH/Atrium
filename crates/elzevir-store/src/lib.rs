@@ -23,6 +23,7 @@ mod elzevir;
 mod error;
 mod export;
 mod import;
+mod items;
 mod listing;
 mod matching;
 mod readers;

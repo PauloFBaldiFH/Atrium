@@ -9,6 +9,7 @@ mod assets;
 mod catalog;
 mod creating;
 mod editing;
+mod items;
 mod new_record;
 mod opac;
 mod record_fields;
@@ -122,6 +123,10 @@ pub fn router(state: AppState) -> Router {
         .route(
             "/equipe/acervo/nova",
             get(new_record::new_family).post(creating::create_family),
+        )
+        .route(
+            "/equipe/acervo/instancia/{id}/exemplares",
+            post(items::save_items),
         )
         .route(
             "/equipe/acervo/instancia/{id}/nova",

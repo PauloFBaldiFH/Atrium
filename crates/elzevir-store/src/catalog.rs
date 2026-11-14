@@ -75,6 +75,7 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
         CatalogCommand::UpdateWork(update) => crate::editing::update_work(tx, update)?,
         CatalogCommand::UpdateInstance(update) => crate::editing::update_instance(tx, update)?,
         CatalogCommand::AddInstance(new) => add_instance_of_work(tx, new)?,
+        CatalogCommand::SaveItems(update) => crate::items::save_items(tx, update)?,
         CatalogCommand::AddItem(new) => {
             if !exists(
                 connection,
@@ -532,7 +533,11 @@ pub(crate) fn add_item(
     }
 }
 
-fn lookup(connection: &Connection, sql: &str, code: &str) -> Result<Option<i64>, StoreError> {
+pub(crate) fn lookup(
+    connection: &Connection,
+    sql: &str,
+    code: &str,
+) -> Result<Option<i64>, StoreError> {
     Ok(connection
         .query_row(sql, params![code], |row| row.get(0))
         .optional()?)

@@ -9,6 +9,7 @@ use crate::catalog::{
     CatalogOutput, CatalogRefusal, InstanceChange, InstanceUpdate, NewIdentifier,
     NewInstanceOfWork, NewRecord, WorkChange, WorkUpdate,
 };
+use crate::items::ItemsUpdate;
 use crate::staff::StaffId;
 
 /// One edit from the screen.
@@ -22,6 +23,8 @@ pub enum Edit {
     NewRecord(Box<NewRecord>),
     /// A new Instance of a stored Work (docs/specs/catalogo/criacao.md).
     NewInstance(Box<NewInstanceOfWork>),
+    /// A batch of an Instance's Items (docs/specs/catalogo/exemplares.md).
+    Items(Box<ItemsUpdate>),
 }
 
 /// Why an edit was not stored.
