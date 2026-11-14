@@ -8,6 +8,7 @@
 mod assets;
 mod catalog;
 mod opac;
+mod record_fields;
 mod security;
 mod session;
 mod staff;
@@ -105,6 +106,10 @@ pub fn router(state: AppState) -> Router {
         .route(
             "/equipe/acervo/instancia/{id}/marc",
             get(catalog::export_marc),
+        )
+        .route(
+            "/equipe/acervo/instancia/{id}/campos",
+            get(record_fields::record_fields),
         )
         .route("/equipe/login", get(staff::login_form).post(staff::log_in))
         .route("/equipe/logout", post(staff::log_out))

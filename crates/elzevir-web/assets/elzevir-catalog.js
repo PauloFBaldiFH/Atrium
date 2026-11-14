@@ -179,6 +179,7 @@ function toggles() {
     button.hidden = false;
     button.addEventListener("click", () => {
       setHidden(catalog, button, button.getAttribute("aria-pressed") === "true");
+      for (const grid of catalog.querySelectorAll(".family-grid[data-focus]")) layout(grid);
       redrawAll();
     });
   }
@@ -210,6 +211,48 @@ function clearLevel(grid) {
     node.classList.remove("focused", "dimmed");
     node.inert = false;
   }
+  layout(grid);
+}
+
+// Level focus layout (listagem.md, item 38): the focused column takes what is left, the
+// columns beside it show a glance, and the far ones fold into a rail.
+const LEVELS = ["auth", "hub", "work", "instance", "items"];
+const WIDTHS = { glance: "8.5rem", rail: "2.5rem" };
+
+function shownLevels(grid) {
+  const catalog = grid.closest(".catalog");
+  return LEVELS.filter((level) => {
+    if (level === "auth") return !catalog?.classList.contains("hide-auth");
+    if (level === "hub") return !grid.classList.contains("no-hub") && !catalog?.classList.contains("hide-hub");
+    return true;
+  });
+}
+
+function levelParts(grid, level) {
+  const headers = grid.querySelectorAll(".track-editions > .col-header");
+  if (level === "instance") return [headers[0], ...grid.querySelectorAll(".card-instance")];
+  if (level === "items") return [headers[1], ...grid.querySelectorAll(".items-stack")];
+  return [...grid.querySelectorAll(`.track-${level} > .col-header, .track-${level} .card`)];
+}
+
+function layout(grid) {
+  for (const node of grid.querySelectorAll(".glance, .rail")) node.classList.remove("glance", "rail");
+  const focus = grid.dataset.focus;
+  // On a narrow screen the columns stack, so there is no width to share.
+  if (!focus || matchMedia("(max-width: 60rem)").matches) {
+    grid.style.removeProperty("grid-template-columns");
+    return;
+  }
+  const levels = shownLevels(grid);
+  const at = levels.indexOf(focus);
+  // Items belong to their Instance: in Instance focus they stay a glance, never a rail.
+  const view = (index) => (index === at ? "focus" : Math.abs(index - at) === 1 || (focus === "instance" && levels[index] === "items") ? "glance" : "rail");
+  const tracks = levels.map((level, index) => {
+    const kind = view(index);
+    if (kind !== "focus") for (const node of levelParts(grid, level)) node?.classList.add(kind);
+    return kind === "focus" ? "minmax(0, 1fr)" : WIDTHS[kind];
+  });
+  grid.style.setProperty("grid-template-columns", tracks.join(" "));
 }
 
 function focusLevel(card) {
@@ -234,9 +277,34 @@ function focusLevel(card) {
         stack.inert = true;
       }
     }
+    layout(grid);
+    loadFields(card);
   }
   follow(grid);
   trail(grid.closest(".family-focus"));
+}
+
+// Every filled field of a focused Work or Instance (listagem.md, items 42 to 45), fetched
+// once and kept in the block.
+async function loadFields(card) {
+  const url = card.dataset.fields;
+  if (!url || card.dataset.fieldsState) return;
+  card.dataset.fieldsState = "loading";
+  try {
+    const response = await fetch(url, { credentials: "same-origin", headers: { Accept: "text/html" } });
+    if (!response.ok) throw new Error(String(response.status));
+    const box = document.createElement("div");
+    box.className = "all-fields-box";
+    // Server-rendered by Askama, which escapes every value.
+    box.innerHTML = await response.text();
+    card.append(box);
+    card.dataset.fieldsState = "loaded";
+    const grid = card.closest(".family-grid");
+    if (grid) follow(grid);
+  } catch {
+    // The short fields stay; focusing the block again tries once more.
+    delete card.dataset.fieldsState;
+  }
 }
 
 // Cords follow the columns while they animate.
@@ -251,7 +319,7 @@ function follow(grid) {
 
 document.addEventListener("click", (event) => {
   const target = event.target;
-  if (!(target instanceof Element) || target.closest("a, button, summary, details.export-menu, input, select, textarea")) return;
+  if (!(target instanceof Element) || target.closest("a, button, summary, details.export-menu, input, select, textarea, .all-fields")) return;
   const card = target.closest(".family-grid .card[data-level]");
   if (card) focusLevel(card);
 });

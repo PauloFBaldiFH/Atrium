@@ -206,12 +206,12 @@ main:has(.wide) { max-width: none; padding: 0; }
   position: relative;
   /* Column weights: Authorities, Hub, Work, Instance, Items. A level in focus changes them. */
   --wa: 0.8fr; --wh: 0.7fr; --ww: 1.55fr; --wi: 1.7fr; --wx: 1.35fr;
-  display: grid; grid-template-columns: minmax(7rem, var(--wa)) minmax(7rem, var(--wh)) var(--ww) var(--wi) var(--wx); gap: var(--catalog-gap);
+  display: grid; grid-template-columns: var(--wa) var(--wh) var(--ww) var(--wi) var(--wx); gap: var(--catalog-gap);
   align-items: start;
   padding: 16px 0 26px;
 }
-.family-grid.no-hub, .catalog.hide-hub .family-grid { grid-template-columns: minmax(7rem, var(--wa)) var(--ww) var(--wi) var(--wx); }
-.catalog.hide-auth .family-grid { grid-template-columns: minmax(7rem, var(--wh)) var(--ww) var(--wi) var(--wx); }
+.family-grid.no-hub, .catalog.hide-hub .family-grid { grid-template-columns: var(--wa) var(--ww) var(--wi) var(--wx); }
+.catalog.hide-auth .family-grid { grid-template-columns: var(--wh) var(--ww) var(--wi) var(--wx); }
 .catalog.hide-auth .family-grid.no-hub, .catalog.hide-auth.hide-hub .family-grid { grid-template-columns: var(--ww) var(--wi) var(--wx); }
 .family-grid.no-hub > .track-hub { display: none; }
 .catalog.hide-hub .track-hub { display: none; }
@@ -358,14 +358,41 @@ a.field-value:hover { text-decoration: underline; }
 .export-menu a:hover { background: var(--work-bg); }
 .card:has(.export-menu[open]) { z-index: 6; }
 /* Focus on one level of the open family (listagem.md, items 37 to 41): its column takes
-   about 75 % of the width; the neighbours stay visible and linked. */
+   about 80 % of the width; the neighbours stay visible and linked. */
 .family-grid { transition: grid-template-columns 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
-.family-grid[data-focus="auth"] { --wa: 3fr; --wh: 0.8fr; --ww: 1fr; --wi: 0.8fr; --wx: 0.6fr; }
-.family-grid[data-focus="hub"] { --wa: 0.6fr; --wh: 3fr; --ww: 1fr; --wi: 0.8fr; --wx: 0.6fr; }
-.family-grid[data-focus="work"] { --wa: 0.5fr; --wh: 0.5fr; --ww: 3.2fr; --wi: 1fr; --wx: 0.8fr; }
-.family-grid[data-focus="instance"] { --wa: 0.35fr; --wh: 0.35fr; --ww: 0.9fr; --wi: 3.2fr; --wx: 1.2fr; }
-/* Columns squeezed by a focus keep whole words: smaller type, hyphenation instead of breaking anywhere. */
-.family-grid:is([data-focus="work"], [data-focus="instance"]) :is(.track-auth, .track-hub) .card { font-size: 0.82em; overflow-wrap: break-word; hyphens: auto; padding: 10px; }
+.family-grid[data-focus] { --catalog-gap: 40px; }
+/* Columns beside the focused one show a glance: the badge and the first field. */
+.card.glance { padding: 10px; font-size: 0.82em; overflow-wrap: break-word; hyphens: auto; }
+.card.glance .field-label, .card.glance .field-row ~ .field-row, .card.glance .book-cover,
+.card.glance .export-menu { display: none; }
+.card.glance .field-value { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+/* A click on a glance or a rail focuses its column first; its links work once focused. */
+.card.glance a, .card.rail a, .items-stack.rail a { pointer-events: none; }
+.items-stack.glance .item-pill-text { display: none; }
+/* Far columns fold into a rail: the badge only, read sideways; a click focuses them. */
+.card.rail { padding: 8px 4px; display: flex; justify-content: center; }
+.card.rail > :not(.card-top), .card.rail .export-menu { display: none; }
+.card.rail .card-top { border: 0; padding: 0; margin: 0; }
+.card.rail .entity-pill { writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
+.items-stack.rail .item-pill { justify-content: center; padding: 6px 0; }
+.items-stack.rail .item-pill > :not(.item-icon) { display: none; }
+.col-header.glance, .col-header.rail { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.col-header.rail { visibility: hidden; }
+/* Every filled field of the focused block (listagem.md, items 42 to 45). */
+.card:not(.focused) .all-fields-box { display: none; }
+.card.focused[data-fields-state="loaded"] .field-row ~ .field-row { display: none; }
+.all-fields { margin-top: 14px; border-top: 1px solid var(--card-border); padding-top: 10px; cursor: auto; }
+.all-fields-heading { margin: 10px 0 6px; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pill-text); }
+.all-fields-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 10px 22px; margin: 0; }
+.all-fields-row { min-width: 0; }
+.all-fields-row dt { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
+.all-fields-row dd { margin: 2px 0 0; }
+.all-fields-qualifier { font-size: 0.78rem; color: var(--text-muted); }
+.all-fields-items { overflow-x: auto; }
+.all-fields-items table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.all-fields-items th { text-align: left; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); padding: 4px 8px; border-bottom: 1px solid var(--card-border); }
+.all-fields-items td { padding: 5px 8px; border-bottom: 1px solid color-mix(in srgb, var(--card-border) 50%, transparent); white-space: nowrap; }
+.item-status { display: inline-block; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--signal-border); background: var(--signal-bg); color: var(--signal-text); font-weight: 600; }
 .card[data-level] { cursor: pointer; }
 .card[data-level]:focus-visible { outline: 3px solid var(--work-accent); outline-offset: 2px; }
 .card.focused { border-color: var(--pill-text); box-shadow: 0 26px 52px -12px rgba(15, 23, 42, 0.24), 0 0 0 2.5px color-mix(in srgb, var(--pill-text) 32%, transparent); }

@@ -59,7 +59,7 @@
       <div class="track track-work">
         <div class="col-header">{{ t.get("staff-column-work") }}</div>
         {% for work in family.works %}
-        <article class="card card-work" data-level="work" tabindex="0" data-node="w{{ work.id }}"
+        <article class="card card-work" data-level="work" tabindex="0" data-node="w{{ work.id }}"{% if let Some(first) = work.instances.first() %} data-fields="/equipe/acervo/instancia/{{ first.id }}/campos?level=work"{% endif %}
                  data-parent="{% if let Some(hub) = family.hub %}h{{ hub.id }} {% endif %}{% if let Some(key) = work.authority %}a{{ key }}{% endif %}"
                  data-cord-label="{% if family.hub.is_some() %}{{ t.get("staff-cord-work") }}|{% endif %}{% if work.authority.is_some() %}{{ t.get("staff-cord-written-by") }}{% endif %}">
           <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-work") }}{% for language in work.languages %} • {{ language }}{% endfor %}</span></div>
@@ -95,7 +95,7 @@
         <div class="col-header">{{ t.get("staff-column-instance") }}</div>
         <div class="col-header">{{ t.get("staff-column-items") }}</div>
         {% for work in family.works %}{% for instance in work.instances %}
-        <article class="card card-instance{% if instance.found %} found{% endif %}" data-level="instance" tabindex="0" data-node="i{{ instance.id }}"
+        <article class="card card-instance{% if instance.found %} found{% endif %}" data-level="instance" tabindex="0" data-node="i{{ instance.id }}" data-fields="/equipe/acervo/instancia/{{ instance.id }}/campos?level=instance"
                  data-parent="w{{ work.id }}" data-cord-label="{{ t.get("staff-cord-edition") }}">
           <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-instance") }}{% if let Some(edition) = instance.edition %} • {{ edition }}{% endif %}</span>
             <details class="export-menu">

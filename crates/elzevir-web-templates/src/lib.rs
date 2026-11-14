@@ -5,10 +5,12 @@
 //! (English first, then Brazilian Portuguese; docs/arquitetura/04-decisoes.md, §1 item 7).
 
 mod staff_catalog;
+mod staff_record_fields;
 
 pub use staff_catalog::{
     AuthorityLine, FamilyLine, HubLine, InstanceLine, PillLine, StaffCatalog, WorkLine,
 };
+pub use staff_record_fields::{FieldEntry, FieldGroup, FieldValue, ItemFields, RecordFields};
 
 use askama::Template;
 use fluent_bundle::concurrent::FluentBundle;
