@@ -42,17 +42,18 @@
 
 16. `GET /equipe/acervo` exige sessão da equipe. A página inicial da equipe tem o link.
 17. Parâmetros: `q` (busca), `after` (cursor da listagem) e `from` (resultado inicial da busca). Cursor malformado ou com mais de 2.048 caracteres é lido como a primeira página.
-18. A última linha da página carrega a próxima com HTMX quando aparece na tela (`hx-trigger="revealed"`), e o servidor devolve só as linhas. Sem JavaScript, a mesma linha é um link para a próxima página.
+18. A última linha da página carrega a próxima com HTMX quando aparece na tela (`hx-trigger="intersect once"`), e o servidor devolve só as linhas. Sem JavaScript, a mesma linha é um link para a próxima página.
 19. O formulário de busca troca a lista inteira com HTMX e muda a URL; sem JavaScript, é um GET comum.
 20. A pílula escreve o sinal por extenso, além da cor. Linhas fora da tela não são desenhadas (`content-visibility: auto`).
-21. Cada família é uma linha de **blocos ligados**: Matriz (só quando há Hub; sem Hub, a trilha não existe), Obra, Edição e Exemplares. Uma Obra fica na altura da sua primeira Edição, e o Hub na altura da sua primeira Obra.
-22. Cada bloco diz qual é o seu pai (`data-node`, `data-parent`) e o rótulo da ligação, escrito pelo servidor a partir do Fluent ("work", "edition", "items"). O módulo `elzevir-catalog.js` desenha uma curva Bézier por ligação num `<svg>` sobreposto à linha, sem capturar cliques. A curva é refeita por `ResizeObserver` quando a linha muda de tamanho ou aparece na tela, e para as linhas que o HTMX acrescenta. Todas as posições são lidas antes de qualquer escrita no SVG.
-23. Em tela estreita os blocos se empilham e as curvas não são desenhadas.
-24. Sem `<script>` nem `style` inline: a CSP proíbe. O foco 80/20 e a trilha são da tarefa 2.4.
+21. A tela segue o esboço v9: barra com a busca e a legenda dos sinais, cabeçalho fixo das colunas (Matriz, Obra, Edição, Exemplares) e fundo pontilhado. Cada família é uma linha da mesma grade de colunas, então as colunas se alinham entre famílias. A coluna da Matriz fica vazia quando a família não tem Hub.
+22. Cada bloco é um cartão com selo e cor do seu tipo ("Obra · por", "Edição · 2. ed."), com os campos rotulados: título uniforme no Hub; título da obra, agentes, classificação e assuntos na Obra; título, imprenta, ISBN e material na Edição. A Edição encontrada pela busca tem contorno destacado.
+23. Os exemplares são faixas empilhadas, uma por exemplar, com fundo, borda e ponto da cor do sinal e o nome do sinal para leitor de tela. Um último item "+N exemplares — ver todos" leva ao registro.
+24. Cada cartão e cada faixa dizem qual é o seu pai (`data-node`, `data-parent`) e o rótulo da ligação, escrito pelo servidor a partir do Fluent ("work", "edition", "items"). O módulo `elzevir-catalog.js` desenha, num `<svg>` sobreposto que não captura cliques, um ponto de conexão na borda direita de cada pai e uma curva Bézier até cada filho. O rótulo aparece uma vez por pai. As curvas são refeitas por `ResizeObserver` e para as linhas que o HTMX acrescenta, e todas as posições são lidas antes de qualquer escrita.
+25. Em tela estreita as colunas se empilham, o cabeçalho some e as curvas não são desenhadas. Não há `<script>` nem `style` inline, porque a CSP proíbe. O foco 80/20 e a trilha são da tarefa 2.4; a coluna de Autoridades, da 2.9; capas (§6.4), "+ Nova" (2.6) e os estados de circulação, depois.
 
 ### Desempenho
 
-25. Medido com `cargo bench -p elzevir --bench opac`, que monta 1 milhão de registros (o export da equipe repetido) e passa pelo roteador inteiro, com sessão e renderização. Numa máquina de 4 núcleos, em 2026-11-14, com 2.000 páginas cada:
+26. Medido com `cargo bench -p elzevir --bench opac`, que monta 1 milhão de registros (o export da equipe repetido) e passa pelo roteador inteiro, com sessão e renderização. Numa máquina de 4 núcleos, em 2026-11-14, com 2.000 páginas cada:
     - listagem, a partir de cursores espalhados pelo catálogo: p50 1,56 ms, p95 2,41 ms, p99 2,85 ms;
     - busca: p50 2,37 ms, p95 6,42 ms, p99 8,61 ms.
 

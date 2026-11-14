@@ -88,7 +88,6 @@ staff-catalog-title = Catalog
 staff-catalog-search-label = Search the catalog
 staff-catalog-search-placeholder = Title, author, subject, ISBN, call number, barcode
 staff-catalog-search-button = Search
-staff-catalog-hub = Hub
 staff-catalog-next = More records
 staff-catalog-empty = Nothing to show.
 staff-catalog-count = { $count ->
@@ -96,14 +95,29 @@ staff-catalog-count = { $count ->
    *[other] { $count } records found
 }
 staff-catalog-more-items = { $count ->
-    [one] +1 item
-   *[other] +{ $count } items
+    [one] +1 item — see all
+   *[other] +{ $count } items — see all
 }
 shelf-signal-available = Available
 shelf-signal-not-for-loan = Not for loan
 shelf-signal-out-of-circulation = Out of circulation
-staff-catalog-work = Work
-staff-catalog-instance = Edition
 staff-cord-work = work
 staff-cord-edition = edition
 staff-cord-items = items
+staff-catalog-legend = Item status
+staff-column-hub = Hub
+staff-column-work = Work
+staff-column-instance = Edition
+staff-column-items = Items
+staff-badge-hub = Hub
+staff-badge-work = Work
+staff-badge-instance = Edition
+staff-field-uniform-title = Uniform title
+staff-field-work-title = Work title
+staff-field-agents = Agents
+staff-field-classification = Classification
+staff-field-subjects = Subjects
+staff-field-title = Title
+staff-field-imprint = Imprint
+staff-field-isbn = ISBN
+staff-field-material = Material

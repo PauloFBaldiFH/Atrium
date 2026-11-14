@@ -2,80 +2,108 @@
 {% block title %}{{ t.get("staff-catalog-title") }}{% endblock %}
 {% block head %}<script type="module" src="/static/elzevir-catalog.js"></script>{% endblock %}
 {% block content %}
-<div class="wide">
-<h1>{{ t.get("staff-catalog-title") }}</h1>
-<form class="search" action="/equipe/acervo" method="get" role="search"
-      hx-get="/equipe/acervo" hx-target="#families" hx-select="#families" hx-swap="outerHTML" hx-push-url="true">
-  <label for="q">{{ t.get("staff-catalog-search-label") }}</label>
-  <input id="q" name="q" type="search" value="{{ query }}" maxlength="256" autofocus
-         placeholder="{{ t.get("staff-catalog-search-placeholder") }}">
-  <button type="submit">{{ t.get("staff-catalog-search-button") }}</button>
-</form>
+<div class="wide catalog">
+<div class="catalog-bar">
+  <form class="search catalog-search" action="/equipe/acervo" method="get" role="search"
+        hx-get="/equipe/acervo" hx-target="#families" hx-select="#families" hx-swap="outerHTML" hx-push-url="true">
+    <label class="visually-hidden" for="q">{{ t.get("staff-catalog-search-label") }}</label>
+    <input id="q" name="q" type="search" value="{{ query }}" maxlength="256" autofocus
+           placeholder="{{ t.get("staff-catalog-search-placeholder") }}">
+    <button type="submit">{{ t.get("staff-catalog-search-button") }}</button>
+  </form>
+  <ul class="legend" aria-label="{{ t.get("staff-catalog-legend") }}">
+    <li><span class="dot signal-available"></span>{{ t.get("shelf-signal-available") }}</li>
+    <li><span class="dot signal-not-for-loan"></span>{{ t.get("shelf-signal-not-for-loan") }}</li>
+    <li><span class="dot signal-out-of-circulation"></span>{{ t.get("shelf-signal-out-of-circulation") }}</li>
+  </ul>
+</div>
+<div class="columns" aria-hidden="true">
+  <span>{{ t.get("staff-column-hub") }}</span>
+  <span>{{ t.get("staff-column-work") }}</span>
+  <span>{{ t.get("staff-column-instance") }}</span>
+  <span>{{ t.get("staff-column-items") }}</span>
+</div>
 <section id="families" aria-live="polite">
   {% if let Some(text) = count_text() %}<p class="muted">{{ text }}</p>{% endif %}
   <ol class="families">
   {% block rows %}
   {% for family in rows %}
     <li class="family">
-      {% if let Some(hub) = family.hub %}
-      <div class="block block-hub" data-node="h{{ hub.id }}">
-        <span class="block-kind">{{ t.get("staff-catalog-hub") }}</span>
-        <strong>{{ hub.title }}</strong>
+      <div class="track track-hub">
+        {% if let Some(hub) = family.hub %}
+        <article class="card card-hub" data-node="h{{ hub.id }}">
+          <span class="badge">{{ t.get("staff-badge-hub") }}</span>
+          <span class="field-label">{{ t.get("staff-field-uniform-title") }}</span>
+          <strong class="field-value">{{ hub.title }}</strong>
+        </article>
+        {% endif %}
       </div>
-      {% endif %}
-      <div class="family-works">
-      {% for work in family.works %}
-        <div class="family-work">
-          <div class="block block-work" data-node="w{{ work.id }}"
-               {% if let Some(hub) = family.hub %}data-parent="h{{ hub.id }}" data-cord-label="{{ t.get("staff-cord-work") }}"{% endif %}>
-            <span class="block-kind">{{ t.get("staff-catalog-work") }}</span>
-            <strong>{{ work.title }}</strong>
-            {% if let Some(contributor) = work.contributor %}<div>{{ contributor }}</div>{% endif %}
-            <div class="muted">
-              {% if let Some(classification) = work.classification %}<span class="call-number">{{ classification }}</span>{% endif %}
-              {% for language in work.languages %}<span>{{ language }}</span>{% endfor %}
-            </div>
-            <div>
-              {% for subject in work.subjects %}<span class="chip">{{ subject }}</span>{% endfor %}
-              {% if work.more_subjects > 0 %}<span class="muted">+{{ work.more_subjects }}</span>{% endif %}
-            </div>
-          </div>
-          <div class="family-instances">
-          {% for instance in work.instances %}
-            <div class="family-instance">
-              <div class="block block-instance{% if instance.found %} found{% endif %}" data-node="i{{ instance.id }}"
-                   data-parent="w{{ work.id }}" data-cord-label="{{ t.get("staff-cord-edition") }}">
-                <span class="block-kind">{% if let Some(material) = instance.material %}{{ t.get(material) }}{% else %}{{ t.get("staff-catalog-instance") }}{% endif %}</span>
-                <a href="/record/{{ instance.id }}">{{ instance.title }}</a>
-                <div class="muted">
-                  {% if let Some(edition) = instance.edition %}<span>{{ edition }}</span>{% endif %}
-                  {% if let Some(imprint) = instance.imprint %}<span>{{ imprint }}</span>{% endif %}
-                  {% if let Some(isbn) = instance.isbn %}<span class="isbn">{{ isbn }}</span>{% endif %}
-                </div>
-              </div>
-              <div class="block block-items" data-parent="i{{ instance.id }}" data-cord-label="{{ t.get("staff-cord-items") }}">
-                <ul class="pills">
-                  {% for pill in instance.pills %}
-                  <li class="pill {{ pill.signal_class }}"><span class="signal">{{ t.get(pill.signal_key) }}</span> {{ pill.text }}</li>
-                  {% endfor %}
-                  {% if instance.more_items > 0 %}
-                  <li class="pill more">{{ instance.more_items_text(t) }}</li>
-                  {% endif %}
-                  {% if instance.items == 0 %}
-                  <li class="muted">{{ t.get("opac-availability-no-items") }}</li>
-                  {% endif %}
-                </ul>
-              </div>
-            </div>
+      <div class="track track-work">
+        {% for work in family.works %}
+        <article class="card card-work" data-node="w{{ work.id }}"
+                 {% if let Some(hub) = family.hub %}data-parent="h{{ hub.id }}" data-cord-label="{{ t.get("staff-cord-work") }}"{% endif %}>
+          <span class="badge">{{ t.get("staff-badge-work") }}{% for language in work.languages %} · {{ language }}{% endfor %}</span>
+          <span class="field-label">{{ t.get("staff-field-work-title") }}</span>
+          <strong class="field-value">{{ work.title }}</strong>
+          {% if let Some(contributor) = work.contributor %}
+          <span class="field-label">{{ t.get("staff-field-agents") }}</span>
+          <span class="field-value">{{ contributor }}</span>
+          {% endif %}
+          {% if let Some(classification) = work.classification %}
+          <span class="field-label">{{ t.get("staff-field-classification") }}</span>
+          <span class="field-value call-number">{{ classification }}</span>
+          {% endif %}
+          {% if !work.subjects.is_empty() %}
+          <span class="field-label">{{ t.get("staff-field-subjects") }}</span>
+          <span class="field-value">
+            {% for subject in work.subjects %}<span class="chip">{{ subject }}</span>{% endfor %}
+            {% if work.more_subjects > 0 %}<span class="chip chip-more">+{{ work.more_subjects }}</span>{% endif %}
+          </span>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+      <div class="track track-instance">
+        {% for work in family.works %}{% for instance in work.instances %}
+        <article class="card card-instance{% if instance.found %} found{% endif %}" data-node="i{{ instance.id }}"
+                 data-parent="w{{ work.id }}" data-cord-label="{{ t.get("staff-cord-edition") }}">
+          <span class="badge">{{ t.get("staff-badge-instance") }}{% if let Some(edition) = instance.edition %} · {{ edition }}{% endif %}</span>
+          <span class="field-label">{{ t.get("staff-field-title") }}</span>
+          <a class="field-value" href="/record/{{ instance.id }}"><strong>{{ instance.title }}</strong></a>
+          {% if let Some(imprint) = instance.imprint %}
+          <span class="field-label">{{ t.get("staff-field-imprint") }}</span>
+          <span class="field-value">{{ imprint }}</span>
+          {% endif %}
+          {% if let Some(isbn) = instance.isbn %}
+          <span class="field-label">{{ t.get("staff-field-isbn") }}</span>
+          <span class="field-value isbn">{{ isbn }}</span>
+          {% endif %}
+          {% if let Some(material) = instance.material %}
+          <span class="field-label">{{ t.get("staff-field-material") }}</span>
+          <span class="field-value">{{ t.get(material) }}</span>
+          {% endif %}
+        </article>
+        {% endfor %}{% endfor %}
+      </div>
+      <div class="track track-items">
+        {% for work in family.works %}{% for instance in work.instances %}
+        <ul class="items-stack">
+          {% for pill in instance.pills %}
+          <li class="item-row {{ pill.signal_class }}" data-parent="i{{ instance.id }}" data-cord-label="{{ t.get("staff-cord-items") }}"><span class="dot {{ pill.signal_class }}"></span><span class="visually-hidden">{{ t.get(pill.signal_key) }}:</span> {{ pill.text }}</li>
           {% endfor %}
-          </div>
-        </div>
-      {% endfor %}
+          {% if instance.more_items > 0 %}
+          <li class="item-row item-more" data-parent="i{{ instance.id }}" data-cord-label="{{ t.get("staff-cord-items") }}"><a href="/record/{{ instance.id }}">{{ instance.more_items_text(t) }}</a></li>
+          {% endif %}
+          {% if instance.items == 0 %}
+          <li class="item-row item-none" data-parent="i{{ instance.id }}" data-cord-label="{{ t.get("staff-cord-items") }}">{{ t.get("opac-availability-no-items") }}</li>
+          {% endif %}
+        </ul>
+        {% endfor %}{% endfor %}
       </div>
     </li>
   {% endfor %}
   {% if let Some(url) = next_url %}
-    <li class="next-page" hx-get="{{ url }}" hx-trigger="revealed" hx-swap="outerHTML">
+    <li class="next-page" hx-get="{{ url }}" hx-trigger="intersect once" hx-swap="outerHTML">
       <a href="{{ url }}">{{ t.get("staff-catalog-next") }}</a>
     </li>
   {% endif %}

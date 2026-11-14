@@ -15,18 +15,27 @@ function draw(family) {
   // Every position is read before anything is written, so layout runs once.
   const box = family.getBoundingClientRect();
   const links = [];
+  const ports = new Map();
   for (const child of family.querySelectorAll("[data-parent]")) {
-    const parent = family.querySelector(`[data-node="${child.dataset.parent}"]`);
+    const id = child.dataset.parent;
+    const parent = family.querySelector(`[data-node="${id}"]`);
     if (!parent) continue;
     const from = parent.getBoundingClientRect();
     const to = child.getBoundingClientRect();
     if (to.left < from.right) continue; // stacked on a narrow screen: no cord
+    const port = {
+      x: from.right - box.left,
+      y: from.top + Math.min(from.height / 2, 48) - box.top,
+    };
+    // One label per parent: its children share the meaning of the link.
+    const labelled = ports.has(id);
+    ports.set(id, port);
     links.push({
-      x1: from.right - box.left,
-      y1: from.top + from.height / 2 - box.top,
+      x1: port.x,
+      y1: port.y,
       x2: to.left - box.left,
       y2: to.top + Math.min(to.height / 2, 24) - box.top,
-      label: child.dataset.cordLabel || "",
+      label: labelled ? "" : child.dataset.cordLabel || "",
     });
   }
   svg.setAttribute("width", String(box.width));
@@ -42,12 +51,18 @@ function draw(family) {
     shapes.push(path);
     if (link.label) {
       const text = document.createElementNS(SVG, "text");
-      text.setAttribute("x", String((link.x1 + link.x2) / 2));
-      text.setAttribute("y", String((link.y1 + link.y2) / 2 - 4));
-      text.setAttribute("text-anchor", "middle");
+      text.setAttribute("x", String(link.x1 + 6));
+      text.setAttribute("y", String(link.y1 - 7));
       text.textContent = link.label;
       shapes.push(text);
     }
+  }
+  for (const port of ports.values()) {
+    const dot = document.createElementNS(SVG, "circle");
+    dot.setAttribute("cx", String(port.x));
+    dot.setAttribute("cy", String(port.y));
+    dot.setAttribute("r", "5");
+    shapes.push(dot);
   }
   svg.replaceChildren(...shapes);
 }

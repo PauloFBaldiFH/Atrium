@@ -10,11 +10,26 @@
   --elzevir-color-error: #a1261f;
   --elzevir-color-available: #1d7a46;
   --elzevir-color-border: #d5dae3;
-  --elzevir-color-signal-available: #1d7a46;
-  --elzevir-color-signal-not-for-loan: #6b7280;
-  --elzevir-color-signal-out: #b42318;
-  --elzevir-color-found: #fff6d6;
-  --elzevir-color-cord: #9aa6bb;
+  --elzevir-color-signal-available: #16a34a;
+  --elzevir-color-signal-not-for-loan: #64748b;
+  --elzevir-color-signal-out: #dc2626;
+  --elzevir-color-available-bg: #dcfce7;
+  --elzevir-color-available-text: #14532d;
+  --elzevir-color-nfl-bg: #f1f5f9;
+  --elzevir-color-nfl-text: #334155;
+  --elzevir-color-out-bg: #fee2e2;
+  --elzevir-color-out-text: #7f1d1d;
+  --elzevir-color-found: #fde68a;
+  --elzevir-color-cord: #64748b;
+  --elzevir-color-cord-port: #2563eb;
+  --elzevir-color-canvas: #f8fafc;
+  --elzevir-color-canvas-dot: #cbd5e1;
+  --elzevir-color-hub: #475569;
+  --elzevir-color-hub-bg: #f1f5f9;
+  --elzevir-color-work: #2563eb;
+  --elzevir-color-work-bg: #eff6ff;
+  --elzevir-color-instance: #16a34a;
+  --elzevir-color-instance-bg: #f0fdf4;
   --elzevir-radius: 6px;
   --elzevir-space: 1rem;
   --elzevir-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -31,11 +46,26 @@
     --elzevir-color-error: #f08c84;
     --elzevir-color-available: #6fcf97;
     --elzevir-color-border: #2c3445;
-    --elzevir-color-signal-available: #6fcf97;
-    --elzevir-color-signal-not-for-loan: #a3abba;
-    --elzevir-color-signal-out: #f08c84;
-    --elzevir-color-found: #3a3216;
-    --elzevir-color-cord: #4b5670;
+    --elzevir-color-signal-available: #4ade80;
+    --elzevir-color-signal-not-for-loan: #94a3b8;
+    --elzevir-color-signal-out: #f87171;
+    --elzevir-color-available-bg: #14301f;
+    --elzevir-color-available-text: #bbf7d0;
+    --elzevir-color-nfl-bg: #1e2533;
+    --elzevir-color-nfl-text: #cbd5e1;
+    --elzevir-color-out-bg: #3b1717;
+    --elzevir-color-out-text: #fecaca;
+    --elzevir-color-found: #a16207;
+    --elzevir-color-cord: #64748b;
+    --elzevir-color-cord-port: #60a5fa;
+    --elzevir-color-canvas: #0d1118;
+    --elzevir-color-canvas-dot: #263041;
+    --elzevir-color-hub: #94a3b8;
+    --elzevir-color-hub-bg: #1e2533;
+    --elzevir-color-work: #60a5fa;
+    --elzevir-color-work-bg: #172338;
+    --elzevir-color-instance: #4ade80;
+    --elzevir-color-instance-bg: #14301f;
   }
 }
 
@@ -101,56 +131,90 @@ button {
 .items th, .items td { text-align: left; padding: 0.25rem 0.5rem; border-bottom: 1px solid var(--elzevir-color-border); }
 @media (max-width: 30rem) { .record-fields { grid-template-columns: 1fr; } }
 
-/* Staff catalog listing: one row per family (docs/specs/catalogo/listagem.md). */
-main:has(.wide) { max-width: none; }
+/* Staff catalog listing (docs/specs/catalogo/listagem.md, sketch v9): one grid row per
+   family with a track per kind of block; cords are drawn over it by elzevir-catalog.js. */
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+main:has(.wide) { max-width: none; padding: 0; }
+.catalog {
+  --catalog-tracks: 0.85fr 1.25fr 1.3fr 1.55fr;
+  --catalog-gap: 2.75rem;
+  min-height: 100vh;
+  padding: 0 var(--elzevir-space) var(--elzevir-space);
+  background-color: var(--elzevir-color-canvas);
+  background-image: radial-gradient(var(--elzevir-color-canvas-dot) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.catalog-bar { display: flex; flex-wrap: wrap; gap: var(--elzevir-space); align-items: center; justify-content: space-between; padding: var(--elzevir-space) 0; }
+.catalog-search { display: flex; gap: 0.5rem; flex: 1 1 28rem; }
+.catalog-search input { flex: 1; background: var(--elzevir-color-bg); }
+.legend { list-style: none; display: flex; gap: 0.75rem; padding: 0; margin: 0; font-size: 0.8rem; color: var(--elzevir-color-muted); }
+.legend li { display: flex; align-items: center; gap: 0.3rem; }
+.dot { display: inline-block; flex: none; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--signal-border, var(--elzevir-color-border)); }
+.columns {
+  position: sticky; top: 0; z-index: 5;
+  display: grid; grid-template-columns: var(--catalog-tracks); gap: var(--catalog-gap);
+  padding: 0.4rem 0;
+  background: var(--elzevir-color-canvas);
+  border-bottom: 1px solid var(--elzevir-color-border);
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--elzevir-color-muted);
+}
 .families { list-style: none; padding: 0; margin: 0; }
 .family {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--elzevir-color-border);
-  content-visibility: auto;
-  contain-intrinsic-size: auto 8rem;
-}
-/* Each family is a row of linked blocks: Hub (when there is one), Work, Edition, Items.
-   Nested flex rows keep a parent block level with its first child; the cords are drawn
-   over them by elzevir-catalog.js. */
-.family { position: relative; display: flex; gap: 2.5rem; align-items: flex-start; }
-.family > .cords { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
-.cords path { fill: none; stroke: var(--elzevir-color-cord); stroke-width: 1.5; }
-.cords text { fill: var(--elzevir-color-muted); font-size: 0.7rem; }
-.family-works, .family-instances { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; min-width: 0; }
-.family-work, .family-instance { display: flex; gap: 2.5rem; align-items: flex-start; }
-.block {
   position: relative;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--elzevir-color-border);
-  border-radius: var(--elzevir-radius);
+  display: grid; grid-template-columns: var(--catalog-tracks); gap: var(--catalog-gap);
+  align-items: start;
+  padding: 1.25rem 0;
+  border-bottom: 1px dashed var(--elzevir-color-border);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 14rem;
+}
+.family > .cords { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 2; }
+.cords path { fill: none; stroke: var(--elzevir-color-cord); stroke-width: 1.6; }
+.cords circle { fill: var(--elzevir-color-cord-port); }
+.cords text { fill: var(--elzevir-color-muted); font-size: 0.68rem; paint-order: stroke; stroke: var(--elzevir-color-canvas); stroke-width: 3px; }
+.track { display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; }
+.card {
+  position: relative; z-index: 1;
+  display: grid; gap: 0.1rem;
+  padding: 0.7rem 0.85rem;
+  border: 2px solid var(--card-border);
+  border-radius: 14px;
   background: var(--elzevir-color-bg);
+  box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.07), 0 1px 3px rgba(15, 23, 42, 0.05);
+  overflow-wrap: anywhere;
 }
-.block-kind { display: block; color: var(--elzevir-color-muted); font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.04em; }
-.block-hub { flex: 0 0 11rem; }
-.block-work { flex: 0 0 17rem; }
-.block-instance { flex: 0 0 17rem; }
-.block-items { flex: 1; min-width: 12rem; }
-.block-instance.found { background: var(--elzevir-color-found); }
-.block .muted span + span::before { content: " · "; }
-.pills { list-style: none; display: flex; flex-wrap: wrap; gap: 0.25rem; padding: 0; margin: 0.25rem 0 0; }
-.pill {
-  padding: 0 0.5rem;
-  border: 1px solid var(--elzevir-color-border);
-  border-left: 0.35rem solid var(--elzevir-color-border);
-  border-radius: var(--elzevir-radius);
-  font-size: 0.9em;
-  font-variant-numeric: tabular-nums;
+.card-hub { --card-border: var(--elzevir-color-hub); --card-tint: var(--elzevir-color-hub-bg); border-style: dashed; }
+.card-work { --card-border: var(--elzevir-color-work); --card-tint: var(--elzevir-color-work-bg); }
+.card-instance { --card-border: var(--elzevir-color-instance); --card-tint: var(--elzevir-color-instance-bg); }
+.card-instance.found { box-shadow: 0 0 0 3px var(--elzevir-color-found); }
+.badge {
+  justify-self: start; margin-bottom: 0.35rem; padding: 0.1rem 0.5rem;
+  border-radius: 6px; background: var(--card-tint); color: var(--card-border);
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
 }
-.pill .signal { font-weight: 600; }
-.signal-available { border-left-color: var(--elzevir-color-signal-available); }
-.signal-available .signal { color: var(--elzevir-color-signal-available); }
-.signal-not-for-loan { border-left-color: var(--elzevir-color-signal-not-for-loan); }
-.signal-not-for-loan .signal { color: var(--elzevir-color-signal-not-for-loan); }
-.signal-out-of-circulation { border-left-color: var(--elzevir-color-signal-out); }
-.signal-out-of-circulation .signal { color: var(--elzevir-color-signal-out); }
+.field-label { margin-top: 0.3rem; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--elzevir-color-muted); }
+.field-value { font-size: 0.92rem; }
+.card .chip { margin: 0.15rem 0.2rem 0 0; padding: 0 0.45rem; border-radius: 999px; background: var(--elzevir-color-canvas); font-size: 0.75rem; }
+.card .chip-more { color: var(--elzevir-color-work); border-color: var(--elzevir-color-work); }
+.items-stack { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; padding: 0; margin: 0 0 0.6rem; }
+.item-row {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 0.45rem;
+  padding: 0.35rem 0.65rem;
+  border: 1.5px solid var(--signal-border, var(--elzevir-color-border));
+  border-radius: 9px;
+  background: var(--signal-bg, var(--elzevir-color-bg));
+  color: var(--signal-text, inherit);
+  font-size: 0.82rem; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.item-more { border-style: dashed; justify-content: center; }
+.item-none { color: var(--elzevir-color-muted); font-weight: 400; }
+.signal-available { --signal-bg: var(--elzevir-color-available-bg); --signal-border: var(--elzevir-color-signal-available); --signal-text: var(--elzevir-color-available-text); }
+.signal-not-for-loan { --signal-bg: var(--elzevir-color-nfl-bg); --signal-border: var(--elzevir-color-signal-not-for-loan); --signal-text: var(--elzevir-color-nfl-text); }
+.signal-out-of-circulation { --signal-bg: var(--elzevir-color-out-bg); --signal-border: var(--elzevir-color-signal-out); --signal-text: var(--elzevir-color-out-text); }
 .next-page { padding: var(--elzevir-space) 0; text-align: center; }
 @media (max-width: 60rem) {
-  .family, .family-work, .family-instance { flex-direction: column; gap: 0.5rem; }
-  .block-hub, .block-work, .block-instance, .block-items { flex-basis: auto; width: 100%; }
+  .columns { display: none; }
+  .family { grid-template-columns: 1fr; gap: 0.75rem; }
+  .track-hub:empty { display: none; }
 }
