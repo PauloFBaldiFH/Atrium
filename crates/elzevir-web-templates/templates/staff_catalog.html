@@ -17,85 +17,122 @@
     <li><span class="dot signal-out-of-circulation"></span>{{ t.get("shelf-signal-out-of-circulation") }}</li>
   </ul>
 </div>
-<div class="columns" aria-hidden="true">
-  <span>{{ t.get("staff-column-hub") }}</span>
-  <span>{{ t.get("staff-column-work") }}</span>
-  <span>{{ t.get("staff-column-instance") }}</span>
-  <span>{{ t.get("staff-column-items") }}</span>
-</div>
 <section id="families" aria-live="polite">
-  {% if let Some(text) = count_text() %}<p class="muted">{{ text }}</p>{% endif %}
+  {% if let Some(text) = count_text() %}<p class="muted count">{{ text }}</p>{% endif %}
   <ol class="families">
   {% block rows %}
   {% for family in rows %}
-    <li class="family">
+    <li class="family{% if family.hub.is_none() %} no-hub{% endif %}">
+      <div class="track track-auth">
+        <div class="col-header">{{ t.get("staff-column-authorities") }}</div>
+        {% for authority in family.authorities %}
+        <article class="card card-auth" data-node="a{{ authority.key }}">
+          <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-agent") }}</span></div>
+          <div class="field-row">
+            <span class="field-label">{{ t.get("staff-field-authorized-name") }}</span>
+            <span class="field-value">{{ authority.name }}</span>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
       <div class="track track-hub">
+        <div class="col-header">{{ t.get("staff-column-hub") }}</div>
         {% if let Some(hub) = family.hub %}
         <article class="card card-hub" data-node="h{{ hub.id }}">
-          <span class="badge">{{ t.get("staff-badge-hub") }}</span>
-          <span class="field-label">{{ t.get("staff-field-uniform-title") }}</span>
-          <strong class="field-value">{{ hub.title }}</strong>
+          <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-hub") }}</span></div>
+          <div class="field-row">
+            <span class="field-label">{{ t.get("staff-field-uniform-title") }}</span>
+            <span class="field-value title-main">{{ hub.title }}</span>
+          </div>
         </article>
         {% endif %}
       </div>
       <div class="track track-work">
+        <div class="col-header">{{ t.get("staff-column-work") }}</div>
         {% for work in family.works %}
         <article class="card card-work" data-node="w{{ work.id }}"
-                 {% if let Some(hub) = family.hub %}data-parent="h{{ hub.id }}" data-cord-label="{{ t.get("staff-cord-work") }}"{% endif %}>
-          <span class="badge">{{ t.get("staff-badge-work") }}{% for language in work.languages %} · {{ language }}{% endfor %}</span>
-          <span class="field-label">{{ t.get("staff-field-work-title") }}</span>
-          <strong class="field-value">{{ work.title }}</strong>
+                 data-parent="{% if let Some(hub) = family.hub %}h{{ hub.id }} {% endif %}{% if let Some(key) = work.authority %}a{{ key }}{% endif %}"
+                 data-cord-label="{% if family.hub.is_some() %}{{ t.get("staff-cord-work") }}|{% endif %}{% if work.authority.is_some() %}{{ t.get("staff-cord-written-by") }}{% endif %}">
+          <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-work") }}{% for language in work.languages %} • {{ language }}{% endfor %}</span></div>
+          <div class="field-row">
+            <span class="field-label">{{ t.get("staff-field-work-title") }}</span>
+            <span class="field-value title-main">{{ work.title }}</span>
+          </div>
           {% if let Some(contributor) = work.contributor %}
-          <span class="field-label">{{ t.get("staff-field-agents") }}</span>
-          <span class="field-value">{{ contributor }}</span>
+          <div class="field-row">
+            <span class="field-label">{{ t.get("staff-field-agents") }}</span>
+            <span class="field-value">{{ contributor }}</span>
+          </div>
           {% endif %}
           {% if let Some(classification) = work.classification %}
-          <span class="field-label">{{ t.get("staff-field-classification") }}</span>
-          <span class="field-value call-number">{{ classification }}</span>
+          <div class="field-row">
+            <span class="field-label">{{ t.get("staff-field-classification") }}</span>
+            <span class="field-value call-number">{{ classification }}</span>
+          </div>
           {% endif %}
           {% if !work.subjects.is_empty() %}
-          <span class="field-label">{{ t.get("staff-field-subjects") }}</span>
-          <span class="field-value">
-            {% for subject in work.subjects %}<span class="chip">{{ subject }}</span>{% endfor %}
-            {% if work.more_subjects > 0 %}<span class="chip chip-more">+{{ work.more_subjects }}</span>{% endif %}
-          </span>
+          <div class="field-row">
+            <span class="field-label">{{ t.get("staff-field-subjects") }}</span>
+            <span class="field-value chips">
+              {% for subject in work.subjects %}<span class="chip">{{ subject }}</span>{% endfor %}
+              {% if work.more_subjects > 0 %}<span class="chip more">+{{ work.more_subjects }}</span>{% endif %}
+            </span>
+          </div>
           {% endif %}
         </article>
         {% endfor %}
       </div>
       <div class="track track-instance">
+        <div class="col-header">{{ t.get("staff-column-instance") }}</div>
         {% for work in family.works %}{% for instance in work.instances %}
         <article class="card card-instance{% if instance.found %} found{% endif %}" data-node="i{{ instance.id }}"
                  data-parent="w{{ work.id }}" data-cord-label="{{ t.get("staff-cord-edition") }}">
-          <span class="badge">{{ t.get("staff-badge-instance") }}{% if let Some(edition) = instance.edition %} · {{ edition }}{% endif %}</span>
-          <span class="field-label">{{ t.get("staff-field-title") }}</span>
-          <a class="field-value" href="/record/{{ instance.id }}"><strong>{{ instance.title }}</strong></a>
-          {% if let Some(imprint) = instance.imprint %}
-          <span class="field-label">{{ t.get("staff-field-imprint") }}</span>
-          <span class="field-value">{{ imprint }}</span>
-          {% endif %}
-          {% if let Some(isbn) = instance.isbn %}
-          <span class="field-label">{{ t.get("staff-field-isbn") }}</span>
-          <span class="field-value isbn">{{ isbn }}</span>
-          {% endif %}
-          {% if let Some(material) = instance.material %}
-          <span class="field-label">{{ t.get("staff-field-material") }}</span>
-          <span class="field-value">{{ t.get(material) }}</span>
-          {% endif %}
+          <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-instance") }}{% if let Some(edition) = instance.edition %} • {{ edition }}{% endif %}</span></div>
+          <div class="instance-body">
+            <div class="book-cover cover-{{ instance.cover }}" aria-hidden="true">
+              <span>{{ instance.title }}</span>
+              {% if let Some(isbn) = instance.isbn %}<span class="isbn-tag">ISBN<br>{{ isbn }}</span>{% endif %}
+            </div>
+            <div class="field-list">
+              <div class="field-row">
+                <span class="field-label">{{ t.get("staff-field-title") }}</span>
+                <a class="field-value title-main" href="/record/{{ instance.id }}">{{ instance.title }}</a>
+              </div>
+              {% if let Some(imprint) = instance.imprint %}
+              <div class="field-row">
+                <span class="field-label">{{ t.get("staff-field-imprint") }}</span>
+                <span class="field-value">{{ imprint }}</span>
+              </div>
+              {% endif %}
+              {% if let Some(isbn) = instance.isbn %}
+              <div class="field-row">
+                <span class="field-label">{{ t.get("staff-field-isbn") }}</span>
+                <span class="field-value isbn">{{ isbn }}</span>
+              </div>
+              {% endif %}
+              {% if let Some(material) = instance.material %}
+              <div class="field-row">
+                <span class="field-label">{{ t.get("staff-field-material") }}</span>
+                <span class="field-value">{{ t.get(material) }}</span>
+              </div>
+              {% endif %}
+            </div>
+          </div>
         </article>
         {% endfor %}{% endfor %}
       </div>
       <div class="track track-items">
+        <div class="col-header">{{ t.get("staff-column-items") }}</div>
         {% for work in family.works %}{% for instance in work.instances %}
         <ul class="items-stack">
           {% for pill in instance.pills %}
-          <li class="item-row {{ pill.signal_class }}" data-parent="i{{ instance.id }}" data-cord-label="{{ t.get("staff-cord-items") }}"><span class="dot {{ pill.signal_class }}"></span><span class="visually-hidden">{{ t.get(pill.signal_key) }}:</span> {{ pill.text }}</li>
+          <li class="item-pill {{ pill.signal_class }}" data-parent="i{{ instance.id }}"{% if loop.first %} data-cord-label="{{ t.get("staff-cord-items") }}"{% endif %}><span class="dot {{ pill.signal_class }}"></span><span class="visually-hidden">{{ t.get(pill.signal_key) }}:</span> <span class="item-pill-text">{{ pill.text }}</span></li>
           {% endfor %}
           {% if instance.more_items > 0 %}
-          <li class="item-row item-more" data-parent="i{{ instance.id }}" data-cord-label="{{ t.get("staff-cord-items") }}"><a href="/record/{{ instance.id }}">{{ instance.more_items_text(t) }}</a></li>
+          <li class="item-pill more-items" data-parent="i{{ instance.id }}"><a href="/record/{{ instance.id }}">{{ instance.more_items_text(t) }}</a></li>
           {% endif %}
           {% if instance.items == 0 %}
-          <li class="item-row item-none" data-parent="i{{ instance.id }}" data-cord-label="{{ t.get("staff-cord-items") }}">{{ t.get("opac-availability-no-items") }}</li>
+          <li class="item-pill item-none" data-parent="i{{ instance.id }}">{{ t.get("opac-availability-no-items") }}</li>
           {% endif %}
         </ul>
         {% endfor %}{% endfor %}

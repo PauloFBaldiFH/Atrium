@@ -14,7 +14,7 @@ use elzevir_app::listing::{
     WorkRow,
 };
 use elzevir_web_templates::{
-    FamilyLine, HubLine, InstanceLine, PillLine, StaffCatalog, WorkLine, url_encode,
+    AuthorityLine, FamilyLine, HubLine, InstanceLine, PillLine, StaffCatalog, WorkLine, url_encode,
 };
 use serde::Deserialize;
 
@@ -123,14 +123,36 @@ fn family_line(row: &FamilyRow) -> FamilyLine {
         }),
         _ => None,
     };
+    let mut authorities: Vec<AuthorityLine> = Vec::new();
+    let works = row
+        .works
+        .iter()
+        .map(|work| {
+            let authority = work.main_contributor.as_ref().map(|name| {
+                if let Some(known) = authorities.iter().find(|a| &a.name == name) {
+                    known.key
+                } else {
+                    let key = authorities.len();
+                    authorities.push(AuthorityLine {
+                        key,
+                        name: name.clone(),
+                    });
+                    key
+                }
+            });
+            work_line(work, authority)
+        })
+        .collect();
     FamilyLine {
+        authorities,
         hub,
-        works: row.works.iter().map(work_line).collect(),
+        works,
     }
 }
 
-fn work_line(work: &WorkRow) -> WorkLine {
+fn work_line(work: &WorkRow, authority: Option<usize>) -> WorkLine {
     WorkLine {
+        authority,
         id: work.id.0,
         title: work.title.clone(),
         contributor: work.main_contributor.clone(),
@@ -156,6 +178,9 @@ fn instance_line(instance: &InstanceRow) -> InstanceLine {
         isbn: instance.isbn.clone(),
         material: instance.material_type.map(material_key),
         found: instance.matched == Match::Found,
+        // Neighbouring editions get different colours; the cover itself is a placeholder
+        // until real covers arrive (UI spec §6.4).
+        cover: u8::try_from(instance.id.0.rem_euclid(4)).unwrap_or(0),
         items: instance.items,
         pills: instance.pills.iter().map(pill_line).collect(),
         more_items: instance.more_items,

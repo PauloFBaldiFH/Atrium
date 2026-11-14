@@ -37,10 +37,21 @@ impl StaffCatalog<'_> {
 /// One family row.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FamilyLine {
+    /// The agents shown in the authorities column, each once.
+    pub authorities: Vec<AuthorityLine>,
     /// The Hub, for a Hub family.
     pub hub: Option<HubLine>,
     /// Its Works.
     pub works: Vec<WorkLine>,
+}
+
+/// An agent in the authorities column, linked to the Works it contributes to.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AuthorityLine {
+    /// Position in the row, to link the cords.
+    pub key: usize,
+    /// Heading.
+    pub name: String,
 }
 
 /// The Hub block of a row.
@@ -61,6 +72,8 @@ pub struct WorkLine {
     pub title: String,
     /// Main contributor.
     pub contributor: Option<String>,
+    /// The [`AuthorityLine::key`] of the main contributor.
+    pub authority: Option<usize>,
     /// Classification number.
     pub classification: Option<String>,
     /// Language codes.
@@ -90,6 +103,8 @@ pub struct InstanceLine {
     pub material: Option<&'static str>,
     /// Whether the search found it.
     pub found: bool,
+    /// Which of the cover colours it gets.
+    pub cover: u8,
     /// Items in all.
     pub items: usize,
     /// The pills shown.

@@ -199,12 +199,12 @@ async fn the_first_page_shows_families_with_pills_and_a_loader_for_the_next() {
     let response = send(&app, get("/equipe/acervo", Some(&session), None)).await;
     assert_eq!(response.status(), StatusCode::OK);
     let html = body(response).await;
-    assert_eq!(html.matches(r#"<li class="family">"#).count(), 30);
+    assert_eq!(html.matches(r#"<li class="family no-hub">"#).count(), 30);
     assert!(html.contains("Dom Casmurro"));
     assert!(html.contains("Assis, Machado de"));
     assert!(html.contains("Garnier, 1899"));
     assert!(html.contains(
-        r#"<span class="visually-hidden">Out of circulation:</span> MAIN | 869.3 A848d | T1</li>"#
+        r#"<span class="visually-hidden">Out of circulation:</span> <span class="item-pill-text">MAIN | 869.3 A848d | T1</span></li>"#
     ));
     assert!(html.contains(r#"hx-get="/equipe/acervo?after=w30.030""#));
     // Blocks name their parent, for the cords drawn by the page's script.
@@ -212,6 +212,10 @@ async fn the_first_page_shows_families_with_pills_and_a_loader_for_the_next() {
     assert!(html.contains(r#"data-node="i10""#));
     assert!(html.contains(r#"data-parent="w1" data-cord-label="edition""#));
     assert!(html.contains(r#"data-parent="i10" data-cord-label="items""#));
+    // The main contributor is an authority block, parent of its Work with a dashed cord.
+    assert!(html.contains(r#"<article class="card card-auth" data-node="a0">"#));
+    assert!(html.contains(r#"data-parent="a0""#));
+    assert!(html.contains(r#"data-cord-label="written by""#));
     let script = send(&app, get("/static/elzevir-catalog.js", None, None)).await;
     assert_eq!(script.status(), StatusCode::OK);
     assert!(body(script).await.contains("ResizeObserver"));
@@ -224,7 +228,7 @@ async fn the_first_page_shows_families_with_pills_and_a_loader_for_the_next() {
     .await;
     let rows = body(next).await;
     assert!(!rows.contains("<html"));
-    assert_eq!(rows.matches(r#"<li class="family">"#).count(), 5);
+    assert_eq!(rows.matches(r#"<li class="family no-hub">"#).count(), 5);
     assert!(!rows.contains("hx-trigger"));
 }
 
@@ -241,7 +245,7 @@ async fn a_search_shows_the_families_found_on_the_same_screen() {
     let html = body(response).await;
     assert!(html.contains("<html"));
     assert!(html.contains("One record found"));
-    assert_eq!(html.matches(r#"<li class="family">"#).count(), 1);
+    assert_eq!(html.matches(r#"<li class="family no-hub">"#).count(), 1);
     assert!(html.contains(r#"<article class="card card-instance found""#));
     assert!(html.contains("Livro 002"));
 }
