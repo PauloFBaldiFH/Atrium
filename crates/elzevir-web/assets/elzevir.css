@@ -137,8 +137,9 @@ button {
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 main:has(.wide) { max-width: none; padding: 0; }
 .catalog {
-  --catalog-tracks: 1.05fr 0.85fr 1.25fr 1.3fr 1.55fr;
-  --catalog-tracks-no-hub: 1.15fr 1.4fr 1.45fr 1.7fr;
+  /* Work and Instance get the most room: they carry the fields the cataloguer reads. */
+  --catalog-tracks: 0.8fr 0.7fr 1.55fr 1.7fr 1.35fr;
+  --catalog-tracks-no-hub: 0.85fr 1.7fr 1.85fr 1.45fr;
   /* Wider than the sketch's 20px so the cords and their labels have room. */
   --catalog-gap: 56px;
   --auth-accent: #7e22ce; --auth-bg: #faf5ff; --auth-border: #d8b4fe; --auth-pill: #f3e8ff;
@@ -193,8 +194,8 @@ main:has(.wide) { max-width: none; padding: 0; }
 .family.no-hub > .track-hub { display: none; }
 .catalog.hide-hub .family { grid-template-columns: var(--catalog-tracks-no-hub); }
 .catalog.hide-hub .track-hub { display: none; }
-.catalog.hide-auth .family { grid-template-columns: 0.85fr 1.25fr 1.3fr 1.55fr; }
-.catalog.hide-auth .family.no-hub, .catalog.hide-auth.hide-hub .family { grid-template-columns: 1.4fr 1.45fr 1.7fr; }
+.catalog.hide-auth .family { grid-template-columns: 0.75fr 1.7fr 1.85fr 1.45fr; }
+.catalog.hide-auth .family.no-hub, .catalog.hide-auth.hide-hub .family { grid-template-columns: 1.8fr 1.95fr 1.5fr; }
 .catalog.hide-auth .track-auth { display: none; }
 .column-toggles { display: flex; gap: 6px; }
 .column-toggles .toggle {
