@@ -9,6 +9,7 @@ use axum::http::{HeaderMap, StatusCode};
 use axum::response::{IntoResponse, Redirect, Response};
 use elzevir_app::catalog::{ItemData, NewRecord};
 use elzevir_app::export::stored_record;
+use elzevir_app::staff::Permission;
 use elzevir_domain::catalog::{
     AgentKind, IdentifierKind, InstanceId, NoteKind, SubjectKind, WorkRelationKind,
 };
@@ -17,6 +18,7 @@ use serde::Deserialize;
 
 use crate::catalog::signal;
 use crate::opac::material_key;
+use crate::record_form::{instance_form, work_form};
 use crate::staff::current_session;
 use crate::{AppState, render};
 
@@ -41,9 +43,9 @@ pub(crate) async fn record_fields(
     Path(id): Path<i64>,
     Query(params): Query<FieldsParams>,
 ) -> Response {
-    if current_session(&state, &headers).is_none() {
+    let Some(session) = current_session(&state, &headers) else {
         return Redirect::to("/equipe/login").into_response();
-    }
+    };
     let level = match params.level.as_deref() {
         None | Some("instance") => Level::Instance,
         Some("work") => Level::Work,
@@ -59,6 +61,9 @@ pub(crate) async fn record_fields(
         }
     };
     let t = &state.inner.i18n;
+    if session.identity.can(Permission::Cataloguing) {
+        return form(&state, t, level, InstanceId(id), &record).await;
+    }
     let page = match level {
         Level::Work => RecordFields {
             t,
@@ -333,5 +338,25 @@ const fn relation_key(kind: WorkRelationKind) -> &'static str {
         WorkRelationKind::PartOf => "staff-relation-part-of",
         WorkRelationKind::SupplementTo => "staff-relation-supplement-to",
         WorkRelationKind::ContinuationOf => "staff-relation-continuation-of",
+    }
+}
+
+/// The form for a cataloguer (docs/specs/catalogo/edicao.md, item 25), with the versions
+/// the edit must cite.
+async fn form(
+    state: &AppState,
+    t: &I18n,
+    level: Level,
+    instance: InstanceId,
+    record: &NewRecord,
+) -> Response {
+    let catalog = Arc::clone(&state.inner.opac.catalog);
+    let Ok(Ok(Some(view))) = tokio::task::spawn_blocking(move || catalog.instance(instance)).await
+    else {
+        return (StatusCode::SERVICE_UNAVAILABLE, "catalog unavailable").into_response();
+    };
+    match level {
+        Level::Work => render(&work_form(t, record, view.work.0, view.work_version)),
+        Level::Instance => render(&instance_form(t, record, instance.0, view.version)),
     }
 }

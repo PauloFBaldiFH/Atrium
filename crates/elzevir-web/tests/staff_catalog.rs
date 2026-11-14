@@ -13,7 +13,8 @@ use axum::Router;
 use axum::body::Body;
 use axum::http::{Request, Response, StatusCode, header};
 use elzevir_app::catalog::{
-    ItemData, ItemStatus, ItemView, NewContribution, NewIdentifier, NewInstance, NewNote, NewRecord,
+    InstanceView, ItemData, ItemStatus, ItemView, NewContribution, NewIdentifier, NewInstance,
+    NewNote, NewRecord,
 };
 use elzevir_app::export::StoredRecord;
 use elzevir_app::listing::{Family, FamilyCursor, FamilyHead, FamilyInstance, FamilyWork};
@@ -160,6 +161,39 @@ fn hit(n: i64) -> SearchHit {
     }
 }
 
+/// The reader the form asks for versions: Instance 10 of Work 1, both at version 1.
+fn catalog_with_record() -> common::Catalog {
+    let catalog = common::Catalog::default();
+    let view = InstanceView {
+        id: InstanceId(10),
+        version: 1,
+        work: WorkId(1),
+        work_version: 1,
+        work_title: "Dom Casmurro".to_owned(),
+        hub: None,
+        work_material_type: Some(MaterialType::Book),
+        material_type: Some(MaterialType::Book),
+        relations: Vec::new(),
+        title: "Dom Casmurro".to_owned(),
+        publisher: None,
+        date: None,
+        classification: None,
+        summary: None,
+        audience: None,
+        contributors: Vec::new(),
+        subjects: Vec::new(),
+        identifiers: Vec::new(),
+        notes: Vec::new(),
+        languages: Vec::new(),
+    };
+    catalog
+        .records
+        .lock()
+        .unwrap()
+        .insert(10, (1, view, Vec::new()));
+    catalog
+}
+
 fn app() -> Router {
     let accounts = Accounts(vec![
         StaffAccount {
@@ -185,7 +219,7 @@ fn app() -> Router {
         Arc::new(accounts),
         Arc::new(NoCounters),
         OpacPorts {
-            catalog: Arc::new(common::Catalog::default()),
+            catalog: Arc::new(catalog_with_record()),
             index: Arc::new(common::Index(vec![hit(2)])),
         },
         StaffPorts {
@@ -425,7 +459,8 @@ async fn a_focused_block_loads_every_filled_field() {
     let refused = send(&app, get("/equipe/acervo/instancia/10/campos", None, None)).await;
     assert_eq!(refused.status(), StatusCode::SEE_OTHER);
 
-    let session = signed_in(&app).await;
+    // Bia reads the catalog but does not catalogue: she gets the fields to read.
+    let session = signed_in_as(&app, "bia").await;
     let page = body(send(&app, get("/equipe/acervo", Some(&session), None)).await).await;
     assert!(page.contains(r#"data-fields="/equipe/acervo/instancia/10/campos?level=work""#));
     assert!(page.contains(r#"data-fields="/equipe/acervo/instancia/10/campos?level=instance""#));
@@ -582,4 +617,53 @@ async fn an_invalid_or_stale_edit_is_refused_field_by_field() {
     .await;
     assert_eq!(stale.status(), StatusCode::CONFLICT);
     assert_eq!(body(stale).await, r#"{"current":2}"#);
+}
+
+#[tokio::test]
+async fn a_cataloguer_gets_the_focused_block_as_a_form_in_profile_order() {
+    let app = app();
+    let ana = signed_in(&app).await;
+    let work = body(
+        send(
+            &app,
+            get(
+                "/equipe/acervo/instancia/10/campos?level=work",
+                Some(&ana),
+                None,
+            ),
+        )
+        .await,
+    )
+    .await;
+    assert!(work.contains(r#"data-endpoint="/equipe/acervo/obra/1" data-version="1""#));
+    assert!(work.contains(r#"data-change="Contributions""#));
+    assert!(work.contains(r#"value="Assis, Machado de, 1839-1908""#));
+    // Filled fields first, then the empty ones of the profile.
+    let (filled, empty) = work.split_once("form-empty").unwrap();
+    assert!(filled.contains(r#"data-change="Summary""#));
+    assert!(empty.contains(r#"data-change="Audience""#));
+    assert!(empty.contains(r#"data-change="Subjects""#));
+
+    let instance = body(
+        send(
+            &app,
+            get(
+                "/equipe/acervo/instancia/10/campos?level=instance",
+                Some(&ana),
+                None,
+            ),
+        )
+        .await,
+    )
+    .await;
+    assert!(instance.contains(r#"data-endpoint="/equipe/acervo/instancia/10" data-version="1""#));
+    assert!(instance.contains(r#"value="9788535910667""#));
+    // A book's new identifier starts as an ISBN.
+    let identifiers = instance
+        .split(r#"data-change="Identifiers""#)
+        .nth(1)
+        .unwrap();
+    let blank = identifiers.split("<template>").nth(1).unwrap();
+    let blank = blank.split("</template>").next().unwrap();
+    assert!(blank.contains(r#"<option value="isbn" selected>"#));
 }

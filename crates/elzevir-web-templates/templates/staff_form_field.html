@@ -1,0 +1,34 @@
+<div class="form-field" data-change="{{ field.change }}" data-error="{{ field.error }}">
+  {% match field.input %}
+  {% when FormInput::Text { value, required } %}
+  <label class="form-label" data-shape="text"{% if *required %} data-required{% endif %}><span>{{ t.get(field.label_key) }}</span>
+    <input type="text" value="{{ value }}" maxlength="2000"></label>
+  {% when FormInput::LongText { value } %}
+  <label class="form-label" data-shape="text"><span>{{ t.get(field.label_key) }}</span>
+    <textarea rows="3" maxlength="10000">{{ value }}</textarea></label>
+  {% when FormInput::Select { value, options } %}
+  <label class="form-label" data-shape="select"><span>{{ t.get(field.label_key) }}</span>
+    <select>{% if value.is_empty() %}<option value="" selected></option>{% endif %}{% for option in options %}<option value="{{ option.value }}"{% if option.value == value.as_str() %} selected{% endif %}>{{ option.label }}</option>{% endfor %}</select></label>
+  {% when FormInput::Values { values } %}
+  <fieldset class="form-label" data-shape="values"><legend>{{ t.get(field.label_key) }}</legend>
+    <div class="form-rows">
+      {% for value in values %}<div class="form-row"><input type="text" value="{{ value }}" aria-label="{{ t.get(field.label_key) }}" maxlength="64"><button type="button" class="row-remove" data-action="remove-row" aria-label="{{ t.get("edit-remove-row") }}">×</button></div>{% endfor %}
+    </div>
+    <template><div class="form-row"><input type="text" value="" aria-label="{{ t.get(field.label_key) }}" maxlength="64"><button type="button" class="row-remove" data-action="remove-row" aria-label="{{ t.get("edit-remove-row") }}">×</button></div></template>
+    <button type="button" class="row-add" data-action="add-row">+ {{ t.get("edit-add-row") }}</button>
+  </fieldset>
+  {% when FormInput::Rows { rows, blank } %}
+  <fieldset class="form-label" data-shape="rows"><legend>{{ t.get(field.label_key) }}</legend>
+    <div class="form-rows">
+      {% for row in rows %}<div class="form-row">{% for cell in row %}{% include "staff_form_cell.html" %}{% endfor %}<button type="button" class="row-remove" data-action="remove-row" aria-label="{{ t.get("edit-remove-row") }}">×</button></div>{% endfor %}
+    </div>
+    <template><div class="form-row">{% for cell in blank %}{% include "staff_form_cell.html" %}{% endfor %}<button type="button" class="row-remove" data-action="remove-row" aria-label="{{ t.get("edit-remove-row") }}">×</button></div></template>
+    <button type="button" class="row-add" data-action="add-row">+ {{ t.get("edit-add-row") }}</button>
+  </fieldset>
+  {% when FormInput::Group { cells } %}
+  <fieldset class="form-label" data-shape="group"><legend>{{ t.get(field.label_key) }}</legend>
+    <div class="form-row">{% for cell in cells %}{% include "staff_form_cell.html" %}{% endfor %}</div>
+  </fieldset>
+  {% endmatch %}
+  <p class="field-error" hidden></p>
+</div>
