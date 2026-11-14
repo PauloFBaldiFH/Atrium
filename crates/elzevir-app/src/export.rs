@@ -170,6 +170,7 @@ fn same_description(a: &NewRecord, b: &NewRecord) -> bool {
         classification,
         classification_scheme,
         summary,
+        audience,
         languages,
         contributions,
         subjects,
@@ -184,6 +185,7 @@ fn same_description(a: &NewRecord, b: &NewRecord) -> bool {
         && *classification == b.classification
         && *classification_scheme == b.classification_scheme
         && *summary == b.summary
+        && *audience == b.audience
         && *languages == b.languages
         && *contributions == b.contributions
         && *subjects == b.subjects

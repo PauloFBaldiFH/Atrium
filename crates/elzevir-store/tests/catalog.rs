@@ -92,6 +92,7 @@ fn record(title: &str) -> NewRecord {
         classification: Some("869.3".to_owned()),
         classification_scheme: Some("ddc".to_owned()),
         summary: None,
+        audience: None,
         languages: vec!["por".to_owned(), "eng".to_owned()],
         contributions: vec![
             contribution("Assis, Machado de, 1839-1908", true),

@@ -59,6 +59,7 @@ fn view(id: i64, title: &str) -> InstanceView {
         date: Some("1995".to_owned()),
         classification: Some("310.62".to_owned()),
         summary: None,
+        audience: Some("Ensino médio.".to_owned()),
         contributors: Vec::new(),
         subjects: Vec::new(),
         identifiers: Vec::new(),
@@ -215,6 +216,7 @@ async fn a_record_shows_its_items_and_is_rendered_once_per_version() {
     assert!(html.contains("Available"));
     assert!(html.contains("Lost"));
     assert!(html.contains("<dt>Contents</dt>\n    <dd>Parte 1 -- Parte 2.</dd>"));
+    assert!(html.contains("<dt>Audience</dt><dd>Ensino médio.</dd>"));
     assert!(html.contains("<dt>Notes</dt>\n    <dd>Inclui índice.</dd>"));
     assert!(!html.contains("<Anuário>"));
     assert_eq!(catalog.reads.load(Ordering::SeqCst), 1);

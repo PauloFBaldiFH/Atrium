@@ -110,6 +110,9 @@ fn write_titles(out: &mut Record, model: &NewRecord, before: Option<&NewRecord>)
     if scalar(|r| &r.summary) {
         set_subfield(out, *b"520", *b"  ", b'a', model.summary.as_deref());
     }
+    if scalar(|r| &r.audience) {
+        set_subfield(out, *b"521", *b"  ", b'a', model.audience.as_deref());
+    }
     if scalar(|r| &r.instance.extent) {
         set_subfield(out, *b"300", *b"  ", b'a', instance.extent.as_deref());
         set_subfield(out, *b"300", *b"  ", b'b', None);

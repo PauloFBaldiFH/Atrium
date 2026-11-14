@@ -122,26 +122,33 @@ fn an_unchanged_record_goes_out_as_stored_even_when_it_could_not_be_rewritten() 
 }
 
 #[test]
-fn migration_6_reads_the_notes_of_older_databases() {
+fn migrations_6_and_7_read_the_notes_and_audience_of_older_databases() {
     let dir = tempfile::tempdir().unwrap();
     let store = imported(&dir);
     let notes = |store: &ElzevirStore| {
         store
             .readers()
             .read(|c| {
-                c.query_row("SELECT count(*) FROM instance_notes", [], |row| {
-                    row.get::<_, i64>(0)
-                })
+                c.query_row(
+                    "SELECT (SELECT count(*) FROM instance_notes),
+                            (SELECT count(audience) FROM works)",
+                    [],
+                    |row| Ok((row.get::<_, i64>(0)?, row.get::<_, i64>(1)?)),
+                )
             })
             .unwrap()
     };
     let before = notes(&store);
-    assert!(before > 0);
+    // The staff export has notes but no `521`; the audience backfill has a unit test.
+    assert!(before.0 > 0);
     drop(store);
-    // Back to schema 5, as a database created before notes existed.
+    // Back to schema 5, as a database created before notes and audience existed.
     let connection = rusqlite::Connection::open(dir.path().join("elzevir.db")).unwrap();
     connection
-        .execute_batch("DROP TABLE instance_notes; PRAGMA user_version = 5;")
+        .execute_batch(
+            "DROP TABLE instance_notes; ALTER TABLE works DROP COLUMN audience;
+             PRAGMA user_version = 5;",
+        )
         .unwrap();
     drop(connection);
 
@@ -152,6 +159,6 @@ fn migration_6_reads_the_notes_of_older_databases() {
     )
     .unwrap();
     assert_eq!(notes(&store), before);
-    // Without the notes, the export would drop the 500, 505 and 590 of every record.
+    // Without them, the export would drop the 500, 505, 590 and 521 of every record.
     assert_eq!(export(&store, 1024), STAFF_EXPORT);
 }

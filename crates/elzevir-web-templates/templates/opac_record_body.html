@@ -19,6 +19,7 @@
     {% endif %}
     {% if !languages.is_empty() %}<dt>{{ t.get("opac-record-languages") }}</dt><dd>{{ languages.join(", ") }}</dd>{% endif %}
     {% if let Some(summary) = summary %}<dt>{{ t.get("opac-record-summary") }}</dt><dd>{{ summary }}</dd>{% endif %}
+    {% if let Some(audience) = audience %}<dt>{{ t.get("opac-record-audience") }}</dt><dd>{{ audience }}</dd>{% endif %}
     {% if !contents.is_empty() %}
     <dt>{{ t.get("opac-record-contents") }}</dt>
     {% for note in contents %}<dd>{{ note }}</dd>{% endfor %}

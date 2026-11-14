@@ -345,7 +345,7 @@ A tarefa 1.12 adianta um pedaço da Fase 3 de propósito: ela valida, cedo e de 
 | # | Tarefa | Base | Pronto quando |
 |---|---|---|---|
 | 2.0 | Fixture de ida e volta com `952` repetido, `082`/`090` e acentos, exportada da equipe do oráculo com leitor fictício | Visão B.4 | Importar → exportar igual byte a byte; editar um campo mapeado muda só ele |
-| 2.1 | Lacunas do modelo usadas pelos perfis livro e periódico: notas (500, 505, 590), público-alvo (521), `instance_contributions`, `quarantined_at` | Spec de UI §10 | Migração 6, mapeamento MARC dos dois lados e teste de ida e volta para cada campo |
+| 2.1 | Lacunas do modelo usadas pelos perfis livro e periódico: notas (500, 505, 590) e público-alvo (521). `instance_contributions` passou para a 2.5 e `quarantined_at` para a mesclagem da Onda 2 (Paulo, 2026-11-14) | Spec de UI §10 | Migração 6, mapeamento MARC dos dois lados e teste de ida e volta para cada campo |
 | 2.2 | Comandos `catalog.update_work` e `catalog.update_instance` com `row_version` (`CatalogRefusal::Stale`), `audit_log`, `effect_outbox` e permissão de catalogação | Spec de UI §9 | Editar e exportar: o MARC muda só nos campos editados; edição concorrente recusada |
 | 2.3 | Onda 1a: listagem da equipe (linha-família só leitura, semáforo, busca e listagem na mesma tela) | Spec de UI §2, §8; 1.8, 1.9 | 1 milhão de registros: p95 < 50 ms por página no servidor |
 | 2.4 | Onda 1a: foco 80/20, cordinhas, trilha, `Esc` e atalhos de teclado | Spec de UI §3, §13 | Navegação completa só por teclado; transição sem quadro perdido em Chrome e Firefox |

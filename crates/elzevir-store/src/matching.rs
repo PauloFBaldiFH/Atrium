@@ -222,7 +222,8 @@ pub(crate) fn replace_description(
     connection
         .execute(
             "UPDATE works SET title = ?2, material_type = ?3, classification = ?4,
-                 classification_scheme = ?5, summary = ?6, row_version = row_version + 1
+                 classification_scheme = ?5, summary = ?6, audience = ?7,
+                 row_version = row_version + 1
              WHERE id = ?1",
             params![
                 work,
@@ -230,7 +231,8 @@ pub(crate) fn replace_description(
                 record.material_type.code(),
                 record.classification,
                 scheme,
-                record.summary
+                record.summary,
+                record.audience
             ],
         )
         .map_err(StoreError::from)?;

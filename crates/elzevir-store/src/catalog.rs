@@ -151,15 +151,16 @@ pub(crate) fn add_work_and_instance(
     connection
         .execute(
             "INSERT INTO works (title, material_type, hub_id, classification,
-                                classification_scheme, summary)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+                                classification_scheme, summary, audience)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
             params![
                 record.work_title,
                 record.material_type.code(),
                 record.hub.map(|hub| hub.0),
                 record.classification,
                 scheme,
-                record.summary
+                record.summary,
+                record.audience
             ],
         )
         .map_err(StoreError::from)?;
@@ -618,7 +619,7 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
         .query_row(
             "SELECT works.id, works.title, instances.title, publisher, date, works.hub_id,
                     works.material_type, instances.material_type, works.classification,
-                    works.summary
+                    works.summary, works.audience
              FROM instances JOIN works ON works.id = instances.work_id
              WHERE instances.id = ?1",
             params![id.0],
@@ -634,6 +635,7 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
                     material_type: row.get(7)?,
                     classification: row.get(8)?,
                     summary: row.get(9)?,
+                    audience: row.get(10)?,
                 })
             },
         )
@@ -695,6 +697,7 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
         date: row.date,
         classification: row.classification,
         summary: row.summary,
+        audience: row.audience,
         contributors,
         subjects,
         identifiers,
@@ -715,6 +718,7 @@ struct InstanceRow {
     material_type: Option<u8>,
     classification: Option<String>,
     summary: Option<String>,
+    audience: Option<String>,
 }
 
 fn material_type(code: Option<u8>) -> Result<Option<MaterialType>, ReadFailure> {
