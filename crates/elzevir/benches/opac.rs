@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! OPAC latency over a large catalog (task 1.9 criteria: p95 under 50 ms for a search and
-//! under 30 ms for a record, over one million records). Run with
+//! OPAC and staff listing latency over a large catalog (task 1.9 criteria: p95 under 50 ms
+//! for a search and under 30 ms for a record; task 2.3: p95 under 50 ms for a page of the
+//! staff listing, browsing or searching; all over one million records). Run with
 //! `cargo bench -p elzevir --bench opac`; `ELZEVIR_BENCH_RECORDS` sets the catalog size
 //! (default 1 000 000). Prints numbers; it asserts nothing, because speed depends on the
 //! machine.
@@ -22,14 +23,16 @@ use std::time::{Duration, Instant};
 
 use axum::Router;
 use axum::body::Body;
-use axum::http::{Request, StatusCode};
+use axum::http::{Request, StatusCode, header};
 use elzevir_app::catalog::CatalogCommand;
-use elzevir_app::commands::WriteCommand;
+use elzevir_app::commands::{StaffCommand, WriteCommand};
 use elzevir_app::import::{ImportOptions, import_marc21};
+use elzevir_app::listing::sort_key;
 use elzevir_app::marc_mapping::marc_to_bibframe;
 use elzevir_app::memory::{MemoryProbe, MemoryReport};
 use elzevir_app::parallelism::Parallelism;
 use elzevir_app::search::{IndexOptions, index_pending};
+use elzevir_app::staff::{Permission, hash_password};
 use elzevir_marc::{Field, Limits, MarcReader, Record};
 use elzevir_search::TantivyIndex;
 use elzevir_store::{ElzevirHandler, ElzevirStore, StoreConfig};
@@ -82,6 +85,120 @@ fn main() {
     ));
     let runtime = tokio::runtime::Runtime::new().unwrap();
     runtime.block_on(measure(&app, records));
+    create_account(&store);
+    let session = runtime.block_on(sign_in(&app));
+    runtime.block_on(measure_listing(&app, &session, records));
+}
+
+/// Creates the staff account the listing is measured with.
+fn create_account(store: &ElzevirStore) {
+    let password_hash = hash_password("bench-password").unwrap();
+    store
+        .submit(WriteCommand::Staff(StaffCommand::Create {
+            login: "bench".to_owned(),
+            password_hash,
+            permissions: [Permission::StaffInterface].into(),
+        }))
+        .unwrap()
+        .wait()
+        .unwrap();
+}
+
+/// Signs in; the session cookie.
+async fn sign_in(app: &Router) -> String {
+    let form = app
+        .clone()
+        .oneshot(Request::get("/equipe/login").body(Body::empty()).unwrap())
+        .await
+        .unwrap();
+    let login_cookie = cookie(&form, "elzevir_login_csrf");
+    let html = String::from_utf8(
+        form.into_body()
+            .collect()
+            .await
+            .unwrap()
+            .to_bytes()
+            .to_vec(),
+    )
+    .unwrap();
+    let csrf = html
+        .split(r#"name="csrf" value=""#)
+        .nth(1)
+        .and_then(|rest| rest.split('"').next())
+        .unwrap()
+        .to_owned();
+    let signed = app
+        .clone()
+        .oneshot(
+            Request::post("/equipe/login")
+                .header(header::COOKIE, login_cookie)
+                .header(header::CONTENT_TYPE, "application/x-www-form-urlencoded")
+                .body(Body::from(format!(
+                    "login=bench&password=bench-password&csrf={csrf}"
+                )))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    cookie(&signed, "elzevir_session")
+}
+
+/// The `name=value` part of the response cookie called `name`.
+fn cookie(response: &axum::http::Response<Body>, name: &str) -> String {
+    response
+        .headers()
+        .get_all(header::SET_COOKIE)
+        .iter()
+        .filter_map(|value| value.to_str().ok())
+        .find(|value| value.starts_with(&format!("{name}=")))
+        .and_then(|value| value.split(';').next())
+        .unwrap()
+        .to_owned()
+}
+
+/// Staff listing pages: browsing from cursors spread over the catalog, and searching.
+async fn measure_listing(app: &Router, session: &str, records: usize) {
+    let titles = titles(STAFF_EXPORT);
+    let mut browse = Vec::with_capacity(REQUESTS);
+    browse.push(time_as(app, "/equipe/acervo", session).await);
+    for n in 1..REQUESTS {
+        // A real cursor shape: a title's key and a Work id somewhere in the catalog.
+        let key = sort_key(titles.get(n % titles.len()).unwrap());
+        let work = (n * 7919) % records + 1;
+        let token = url_encode(&format!("w{work}.{key}"));
+        browse.push(time_as(app, &format!("/equipe/acervo?after={token}"), session).await);
+    }
+    report("staff listing, browse page", browse);
+    let queries: Vec<&str> = QUERIES
+        .lines()
+        .filter_map(|line| line.split('\t').next())
+        .collect();
+    let mut search = Vec::with_capacity(REQUESTS);
+    for n in 0..REQUESTS {
+        let query = url_encode(queries.get(n % queries.len()).unwrap());
+        let from = n / queries.len() % 3 * 30;
+        search.push(
+            time_as(
+                app,
+                &format!("/equipe/acervo?q={query}&from={from}"),
+                session,
+            )
+            .await,
+        );
+    }
+    report("staff listing, search page", search);
+}
+
+/// The Work titles (`245 $a`) of the export.
+fn titles(file: &[u8]) -> Vec<String> {
+    let mut titles = Vec::new();
+    let mut reader = MarcReader::new(file, Limits::default());
+    while let Some(record) = reader.next_record() {
+        let mut record = Record::from_ref(&record.unwrap());
+        record.marc21_to_utf8();
+        titles.push(marc_to_bibframe(&record, None).unwrap().work_title);
+    }
+    titles
 }
 
 /// A store and an index with `records` records.
@@ -165,12 +282,20 @@ async fn measure(app: &Router, records: usize) {
 }
 
 async fn time(app: &Router, uri: &str) -> Duration {
-    let started = Instant::now();
-    let response = app
-        .clone()
-        .oneshot(Request::get(uri).body(Body::empty()).unwrap())
-        .await
+    time_request(app, Request::get(uri).body(Body::empty()).unwrap(), uri).await
+}
+
+async fn time_as(app: &Router, uri: &str, session: &str) -> Duration {
+    let request = Request::get(uri)
+        .header(header::COOKIE, session)
+        .body(Body::empty())
         .unwrap();
+    time_request(app, request, uri).await
+}
+
+async fn time_request(app: &Router, request: Request<Body>, uri: &str) -> Duration {
+    let started = Instant::now();
+    let response = app.clone().oneshot(request).await.unwrap();
     assert_eq!(response.status(), StatusCode::OK, "{uri}");
     response.into_body().collect().await.unwrap();
     started.elapsed()
