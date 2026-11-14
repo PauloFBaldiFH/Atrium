@@ -213,6 +213,9 @@ const MIGRATIONS: &[&str] = &[
      ALTER TABLE hubs ADD COLUMN sort_key TEXT NOT NULL DEFAULT '';
      CREATE INDEX works_in_listing ON works (sort_key, id) WHERE hub_id IS NULL;
      CREATE INDEX hubs_in_listing ON hubs (sort_key, id);",
+    // 9: the staff account a command comes from (docs/specs/catalogo/edicao.md, item 18).
+    // No foreign key: the log keeps who did what after the account is gone.
+    "ALTER TABLE audit_log ADD COLUMN actor INTEGER;",
 ];
 
 /// The migration that creates `match_keys`.
@@ -448,7 +451,7 @@ mod catalog_tests {
         connection
             .execute_batch(
                 "DROP TABLE instance_notes; ALTER TABLE works DROP COLUMN audience;
-                 DROP INDEX works_in_listing; DROP INDEX hubs_in_listing; ALTER TABLE works DROP COLUMN sort_key; ALTER TABLE hubs DROP COLUMN sort_key; PRAGMA user_version = 5;",
+                 DROP INDEX works_in_listing; DROP INDEX hubs_in_listing; ALTER TABLE works DROP COLUMN sort_key; ALTER TABLE hubs DROP COLUMN sort_key; ALTER TABLE audit_log DROP COLUMN actor; PRAGMA user_version = 5;",
             )
             .unwrap();
         migrate(&mut connection).unwrap();

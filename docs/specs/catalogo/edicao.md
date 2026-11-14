@@ -33,6 +33,29 @@
 
 15. Todo comando de catálogo exige a permissão `cataloguing` (`WriteCommand::permission`); contas de equipe exigem `administration`. A checagem é feita onde o pedido da pessoa vira comando (rotas da equipe, tarefa 2.5); a escritora confia no que recebe. `elzevir staff add --cataloguing` concede a permissão.
 
+### Edição pela tela (tarefa 2.5)
+
+A tarefa 2.5 tem três partes, cada uma num PR:
+
+- **2.5a, escrita:** as rotas da equipe que viram comando, com quem editou no `audit_log`, validação e recusas por campo (itens 16 a 24).
+- **2.5b, formulário:** o bloco focado vira formulário no lugar, com os perfis livro e periódico e "Campos ainda não preenchidos" (spec de UI §4.1 e §4.2).
+- **2.5c, listas:** agentes, assuntos, idiomas e identificadores como *chips*, com autocompletar nas entidades existentes (spec de UI §4.1, itens 5 e 6).
+
+16. `POST /equipe/acervo/obra/{id}` edita a Obra e `POST /equipe/acervo/instancia/{id}` edita a Instância. O corpo é JSON: `{"version": n, "changes": [...]}`, com uma mudança por parte, no mesmo formato do comando gravado no `audit_log` (`{"Title": "..."}`, `{"Languages": ["por"]}`, `{"Summary": null}` para apagar). Assim o que a tela manda é o que fica registrado.
+17. A rota exige sessão da equipe (sem sessão: 401), o cabeçalho `X-Elzevir-Csrf` igual ao token da sessão (diferente: 403) e a permissão `cataloguing` (sem ela: 403). A checagem do item 15 é esta.
+18. O `audit_log` guarda a conta que editou (`audit_log.actor`, migração 9). Comandos que não vêm de uma pessoa da equipe (importação, linha de comando) ficam com `actor` vazio.
+19. Antes do comando, a validação confere o conteúdo e recusa tudo de uma vez, sem gravar nada, com uma mensagem por campo (resposta 422, `{"errors": [{"field": "...", "message": "..."}]}`):
+    - título da Obra e da Instância não ficam vazios (espaços nas pontas são tirados);
+    - ISBN tem 10 ou 13 dígitos com dígito verificador certo (hífens e espaços são ignorados e não gravados);
+    - ISSN tem 8 caracteres com dígito verificador certo e é gravado como `NNNN-NNNC`;
+    - código de idioma tem três letras minúsculas (MARC/ISO 639-2);
+    - texto vazio num campo opcional apaga o campo.
+20. `Stale` responde 409 com `{"current": n}`, e a tela mostra "alterado por outra pessoa; recarregar" sem fechar o formulário. Obra ou Instância inexistente responde 404.
+21. Edição aceita responde 200 com `{"version": n}` (a nova versão de quem foi editado) e o bloco relê os campos.
+22. Os textos das mensagens vêm do Fluent; o JSON leva a chave da mensagem e o texto já no idioma da interface.
+23. A validação é uma função pura da camada app (`validate_work_changes`, `validate_instance_changes`), testada sozinha; a rota só a chama.
+24. Edição da mesma parte duas vezes na mesma lista segue o item 4: vale a última.
+
 ## 2. Origem no Koha
 
 - Edição: `C4::Biblio::ModBiblio` (chamada pelo editor `cataloguing/addbiblio.pl`), que regrava o registro MARC inteiro a partir do formulário.
@@ -46,6 +69,4 @@ Testes: `crates/elzevir-store/tests/editing.rs` (comandos, versão, exportação
 
 ## 4. Fora desta parte
 
-- Quem editou: o `audit_log` guarda o comando, mas ainda não a conta da equipe. Entra com as rotas de edição (2.5).
 - Editar Hub, relações entre Obras e Itens (2.7, grade de exemplares).
-- Validação de conteúdo (título vazio, ISBN inválido): fica com os perfis de catalogação (2.5).

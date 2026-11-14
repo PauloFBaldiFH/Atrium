@@ -9,6 +9,7 @@ use axum::extract::{Path, Query, State};
 use axum::http::{HeaderMap, StatusCode, header};
 use axum::response::{Html, IntoResponse, Redirect, Response};
 use elzevir_app::catalog::ShelfSignal;
+use elzevir_app::editing::CatalogEditor;
 use elzevir_app::export::{
     ExportOptions, RecordExportError, RecordFormat, RecordSource, export_record,
 };
@@ -33,6 +34,8 @@ pub struct StaffPorts {
     pub listing: Arc<dyn CatalogListing>,
     /// Stored records, for exporting one.
     pub records: Arc<dyn RecordSource + Send + Sync>,
+    /// Edits from the screen (docs/specs/catalogo/edicao.md, items 16 to 24).
+    pub editor: Arc<dyn CatalogEditor + Send + Sync>,
 }
 
 /// Query string of `/equipe/acervo`.
@@ -59,9 +62,9 @@ pub(crate) async fn catalog(
     headers: HeaderMap,
     Query(params): Query<CatalogParams>,
 ) -> Response {
-    if current_session(&state, &headers).is_none() {
+    let Some(session) = current_session(&state, &headers) else {
         return Redirect::to("/equipe/login").into_response();
-    }
+    };
     let listing = Arc::clone(&state.inner.staff_ports.listing);
     let index = Arc::clone(&state.inner.opac.index);
     let read = tokio::task::spawn_blocking(move || {
@@ -88,6 +91,7 @@ pub(crate) async fn catalog(
     let page = match &page {
         Page::Browse(page) => StaffCatalog {
             t: &state.inner.i18n,
+            csrf: &session.csrf,
             query: "",
             total: None,
             rows: page.rows.iter().map(family_line).collect(),
@@ -98,6 +102,7 @@ pub(crate) async fn catalog(
         },
         Page::Search(page) => StaffCatalog {
             t: &state.inner.i18n,
+            csrf: &session.csrf,
             query: &page.query,
             total: Some(page.total),
             rows: opened(page.rows.iter().map(family_line).collect()),

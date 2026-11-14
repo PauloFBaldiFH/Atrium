@@ -106,6 +106,8 @@ impl<H: CommandHandler> Pending<H> {
 
 struct Request<H: CommandHandler> {
     command: H::Command,
+    /// The staff account the command comes from; `None` for imports and the command line.
+    actor: Option<i64>,
     reply: oneshot::Sender<Outcome<H>>,
 }
 
@@ -133,10 +135,18 @@ impl<H: CommandHandler> WriterHandle<H> {
         })
     }
 
-    pub(crate) fn submit(&self, command: H::Command) -> Result<Pending<H>, SubmitError> {
+    pub(crate) fn submit(
+        &self,
+        actor: Option<i64>,
+        command: H::Command,
+    ) -> Result<Pending<H>, SubmitError> {
         let queue = self.queue.as_ref().ok_or(SubmitError::Closed)?;
         let (reply, receiver) = oneshot::channel();
-        match queue.try_send(Request { command, reply }) {
+        match queue.try_send(Request {
+            command,
+            actor,
+            reply,
+        }) {
             Ok(()) => Ok(Pending { reply: receiver }),
             Err(TrySendError::Full(_)) => Err(SubmitError::Busy),
             Err(TrySendError::Disconnected(_)) => Err(SubmitError::Closed),
@@ -149,7 +159,11 @@ impl<H: CommandHandler> WriterHandle<H> {
         let queue = self.queue.as_ref().ok_or(SubmitError::Closed)?;
         let (reply, receiver) = oneshot::channel();
         queue
-            .send(Request { command, reply })
+            .send(Request {
+                command,
+                actor: None,
+                reply,
+            })
             .map_err(|_| SubmitError::Closed)?;
         Ok(Pending { reply: receiver })
     }
@@ -210,7 +224,7 @@ fn commit_batch<H: CommandHandler>(
     };
     let mut outcomes = Vec::with_capacity(batch.len());
     for request in batch {
-        let outcome = apply_one(&mut tx, handler, &request.command);
+        let outcome = apply_one(&mut tx, handler, request.actor, &request.command);
         outcomes.push((request.reply, outcome));
     }
     match tx.commit() {
@@ -231,14 +245,15 @@ fn commit_batch<H: CommandHandler>(
 fn apply_one<H: CommandHandler>(
     tx: &mut Transaction<'_>,
     handler: &mut H,
+    actor: Option<i64>,
     command: &H::Command,
 ) -> Outcome<H> {
     let savepoint = tx.savepoint().map_err(StoreError::from)?;
     let json = serde_json::to_string(command).map_err(StoreError::from)?;
     savepoint
         .execute(
-            "INSERT INTO audit_log (kind, command) VALUES (?1, ?2)",
-            params![H::kind(command), json],
+            "INSERT INTO audit_log (kind, command, actor) VALUES (?1, ?2, ?3)",
+            params![H::kind(command), json, actor],
         )
         .map_err(StoreError::from)?;
     let write = WriteTx {

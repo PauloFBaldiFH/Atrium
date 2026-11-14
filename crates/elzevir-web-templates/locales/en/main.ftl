@@ -194,3 +194,9 @@ staff-relation-part-of = part of
 staff-relation-supplement-to = supplement to
 staff-relation-continuation-of = continuation of
 staff-relation-work = Work { $id }
+
+## Editing refusals
+edit-error-title-empty = The title cannot be empty.
+edit-error-language-code = Use three-letter language codes, such as por or eng.
+edit-error-isbn = This ISBN is not valid: check the digits.
+edit-error-issn = This ISSN is not valid: check the digits.

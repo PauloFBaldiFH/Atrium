@@ -199,6 +199,7 @@ fn serve(data_dir: &Path, listen: SocketAddr, insecure_cookies: bool) -> Result<
     let staff_ports = StaffPorts {
         listing: Arc::clone(&store) as _,
         records: Arc::clone(&store) as _,
+        editor: Arc::clone(&store) as _,
     };
     let app = elzevir_web::router(AppState::new(
         store,

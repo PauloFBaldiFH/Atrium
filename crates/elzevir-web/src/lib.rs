@@ -7,6 +7,7 @@
 
 mod assets;
 mod catalog;
+mod editing;
 mod opac;
 mod record_fields;
 mod security;
@@ -106,6 +107,11 @@ pub fn router(state: AppState) -> Router {
         .route(
             "/equipe/acervo/instancia/{id}/marc",
             get(catalog::export_marc),
+        )
+        .route("/equipe/acervo/obra/{id}", post(editing::edit_work))
+        .route(
+            "/equipe/acervo/instancia/{id}",
+            post(editing::edit_instance),
         )
         .route(
             "/equipe/acervo/instancia/{id}/campos",

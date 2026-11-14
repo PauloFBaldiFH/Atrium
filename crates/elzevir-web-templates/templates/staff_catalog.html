@@ -2,7 +2,7 @@
 {% block title %}{{ t.get("staff-catalog-title") }}{% endblock %}
 {% block head %}<script type="module" src="/static/elzevir-catalog.js"></script>{% endblock %}
 {% block content %}
-<div class="wide catalog">
+<div class="wide catalog" data-csrf="{{ csrf }}">
 <div class="catalog-bar">
   <form class="search catalog-search" action="/equipe/acervo" method="get" role="search"
         hx-get="/equipe/acervo" hx-target="#families" hx-select="#families" hx-swap="outerHTML" hx-push-url="true">
