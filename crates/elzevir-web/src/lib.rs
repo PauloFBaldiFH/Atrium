@@ -98,6 +98,7 @@ pub fn router(state: AppState) -> Router {
         .route("/record/{id}", get(opac::record))
         .route("/static/elzevir.css", get(assets::stylesheet))
         .route("/static/htmx.min.js", get(assets::htmx))
+        .route("/static/elzevir-catalog.js", get(assets::catalog_script))
         .route("/equipe", get(staff::home))
         .route("/equipe/acervo", get(catalog::catalog))
         .route("/equipe/login", get(staff::login_form).post(staff::log_in))

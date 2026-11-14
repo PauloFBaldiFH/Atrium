@@ -205,6 +205,14 @@ async fn the_first_page_shows_families_with_pills_and_a_loader_for_the_next() {
     assert!(html.contains("Garnier, 1899"));
     assert!(html.contains(r#"<li class="pill signal-out-of-circulation"><span class="signal">Out of circulation</span> MAIN | 869.3 A848d | T1</li>"#));
     assert!(html.contains(r#"hx-get="/equipe/acervo?after=w30.030""#));
+    // Blocks name their parent, for the cords drawn by the page's script.
+    assert!(html.contains(r#"<script type="module" src="/static/elzevir-catalog.js"></script>"#));
+    assert!(html.contains(r#"data-node="i10""#));
+    assert!(html.contains(r#"data-parent="w1" data-cord-label="edition""#));
+    assert!(html.contains(r#"data-parent="i10" data-cord-label="items""#));
+    let script = send(&app, get("/static/elzevir-catalog.js", None, None)).await;
+    assert_eq!(script.status(), StatusCode::OK);
+    assert!(body(script).await.contains("ResizeObserver"));
 
     // The loader gets the rows alone: the last five families, and no further loader.
     let next = send(
@@ -232,7 +240,7 @@ async fn a_search_shows_the_families_found_on_the_same_screen() {
     assert!(html.contains("<html"));
     assert!(html.contains("One record found"));
     assert_eq!(html.matches(r#"<li class="family">"#).count(), 1);
-    assert!(html.contains(r#"<div class="instance found">"#));
+    assert!(html.contains(r#"<div class="block block-instance found""#));
     assert!(html.contains("Livro 002"));
 }
 

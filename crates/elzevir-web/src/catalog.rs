@@ -10,10 +10,11 @@ use axum::http::{HeaderMap, StatusCode};
 use axum::response::{Html, IntoResponse, Redirect, Response};
 use elzevir_app::catalog::ShelfSignal;
 use elzevir_app::listing::{
-    self, CatalogListing, FamilyCursor, FamilyRow, InstanceRow, ItemPill, Match, WorkRow,
+    self, CatalogListing, FamilyCursor, FamilyHead, FamilyRow, InstanceRow, ItemPill, Match,
+    WorkRow,
 };
 use elzevir_web_templates::{
-    FamilyLine, InstanceLine, PillLine, StaffCatalog, WorkLine, url_encode,
+    FamilyLine, HubLine, InstanceLine, PillLine, StaffCatalog, WorkLine, url_encode,
 };
 use serde::Deserialize;
 
@@ -115,14 +116,22 @@ pub(crate) async fn catalog(
 }
 
 fn family_line(row: &FamilyRow) -> FamilyLine {
+    let hub = match (row.cursor.head, &row.hub_title) {
+        (FamilyHead::Hub(id), Some(title)) => Some(HubLine {
+            id: id.0,
+            title: title.clone(),
+        }),
+        _ => None,
+    };
     FamilyLine {
-        hub_title: row.hub_title.clone(),
+        hub,
         works: row.works.iter().map(work_line).collect(),
     }
 }
 
 fn work_line(work: &WorkRow) -> WorkLine {
     WorkLine {
+        id: work.id.0,
         title: work.title.clone(),
         contributor: work.main_contributor.clone(),
         classification: work.classification.clone(),

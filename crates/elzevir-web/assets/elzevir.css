@@ -14,6 +14,7 @@
   --elzevir-color-signal-not-for-loan: #6b7280;
   --elzevir-color-signal-out: #b42318;
   --elzevir-color-found: #fff6d6;
+  --elzevir-color-cord: #9aa6bb;
   --elzevir-radius: 6px;
   --elzevir-space: 1rem;
   --elzevir-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -34,6 +35,7 @@
     --elzevir-color-signal-not-for-loan: #a3abba;
     --elzevir-color-signal-out: #f08c84;
     --elzevir-color-found: #3a3216;
+    --elzevir-color-cord: #4b5670;
   }
 }
 
@@ -108,13 +110,29 @@ main:has(.wide) { max-width: none; }
   content-visibility: auto;
   contain-intrinsic-size: auto 8rem;
 }
-.family-hub { font-weight: 600; margin-bottom: 0.25rem; }
-.family-hub .label { color: var(--elzevir-color-muted); font-weight: 400; }
-.family-work { display: grid; grid-template-columns: minmax(12rem, 1fr) 2fr; gap: var(--elzevir-space); }
-.family-work .muted span + span::before { content: " · "; }
-.instance { padding: 0.25rem 0.5rem; border-radius: var(--elzevir-radius); }
-.instance.found { background: var(--elzevir-color-found); }
-.instance .muted span + span::before { content: " · "; }
+/* Each family is a row of linked blocks: Hub (when there is one), Work, Edition, Items.
+   Nested flex rows keep a parent block level with its first child; the cords are drawn
+   over them by elzevir-catalog.js. */
+.family { position: relative; display: flex; gap: 2.5rem; align-items: flex-start; }
+.family > .cords { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.cords path { fill: none; stroke: var(--elzevir-color-cord); stroke-width: 1.5; }
+.cords text { fill: var(--elzevir-color-muted); font-size: 0.7rem; }
+.family-works, .family-instances { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; min-width: 0; }
+.family-work, .family-instance { display: flex; gap: 2.5rem; align-items: flex-start; }
+.block {
+  position: relative;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--elzevir-color-border);
+  border-radius: var(--elzevir-radius);
+  background: var(--elzevir-color-bg);
+}
+.block-kind { display: block; color: var(--elzevir-color-muted); font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.04em; }
+.block-hub { flex: 0 0 11rem; }
+.block-work { flex: 0 0 17rem; }
+.block-instance { flex: 0 0 17rem; }
+.block-items { flex: 1; min-width: 12rem; }
+.block-instance.found { background: var(--elzevir-color-found); }
+.block .muted span + span::before { content: " · "; }
 .pills { list-style: none; display: flex; flex-wrap: wrap; gap: 0.25rem; padding: 0; margin: 0.25rem 0 0; }
 .pill {
   padding: 0 0.5rem;
@@ -132,4 +150,7 @@ main:has(.wide) { max-width: none; }
 .signal-out-of-circulation { border-left-color: var(--elzevir-color-signal-out); }
 .signal-out-of-circulation .signal { color: var(--elzevir-color-signal-out); }
 .next-page { padding: var(--elzevir-space) 0; text-align: center; }
-@media (max-width: 40rem) { .family-work { grid-template-columns: 1fr; } }
+@media (max-width: 60rem) {
+  .family, .family-work, .family-instance { flex-direction: column; gap: 0.5rem; }
+  .block-hub, .block-work, .block-instance, .block-items { flex-basis: auto; width: 100%; }
+}

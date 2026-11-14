@@ -37,15 +37,26 @@ impl StaffCatalog<'_> {
 /// One family row.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FamilyLine {
-    /// The Hub's title, for a Hub family.
-    pub hub_title: Option<String>,
+    /// The Hub, for a Hub family.
+    pub hub: Option<HubLine>,
     /// Its Works.
     pub works: Vec<WorkLine>,
+}
+
+/// The Hub block of a row.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct HubLine {
+    /// Hub id, to link the cords.
+    pub id: i64,
+    /// Title.
+    pub title: String,
 }
 
 /// One Work in a row.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WorkLine {
+    /// Work id, to link the cords.
+    pub id: i64,
     /// Preferred title.
     pub title: String,
     /// Main contributor.

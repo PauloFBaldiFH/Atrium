@@ -6,7 +6,7 @@
 
 mod staff_catalog;
 
-pub use staff_catalog::{FamilyLine, InstanceLine, PillLine, StaffCatalog, WorkLine};
+pub use staff_catalog::{FamilyLine, HubLine, InstanceLine, PillLine, StaffCatalog, WorkLine};
 
 use askama::Template;
 use fluent_bundle::concurrent::FluentBundle;
