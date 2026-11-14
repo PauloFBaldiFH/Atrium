@@ -12,6 +12,8 @@ use unicode_normalization::UnicodeNormalization;
 use unicode_normalization::char::is_combining_mark;
 
 use crate::catalog::{CatalogReadError, ItemView, ShelfSignal};
+use crate::opac::MAX_QUERY_CHARS;
+use crate::search::{SearchError, SearchIndex};
 
 /// Families per page.
 pub const PAGE_SIZE: NonZeroUsize = match NonZeroUsize::new(30) {
@@ -63,6 +65,41 @@ pub struct FamilyCursor {
     pub sort_key: String,
     /// The family.
     pub head: FamilyHead,
+}
+
+/// Longest cursor token read; a longer one is refused (an explicit input limit).
+pub const MAX_TOKEN_CHARS: usize = 2048;
+
+impl FamilyCursor {
+    /// The cursor as text for a URL: `h` or `w`, the id, `.` and the sort key.
+    #[must_use]
+    pub fn token(&self) -> String {
+        let (kind, id) = match self.head {
+            FamilyHead::Hub(hub) => ('h', hub.0),
+            FamilyHead::Work(work) => ('w', work.0),
+        };
+        format!("{kind}{id}.{}", self.sort_key)
+    }
+
+    /// Reads a [`token`](Self::token); `None` when it is malformed or too long.
+    #[must_use]
+    pub fn from_token(token: &str) -> Option<Self> {
+        if token.chars().count() > MAX_TOKEN_CHARS {
+            return None;
+        }
+        let (head, sort_key) = token.split_once('.')?;
+        let kind = head.chars().next()?;
+        let id: i64 = head.get(1..)?.parse().ok()?;
+        let head = match kind {
+            'h' => FamilyHead::Hub(HubId(id)),
+            'w' => FamilyHead::Work(WorkId(id)),
+            _ => return None,
+        };
+        Some(Self {
+            sort_key: sort_key.to_owned(),
+            head,
+        })
+    }
 }
 
 /// One family as stored.
@@ -131,6 +168,14 @@ pub trait CatalogListing: Send + Sync {
         after: Option<&FamilyCursor>,
         limit: NonZeroUsize,
     ) -> Result<Vec<Family>, CatalogReadError>;
+
+    /// The families of these heads, in the given order. Heads that do not exist, and
+    /// Works that belong to a Hub, are left out.
+    ///
+    /// # Errors
+    ///
+    /// When storage fails or holds a value this build does not understand.
+    fn families(&self, heads: &[FamilyHead]) -> Result<Vec<Family>, CatalogReadError>;
 }
 
 /// One page of the listing.
@@ -151,6 +196,15 @@ pub struct FamilyRow {
     pub hub_title: Option<String>,
     /// Its Works.
     pub works: Vec<WorkRow>,
+}
+
+/// A search found this Instance (it comes first in its Work and is highlighted).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Match {
+    /// The search found it.
+    Found,
+    /// Shown because its family was found, or no search was made.
+    Family,
 }
 
 /// One Work in a row.
@@ -181,6 +235,8 @@ pub struct InstanceRow {
     pub id: InstanceId,
     /// Its record's version.
     pub version: i64,
+    /// Whether a search found it.
+    pub matched: Match,
     /// Title as on the publication.
     pub title: String,
     /// Edition statement.
@@ -240,22 +296,119 @@ pub fn browse<L: CatalogListing + ?Sized>(
         None
     };
     Ok(ListingPage {
-        rows: families.into_iter().map(row).collect(),
+        rows: families
+            .into_iter()
+            .map(|family| row(family, &[]))
+            .collect(),
         next,
     })
 }
 
-/// What a row shows of a stored family. Pure.
+/// Search hits read per page; they make at most [`PAGE_SIZE`] families.
+pub const HITS_PER_PAGE: usize = 60;
+
+/// Furthest hit a page can start from, so a crafted URL cannot make the index skip
+/// millions of documents.
+pub const MAX_FROM: usize = 10_000;
+
+/// One page of families found by a search.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SearchPage {
+    /// The query as used (trimmed and cut to [`MAX_QUERY_CHARS`]).
+    pub query: String,
+    /// Matching Instances in all.
+    pub total: usize,
+    /// The rows, best family first.
+    pub rows: Vec<FamilyRow>,
+    /// The hit the next page starts from, when there is one.
+    pub next: Option<usize>,
+}
+
+/// The listing could not answer.
+#[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+pub enum ListingError {
+    /// The index failed.
+    #[error(transparent)]
+    Search(#[from] SearchError),
+    /// The catalog failed.
+    #[error(transparent)]
+    Catalog(#[from] CatalogReadError),
+}
+
+/// The families of the Instances matching `query`, starting at hit `from`: hits are
+/// grouped by family (Hub, else Work), families ordered by their best hit, and the
+/// Instances found marked. A page ends before the hit that would start a family past
+/// [`PAGE_SIZE`], so no hit is skipped between pages.
+///
+/// # Errors
+///
+/// When the index or the catalog fails.
+pub fn search<I, L>(
+    index: &I,
+    listing: &L,
+    query: &str,
+    from: usize,
+) -> Result<SearchPage, ListingError>
+where
+    I: SearchIndex + ?Sized,
+    L: CatalogListing + ?Sized,
+{
+    let query: String = query.trim().chars().take(MAX_QUERY_CHARS).collect();
+    if query.is_empty() {
+        return Ok(SearchPage {
+            query,
+            total: 0,
+            rows: Vec::new(),
+            next: None,
+        });
+    }
+    let from = from.min(MAX_FROM);
+    let results = index.search(&query, from, HITS_PER_PAGE)?;
+    let mut heads: Vec<FamilyHead> = Vec::new();
+    let mut found: Vec<InstanceId> = Vec::new();
+    let mut used = 0;
+    for hit in &results.hits {
+        let head = hit.hub.map_or(FamilyHead::Work(hit.work), FamilyHead::Hub);
+        if !heads.contains(&head) {
+            if heads.len() == PAGE_SIZE.get() {
+                break;
+            }
+            heads.push(head);
+        }
+        found.push(hit.instance);
+        used += 1;
+    }
+    let after = from.saturating_add(used);
+    let next = (after < results.total && after <= MAX_FROM).then_some(after);
+    let rows = listing
+        .families(&heads)?
+        .into_iter()
+        .map(|family| row(family, &found))
+        .collect();
+    Ok(SearchPage {
+        query,
+        total: results.total,
+        rows,
+        next,
+    })
+}
+
+/// What a row shows of a stored family; the Instances in `found` come first in their
+/// Work, marked. Pure.
 #[must_use]
-pub fn row(family: Family) -> FamilyRow {
+pub fn row(family: Family, found: &[InstanceId]) -> FamilyRow {
     FamilyRow {
         cursor: family.cursor,
         hub_title: family.hub_title,
-        works: family.works.into_iter().map(work_row).collect(),
+        works: family
+            .works
+            .into_iter()
+            .map(|work| work_row(work, found))
+            .collect(),
     }
 }
 
-fn work_row(work: FamilyWork) -> WorkRow {
+fn work_row(work: FamilyWork, found: &[InstanceId]) -> WorkRow {
     let more_subjects = work.subjects.len().saturating_sub(SUBJECTS_PER_WORK);
     let mut subjects = work.subjects;
     subjects.truncate(SUBJECTS_PER_WORK);
@@ -267,11 +420,27 @@ fn work_row(work: FamilyWork) -> WorkRow {
         languages: work.languages,
         subjects,
         more_subjects,
-        instances: work.instances.into_iter().map(instance_row).collect(),
+        instances: {
+            let mut instances: Vec<InstanceRow> = work
+                .instances
+                .into_iter()
+                .map(|instance| {
+                    let matched = if found.contains(&instance.id) {
+                        Match::Found
+                    } else {
+                        Match::Family
+                    };
+                    instance_row(instance, matched)
+                })
+                .collect();
+            // Stable: found first, each group in id order.
+            instances.sort_by_key(|instance| instance.matched != Match::Found);
+            instances
+        },
     }
 }
 
-fn instance_row(instance: FamilyInstance) -> InstanceRow {
+fn instance_row(instance: FamilyInstance, matched: Match) -> InstanceRow {
     let items = instance.items.len();
     let mut pills: Vec<ItemPill> = instance.items.into_iter().map(pill).collect();
     let available = pills
@@ -287,6 +456,7 @@ fn instance_row(instance: FamilyInstance) -> InstanceRow {
     InstanceRow {
         id: instance.id,
         version: instance.version,
+        matched,
         title: instance.title,
         edition: instance.edition,
         publisher: instance.publisher,
@@ -315,6 +485,7 @@ fn pill(item: ItemView) -> ItemPill {
 mod tests {
     use super::*;
     use crate::catalog::ItemStatus;
+    use crate::search::SearchHit;
 
     #[test]
     fn sort_keys_ignore_case_accents_and_punctuation() {
@@ -380,7 +551,7 @@ mod tests {
                 item(6, "0006", ok),
             ],
         };
-        let row = instance_row(instance);
+        let row = instance_row(instance, Match::Family);
         let ids: Vec<i64> = row.pills.iter().map(|pill| pill.id.0).collect();
         assert_eq!(ids, [5, 4, 2, 6]);
         assert_eq!((row.items, row.available, row.more_items), (6, 4, 2));
@@ -399,6 +570,14 @@ mod tests {
                 .iter()
                 .filter(|family| after.is_none_or(|after| &family.cursor > after))
                 .take(limit.get())
+                .cloned()
+                .collect())
+        }
+
+        fn families(&self, heads: &[FamilyHead]) -> Result<Vec<Family>, CatalogReadError> {
+            Ok(heads
+                .iter()
+                .filter_map(|head| self.0.iter().find(|family| family.cursor.head == *head))
                 .cloned()
                 .collect())
         }
@@ -431,6 +610,127 @@ mod tests {
         }
         let expected: Vec<FamilyHead> = (1..=65).map(|n| FamilyHead::Work(WorkId(n))).collect();
         assert_eq!(seen, expected);
+    }
+
+    #[test]
+    fn cursor_tokens_round_trip_and_refuse_garbage() {
+        let cursor = FamilyCursor {
+            sort_key: "dom casmurro. 2".to_owned(),
+            head: FamilyHead::Hub(HubId(7)),
+        };
+        assert_eq!(cursor.token(), "h7.dom casmurro. 2");
+        assert_eq!(FamilyCursor::from_token(&cursor.token()), Some(cursor));
+        for garbage in ["", "w", "x7.a", "w.a", "wx.a", "w7"] {
+            assert_eq!(FamilyCursor::from_token(garbage), None, "{garbage}");
+        }
+        let long = format!("w1.{}", "a".repeat(MAX_TOKEN_CHARS));
+        assert_eq!(FamilyCursor::from_token(&long), None);
+    }
+
+    struct Hits(Vec<SearchHit>);
+
+    impl SearchIndex for Hits {
+        fn cursor(&self) -> Result<i64, SearchError> {
+            Ok(0)
+        }
+
+        fn apply(&self, _: crate::search::IndexBatch) -> Result<(), SearchError> {
+            Ok(())
+        }
+
+        fn search(
+            &self,
+            _: &str,
+            offset: usize,
+            limit: usize,
+        ) -> Result<crate::search::SearchResults, SearchError> {
+            Ok(crate::search::SearchResults {
+                total: self.0.len(),
+                hits: self.0.iter().skip(offset).take(limit).cloned().collect(),
+            })
+        }
+    }
+
+    fn hit(instance: i64, work: i64, hub: Option<i64>) -> SearchHit {
+        SearchHit {
+            instance: InstanceId(instance),
+            work: WorkId(work),
+            hub: hub.map(HubId),
+            score: 1.0,
+            title: String::new(),
+            main_contributor: None,
+            date: None,
+            material_type: None,
+            call_number: None,
+        }
+    }
+
+    fn work_family(work: i64, instances: &[i64]) -> Family {
+        Family {
+            cursor: FamilyCursor {
+                sort_key: String::new(),
+                head: FamilyHead::Work(WorkId(work)),
+            },
+            hub_title: None,
+            works: vec![FamilyWork {
+                id: WorkId(work),
+                title: String::new(),
+                main_contributor: None,
+                classification: None,
+                languages: Vec::new(),
+                subjects: Vec::new(),
+                instances: instances
+                    .iter()
+                    .map(|id| FamilyInstance {
+                        id: InstanceId(*id),
+                        version: 1,
+                        title: String::new(),
+                        edition: None,
+                        publisher: None,
+                        date: None,
+                        isbn: None,
+                        material_type: None,
+                        items: Vec::new(),
+                    })
+                    .collect(),
+            }],
+        }
+    }
+
+    #[test]
+    fn hits_are_grouped_by_family_with_the_found_instances_first() {
+        let index = Hits(vec![hit(12, 2, None), hit(10, 1, None), hit(13, 2, None)]);
+        let listing = Fake(vec![work_family(1, &[10]), work_family(2, &[11, 12, 13])]);
+        let page = search(&index, &listing, "  x  ", 0).unwrap();
+        assert_eq!(page.query, "x");
+        let heads: Vec<FamilyHead> = page.rows.iter().map(|row| row.cursor.head).collect();
+        assert_eq!(
+            heads,
+            [FamilyHead::Work(WorkId(2)), FamilyHead::Work(WorkId(1))]
+        );
+        let order: Vec<(i64, Match)> = page.rows[0].works[0]
+            .instances
+            .iter()
+            .map(|instance| (instance.id.0, instance.matched))
+            .collect();
+        assert_eq!(
+            order,
+            [(12, Match::Found), (13, Match::Found), (11, Match::Family)]
+        );
+        assert_eq!(page.next, None);
+    }
+
+    #[test]
+    fn a_search_page_stops_before_the_family_that_does_not_fit() {
+        // 31 families: the 31st hit starts the next page.
+        let index = Hits((1..=31).map(|n| hit(n, n, None)).collect());
+        let listing = Fake((1..=31).map(|n| work_family(n, &[n])).collect());
+        let first = search(&index, &listing, "x", 0).unwrap();
+        assert_eq!(first.rows.len(), 30);
+        assert_eq!(first.next, Some(30));
+        let second = search(&index, &listing, "x", 30).unwrap();
+        assert_eq!(second.rows.len(), 1);
+        assert_eq!(second.next, None);
     }
 
     #[test]

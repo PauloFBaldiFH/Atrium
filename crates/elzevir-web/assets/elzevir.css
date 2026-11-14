@@ -10,6 +10,26 @@
   --elzevir-color-error: #a1261f;
   --elzevir-color-available: #1d7a46;
   --elzevir-color-border: #d5dae3;
+  --elzevir-color-signal-available: #16a34a;
+  --elzevir-color-signal-not-for-loan: #64748b;
+  --elzevir-color-signal-out: #dc2626;
+  --elzevir-color-available-bg: #dcfce7;
+  --elzevir-color-available-text: #14532d;
+  --elzevir-color-nfl-bg: #f1f5f9;
+  --elzevir-color-nfl-text: #334155;
+  --elzevir-color-out-bg: #fee2e2;
+  --elzevir-color-out-text: #7f1d1d;
+  --elzevir-color-found: #fde68a;
+  --elzevir-color-cord: #64748b;
+  --elzevir-color-cord-port: #2563eb;
+  --elzevir-color-canvas: #f8fafc;
+  --elzevir-color-canvas-dot: #cbd5e1;
+  --elzevir-color-hub: #475569;
+  --elzevir-color-hub-bg: #f1f5f9;
+  --elzevir-color-work: #2563eb;
+  --elzevir-color-work-bg: #eff6ff;
+  --elzevir-color-instance: #16a34a;
+  --elzevir-color-instance-bg: #f0fdf4;
   --elzevir-radius: 6px;
   --elzevir-space: 1rem;
   --elzevir-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -26,6 +46,26 @@
     --elzevir-color-error: #f08c84;
     --elzevir-color-available: #6fcf97;
     --elzevir-color-border: #2c3445;
+    --elzevir-color-signal-available: #4ade80;
+    --elzevir-color-signal-not-for-loan: #94a3b8;
+    --elzevir-color-signal-out: #f87171;
+    --elzevir-color-available-bg: #14301f;
+    --elzevir-color-available-text: #bbf7d0;
+    --elzevir-color-nfl-bg: #1e2533;
+    --elzevir-color-nfl-text: #cbd5e1;
+    --elzevir-color-out-bg: #3b1717;
+    --elzevir-color-out-text: #fecaca;
+    --elzevir-color-found: #a16207;
+    --elzevir-color-cord: #64748b;
+    --elzevir-color-cord-port: #60a5fa;
+    --elzevir-color-canvas: #0d1118;
+    --elzevir-color-canvas-dot: #263041;
+    --elzevir-color-hub: #94a3b8;
+    --elzevir-color-hub-bg: #1e2533;
+    --elzevir-color-work: #60a5fa;
+    --elzevir-color-work-bg: #172338;
+    --elzevir-color-instance: #4ade80;
+    --elzevir-color-instance-bg: #14301f;
   }
 }
 
@@ -90,3 +130,187 @@ button {
 .items { width: 100%; border-collapse: collapse; }
 .items th, .items td { text-align: left; padding: 0.25rem 0.5rem; border-bottom: 1px solid var(--elzevir-color-border); }
 @media (max-width: 30rem) { .record-fields { grid-template-columns: 1fr; } }
+
+/* Staff catalog listing (docs/specs/catalogo/listagem.md, sketch v9): one five-track grid
+   per family (authorities, hub, work, instance, items); cords are drawn over it by
+   elzevir-catalog.js. Sizes and colours follow the sketch. */
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+main:has(.wide) { max-width: none; padding: 0; }
+.catalog {
+  /* Work and Instance get the most room: they carry the fields the cataloguer reads. */
+  --catalog-tracks: 0.8fr 0.7fr 1.55fr 1.7fr 1.35fr;
+  --catalog-tracks-no-hub: 0.85fr 1.7fr 1.85fr 1.45fr;
+  /* Wider than the sketch's 20px so the cords and their labels have room. */
+  --catalog-gap: 56px;
+  --auth-accent: #7e22ce; --auth-bg: #faf5ff; --auth-border: #d8b4fe; --auth-pill: #f3e8ff;
+  --hub-accent: #475569; --hub-bg: #f1f5f9; --hub-border: #94a3b8; --hub-pill: #e2e8f0;
+  --work-accent: #2563eb; --work-bg: #eff6ff; --work-border: #93c5fd; --work-pill: #dbeafe;
+  --inst-accent: #16a34a; --inst-bg: #f0fdf4; --inst-border: #86efac; --inst-pill: #dcfce7;
+  --card-bg: #ffffff; --text-main: #0f172a; --text-muted: #475569;
+  --cord: #94a3b8; --cord-primary: #475569; --cord-auth: #a855f7;
+  --cord-label-bg: #ffffff; --cord-label-border: #cbd5e1; --cord-label-text: #334155;
+  --shadow-card: 0 4px 14px -2px rgba(15, 23, 42, 0.07), 0 1px 3px rgba(15, 23, 42, 0.05);
+  min-height: 100vh;
+  padding: 0 22px 22px;
+  color: var(--text-main);
+  background-color: var(--elzevir-color-canvas);
+  background-image: radial-gradient(var(--elzevir-color-canvas-dot) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+@media (prefers-color-scheme: dark) {
+  .catalog {
+    --auth-accent: #d8b4fe; --auth-bg: #2a1a3d; --auth-border: #7e22ce; --auth-pill: #3b2157;
+    --hub-accent: #cbd5e1; --hub-bg: #1e2533; --hub-border: #64748b; --hub-pill: #334155;
+    --work-accent: #93c5fd; --work-bg: #172338; --work-border: #2563eb; --work-pill: #1e3a8a;
+    --inst-accent: #86efac; --inst-bg: #14301f; --inst-border: #16a34a; --inst-pill: #14532d;
+    --card-bg: #151b26; --text-main: #e6e9ef; --text-muted: #a3abba;
+    --cord: #64748b; --cord-primary: #94a3b8; --cord-auth: #c084fc;
+    --cord-label-bg: #151b26; --cord-label-border: #334155; --cord-label-text: #cbd5e1;
+  }
+}
+.catalog-bar {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;
+  margin: 0 -22px; padding: 12px 22px;
+  background: color-mix(in srgb, var(--elzevir-color-canvas) 88%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--elzevir-color-border);
+}
+.catalog-search { display: flex; gap: 8px; flex: 1 1 28rem; }
+.catalog-search input { flex: 1; background: var(--card-bg); border-radius: 10px; }
+.catalog-search button { border-radius: 10px; font-weight: 700; }
+.count { margin: 14px 0 0; font-size: 0.85rem; }
+.families { list-style: none; padding: 0; margin: 0; }
+.family {
+  position: relative;
+  display: grid; grid-template-columns: var(--catalog-tracks); gap: var(--catalog-gap);
+  align-items: start;
+  padding: 22px 0 26px;
+  border-bottom: 1px dashed var(--elzevir-color-border);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 16rem;
+}
+.family.no-hub { grid-template-columns: var(--catalog-tracks-no-hub); }
+.family.no-hub > .track-hub { display: none; }
+.catalog.hide-hub .family { grid-template-columns: var(--catalog-tracks-no-hub); }
+.catalog.hide-hub .track-hub { display: none; }
+.catalog.hide-auth .family { grid-template-columns: 0.75fr 1.7fr 1.85fr 1.45fr; }
+.catalog.hide-auth .family.no-hub, .catalog.hide-auth.hide-hub .family { grid-template-columns: 1.8fr 1.95fr 1.5fr; }
+.catalog.hide-auth .track-auth { display: none; }
+.column-toggles { display: flex; gap: 6px; }
+.column-toggles .toggle {
+  padding: 4px 10px; border: 1px dashed var(--hub-border); border-radius: 8px;
+  background: transparent; color: var(--text-muted);
+  font-size: 0.75rem; font-weight: 700;
+}
+.column-toggles .toggle[aria-pressed="true"] { border-style: solid; background: var(--card-bg); color: var(--text-main); }
+.column-toggles .toggle[aria-pressed="true"]::before { content: "✓ "; }
+/* Above the blocks, so ports show whole; cords never cross a block (see the script). */
+.family > .cords { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 4; }
+.cord-path { fill: none; stroke: var(--cord); stroke-width: 2; }
+.cord-path.primary { stroke: var(--cord-primary); stroke-width: 2.2; }
+.cord-path.dashed { stroke: var(--cord-auth); stroke-dasharray: 5 4; }
+.cord-port { fill: var(--work-accent); stroke: var(--card-bg); stroke-width: 2; }
+.cord-port.auth { fill: var(--auth-accent); }
+.cord-label-bg { fill: var(--cord-label-bg); stroke: var(--cord-label-border); stroke-width: 1; }
+.cord-label-text { fill: var(--cord-label-text); font: 600 11px var(--elzevir-font); }
+.track { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+/* Instances and their items share rows, so each stack of items sits beside its Instance. */
+.track-editions {
+  grid-column: span 2;
+  display: grid; grid-template-columns: subgrid; column-gap: var(--catalog-gap); row-gap: 12px;
+  align-items: start;
+}
+.col-header {
+  padding: 0 2px; margin-bottom: -2px;
+  font-size: 0.71rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); white-space: nowrap;
+}
+.card {
+  position: relative; z-index: 3;
+  padding: 12px 14px;
+  border: 2px solid var(--card-border);
+  border-radius: 14px;
+  background: linear-gradient(to bottom, var(--card-tint), var(--card-bg) 40px);
+  box-shadow: var(--shadow-card);
+  overflow-wrap: anywhere;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -4px rgba(15, 23, 42, 0.12); }
+.card-auth { --card-border: var(--auth-border); --card-tint: var(--auth-bg); --pill-bg: var(--auth-pill); --pill-text: var(--auth-accent); }
+.card-hub { --card-border: var(--hub-border); --card-tint: var(--hub-bg); --pill-bg: var(--hub-pill); --pill-text: var(--hub-accent); border-style: dashed; }
+.card-work { --card-border: var(--work-border); --card-tint: var(--work-bg); --pill-bg: var(--work-pill); --pill-text: var(--work-accent); }
+.card-instance { --card-border: var(--inst-border); --card-tint: var(--inst-bg); --pill-bg: var(--inst-pill); --pill-text: var(--inst-accent); }
+.card-instance.found { border-color: var(--inst-accent); box-shadow: 0 0 0 3px var(--elzevir-color-found), var(--shadow-card); }
+.card-top {
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between;
+  margin-bottom: 10px; padding-bottom: 6px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+.entity-pill {
+  padding: 2px 8px; border-radius: 6px;
+  background: var(--pill-bg); color: var(--pill-text);
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.card, .field-list { display: flex; flex-direction: column; gap: 6px; font-size: 0.81rem; }
+.field-list { min-width: 0; flex: 1; }
+.field-row { display: flex; flex-direction: column; }
+.field-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--text-muted); }
+.field-value { color: var(--text-main); font-weight: 500; }
+.field-value.title-main { font-size: 0.93rem; font-weight: 700; }
+a.field-value { text-decoration: none; }
+a.field-value:hover { text-decoration: underline; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+.card .chip {
+  margin: 0; padding: 2px 7px; border: 1px solid #cbd5e1; border-radius: 999px;
+  background: #f1f5f9; color: #334155; font-size: 0.7rem; font-weight: 500;
+}
+.card .chip.more { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; font-weight: 700; }
+.instance-body { display: flex; gap: 12px; align-items: flex-start; }
+.book-cover {
+  display: flex; flex-direction: column; justify-content: space-between;
+  width: 54px; min-width: 54px; height: 80px; padding: 5px;
+  overflow: hidden; border-radius: 6px;
+  color: #fef2f2; text-align: center; font-size: 0.54rem; font-weight: 700; line-height: 1.2;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22);
+}
+.book-cover > span:first-child { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.book-cover .isbn-tag { font-size: 0.48rem; font-weight: 400; opacity: 0.85; overflow-wrap: anywhere; }
+.cover-0 { background: linear-gradient(135deg, #991b1b 0%, #450a0a 100%); }
+.cover-1 { background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%); }
+.cover-2 { background: linear-gradient(135deg, #166534 0%, #052e16 100%); }
+.cover-3 { background: linear-gradient(135deg, #6b21a8 0%, #3b0764 100%); }
+.items-stack { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0; margin: 0; }
+.item-pill {
+  position: relative; z-index: 3;
+  display: flex; align-items: center; gap: 6px; min-width: 0;
+  padding: 7px 9px;
+  border: 1.5px solid var(--signal-border, var(--hub-border)); border-radius: 10px;
+  background: var(--signal-bg, var(--card-bg)); color: var(--signal-text, var(--text-main));
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.04);
+  font-size: 0.73rem; font-weight: 600; font-variant-numeric: tabular-nums;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+.item-pill:hover { transform: translateX(2px); box-shadow: 0 4px 10px rgba(15, 23, 42, 0.1); }
+.item-pill-text { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* The icon is the material type of the Instance, in the colour of the item's signal; the
+   signal is written out beside it, so colour is never the only cue. */
+.item-icon { flex: none; width: 16px; height: 16px; color: var(--signal-border, var(--text-muted)); }
+.item-signal { flex: none; font-weight: 800; }
+.item-signal::after { content: " ·"; font-weight: 600; opacity: 0.6; }
+.item-pill.more-items { justify-content: center; border: 1.5px dashed var(--inst-accent); background: var(--hub-bg); font-weight: 700; }
+.item-pill.more-items a { color: inherit; text-decoration: none; }
+.item-pill.item-none { border-style: dashed; color: var(--text-muted); font-weight: 500; }
+.signal-available { --signal-bg: var(--elzevir-color-available-bg); --signal-border: var(--elzevir-color-signal-available); --signal-text: var(--elzevir-color-available-text); }
+.signal-not-for-loan { --signal-bg: var(--elzevir-color-nfl-bg); --signal-border: var(--elzevir-color-signal-not-for-loan); --signal-text: var(--elzevir-color-nfl-text); }
+.signal-out-of-circulation { --signal-bg: var(--elzevir-color-out-bg); --signal-border: var(--elzevir-color-signal-out); --signal-text: var(--elzevir-color-out-text); }
+.next-page { padding: 22px 0; text-align: center; }
+@media (max-width: 60rem) {
+  .family, .family.no-hub, .catalog.hide-hub .family, .catalog.hide-auth .family,
+  .catalog.hide-auth .family.no-hub, .catalog.hide-auth.hide-hub .family { grid-template-columns: 1fr; gap: 12px; }
+  .track-editions { grid-column: auto; grid-template-columns: 1fr; }
+  .track-editions > .col-header + .col-header { display: none; }
+  .track-auth { flex-direction: row; flex-wrap: wrap; }
+  .track-auth > .col-header { flex-basis: 100%; }
+  .card:hover, .item-pill:hover { transform: none; }
+}

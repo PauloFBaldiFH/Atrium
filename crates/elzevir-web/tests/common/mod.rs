@@ -2,10 +2,12 @@
 //! Fakes shared by the HTTP tests.
 
 use std::collections::BTreeMap;
+use std::num::NonZeroUsize;
 use std::sync::Mutex;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 use elzevir_app::catalog::{CatalogReadError, CatalogReader, InstanceView, ItemStatus, ItemView};
+use elzevir_app::listing::{CatalogListing, Family, FamilyCursor, FamilyHead};
 use elzevir_app::search::{IndexBatch, SearchError, SearchHit, SearchIndex, SearchResults};
 use elzevir_domain::catalog::InstanceId;
 
@@ -85,5 +87,33 @@ impl SearchIndex for Index {
             total: self.0.len(),
             hits: self.0.iter().skip(offset).take(limit).cloned().collect(),
         })
+    }
+}
+
+/// Families held in memory, in listing order.
+#[derive(Default)]
+pub(crate) struct Families(pub(crate) Vec<Family>);
+
+impl CatalogListing for Families {
+    fn families_after(
+        &self,
+        after: Option<&FamilyCursor>,
+        limit: NonZeroUsize,
+    ) -> Result<Vec<Family>, CatalogReadError> {
+        Ok(self
+            .0
+            .iter()
+            .filter(|family| after.is_none_or(|after| &family.cursor > after))
+            .take(limit.get())
+            .cloned()
+            .collect())
+    }
+
+    fn families(&self, heads: &[FamilyHead]) -> Result<Vec<Family>, CatalogReadError> {
+        Ok(heads
+            .iter()
+            .filter_map(|head| self.0.iter().find(|family| family.cursor.head == *head))
+            .cloned()
+            .collect())
     }
 }

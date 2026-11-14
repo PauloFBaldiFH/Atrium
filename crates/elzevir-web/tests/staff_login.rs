@@ -16,7 +16,7 @@ use elzevir_app::memory::{MemoryProbe, MemoryReport};
 use elzevir_app::staff::{
     Permission, StaffAccount, StaffDirectory, StaffDirectoryError, StaffId, hash_password,
 };
-use elzevir_web::{AppState, OpacPorts, WebConfig, router};
+use elzevir_web::{AppState, OpacPorts, StaffPorts, WebConfig, router};
 use elzevir_web_templates::I18n;
 use http_body_util::BodyExt;
 use tower::ServiceExt;
@@ -65,6 +65,9 @@ fn app() -> Router {
         OpacPorts {
             catalog: Arc::new(common::Catalog::default()),
             index: Arc::new(common::Index::default()),
+        },
+        StaffPorts {
+            listing: Arc::new(common::Families::default()),
         },
         I18n::english().unwrap(),
         config,

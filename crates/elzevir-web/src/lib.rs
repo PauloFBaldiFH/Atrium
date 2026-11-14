@@ -6,6 +6,7 @@
 //! `elzevir-app` ports; it never opens the database.
 
 mod assets;
+mod catalog;
 mod opac;
 mod security;
 mod session;
@@ -24,6 +25,7 @@ use elzevir_app::memory::MemoryProbe;
 use elzevir_app::staff::StaffDirectory;
 use elzevir_web_templates::{I18n, OpacHome};
 
+pub use catalog::StaffPorts;
 pub use opac::OpacPorts;
 pub use session::Sessions;
 
@@ -55,6 +57,7 @@ struct Inner {
     staff: Arc<dyn StaffDirectory>,
     memory: Arc<dyn MemoryProbe>,
     opac: OpacPorts,
+    staff_ports: StaffPorts,
     records: opac::RecordCache,
     sessions: Sessions,
     i18n: I18n,
@@ -68,6 +71,7 @@ impl AppState {
         staff: Arc<dyn StaffDirectory>,
         memory: Arc<dyn MemoryProbe>,
         opac: OpacPorts,
+        staff_ports: StaffPorts,
         i18n: I18n,
         config: WebConfig,
     ) -> Self {
@@ -76,6 +80,7 @@ impl AppState {
                 staff,
                 memory,
                 opac,
+                staff_ports,
                 records: opac::RecordCache::default(),
                 sessions: Sessions::new(config.session_idle),
                 i18n,
@@ -93,7 +98,10 @@ pub fn router(state: AppState) -> Router {
         .route("/record/{id}", get(opac::record))
         .route("/static/elzevir.css", get(assets::stylesheet))
         .route("/static/htmx.min.js", get(assets::htmx))
+        .route("/static/elzevir-catalog.js", get(assets::catalog_script))
+        .route("/static/elzevir-icons.svg", get(assets::icons))
         .route("/equipe", get(staff::home))
+        .route("/equipe/acervo", get(catalog::catalog))
         .route("/equipe/login", get(staff::login_form).post(staff::log_in))
         .route("/equipe/logout", post(staff::log_out))
         .route("/equipe/admin/memory", get(staff::memory))
