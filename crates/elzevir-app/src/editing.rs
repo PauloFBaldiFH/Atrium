@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //! Editing Works and Instances from the staff screen (docs/specs/catalogo/edicao.md,
-//! items 16 to 24): content validation before the command, and the port the store
+//! items 16 to 24, and docs/specs/catalogo/criacao.md): content validation before the command, and the port the store
 //! implements.
 
 use elzevir_domain::catalog::IdentifierKind;
 
 use crate::catalog::{
-    CatalogOutput, CatalogRefusal, InstanceChange, InstanceUpdate, NewIdentifier, WorkChange,
-    WorkUpdate,
+    CatalogOutput, CatalogRefusal, InstanceChange, InstanceUpdate, NewIdentifier,
+    NewInstanceOfWork, NewRecord, WorkChange, WorkUpdate,
 };
 use crate::staff::StaffId;
 
@@ -18,6 +18,10 @@ pub enum Edit {
     Work(WorkUpdate),
     /// Parts of an Instance.
     Instance(InstanceUpdate),
+    /// A new family: a Work and its first Instance (docs/specs/catalogo/criacao.md).
+    NewRecord(Box<NewRecord>),
+    /// A new Instance of a stored Work (docs/specs/catalogo/criacao.md).
+    NewInstance(Box<NewInstanceOfWork>),
 }
 
 /// Why an edit was not stored.

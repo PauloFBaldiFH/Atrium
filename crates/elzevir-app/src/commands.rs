@@ -70,6 +70,7 @@ impl WriteCommand {
             Self::Catalog(CatalogCommand::ReplaceRecord { .. }) => "catalog.replace_record",
             Self::Catalog(CatalogCommand::UpdateWork(_)) => "catalog.update_work",
             Self::Catalog(CatalogCommand::UpdateInstance(_)) => "catalog.update_instance",
+            Self::Catalog(CatalogCommand::AddInstance(_)) => "catalog.add_instance",
         }
     }
 

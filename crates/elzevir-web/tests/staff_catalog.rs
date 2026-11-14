@@ -722,3 +722,65 @@ async fn suggestions_list_existing_agents_and_subjects_by_prefix() {
         r#"[{"heading":"Romance brasileiro","kind":"topic","thesaurus":"larpcal"}]"#
     );
 }
+
+#[tokio::test]
+async fn a_cataloguer_creates_a_family_or_an_instance_from_the_screen() {
+    let app = app();
+    let family =
+        r#"{"work": [{"Title": "Quincas Borba"}, {"MaterialType": "book"}], "instance": []}"#;
+    let anonymous = send(&app, post_json("/equipe/acervo/nova", None, None, family)).await;
+    assert_eq!(anonymous.status(), StatusCode::UNAUTHORIZED);
+    let bia = signed_in_as(&app, "bia").await;
+    let bia_token = page_token(&app, &bia).await;
+    let reader = send(
+        &app,
+        post_json("/equipe/acervo/nova", Some(&bia), Some(&bia_token), family),
+    )
+    .await;
+    assert_eq!(reader.status(), StatusCode::FORBIDDEN);
+
+    let ana = signed_in(&app).await;
+    let token = page_token(&app, &ana).await;
+    let created = send(
+        &app,
+        post_json("/equipe/acervo/nova", Some(&ana), Some(&token), family),
+    )
+    .await;
+    assert_eq!(created.status(), StatusCode::CREATED);
+    assert_eq!(body(created).await, r#"{"instance":901}"#);
+
+    let empty = send(
+        &app,
+        post_json("/equipe/acervo/nova", Some(&ana), Some(&token), "{}"),
+    )
+    .await;
+    assert_eq!(empty.status(), StatusCode::UNPROCESSABLE_ENTITY);
+    let empty = body(empty).await;
+    assert!(empty.contains(r#""field":"title","key":"edit-error-title-empty""#));
+    assert!(empty.contains(r#""field":"material_type","key":"edit-error-material-required""#));
+
+    let instance = r#"{"changes": [{"Title": "Quincas Borba"}, {"Edition": "2. ed."}]}"#;
+    let added = send(
+        &app,
+        post_json(
+            "/equipe/acervo/obra/1/instancias",
+            Some(&ana),
+            Some(&token),
+            instance,
+        ),
+    )
+    .await;
+    assert_eq!(added.status(), StatusCode::CREATED);
+    assert_eq!(body(added).await, r#"{"instance":902}"#);
+    let unknown = send(
+        &app,
+        post_json(
+            "/equipe/acervo/obra/404/instancias",
+            Some(&ana),
+            Some(&token),
+            instance,
+        ),
+    )
+    .await;
+    assert_eq!(unknown.status(), StatusCode::NOT_FOUND);
+}

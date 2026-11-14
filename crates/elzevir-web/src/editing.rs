@@ -51,6 +51,12 @@ struct Accepted {
     version: i64,
 }
 
+/// The answer to a creation: the new Instance, for the screen to focus its family.
+#[derive(Serialize)]
+struct Created {
+    instance: i64,
+}
+
 /// The answer to a stale edit: the version stored now.
 #[derive(Serialize)]
 struct Conflict {
@@ -110,7 +116,10 @@ pub(crate) async fn edit_instance(
 }
 
 /// Item 17: a session, its CSRF token, and the cataloguing permission.
-fn authorize(state: &AppState, headers: &HeaderMap) -> Result<ActiveSession, StatusCode> {
+pub(crate) fn authorize(
+    state: &AppState,
+    headers: &HeaderMap,
+) -> Result<ActiveSession, StatusCode> {
     let Some(session) = current_session(state, headers) else {
         return Err(StatusCode::UNAUTHORIZED);
     };
@@ -124,7 +133,7 @@ fn authorize(state: &AppState, headers: &HeaderMap) -> Result<ActiveSession, Sta
     Ok(session)
 }
 
-fn invalid(state: &AppState, errors: &[FieldError]) -> Response {
+pub(crate) fn invalid(state: &AppState, errors: &[FieldError]) -> Response {
     let t = &state.inner.i18n;
     let errors: Vec<FieldMessage> = errors
         .iter()
@@ -137,7 +146,7 @@ fn invalid(state: &AppState, errors: &[FieldError]) -> Response {
     (StatusCode::UNPROCESSABLE_ENTITY, Json(Invalid { errors })).into_response()
 }
 
-async fn apply(state: &AppState, session: &ActiveSession, edit: Edit) -> Response {
+pub(crate) async fn apply(state: &AppState, session: &ActiveSession, edit: Edit) -> Response {
     let editor = Arc::clone(&state.inner.staff_ports.editor);
     let actor = session.identity.id;
     let outcome = tokio::task::spawn_blocking(move || editor.apply(actor, edit)).await;
@@ -149,6 +158,15 @@ async fn apply(state: &AppState, session: &ActiveSession, edit: Edit) -> Respons
             version: row_version,
         })
         .into_response(),
+        Ok(Ok(
+            CatalogOutput::Record { instance, .. } | CatalogOutput::InstanceAdded { instance, .. },
+        )) => (
+            StatusCode::CREATED,
+            Json(Created {
+                instance: instance.0,
+            }),
+        )
+            .into_response(),
         Ok(Ok(_)) => (StatusCode::INTERNAL_SERVER_ERROR, "unexpected answer").into_response(),
         Ok(Err(EditFailed::Refused(CatalogRefusal::Stale { current, .. }))) => {
             (StatusCode::CONFLICT, Json(Conflict { current })).into_response()

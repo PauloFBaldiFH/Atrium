@@ -58,6 +58,18 @@ pub enum CatalogCommand {
     /// Changes parts of an Instance, if its record is still at `row_version`
     /// (docs/specs/catalogo/edicao.md).
     UpdateInstance(Box<InstanceUpdate>),
+    /// Adds an Instance, without Items, to an existing Work
+    /// (docs/specs/catalogo/criacao.md).
+    AddInstance(Box<NewInstanceOfWork>),
+}
+
+/// A new Instance of a stored Work.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct NewInstanceOfWork {
+    /// The Work.
+    pub work: WorkId,
+    /// The Instance.
+    pub instance: NewInstance,
 }
 
 /// An edit of a Work, read at `row_version`.
@@ -443,6 +455,13 @@ pub enum CatalogOutput {
         instance: InstanceId,
         /// Its record's new version.
         row_version: i64,
+    },
+    /// An Instance was added to a Work.
+    InstanceAdded {
+        /// The Work.
+        work: WorkId,
+        /// The new Instance.
+        instance: InstanceId,
     },
 }
 

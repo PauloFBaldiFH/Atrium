@@ -3,12 +3,12 @@
 
 use elzevir_app::catalog::{
     CatalogCommand, CatalogOutput, CatalogReadError, CatalogReader, CatalogRefusal, InstanceView,
-    ItemData, ItemStatus, ItemView, NewContribution, NewIdentifier, NewInstance, NewNote,
-    NewRecord, NewSubject, NewWorkRelation,
+    ItemData, ItemStatus, ItemView, NewContribution, NewIdentifier, NewInstance, NewInstanceOfWork,
+    NewNote, NewRecord, NewSubject, NewWorkRelation,
 };
 use elzevir_app::commands::{WriteOutput, WriteRefusal};
 use elzevir_app::listing::sort_key;
-use elzevir_app::matching::match_keys;
+use elzevir_app::matching::{identifier_key, match_keys};
 use elzevir_app::search::REINDEX_INSTANCE;
 use elzevir_domain::catalog::{
     AgentKind, BranchId, HubId, IdentifierKind, InstanceId, ItemId, ItemTypeId, MaterialType,
@@ -74,6 +74,7 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
         }
         CatalogCommand::UpdateWork(update) => crate::editing::update_work(tx, update)?,
         CatalogCommand::UpdateInstance(update) => crate::editing::update_instance(tx, update)?,
+        CatalogCommand::AddInstance(new) => add_instance_of_work(tx, new)?,
         CatalogCommand::AddItem(new) => {
             if !exists(
                 connection,
@@ -120,6 +121,57 @@ pub(crate) fn record_changed(tx: &WriteTx<'_>, instance: InstanceId) -> Result<(
         params![instance.0],
     )?;
     reindex(tx, instance)
+}
+
+/// `catalog.add_instance` (docs/specs/catalogo/criacao.md, items 1 to 3).
+fn add_instance_of_work(
+    tx: &WriteTx<'_>,
+    new: &NewInstanceOfWork,
+) -> Result<CatalogOutput, CommandFailed<WriteRefusal>> {
+    let connection = tx.connection();
+    let material_type: Option<u8> = connection
+        .query_row(
+            "SELECT material_type FROM works WHERE id = ?1",
+            params![new.work.0],
+            |row| row.get(0),
+        )
+        .optional()
+        .map_err(StoreError::from)?;
+    let Some(material_type) = material_type else {
+        return Err(refused(CatalogRefusal::UnknownWork(new.work)));
+    };
+    // The code was written by this store from a `MaterialType`, so an unknown one means
+    // the file was changed by hand; report it instead of guessing a category.
+    let material_type = MaterialType::from_code(material_type).ok_or_else(|| {
+        StoreError::Sqlite(format!(
+            "work {} has unknown material type code {material_type}",
+            new.work.0
+        ))
+    })?;
+    let instance = InstanceId(add_instance(
+        connection,
+        new.work.0,
+        material_type,
+        &new.instance,
+    )?);
+    for key in new
+        .instance
+        .identifiers
+        .iter()
+        .filter_map(|identifier| identifier_key(identifier.kind, &identifier.value))
+    {
+        connection
+            .execute(
+                "INSERT OR IGNORE INTO match_keys (rule, key, instance_id) VALUES (?1, ?2, ?3)",
+                params![key.rule.code(), key.key, instance.0],
+            )
+            .map_err(StoreError::from)?;
+    }
+    reindex(tx, instance)?;
+    Ok(CatalogOutput::InstanceAdded {
+        work: new.work,
+        instance,
+    })
 }
 
 fn add_record(

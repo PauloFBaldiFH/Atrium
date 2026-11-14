@@ -7,6 +7,7 @@
 
 mod assets;
 mod catalog;
+mod creating;
 mod editing;
 mod opac;
 mod record_fields;
@@ -117,7 +118,12 @@ pub fn router(state: AppState) -> Router {
             "/equipe/acervo/sugestoes/assuntos",
             get(editing::suggest_subjects),
         )
+        .route("/equipe/acervo/nova", post(creating::create_family))
         .route("/equipe/acervo/obra/{id}", post(editing::edit_work))
+        .route(
+            "/equipe/acervo/obra/{id}/instancias",
+            post(creating::create_instance),
+        )
         .route(
             "/equipe/acervo/instancia/{id}",
             post(editing::edit_instance),
