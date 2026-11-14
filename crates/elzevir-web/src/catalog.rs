@@ -95,7 +95,7 @@ pub(crate) async fn catalog(
             t: &state.inner.i18n,
             query: &page.query,
             total: Some(page.total),
-            rows: page.rows.iter().map(family_line).collect(),
+            rows: opened(page.rows.iter().map(family_line).collect()),
             next_url: page
                 .next
                 .map(|from| format!("/equipe/acervo?q={}&from={from}", url_encode(&page.query))),
@@ -114,6 +114,18 @@ pub(crate) async fn catalog(
     } else {
         render(&page)
     }
+}
+
+/// A search opens the first family it found an Instance in (listagem.md, item 32).
+fn opened(mut rows: Vec<FamilyLine>) -> Vec<FamilyLine> {
+    if let Some(first) = rows.iter_mut().find(|row| {
+        row.works
+            .iter()
+            .any(|work| work.instances.iter().any(|instance| instance.found))
+    }) {
+        first.open = true;
+    }
+    rows
 }
 
 fn family_line(row: &FamilyRow) -> FamilyLine {
@@ -144,7 +156,29 @@ fn family_line(row: &FamilyRow) -> FamilyLine {
             work_line(work, authority)
         })
         .collect();
+    let instances = || row.works.iter().flat_map(|work| work.instances.iter());
+    let first_work = row.works.first();
     FamilyLine {
+        head: match row.cursor.head {
+            FamilyHead::Hub(id) => format!("h{}", id.0),
+            FamilyHead::Work(id) => format!("w{}", id.0),
+        },
+        title: hub.as_ref().map_or_else(
+            || {
+                first_work
+                    .map(|work| work.title.clone())
+                    .unwrap_or_default()
+            },
+            |hub| hub.title.clone(),
+        ),
+        icon: instances()
+            .find_map(|instance| instance.material_type)
+            .map_or("book", material_icon),
+        classification: first_work.and_then(|work| work.classification.clone()),
+        instances: instances().count(),
+        items: instances().map(|instance| instance.items).sum(),
+        available: instances().map(|instance| instance.available).sum(),
+        open: false,
         authorities,
         hub,
         works,

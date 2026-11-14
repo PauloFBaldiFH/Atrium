@@ -181,21 +181,42 @@ main:has(.wide) { max-width: none; padding: 0; }
 .catalog-search button { border-radius: 10px; font-weight: 700; }
 .count { margin: 14px 0 0; font-size: 0.85rem; }
 .families { list-style: none; padding: 0; margin: 0; }
-.family {
+.family { content-visibility: auto; contain-intrinsic-size: auto 3.5rem; }
+/* The compact row (spec de UI §20 item 2): the summary of the family's <details>. */
+.family-row {
+  display: grid; grid-template-columns: 20px minmax(0, 2.4fr) minmax(0, 1.4fr) 7rem minmax(0, 1fr);
+  gap: 14px; align-items: center;
+  margin: 6px 0; padding: 9px 12px;
+  border: 1px solid var(--elzevir-color-border); border-radius: 12px;
+  background: var(--card-bg); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  list-style: none; cursor: pointer;
+}
+.family-row::-webkit-details-marker { display: none; }
+.family-row:hover { border-color: var(--work-border); }
+.family-row:focus-visible { outline: 2px solid var(--work-accent); outline-offset: 1px; }
+.family-focus[open] > .family-row { border-color: var(--work-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--work-accent) 18%, transparent); }
+.row-icon { width: 18px; height: 18px; color: var(--text-muted); }
+.row-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.row-shape { color: var(--text-muted); font-size: 0.82rem; }
+.row-hub { margin-left: 4px; padding: 0 6px; border-radius: 6px; background: var(--hub-pill); color: var(--hub-accent); font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
+.row-agents { display: flex; gap: 4px; overflow: hidden; }
+.chip.chip-agent { margin: 0; padding: 1px 8px; border-radius: 999px; border-color: var(--auth-border); background: var(--auth-bg); color: var(--auth-accent); font-size: 0.74rem; white-space: nowrap; }
+.row-class { font-size: 0.82rem; font-weight: 600; }
+.row-avail { justify-self: start; padding: 1px 8px; border: 1.5px solid var(--hub-border); border-radius: 999px; font-size: 0.76rem; font-weight: 700; color: var(--text-muted); }
+.row-avail.signal-available { border-color: var(--signal-border); background: var(--signal-bg); color: var(--signal-text); }
+/* The focused family: its blocks and cords. */
+.family-grid {
   position: relative;
   display: grid; grid-template-columns: var(--catalog-tracks); gap: var(--catalog-gap);
   align-items: start;
-  padding: 22px 0 26px;
-  border-bottom: 1px dashed var(--elzevir-color-border);
-  content-visibility: auto;
-  contain-intrinsic-size: auto 16rem;
+  padding: 16px 0 26px;
 }
-.family.no-hub { grid-template-columns: var(--catalog-tracks-no-hub); }
-.family.no-hub > .track-hub { display: none; }
-.catalog.hide-hub .family { grid-template-columns: var(--catalog-tracks-no-hub); }
+.family-grid.no-hub { grid-template-columns: var(--catalog-tracks-no-hub); }
+.family-grid.no-hub > .track-hub { display: none; }
+.catalog.hide-hub .family-grid { grid-template-columns: var(--catalog-tracks-no-hub); }
 .catalog.hide-hub .track-hub { display: none; }
-.catalog.hide-auth .family { grid-template-columns: 0.75fr 1.7fr 1.85fr 1.45fr; }
-.catalog.hide-auth .family.no-hub, .catalog.hide-auth.hide-hub .family { grid-template-columns: 1.8fr 1.95fr 1.5fr; }
+.catalog.hide-auth .family-grid { grid-template-columns: 0.75fr 1.7fr 1.85fr 1.45fr; }
+.catalog.hide-auth .family-grid.no-hub, .catalog.hide-auth.hide-hub .family-grid { grid-template-columns: 1.8fr 1.95fr 1.5fr; }
 .catalog.hide-auth .track-auth { display: none; }
 .column-toggles { display: flex; gap: 6px; }
 .column-toggles .toggle {
@@ -206,7 +227,7 @@ main:has(.wide) { max-width: none; padding: 0; }
 .column-toggles .toggle[aria-pressed="true"] { border-style: solid; background: var(--card-bg); color: var(--text-main); }
 .column-toggles .toggle[aria-pressed="true"]::before { content: "✓ "; }
 /* Above the blocks, so ports show whole; cords never cross a block (see the script). */
-.family > .cords { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 4; }
+.family-grid > .cords { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 4; }
 .cord-path { fill: none; stroke: var(--cord); stroke-width: 2; }
 .cord-path.primary { stroke: var(--cord-primary); stroke-width: 2.2; }
 .cord-path.dashed { stroke: var(--cord-auth); stroke-dasharray: 5 4; }
@@ -306,11 +327,16 @@ a.field-value:hover { text-decoration: underline; }
 .signal-out-of-circulation { --signal-bg: var(--elzevir-color-out-bg); --signal-border: var(--elzevir-color-signal-out); --signal-text: var(--elzevir-color-out-text); }
 .next-page { padding: 22px 0; text-align: center; }
 @media (max-width: 60rem) {
-  .family, .family.no-hub, .catalog.hide-hub .family, .catalog.hide-auth .family,
-  .catalog.hide-auth .family.no-hub, .catalog.hide-auth.hide-hub .family { grid-template-columns: 1fr; gap: 12px; }
+  .family-grid, .family-grid.no-hub, .catalog.hide-hub .family-grid, .catalog.hide-auth .family-grid,
+  .catalog.hide-auth .family-grid.no-hub, .catalog.hide-auth.hide-hub .family-grid { grid-template-columns: 1fr; gap: 12px; }
+  .family-row { grid-template-columns: 20px minmax(0, 1fr) auto; }
+  .row-agents, .row-class { display: none; }
   .track-editions { grid-column: auto; grid-template-columns: 1fr; }
   .track-editions > .col-header + .col-header { display: none; }
   .track-auth { flex-direction: row; flex-wrap: wrap; }
   .track-auth > .col-header { flex-basis: 100%; }
   .card:hover, .item-pill:hover { transform: none; }
 }
+/* Trail of the focused family (listagem.md, item 29). */
+.trail { padding: 12px 2px 0; font-size: 0.85rem; color: var(--text-muted); }
+.trail strong { color: var(--text-main); }

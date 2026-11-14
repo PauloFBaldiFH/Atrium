@@ -34,15 +34,64 @@ impl StaffCatalog<'_> {
     }
 }
 
-/// One family row.
+/// One family: a compact row that opens into its blocks
+/// (docs/specs/catalogo/listagem.md, items 27 to 32).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FamilyLine {
+    /// Its head, `h<id>` or `w<id>`: the element id and the URL fragment of its focus.
+    pub head: String,
+    /// The Hub's title, or the Work's.
+    pub title: String,
+    /// Icon of the material of its first Instance.
+    pub icon: &'static str,
+    /// Classification of its first Work.
+    pub classification: Option<String>,
+    /// Instances in all its Works.
+    pub instances: usize,
+    /// Items in all its Instances.
+    pub items: usize,
+    /// Of those, the ones available.
+    pub available: usize,
+    /// Whether it opens focused: the first family a search found an Instance in.
+    pub open: bool,
     /// The agents shown in the authorities column, each once.
     pub authorities: Vec<AuthorityLine>,
     /// The Hub, for a Hub family.
     pub hub: Option<HubLine>,
     /// Its Works.
     pub works: Vec<WorkLine>,
+}
+
+impl FamilyLine {
+    /// "2 works, 3 instances".
+    #[must_use]
+    pub fn shape_text(&self, t: &I18n) -> String {
+        t.get_numbers(
+            "staff-row-shape",
+            &[
+                ("works", u64::try_from(self.works.len()).unwrap_or(u64::MAX)),
+                (
+                    "instances",
+                    u64::try_from(self.instances).unwrap_or(u64::MAX),
+                ),
+            ],
+        )
+    }
+
+    /// "3 of 5 available".
+    #[must_use]
+    pub fn availability_text(&self, t: &I18n) -> String {
+        t.get_numbers(
+            "staff-row-available",
+            &[
+                (
+                    "available",
+                    u64::try_from(self.available).unwrap_or(u64::MAX),
+                ),
+                ("items", u64::try_from(self.items).unwrap_or(u64::MAX)),
+            ],
+        )
+    }
 }
 
 /// An agent in the authorities column, linked to the Works it contributes to.
