@@ -126,7 +126,7 @@ pub fn router(state: AppState) -> Router {
         )
         .route(
             "/equipe/acervo/instancia/{id}/exemplares",
-            post(items::save_items),
+            get(items::item_grid).post(items::save_items),
         )
         .route(
             "/equipe/acervo/instancia/{id}/nova",

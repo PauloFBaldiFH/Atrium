@@ -13,6 +13,7 @@ use elzevir_app::editing::CatalogEditor;
 use elzevir_app::export::{
     ExportOptions, RecordExportError, RecordFormat, RecordSource, export_record,
 };
+use elzevir_app::items::ItemGridSource;
 use elzevir_app::listing::{
     self, CatalogListing, FamilyCursor, FamilyHead, FamilyRow, InstanceRow, ItemPill, Match,
     WorkRow,
@@ -40,6 +41,8 @@ pub struct StaffPorts {
     pub editor: Arc<dyn CatalogEditor + Send + Sync>,
     /// Existing agents and subjects suggested while cataloguing.
     pub suggestions: Arc<dyn AuthoritySuggestions + Send + Sync>,
+    /// The Items of an Instance as the grid edits them (docs/specs/catalogo/exemplares.md).
+    pub items: Arc<dyn ItemGridSource>,
 }
 
 /// Query string of `/equipe/acervo`.

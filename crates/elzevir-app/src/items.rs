@@ -138,6 +138,7 @@ pub struct RowRefusal {
 
 /// One row as the screen sends it: every column as typed.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct TypedRow {
     /// The Item, or `None` for a new one.
     #[serde(default)]

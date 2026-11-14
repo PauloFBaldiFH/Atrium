@@ -7,7 +7,7 @@ A tarefa 2.7 tem duas partes, cada uma num PR:
 - **2.7a, escrita:** o comando `catalog.save_items`, a validação por linha e a rota que grava o lote (itens 1 a 11 e 13 a 16).
 - **2.7b, tela:** a leitura da grade (item 12) e a grade `<elz-item-grid>` na coluna de exemplares, com teclado, bipe, `Ctrl+D` e "+N linhas" (itens 17 a 28).
 
-Ficam para depois: filtrar e ordenar dentro da grade, colunas visíveis e largura salvas por usuário (§5), a circulação rápida (Fase 3) e apagar exemplar (que no Koha tem regras próprias: empréstimo, reserva, último exemplar).
+Ficam para depois: filtrar e ordenar dentro da grade, desenhar só as linhas visíveis (item 27), colunas visíveis e largura salvas por usuário (§5), a circulação rápida (Fase 3) e apagar exemplar (que no Koha tem regras próprias: empréstimo, reserva, último exemplar).
 
 ## 1. Comportamento
 
@@ -51,7 +51,7 @@ Ficam para depois: filtrar e ordenar dentro da grade, colunas visíveis e largur
 
 17. Quem cataloga vê "Editar exemplares" no bloco da Instância focada. A grade abre na coluna de exemplares, ancorada à Instância, que fica de relance à esquerda (§5).
 18. A grade segue o padrão *grid* do WAI-ARIA, com `tabindex` itinerante: setas movem a célula, `Tab`/`Shift+Tab` andam na linha, `Enter` confirma e desce, `F2` ou digitar edita, `Esc` cancela a célula e um segundo `Esc` fecha a grade (perguntando se há mudança não gravada).
-19. **Bipe:** o leitor de código de barras funciona como teclado. Na coluna "código de barras", `Enter` confirma e desce; na última linha, cria uma linha nova que herda unidade de origem, unidade atual, localização, coleção, tipo de item e nº de chamada da anterior, já com o cursor no código de barras. Assim 50 bipes seguidos viram 50 linhas, sem perder leitura.
+19. **Bipe:** o leitor de código de barras funciona como teclado. Na coluna "código de barras", `Enter` confirma e desce; na última linha, cria uma linha nova que herda unidade de origem, unidade atual, localização, coleção, tipo de item e nº de chamada da anterior, já com o cursor no código de barras. Assim 50 bipes seguidos viram 50 linhas, sem perder leitura. Se o bipe acabar e a pessoa apertar `Esc` na linha que esperava o próximo, essa linha some; uma linha que ficou esperando bipe e não recebeu nada não é gravada.
 20. Nenhuma tecla vai ao servidor: a grade só grava com `Ctrl+Enter` ou o botão "Gravar".
 21. `Ctrl+D` copia para a célula o valor da célula de cima.
 22. "+N linhas" acrescenta N linhas herdando da última, com tombo inicial e incremento opcionais (`2026/0001` com incremento 1 gera `2026/0001` a `2026/00NN`: o último número do texto sobe, com os zeros à esquerda).
@@ -59,7 +59,7 @@ Ficam para depois: filtrar e ordenar dentro da grade, colunas visíveis e largur
 24. Gravar com sucesso atualiza a versão e os ids e tira as marcas; a família é relida para as pílulas mostrarem os exemplares.
 25. Sair da grade, trocar o foco ou fechar a família com mudança não gravada pergunta antes ([edição](edicao.md), item 32).
 26. Unidade e tipo de item são escolhidos numa lista com os códigos cadastrados; localização e coleção são texto livre com sugestões dos códigos já usados.
-27. Acima de 200 linhas a grade só desenha as linhas visíveis (§11).
+27. A grade desenha todas as linhas. Desenhar só as visíveis acima de 200 linhas (§11) fica para quando uma medição mostrar a necessidade. Medido no Chromium (servidor local, 2026-11-14): acrescentar 250 linhas leva 89 ms, gravá-las 113 ms, reabrir a grade com 252 linhas 128 ms, e 100 setas seguidas 614 ms (cerca de 6 ms por tecla, contando o próprio Playwright).
 28. A grade é um *Web Component* (`<elz-item-grid>`) em JavaScript sem dependências, no mesmo módulo da listagem.
 
 ## 2. Origem no Koha

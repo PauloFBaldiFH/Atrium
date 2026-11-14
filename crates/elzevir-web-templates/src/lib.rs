@@ -5,12 +5,14 @@
 //! (English first, then Brazilian Portuguese; docs/arquitetura/04-decisoes.md, §1 item 7).
 
 mod staff_catalog;
+mod staff_item_grid;
 mod staff_record_fields;
 mod staff_record_form;
 
 pub use staff_catalog::{
     AuthorityLine, FamilyLine, HubLine, InstanceLine, PillLine, StaffCatalog, WorkLine,
 };
+pub use staff_item_grid::{GridColumn, GridList, GridRow, ItemGrid};
 pub use staff_record_fields::{FieldEntry, FieldGroup, FieldValue, ItemFields, RecordFields};
 pub use staff_record_form::{
     ColumnKind, FormCell, FormColumn, FormField, FormInput, FormOption, FormPart, NewRecordForm,
@@ -352,6 +354,7 @@ mod tests {
             include_str!("../templates/staff_record_fields.html"),
             include_str!("../templates/staff_record_form.html"),
             include_str!("../templates/staff_new_record.html"),
+            include_str!("../templates/staff_item_grid.html"),
             include_str!("../templates/staff_form_field.html"),
         ];
         let mut missing = Vec::new();
