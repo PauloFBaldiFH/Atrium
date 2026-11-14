@@ -16,7 +16,7 @@
     <button type="button" class="toggle" data-toggle="hub" aria-pressed="true" hidden>{{ t.get("staff-column-hub") }}</button>
   </div>
 </div>
-<nav class="trail" aria-label="{{ t.get("staff-catalog-focus-label") }}" hidden><span>{{ t.get("staff-catalog-title") }}</span> › <strong class="trail-family"></strong></nav>
+<nav class="trail" aria-label="{{ t.get("staff-catalog-focus-label") }}" hidden><span>{{ t.get("staff-catalog-title") }}</span> › <strong class="trail-family"></strong> <span class="trail-level" hidden></span></nav>
 <section id="families" aria-live="polite">
   {% if let Some(text) = count_text() %}<p class="muted count">{{ text }}</p>{% endif %}
   <ol class="families">
@@ -35,7 +35,7 @@
       <div class="track track-auth">
         <div class="col-header">{{ t.get("staff-column-authorities") }}</div>
         {% for authority in family.authorities %}
-        <article class="card card-auth" data-node="a{{ authority.key }}">
+        <article class="card card-auth" data-level="auth" tabindex="0" data-node="a{{ authority.key }}">
           <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-agent") }}</span></div>
           <div class="field-row">
             <span class="field-label">{{ t.get("staff-field-authorized-name") }}</span>
@@ -47,7 +47,7 @@
       <div class="track track-hub">
         <div class="col-header">{{ t.get("staff-column-hub") }}</div>
         {% if let Some(hub) = family.hub %}
-        <article class="card card-hub" data-node="h{{ hub.id }}">
+        <article class="card card-hub" data-level="hub" tabindex="0" data-node="h{{ hub.id }}">
           <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-hub") }}</span></div>
           <div class="field-row">
             <span class="field-label">{{ t.get("staff-field-uniform-title") }}</span>
@@ -59,7 +59,7 @@
       <div class="track track-work">
         <div class="col-header">{{ t.get("staff-column-work") }}</div>
         {% for work in family.works %}
-        <article class="card card-work" data-node="w{{ work.id }}"
+        <article class="card card-work" data-level="work" tabindex="0" data-node="w{{ work.id }}"
                  data-parent="{% if let Some(hub) = family.hub %}h{{ hub.id }} {% endif %}{% if let Some(key) = work.authority %}a{{ key }}{% endif %}"
                  data-cord-label="{% if family.hub.is_some() %}{{ t.get("staff-cord-work") }}|{% endif %}{% if work.authority.is_some() %}{{ t.get("staff-cord-written-by") }}{% endif %}">
           <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-work") }}{% for language in work.languages %} • {{ language }}{% endfor %}</span></div>
@@ -95,7 +95,7 @@
         <div class="col-header">{{ t.get("staff-column-instance") }}</div>
         <div class="col-header">{{ t.get("staff-column-items") }}</div>
         {% for work in family.works %}{% for instance in work.instances %}
-        <article class="card card-instance{% if instance.found %} found{% endif %}" data-node="i{{ instance.id }}"
+        <article class="card card-instance{% if instance.found %} found{% endif %}" data-level="instance" tabindex="0" data-node="i{{ instance.id }}"
                  data-parent="w{{ work.id }}" data-cord-label="{{ t.get("staff-cord-edition") }}">
           <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-instance") }}{% if let Some(edition) = instance.edition %} • {{ edition }}{% endif %}</span>
             <details class="export-menu">

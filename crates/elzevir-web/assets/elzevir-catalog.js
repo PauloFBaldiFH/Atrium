@@ -193,6 +193,78 @@ function trail(details) {
   nav.hidden = !family;
   const name = nav.querySelector(".trail-family");
   if (name) name.textContent = family?.querySelector(".row-title strong")?.textContent ?? "";
+  // The level in focus, named as its column header names it.
+  const level = nav.querySelector(".trail-level");
+  const grid = family?.querySelector(".family-grid");
+  const header = grid?.dataset.focus ? grid.querySelector(`.track-${grid.dataset.focus === "instance" ? "editions" : grid.dataset.focus} > .col-header`) : null;
+  if (level) {
+    level.hidden = !header;
+    level.textContent = header ? `› ${header.textContent}` : "";
+  }
+}
+
+// Focus on one level of the open family (listagem.md, items 37 to 41).
+function clearLevel(grid) {
+  delete grid.dataset.focus;
+  for (const node of grid.querySelectorAll(".focused, .dimmed, [inert]")) {
+    node.classList.remove("focused", "dimmed");
+    node.inert = false;
+  }
+}
+
+function focusLevel(card) {
+  const grid = card.closest(".family-grid");
+  if (!grid) return;
+  const again = card.classList.contains("focused");
+  clearLevel(grid);
+  if (!again) {
+    grid.dataset.focus = card.dataset.level;
+    card.classList.add("focused");
+    if (card.dataset.level === "instance") {
+      // The other Instances and their items step back, so nobody touches the wrong item.
+      const own = card.dataset.node;
+      for (const other of grid.querySelectorAll('.card[data-level="instance"]')) {
+        if (other === card) continue;
+        other.classList.add("dimmed");
+        other.inert = true;
+      }
+      for (const stack of grid.querySelectorAll(".items-stack")) {
+        if (stack.querySelector(`[data-parent="${own}"]`)) continue;
+        stack.classList.add("dimmed");
+        stack.inert = true;
+      }
+    }
+  }
+  follow(grid);
+  trail(grid.closest(".family-focus"));
+}
+
+// Cords follow the columns while they animate.
+function follow(grid) {
+  const until = performance.now() + 400;
+  const step = () => {
+    draw(grid, measure(grid));
+    if (performance.now() < until) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+document.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof Element) || target.closest("a, button, summary, details.export-menu, input, select, textarea")) return;
+  const card = target.closest(".family-grid .card[data-level]");
+  if (card) focusLevel(card);
+});
+
+// ← and → move to the first card of the column before or after.
+function neighbour(card, step) {
+  const grid = card.closest(".family-grid");
+  const columns = ["auth", "hub", "work", "instance"].filter((level) =>
+    grid?.querySelector(`.card[data-level="${level}"]:not([inert])`)?.getBoundingClientRect().width,
+  );
+  const at = columns.indexOf(card.dataset.level);
+  const level = columns[at + step];
+  return level ? grid.querySelector(`.card[data-level="${level}"]:not([inert])`) : null;
 }
 
 function focused(details) {
@@ -232,9 +304,22 @@ document.addEventListener("keydown", (event) => {
     document.getElementById("q")?.focus();
     return;
   }
+  const card = event.target instanceof Element ? event.target.closest(".card[data-level]") : null;
+  if (card && event.key === "Enter") {
+    event.preventDefault();
+    focusLevel(card);
+    return;
+  }
+  if (card && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+    event.preventDefault();
+    neighbour(card, event.key === "ArrowLeft" ? -1 : 1)?.focus();
+    return;
+  }
   if (event.key === "Escape") {
     const open = document.querySelector(".family-focus[open]");
     if (!open) return;
+    const grid = open.querySelector(".family-grid");
+    if (grid) clearLevel(grid);
     open.open = false;
     open.querySelector(":scope > summary")?.focus();
     return;

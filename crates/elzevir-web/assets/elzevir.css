@@ -137,9 +137,6 @@ button {
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 main:has(.wide) { max-width: none; padding: 0; }
 .catalog {
-  /* Work and Instance get the most room: they carry the fields the cataloguer reads. */
-  --catalog-tracks: 0.8fr 0.7fr 1.55fr 1.7fr 1.35fr;
-  --catalog-tracks-no-hub: 0.85fr 1.7fr 1.85fr 1.45fr;
   /* Wider than the sketch's 20px so the cords and their labels have room. */
   --catalog-gap: 56px;
   --auth-accent: #7e22ce; --auth-bg: #faf5ff; --auth-border: #d8b4fe; --auth-pill: #f3e8ff;
@@ -207,16 +204,17 @@ main:has(.wide) { max-width: none; padding: 0; }
 /* The focused family: its blocks and cords. */
 .family-grid {
   position: relative;
-  display: grid; grid-template-columns: var(--catalog-tracks); gap: var(--catalog-gap);
+  /* Column weights: Authorities, Hub, Work, Instance, Items. A level in focus changes them. */
+  --wa: 0.8fr; --wh: 0.7fr; --ww: 1.55fr; --wi: 1.7fr; --wx: 1.35fr;
+  display: grid; grid-template-columns: minmax(7rem, var(--wa)) minmax(7rem, var(--wh)) var(--ww) var(--wi) var(--wx); gap: var(--catalog-gap);
   align-items: start;
   padding: 16px 0 26px;
 }
-.family-grid.no-hub { grid-template-columns: var(--catalog-tracks-no-hub); }
+.family-grid.no-hub, .catalog.hide-hub .family-grid { grid-template-columns: minmax(7rem, var(--wa)) var(--ww) var(--wi) var(--wx); }
+.catalog.hide-auth .family-grid { grid-template-columns: minmax(7rem, var(--wh)) var(--ww) var(--wi) var(--wx); }
+.catalog.hide-auth .family-grid.no-hub, .catalog.hide-auth.hide-hub .family-grid { grid-template-columns: var(--ww) var(--wi) var(--wx); }
 .family-grid.no-hub > .track-hub { display: none; }
-.catalog.hide-hub .family-grid { grid-template-columns: var(--catalog-tracks-no-hub); }
 .catalog.hide-hub .track-hub { display: none; }
-.catalog.hide-auth .family-grid { grid-template-columns: 0.75fr 1.7fr 1.85fr 1.45fr; }
-.catalog.hide-auth .family-grid.no-hub, .catalog.hide-auth.hide-hub .family-grid { grid-template-columns: 1.8fr 1.95fr 1.5fr; }
 .catalog.hide-auth .track-auth { display: none; }
 .column-toggles { display: flex; gap: 6px; }
 .column-toggles .toggle {
@@ -359,3 +357,17 @@ a.field-value:hover { text-decoration: underline; }
 .export-menu a { display: block; padding: 5px 8px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 600; }
 .export-menu a:hover { background: var(--work-bg); }
 .card:has(.export-menu[open]) { z-index: 6; }
+/* Focus on one level of the open family (listagem.md, items 37 to 41): its column takes
+   about 75 % of the width; the neighbours stay visible and linked. */
+.family-grid { transition: grid-template-columns 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+.family-grid[data-focus="auth"] { --wa: 3fr; --wh: 0.8fr; --ww: 1fr; --wi: 0.8fr; --wx: 0.6fr; }
+.family-grid[data-focus="hub"] { --wa: 0.6fr; --wh: 3fr; --ww: 1fr; --wi: 0.8fr; --wx: 0.6fr; }
+.family-grid[data-focus="work"] { --wa: 0.5fr; --wh: 0.5fr; --ww: 3.2fr; --wi: 1fr; --wx: 0.8fr; }
+.family-grid[data-focus="instance"] { --wa: 0.35fr; --wh: 0.35fr; --ww: 0.9fr; --wi: 3.2fr; --wx: 1.2fr; }
+/* Columns squeezed by a focus keep whole words: smaller type, hyphenation instead of breaking anywhere. */
+.family-grid:is([data-focus="work"], [data-focus="instance"]) :is(.track-auth, .track-hub) .card { font-size: 0.82em; overflow-wrap: break-word; hyphens: auto; padding: 10px; }
+.card[data-level] { cursor: pointer; }
+.card[data-level]:focus-visible { outline: 3px solid var(--work-accent); outline-offset: 2px; }
+.card.focused { border-color: var(--pill-text); box-shadow: 0 26px 52px -12px rgba(15, 23, 42, 0.24), 0 0 0 2.5px color-mix(in srgb, var(--pill-text) 32%, transparent); }
+.dimmed { opacity: 0.35; transition: opacity 0.25s ease; }
+@media (prefers-reduced-motion: reduce) { .family-grid, .dimmed { transition: none; } }

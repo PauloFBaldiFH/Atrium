@@ -244,11 +244,13 @@ async fn the_first_page_shows_families_with_pills_and_a_loader_for_the_next() {
     assert!(html.contains(r#"hx-get="/equipe/acervo?after=w30.030""#));
     // Blocks name their parent, for the cords drawn by the page's script.
     assert!(html.contains(r#"<script type="module" src="/static/elzevir-catalog.js"></script>"#));
-    assert!(html.contains(r#"data-node="i10""#));
+    assert!(html.contains(r#"data-level="instance" tabindex="0" data-node="i10""#));
     assert!(html.contains(r#"data-parent="w1" data-cord-label="edition""#));
     assert!(html.contains(r#"data-parent="i10" data-cord-label="items""#));
     // The main contributor is an authority block, parent of its Work with a dashed cord.
-    assert!(html.contains(r#"<article class="card card-auth" data-node="a0">"#));
+    assert!(html.contains(
+        r#"<article class="card card-auth" data-level="auth" tabindex="0" data-node="a0">"#
+    ));
     assert!(html.contains(r#"data-parent="a0""#));
     assert!(html.contains(r#"data-cord-label="written by""#));
     // Toggles for the Hub and Authorities columns stay hidden until the script runs.
