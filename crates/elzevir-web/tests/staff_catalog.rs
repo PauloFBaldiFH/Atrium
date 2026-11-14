@@ -722,3 +722,121 @@ async fn suggestions_list_existing_agents_and_subjects_by_prefix() {
         r#"[{"heading":"Romance brasileiro","kind":"topic","thesaurus":"larpcal"}]"#
     );
 }
+
+#[tokio::test]
+async fn a_cataloguer_creates_a_family_or_an_instance_from_the_screen() {
+    let app = app();
+    let family =
+        r#"{"work": [{"Title": "Quincas Borba"}, {"MaterialType": "book"}], "instance": []}"#;
+    let anonymous = send(&app, post_json("/equipe/acervo/nova", None, None, family)).await;
+    assert_eq!(anonymous.status(), StatusCode::UNAUTHORIZED);
+    let bia = signed_in_as(&app, "bia").await;
+    let bia_token = page_token(&app, &bia).await;
+    let reader = send(
+        &app,
+        post_json("/equipe/acervo/nova", Some(&bia), Some(&bia_token), family),
+    )
+    .await;
+    assert_eq!(reader.status(), StatusCode::FORBIDDEN);
+
+    let ana = signed_in(&app).await;
+    let token = page_token(&app, &ana).await;
+    let created = send(
+        &app,
+        post_json("/equipe/acervo/nova", Some(&ana), Some(&token), family),
+    )
+    .await;
+    assert_eq!(created.status(), StatusCode::CREATED);
+    // The page that starts at the new family: same sort key, the Work id before.
+    assert_eq!(
+        body(created).await,
+        r#"{"instance":901,"family":"/equipe/acervo?after=w899.quincas%20borba#f-w900"}"#
+    );
+
+    let empty = send(
+        &app,
+        post_json("/equipe/acervo/nova", Some(&ana), Some(&token), "{}"),
+    )
+    .await;
+    assert_eq!(empty.status(), StatusCode::UNPROCESSABLE_ENTITY);
+    let empty = body(empty).await;
+    assert!(empty.contains(r#""field":"title","key":"edit-error-title-empty""#));
+    assert!(empty.contains(r#""field":"material_type","key":"edit-error-material-required""#));
+
+    let instance = r#"{"changes": [{"Title": "Quincas Borba"}, {"Edition": "2. ed."}]}"#;
+    let added = send(
+        &app,
+        post_json(
+            "/equipe/acervo/obra/1/instancias",
+            Some(&ana),
+            Some(&token),
+            instance,
+        ),
+    )
+    .await;
+    assert_eq!(added.status(), StatusCode::CREATED);
+    assert_eq!(body(added).await, r#"{"instance":902}"#);
+    let unknown = send(
+        &app,
+        post_json(
+            "/equipe/acervo/obra/404/instancias",
+            Some(&ana),
+            Some(&token),
+            instance,
+        ),
+    )
+    .await;
+    assert_eq!(unknown.status(), StatusCode::NOT_FOUND);
+}
+
+#[tokio::test]
+async fn the_new_record_forms_start_blank_or_carry_over_the_previous_record() {
+    let app = app();
+    let bia = signed_in_as(&app, "bia").await;
+    let listing = body(send(&app, get("/equipe/acervo", Some(&bia), None)).await).await;
+    assert!(!listing.contains(r#"data-action="new-family""#));
+    let refused = send(&app, get("/equipe/acervo/nova", Some(&bia), None)).await;
+    assert_eq!(refused.status(), StatusCode::FORBIDDEN);
+
+    let ana = signed_in(&app).await;
+    let listing = body(send(&app, get("/equipe/acervo", Some(&ana), None)).await).await;
+    assert!(listing.contains(r#"data-action="new-family""#));
+    assert!(listing.contains(r#"data-action="new-instance" data-from="10""#));
+
+    let blank = body(
+        send(
+            &app,
+            get("/equipe/acervo/nova?material=periodical", Some(&ana), None),
+        )
+        .await,
+    )
+    .await;
+    assert!(blank.contains(r#"data-endpoint="/equipe/acervo/nova" data-create="family""#));
+    assert!(blank.contains(r#"data-part="work""#) && blank.contains(r#"data-part="instance""#));
+    assert!(blank.contains(r#"<option value="periodical" selected>"#));
+    assert!(!blank.contains("data-inherited"));
+
+    let next = body(send(&app, get("/equipe/acervo/nova?from=10", Some(&ana), None)).await).await;
+    // Language and category carry over, marked; title and contributors do not.
+    assert!(next.contains(r#"data-change="Languages" data-error="languages" data-inherited"#));
+    assert!(
+        next.contains(r#"data-change="MaterialType" data-error="material_type" data-inherited"#)
+    );
+    assert!(next.contains("from the previous record"));
+    assert!(!next.contains("Dom Casmurro") && !next.contains("Assis, Machado de"));
+
+    let instance = body(
+        send(
+            &app,
+            get("/equipe/acervo/instancia/10/nova", Some(&ana), None),
+        )
+        .await,
+    )
+    .await;
+    assert!(
+        instance
+            .contains(r#"data-endpoint="/equipe/acervo/obra/1/instancias" data-create="instance""#)
+    );
+    assert!(instance.contains(r#"value="Dom Casmurro""#));
+    assert!(!instance.contains("9788535910667"));
+}

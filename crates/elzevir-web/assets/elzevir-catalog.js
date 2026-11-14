@@ -373,10 +373,23 @@ function typing(target) {
 }
 
 document.addEventListener("keydown", (event) => {
+  // Ctrl+N as the spec of the interface names it, where the browser lets a page have it
+  // (Chrome keeps it for a new window, so N alone does the same below).
+  if (event.ctrlKey && !event.altKey && !event.shiftKey && event.key.toLowerCase() === "n" && document.querySelector("[data-action=new-family]")) {
+    event.preventDefault();
+    newFromKey();
+    return;
+  }
   if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || typing(event.target)) return;
   if (event.key === "/") {
     event.preventDefault();
     document.getElementById("q")?.focus();
+    return;
+  }
+  // N creates (criacao.md, item 14), where the screen offers it.
+  if (event.key.toLowerCase() === "n" && document.querySelector("[data-action=new-family]")) {
+    event.preventDefault();
+    newFromKey();
     return;
   }
   const card = event.target instanceof Element ? event.target.closest(".card[data-level]") : null;
@@ -391,6 +404,12 @@ document.addEventListener("keydown", (event) => {
     return;
   }
   if (event.key === "Escape") {
+    const creating = newPanel()?.querySelector(".record-form");
+    if (creating) {
+      if (dirty(creating)) askDiscard(creating);
+      else closeNew();
+      return;
+    }
     const open = document.querySelector(".family-focus[open]");
     if (!open) return;
     const pending = dirtyForm(open);
@@ -466,10 +485,16 @@ function fieldValue(field) {
   }
 }
 
+// Each field by its block and change: a new family has a Title in the Work and another in
+// the Instance (criacao.md, item 5). An edit form has one block, named "".
+function fieldKey(field) {
+  return `${field.closest("[data-part]")?.dataset.part ?? ""}|${field.dataset.change}`;
+}
+
 function snapshot(form) {
   const values = {};
   for (const field of form.querySelectorAll(".form-field[data-change]")) {
-    values[field.dataset.change] = JSON.stringify(fieldValue(field));
+    values[fieldKey(field)] = JSON.stringify(fieldValue(field));
   }
   return values;
 }
@@ -478,12 +503,31 @@ function changes(form) {
   const before = JSON.parse(form.dataset.initial || "{}");
   const now = snapshot(form);
   const list = [];
-  for (const [change, value] of Object.entries(now)) {
+  for (const field of form.querySelectorAll(".form-field[data-change]")) {
+    const key = fieldKey(field);
+    const value = now[key];
     // A select left empty has no value to send (a category cannot be cleared).
-    if (value === before[change] || (value === "null" && form.querySelector(`[data-change="${change}"] select:not(.cell)`))) continue;
-    list.push({ [change]: JSON.parse(value) });
+    if (value === before[key] || (value === "null" && field.querySelector("select:not(.cell)"))) continue;
+    list.push({ [field.dataset.change]: JSON.parse(value) });
   }
   return list;
+}
+
+// A new record sends every filled field, the carried-over ones too (criacao.md, item 18).
+function filled(scope) {
+  const list = [];
+  for (const field of scope.querySelectorAll(".form-field[data-change]")) {
+    const value = fieldValue(field);
+    if (value === null || value === "" || (Array.isArray(value) && value.length === 0)) continue;
+    list.push({ [field.dataset.change]: value });
+  }
+  return list;
+}
+
+function createBody(form) {
+  if (form.dataset.create === "instance") return { changes: filled(form) };
+  const part = (name) => form.querySelector(`[data-part="${name}"]`);
+  return { work: filled(part("work")), instance: filled(part("instance")) };
 }
 
 const dirty = (form) => changes(form).length > 0;
@@ -526,7 +570,20 @@ async function reloadFields(card) {
   await loadFields(card);
 }
 
+function showFieldErrors(form, answer) {
+  for (const error of answer.errors) {
+    const field = form.querySelector(`.form-field[data-error="${error.field}"]`);
+    const line = field?.querySelector(".field-error");
+    if (!field || !line) continue;
+    field.classList.add("invalid");
+    line.textContent = error.message;
+    line.hidden = false;
+  }
+  form.querySelector(".form-field.invalid input, .form-field.invalid textarea, .form-field.invalid select")?.focus();
+}
+
 async function submitForm(form) {
+  if (form.dataset.create) return submitNew(form);
   const card = form.closest(".card");
   const list = changes(form);
   clearErrors(form);
@@ -558,21 +615,144 @@ async function submitForm(form) {
   if (response.status === 409) return showAlert(form, form.dataset.stale);
   if (response.status === 422) {
     const answer = await response.json().catch(() => null);
-    if (answer?.errors) {
-      for (const error of answer.errors) {
-        const field = form.querySelector(`.form-field[data-error="${error.field}"]`);
-        const line = field?.querySelector(".field-error");
-        if (!field || !line) continue;
-        field.classList.add("invalid");
-        line.textContent = error.message;
-        line.hidden = false;
-      }
-      form.querySelector(".form-field.invalid input, .form-field.invalid textarea")?.focus();
-      return;
-    }
+    if (answer?.errors) return showFieldErrors(form, answer);
   }
   showAlert(form, form.dataset.failed);
 }
+
+// Creating (criacao.md, items 13 to 20). The blank form comes from the server, with what
+// carries over from the record created before in this tab.
+const PREVIOUS = "elzevir.catalog.previous";
+const MATERIAL = "elzevir.catalog.material";
+
+function remember(key, value) {
+  try {
+    sessionStorage.setItem(key, value);
+  } catch {
+    // Storage blocked: the next new family starts blank.
+  }
+}
+
+function recalled(key) {
+  try {
+    return sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function newPanel() {
+  return document.querySelector(".new-record-panel");
+}
+
+function closeNew() {
+  newPanel()?.remove();
+}
+
+async function openNew(url, place) {
+  const pending = dirtyForm(document);
+  if (pending) return askDiscard(pending);
+  closeNew();
+  let html;
+  try {
+    const response = await fetch(url, { credentials: "same-origin", headers: { Accept: "text/html" } });
+    if (!response.ok) return;
+    html = await response.text();
+  } catch {
+    return; // nothing opened; the key or button tries again
+  }
+  const panel = document.createElement("section");
+  panel.className = "new-record-panel";
+  // Server-rendered by Askama, which escapes every value.
+  panel.innerHTML = html;
+  place(panel);
+  const form = panel.querySelector(".record-form");
+  if (!form) return;
+  form.dataset.initial = JSON.stringify(snapshot(form));
+  panel.scrollIntoView({ block: "nearest" });
+  // The cursor goes to the first empty field (item 13).
+  const empty = [...form.querySelectorAll(".form-field input[type=text], .form-field textarea")].find((input) => !input.value);
+  (empty ?? form.querySelector("input, textarea, select"))?.focus();
+}
+
+function newFamily() {
+  const params = new URLSearchParams();
+  const previous = recalled(PREVIOUS);
+  const material = recalled(MATERIAL);
+  if (previous) params.set("from", previous);
+  else if (material) params.set("material", material);
+  const query = params.toString();
+  openNew(`/equipe/acervo/nova${query ? `?${query}` : ""}`, (panel) => {
+    const families = document.getElementById("families");
+    if (families) families.before(panel);
+    else document.querySelector(".catalog")?.append(panel);
+  });
+}
+
+function newInstance(from) {
+  openNew(`/equipe/acervo/instancia/${encodeURIComponent(from)}/nova`, (panel) => {
+    const grid = document.querySelector(".family-focus[open] > .family-grid");
+    if (grid) grid.after(panel);
+    else document.getElementById("families")?.before(panel);
+  });
+}
+
+// With a family open, N adds an Instance to the Work in focus (or its first Work);
+// otherwise it starts a new family (item 14).
+function newFromKey() {
+  const open = document.querySelector(".family-focus[open]");
+  if (!open) return newFamily();
+  const focusedCard = open.querySelector(".card.focused");
+  if (focusedCard?.dataset.level === "instance") return newInstance(focusedCard.dataset.node.slice(1));
+  const work = focusedCard?.dataset.level === "work" ? focusedCard : open.querySelector(".card-work");
+  const from = work?.querySelector("[data-action=new-instance]")?.dataset.from;
+  return from ? newInstance(from) : newFamily();
+}
+
+async function submitNew(form) {
+  clearErrors(form);
+  const token = document.querySelector(".catalog")?.dataset.csrf ?? "";
+  let response;
+  try {
+    response = await fetch(form.dataset.endpoint, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json", "X-Elzevir-Csrf": token },
+      body: JSON.stringify(createBody(form)),
+    });
+  } catch {
+    showAlert(form, form.dataset.failed);
+    return;
+  }
+  if (response.status === 201) {
+    const answer = await response.json().catch(() => ({}));
+    // Nothing is pending any more: the panel goes before the page moves.
+    form.dataset.initial = JSON.stringify(snapshot(form));
+    if (form.dataset.create === "family") {
+      remember(PREVIOUS, String(answer.instance));
+      const material = form.querySelector('[data-part="work"] [data-change="MaterialType"] select')?.value;
+      if (material) remember(MATERIAL, material);
+      if (answer.family) location.assign(answer.family);
+      else location.reload();
+    } else {
+      location.reload();
+    }
+    return;
+  }
+  if (response.status === 422) {
+    const answer = await response.json().catch(() => null);
+    if (answer?.errors) return showFieldErrors(form, answer);
+  }
+  showAlert(form, form.dataset.failed);
+}
+
+// A carried-over value is confirmed once the cataloguer reaches its field (item 18).
+document.addEventListener("focusin", (event) => {
+  const field = event.target instanceof Element ? event.target.closest(".form-field[data-inherited]") : null;
+  if (!field) return;
+  field.removeAttribute("data-inherited");
+  field.querySelector(":scope > .inherited-mark")?.remove();
+});
 
 document.addEventListener("submit", (event) => {
   const form = event.target;
@@ -586,6 +766,11 @@ document.addEventListener("click", (event) => {
   if (!(target instanceof Element)) return;
   const action = target.closest("[data-action]");
   const form = target.closest(".record-form");
+  if (action && !form) {
+    if (action.dataset.action === "new-family") newFamily();
+    else if (action.dataset.action === "new-instance" && action.dataset.from) newInstance(action.dataset.from);
+    if (action.dataset.action.startsWith("new-")) return;
+  }
   if (action && form) {
     const fieldset = action.closest("fieldset");
     switch (action.dataset.action) {
@@ -602,10 +787,18 @@ document.addEventListener("click", (event) => {
         action.closest(".form-row")?.remove();
         break;
       case "discard": {
+        if (form.dataset.create) {
+          closeNew();
+          break;
+        }
         const card = form.closest(".card");
         if (card) reloadFields(card);
         break;
       }
+      case "cancel-new":
+        if (dirty(form)) askDiscard(form);
+        else closeNew();
+        break;
       case "keep":
         form.querySelector(".form-discard").hidden = true;
         form.querySelector("input, textarea, select")?.focus();
@@ -636,6 +829,7 @@ document.addEventListener("keydown", (event) => {
     if (event.target.closest(".form-row")?.querySelector(":scope > .suggestions")) return;
     event.preventDefault();
     if (dirty(form)) askDiscard(form);
+    else if (form.dataset.create) closeNew();
     else form.closest(".card")?.focus();
   }
 }, true);

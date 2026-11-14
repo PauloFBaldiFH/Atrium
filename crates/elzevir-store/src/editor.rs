@@ -14,6 +14,8 @@ impl CatalogEditor for ElzevirStore {
         let command = match edit {
             Edit::Work(update) => CatalogCommand::UpdateWork(Box::new(update)),
             Edit::Instance(update) => CatalogCommand::UpdateInstance(Box::new(update)),
+            Edit::NewRecord(record) => CatalogCommand::AddRecord(record),
+            Edit::NewInstance(new) => CatalogCommand::AddInstance(new),
         };
         let pending = self
             .submit_as(actor.0, WriteCommand::Catalog(command))

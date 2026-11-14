@@ -110,6 +110,14 @@ fn material_options(t: &I18n) -> Vec<FormOption> {
         .collect()
 }
 
+/// The category of material with this serde name.
+pub(crate) fn material_named(name: &str) -> Option<MaterialType> {
+    MATERIALS
+        .iter()
+        .find(|(_, serde_name)| *serde_name == name)
+        .map(|(material, _)| *material)
+}
+
 fn material_name(material: MaterialType) -> &'static str {
     MATERIALS
         .iter()
@@ -174,12 +182,13 @@ fn field(
             error,
             label_key,
             input,
+            inherited: false,
         },
         filled,
     )
 }
 
-fn work_field(t: &I18n, record: &NewRecord, part: WorkField) -> (FormField, bool) {
+pub(crate) fn work_field(t: &I18n, record: &NewRecord, part: WorkField) -> (FormField, bool) {
     match part {
         WorkField::Title => field(
             "Title",
@@ -227,7 +236,7 @@ fn work_field(t: &I18n, record: &NewRecord, part: WorkField) -> (FormField, bool
     }
 }
 
-fn instance_field(
+pub(crate) fn instance_field(
     t: &I18n,
     record: &NewRecord,
     new_identifier: IdentifierKind,

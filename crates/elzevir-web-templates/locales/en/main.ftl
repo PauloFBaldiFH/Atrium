@@ -200,6 +200,7 @@ edit-error-title-empty = The title cannot be empty.
 edit-error-language-code = Use three-letter language codes, such as por or eng.
 edit-error-isbn = This ISBN is not valid: check the digits.
 edit-error-issn = This ISSN is not valid: check the digits.
+edit-error-material-required = Choose the category of material.
 
 ## Editing in the focused block
 edit-empty-fields = Fields not filled in yet
@@ -225,3 +226,14 @@ edit-column-value = Value
 edit-column-qualifier = Qualifier
 edit-column-text = Text
 edit-new-entity = new
+edit-inherited = from the previous record
+new-family = New family
+new-family-hint = N
+new-instance = Instance
+new-instance-label = New Instance of this Work
+new-family-heading = New family
+new-instance-heading = New Instance
+new-work-part = Work
+new-instance-part = Instance
+new-create = Create
+new-cancel = Cancel

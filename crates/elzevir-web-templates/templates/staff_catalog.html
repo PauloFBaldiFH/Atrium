@@ -11,6 +11,7 @@
            placeholder="{{ t.get("staff-catalog-search-placeholder") }}">
     <button type="submit">{{ t.get("staff-catalog-search-button") }}</button>
   </form>
+  {% if can_catalogue %}<button type="button" class="new-family" data-action="new-family" aria-keyshortcuts="N">+ {{ t.get("new-family") }} <kbd>{{ t.get("new-family-hint") }}</kbd></button>{% endif %}
   <div class="column-toggles" role="group" aria-label="{{ t.get("staff-catalog-columns") }}">
     <button type="button" class="toggle" data-toggle="auth" aria-pressed="true" hidden>{{ t.get("staff-column-authorities") }}</button>
     <button type="button" class="toggle" data-toggle="hub" aria-pressed="true" hidden>{{ t.get("staff-column-hub") }}</button>
@@ -62,7 +63,8 @@
         <article class="card card-work" data-level="work" tabindex="0" data-node="w{{ work.id }}"{% if let Some(first) = work.instances.first() %} data-fields="/equipe/acervo/instancia/{{ first.id }}/campos?level=work"{% endif %}
                  data-parent="{% if let Some(hub) = family.hub %}h{{ hub.id }} {% endif %}{% if let Some(key) = work.authority %}a{{ key }}{% endif %}"
                  data-cord-label="{% if family.hub.is_some() %}{{ t.get("staff-cord-work") }}|{% endif %}{% if work.authority.is_some() %}{{ t.get("staff-cord-written-by") }}{% endif %}">
-          <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-work") }}{% for language in work.languages %} • {{ language }}{% endfor %}</span></div>
+          <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-work") }}{% for language in work.languages %} • {{ language }}{% endfor %}</span>
+            {% if can_catalogue %}{% if let Some(first) = work.instances.first() %}<button type="button" class="card-add" data-action="new-instance" data-from="{{ first.id }}" title="{{ t.get("new-instance-label") }}">+ {{ t.get("new-instance") }}</button>{% endif %}{% endif %}</div>
           <div class="field-row">
             <span class="field-label">{{ t.get("staff-field-work-title") }}</span>
             <span class="field-value title-main">{{ work.title }}</span>

@@ -1,4 +1,5 @@
-<div class="form-field" data-change="{{ field.change }}" data-error="{{ field.error }}">
+<div class="form-field" data-change="{{ field.change }}" data-error="{{ field.error }}"{% if field.inherited %} data-inherited{% endif %}>
+  {% if field.inherited %}<span class="inherited-mark">{{ t.get("edit-inherited") }}</span>{% endif %}
   {% match field.input %}
   {% when FormInput::Text { value, required } %}
   <label class="form-label" data-shape="text"{% if *required %} data-required{% endif %}><span>{{ t.get(field.label_key) }}</span>

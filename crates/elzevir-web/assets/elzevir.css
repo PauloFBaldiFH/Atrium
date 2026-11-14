@@ -434,3 +434,29 @@ a.field-value:hover { text-decoration: underline; }
 .card.focused { border-color: var(--pill-text); box-shadow: 0 26px 52px -12px rgba(15, 23, 42, 0.24), 0 0 0 2.5px color-mix(in srgb, var(--pill-text) 32%, transparent); }
 .dimmed { opacity: 0.35; transition: opacity 0.25s ease; }
 @media (prefers-reduced-motion: reduce) { .family-grid, .dimmed { transition: none; } }
+
+/* Creating (docs/specs/catalogo/criacao.md, items 13 to 18). Outside a card, the panel
+   and the button take the Work's colours, as a new record starts from its Work. */
+.new-family, .new-record-panel { --card-border: var(--work-border); --pill-text: var(--work-accent); }
+.new-family {
+  margin-left: auto; padding: 5px 12px; border: 0; border-radius: 8px;
+  background: var(--pill-text); color: #fff; font: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+}
+.new-family kbd { font: inherit; font-size: 0.7rem; opacity: 0.8; border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; margin-left: 4px; }
+.card-top .card-add {
+  margin-left: auto; padding: 1px 8px; border: 1px dashed var(--card-border); border-radius: 6px;
+  background: transparent; color: var(--pill-text); font: inherit; font-size: 0.72rem; font-weight: 700; cursor: pointer;
+}
+.glance .card-add, .rail .card-add { display: none; }
+.new-record-panel [data-part="instance"] { --card-border: var(--inst-border); --pill-text: var(--inst-accent); }
+.new-record-panel {
+  margin: 12px 0; padding: 14px 18px; border: 2px dashed var(--pill-text); border-radius: 12px; background: var(--card-bg);
+}
+.new-record-panel .record-form { margin-top: 0; border-top: 0; padding-top: 0; }
+.new-record-heading { margin: 0 0 10px; font-size: 1rem; }
+.form-part + .form-part { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--card-border); }
+.form-part-heading { margin: 0 0 8px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--pill-text); }
+.record-form .form-actions button[data-action="cancel-new"] { font: inherit; border: 1px solid var(--card-border); border-radius: 8px; padding: 6px 14px; background: transparent; color: var(--text-muted); cursor: pointer; }
+.form-field { position: relative; }
+.form-field[data-inherited] input, .form-field[data-inherited] select, .form-field[data-inherited] textarea { border-style: dashed; background: var(--elzevir-color-hub-bg); }
+.inherited-mark { position: absolute; right: 0; top: 0; font-size: 0.66rem; font-style: italic; color: var(--text-muted); }

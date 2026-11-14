@@ -9,7 +9,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use elzevir_app::catalog::{CatalogReadError, CatalogReader, InstanceView, ItemStatus, ItemView};
 use elzevir_app::listing::{CatalogListing, Family, FamilyCursor, FamilyHead};
 use elzevir_app::search::{IndexBatch, SearchError, SearchHit, SearchIndex, SearchResults};
-use elzevir_domain::catalog::InstanceId;
+use elzevir_domain::catalog::{InstanceId, WorkId};
 
 /// One record: its version, the Instance and its Items.
 pub(crate) type Record = (i64, InstanceView, Vec<ItemView>);
@@ -138,7 +138,8 @@ impl elzevir_app::export::RecordSource for Records {
 }
 
 /// Records edits from the screen. An edit read at version 1 is accepted and moves to 2;
-/// any other version is stale, as if someone else had edited first.
+/// any other version is stale, as if someone else had edited first. Creations are
+/// accepted, except a new Instance of Work 404, which does not exist.
 #[derive(Default)]
 pub(crate) struct Editor(
     pub(crate) Mutex<Vec<(elzevir_app::staff::StaffId, elzevir_app::editing::Edit)>>,
@@ -155,6 +156,10 @@ impl elzevir_app::editing::CatalogEditor for Editor {
         let read = match &edit {
             Edit::Work(update) => update.row_version,
             Edit::Instance(update) => update.row_version,
+            Edit::NewInstance(new) if new.work.0 == 404 => {
+                return Err(EditFailed::Refused(CatalogRefusal::UnknownWork(new.work)));
+            }
+            Edit::NewRecord(_) | Edit::NewInstance(_) => 1,
         };
         if read != 1 {
             return Err(EditFailed::Refused(CatalogRefusal::Stale {
@@ -170,6 +175,15 @@ impl elzevir_app::editing::CatalogEditor for Editor {
             Edit::Instance(update) => CatalogOutput::InstanceUpdated {
                 instance: update.instance,
                 row_version: 2,
+            },
+            Edit::NewRecord(_) => CatalogOutput::Record {
+                work: WorkId(900),
+                instance: InstanceId(901),
+                items: Vec::new(),
+            },
+            Edit::NewInstance(new) => CatalogOutput::InstanceAdded {
+                work: new.work,
+                instance: InstanceId(902),
             },
         };
         self.0.lock().unwrap().push((actor, edit));
