@@ -33,6 +33,37 @@ pub struct FormField {
     pub label_key: &'static str,
     /// The input.
     pub input: FormInput,
+    /// Whether the value came from the previous record and is not confirmed yet
+    /// (docs/specs/catalogo/criacao.md, item 17).
+    pub inherited: bool,
+}
+
+/// A form that creates: a new family (Work and Instance) or a new Instance of a Work
+/// (docs/specs/catalogo/criacao.md, items 13 to 18).
+#[derive(Template)]
+#[template(path = "staff_new_record.html")]
+pub struct NewRecordForm<'a> {
+    /// Interface texts.
+    pub t: &'a I18n,
+    /// Where the new record is sent.
+    pub endpoint: String,
+    /// `family` or `instance`: how the script shapes the body.
+    pub create: &'static str,
+    /// Message key of the form's heading.
+    pub heading_key: &'static str,
+    /// The blocks being created, in order.
+    pub parts: Vec<FormPart>,
+}
+
+/// The fields of one block of a new record, every field of its profile in order.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FormPart {
+    /// `work` or `instance`: the key of the block in the body.
+    pub name: &'static str,
+    /// Message key of the block's heading.
+    pub heading_key: &'static str,
+    /// The fields.
+    pub fields: Vec<FormField>,
 }
 
 /// How a field is entered, and how the script turns it into JSON.

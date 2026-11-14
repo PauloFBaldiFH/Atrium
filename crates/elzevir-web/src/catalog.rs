@@ -17,6 +17,7 @@ use elzevir_app::listing::{
     self, CatalogListing, FamilyCursor, FamilyHead, FamilyRow, InstanceRow, ItemPill, Match,
     WorkRow,
 };
+use elzevir_app::staff::Permission;
 use elzevir_app::suggestions::AuthoritySuggestions;
 use elzevir_domain::catalog::{InstanceId, MaterialType};
 use elzevir_web_templates::{
@@ -91,10 +92,12 @@ pub(crate) async fn catalog(
     let Ok(Ok(page)) = read else {
         return (StatusCode::SERVICE_UNAVAILABLE, "catalog unavailable").into_response();
     };
+    let can_catalogue = session.identity.can(Permission::Cataloguing);
     let page = match &page {
         Page::Browse(page) => StaffCatalog {
             t: &state.inner.i18n,
             csrf: &session.csrf,
+            can_catalogue,
             query: "",
             total: None,
             rows: page.rows.iter().map(family_line).collect(),
@@ -106,6 +109,7 @@ pub(crate) async fn catalog(
         Page::Search(page) => StaffCatalog {
             t: &state.inner.i18n,
             csrf: &session.csrf,
+            can_catalogue,
             query: &page.query,
             total: Some(page.total),
             rows: opened(page.rows.iter().map(family_line).collect()),

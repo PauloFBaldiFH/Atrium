@@ -1,0 +1,23 @@
+<form class="record-form new-record" data-endpoint="{{ endpoint }}" data-create="{{ create }}"
+      data-failed="{{ t.get("edit-failed") }}" data-new-entity="{{ t.get("edit-new-entity") }}" novalidate>
+  <h2 class="new-record-heading">{{ t.get(heading_key) }}</h2>
+  <p class="form-alert" role="alert" hidden></p>
+  {% for part in parts %}
+  <section class="form-part" data-part="{{ part.name }}">
+    {% if parts.len() > 1 %}<h3 class="form-part-heading">{{ t.get(part.heading_key) }}</h3>{% endif %}
+    <div class="form-fields">
+      {% for field in part.fields %}{% include "staff_form_field.html" %}{% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+  <div class="form-discard" role="alertdialog" hidden>
+    <span>{{ t.get("edit-discard-question") }}</span>
+    <button type="button" data-action="discard">{{ t.get("edit-discard") }}</button>
+    <button type="button" data-action="keep">{{ t.get("edit-keep") }}</button>
+  </div>
+  <div class="form-actions">
+    <button type="submit">{{ t.get("new-create") }}</button>
+    <button type="button" data-action="cancel-new">{{ t.get("new-cancel") }}</button>
+    <span class="form-hint">{{ t.get("edit-done-hint") }}</span>
+  </div>
+</form>

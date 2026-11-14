@@ -13,6 +13,8 @@ pub struct StaffCatalog<'a> {
     pub t: &'a I18n,
     /// The session's CSRF token, which the page's script sends with an edit.
     pub csrf: &'a str,
+    /// Whether the viewer may catalogue, and so create records (criacao.md, item 13).
+    pub can_catalogue: bool,
     /// The query, empty when browsing.
     pub query: &'a str,
     /// Records found, for a search.

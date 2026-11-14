@@ -15,9 +15,11 @@ use elzevir_app::catalog::{
 use elzevir_app::editing::{
     Edit, EditFailed, FieldError, validate_instance_changes, validate_work_changes,
 };
+use elzevir_app::listing::{FamilyCursor, FamilyHead, sort_key};
 use elzevir_app::staff::Permission;
 use elzevir_app::suggestions::{AuthoritySuggestions, SUGGESTION_LIMIT, lookup_prefix};
 use elzevir_domain::catalog::{InstanceId, WorkId};
+use elzevir_web_templates::url_encode;
 use serde::{Deserialize, Serialize};
 
 use crate::AppState;
@@ -51,10 +53,28 @@ struct Accepted {
     version: i64,
 }
 
-/// The answer to a creation: the new Instance, for the screen to focus its family.
+/// The answer to a creation: the new Instance and, for a new family, the listing page
+/// that starts at it, for the screen to focus it (docs/specs/catalogo/criacao.md, item 10).
 #[derive(Serialize)]
 struct Created {
     instance: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    family: Option<String>,
+}
+
+/// The listing page that starts at the family of a new Work outside any Hub. Families
+/// are ordered by sort key and then by head, Works by id, so the page after the same key
+/// with the id before starts at this Work.
+fn family_page(title: &str, work: WorkId) -> String {
+    let before = FamilyCursor {
+        sort_key: sort_key(title),
+        head: FamilyHead::Work(WorkId(work.0 - 1)),
+    };
+    format!(
+        "/equipe/acervo?after={}#f-w{}",
+        url_encode(&before.token()),
+        work.0
+    )
 }
 
 /// The answer to a stale edit: the version stored now.
@@ -149,6 +169,10 @@ pub(crate) fn invalid(state: &AppState, errors: &[FieldError]) -> Response {
 pub(crate) async fn apply(state: &AppState, session: &ActiveSession, edit: Edit) -> Response {
     let editor = Arc::clone(&state.inner.staff_ports.editor);
     let actor = session.identity.id;
+    let new_title = match &edit {
+        Edit::NewRecord(record) => Some(record.work_title.clone()),
+        _ => None,
+    };
     let outcome = tokio::task::spawn_blocking(move || editor.apply(actor, edit)).await;
     match outcome {
         Ok(Ok(
@@ -158,12 +182,19 @@ pub(crate) async fn apply(state: &AppState, session: &ActiveSession, edit: Edit)
             version: row_version,
         })
         .into_response(),
-        Ok(Ok(
-            CatalogOutput::Record { instance, .. } | CatalogOutput::InstanceAdded { instance, .. },
-        )) => (
+        Ok(Ok(CatalogOutput::Record { work, instance, .. })) => (
             StatusCode::CREATED,
             Json(Created {
                 instance: instance.0,
+                family: new_title.map(|title| family_page(&title, work)),
+            }),
+        )
+            .into_response(),
+        Ok(Ok(CatalogOutput::InstanceAdded { instance, .. })) => (
+            StatusCode::CREATED,
+            Json(Created {
+                instance: instance.0,
+                family: None,
             }),
         )
             .into_response(),

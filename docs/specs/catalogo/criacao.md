@@ -33,14 +33,15 @@ Ficam para depois: Obra nova no mesmo Hub e a sugestão "Agrupar num Hub" (§20 
 
 ### Tela (2.6b)
 
-13. Na família focada, a coluna Instância tem "+ Nova", que abre um bloco de Instância novo já em edição, com título e categoria da Instância focada (ou, sem Instância focada, da Obra) e o cursor no primeiro campo vazio do perfil.
-14. `Ctrl+N` sem família focada abre uma família nova vazia: blocos de Obra e Instância já em edição, com a categoria da sessão (a última usada; livro na primeira vez).
-15. O bloco novo usa o mesmo formulário e o mesmo perfil da edição; **Concluir** (`Ctrl+Enter`) cria e foca a família criada.
+13. Para quem cataloga, cada bloco de Obra tem **"+ Instância"**, que abre o formulário de uma Instância nova daquela Obra, com o título e a categoria da primeira Instância dela (spec de UI §6.1) e o cursor no primeiro campo vazio do perfil. O botão fica na Obra, e não no cabeçalho da coluna Instância, porque uma família com Hub tem várias Obras. O formulário abre logo abaixo dos blocos da família.
+14. A barra tem **"+ Nova família"**, e a tecla `N` (fora de um campo) faz o mesmo: sem família aberta, abre uma família nova vazia, com blocos de Obra e Instância já em edição e a categoria da sessão (a última usada; livro na primeira vez); com família aberta, abre uma Instância nova da Obra em foco (ou da primeira Obra). `Ctrl+N` faz o mesmo onde o navegador deixa a página usá-lo; o Chrome o reserva para nova janela e não o entrega à página, por isso `N` é o atalho garantido.
+15. O bloco novo usa o mesmo formulário e o mesmo perfil da edição; **Criar** (`Ctrl+Enter`) grava; **Cancelar** e `Esc` fecham o formulário.
 16. Bloco novo com algo digitado segue a regra da edição pendente ([edição](edicao.md), item 32): nada some sem "Descartar".
-17. **Catalogação contínua** (§6.2, §20 item 7): depois de criar, `Ctrl+N` abre outra família nova com editora, local, data, idiomas, assuntos e categoria do registro anterior, cada campo herdado marcado **"herdado"** até ser confirmado ou trocado.
+17. **Catalogação contínua** (§6.2, §20 item 7): depois de criar, `N` (ou "+ Nova família") abre outra família nova com editora, local, data, idiomas, assuntos e categoria do registro anterior, cada campo herdado marcado **"herdado"** até ser confirmado ou trocado.
 18. Confirmar um campo herdado é editá-lo ou passar por ele com `Tab`; a marca some. Um campo herdado é enviado como qualquer outro.
-19. A herança fica só no navegador, na sessão da aba; recarregar a página a esquece.
-20. Criar uma família entra na lista na posição da ordem atual; a tela foca a família criada.
+19. A herança fica no `sessionStorage` da aba (a última Instância criada e a categoria): vale enquanto a aba estiver aberta, mesmo depois que a tela vai para a família criada, e some ao fechar a aba. O formulário pede ao servidor `GET /equipe/acervo/nova?from={instância}`, e o servidor monta os valores herdados a partir do registro gravado.
+20. Criar uma família leva a tela para a página da listagem que começa nela, já aberta (`/equipe/acervo?after=...#f-w{id}`); criar uma Instância recarrega a família aberta.
+21. Os formulários vêm do servidor: `GET /equipe/acervo/nova?material=&from=` (família) e `GET /equipe/acervo/instancia/{id}/nova` (Instância da Obra de `{id}`), só para quem tem a permissão `cataloguing` (sem ela: 403).
 
 ## 2. Origem no Koha
 

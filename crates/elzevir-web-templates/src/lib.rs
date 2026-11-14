@@ -13,7 +13,8 @@ pub use staff_catalog::{
 };
 pub use staff_record_fields::{FieldEntry, FieldGroup, FieldValue, ItemFields, RecordFields};
 pub use staff_record_form::{
-    ColumnKind, FormCell, FormColumn, FormField, FormInput, FormOption, RecordForm,
+    ColumnKind, FormCell, FormColumn, FormField, FormInput, FormOption, FormPart, NewRecordForm,
+    RecordForm,
 };
 
 use askama::Template;
@@ -350,6 +351,7 @@ mod tests {
             include_str!("../templates/staff_catalog.html"),
             include_str!("../templates/staff_record_fields.html"),
             include_str!("../templates/staff_record_form.html"),
+            include_str!("../templates/staff_new_record.html"),
             include_str!("../templates/staff_form_field.html"),
         ];
         let mut missing = Vec::new();
