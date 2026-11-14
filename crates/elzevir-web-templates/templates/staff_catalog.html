@@ -16,12 +16,22 @@
     <button type="button" class="toggle" data-toggle="hub" aria-pressed="true" hidden>{{ t.get("staff-column-hub") }}</button>
   </div>
 </div>
+<nav class="trail" aria-label="{{ t.get("staff-catalog-focus-label") }}" hidden><span>{{ t.get("staff-catalog-title") }}</span> › <strong class="trail-family"></strong></nav>
 <section id="families" aria-live="polite">
   {% if let Some(text) = count_text() %}<p class="muted count">{{ text }}</p>{% endif %}
   <ol class="families">
   {% block rows %}
   {% for family in rows %}
-    <li class="family{% if family.hub.is_none() %} no-hub{% endif %}">
+    <li class="family" id="f-{{ family.head }}" data-head="{{ family.head }}">
+     <details class="family-focus"{% if family.open %} open{% endif %}>
+      <summary class="family-row">
+        <svg class="row-icon" aria-hidden="true" focusable="false"><use href="/static/elzevir-icons.svg#{{ family.icon }}"></use></svg>
+        <span class="row-title"><strong>{{ family.title }}</strong>{% if family.hub.is_some() %} <span class="row-hub">{{ t.get("staff-badge-hub") }}</span>{% endif %} <span class="row-shape">{{ family.shape_text(t) }}</span></span>
+        <span class="row-agents">{% for authority in family.authorities %}<span class="chip chip-agent">{{ authority.name }}</span>{% endfor %}</span>
+        <span class="row-class call-number">{% if let Some(classification) = family.classification %}{{ classification }}{% endif %}</span>
+        {% if family.items == 0 %}<span class="row-avail">{{ t.get("opac-availability-no-items") }}</span>{% else %}<span class="row-avail{% if family.available > 0 %} signal-available{% endif %}">{{ family.availability_text(t) }}</span>{% endif %}
+      </summary>
+      <div class="family-grid{% if family.hub.is_none() %} no-hub{% endif %}">
       <div class="track track-auth">
         <div class="col-header">{{ t.get("staff-column-authorities") }}</div>
         {% for authority in family.authorities %}
@@ -132,6 +142,8 @@
         </ul>
         {% endfor %}{% endfor %}
       </div>
+      </div>
+     </details>
     </li>
   {% endfor %}
   {% if let Some(url) = next_url %}

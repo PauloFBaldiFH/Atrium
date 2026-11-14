@@ -1,6 +1,6 @@
 # Listagem da equipe (v0)
 
-> Status: v0, tarefa 2.3 (parte 1: leitura das famílias; parte 2: tela da equipe e busca). Base: [spec de interação](../../UI_BIBFRAME_INTERACTION_SPEC.md) §2, §8 e §11 e [modelo bibliográfico](modelo-bibliografico.md). A medição com 1 milhão de registros (parte 3) vem depois.
+> Status: v1. Tarefa 2.3; a §1.1 (lista compacta e foco) é da tarefa 2.4, parte 1. Antes: v0, tarefa 2.3 (parte 1: leitura das famílias; parte 2: tela da equipe e busca). Base: [spec de interação](../../UI_BIBFRAME_INTERACTION_SPEC.md) §2, §8 e §11 e [modelo bibliográfico](modelo-bibliografico.md). A medição com 1 milhão de registros (parte 3) vem depois.
 
 ## 1. Comportamento
 
@@ -60,6 +60,15 @@
 
     O critério da tarefa é p95 abaixo de 50 ms no servidor.
 
+### Lista compacta e foco (tarefa 2.4, parte 1)
+
+27. Cada família aparece como uma **linha compacta** (spec de UI §20 item 2): ícone do material da primeira Instância, título (do Hub ou da Obra), o selo "Hub" quando é Hub, quantas Obras e Instâncias tem, os agentes como chips (cada nome uma vez), a classificação da primeira Obra e "N de M disponíveis" somando as Instâncias. Sem exemplares, diz que não há exemplares.
+28. A linha é o `<summary>` de um `<details>`, e os blocos com cordas (itens 21 a 25) são o conteúdo dele. Abrir a linha é **focar a família**: sem JavaScript o navegador abre e fecha com clique, `Enter` ou espaço, e mais de uma pode ficar aberta.
+29. Com o módulo `elzevir-catalog.js`, só uma família fica em foco: abrir uma fecha a anterior. A URL guarda o foco no fragmento (`#f-w40`, `#f-h3`, o mesmo token do cursor sem a chave), então recarregar ou mandar o link reabre a família, se ela estiver na página. A trilha no alto mostra "Acervo › título da família" enquanto há foco.
+30. Teclado, fora de campos de texto: `↑` e `↓` passam de linha em linha; `Enter` abre ou fecha; `Esc` fecha a família em foco e devolve o cursor à linha dela; `/` vai para a busca.
+31. As cordas são desenhadas quando a família abre e refeitas quando ela muda de tamanho; família fechada não tem cordas.
+32. A busca abre sozinha a primeira família que tem uma Instância encontrada.
+
 ## 2. Origem no Koha
 
 Não há equivalente direto. A lista de resultados da equipe do Koha (`catalogue/search.pl`) é por registro (`biblio`), não por família, e não tem listagem sem busca.
@@ -71,7 +80,7 @@ Não há equivalente direto. A lista de resultados da equipe do Koha (`catalogue
 Testes:
 - `crates/elzevir-app/src/listing.rs`: chave de ordenação, sinal, pílulas e páginas;
 - `crates/elzevir-store/tests/listing.rs`: 200 registros do oráculo em ordem, Hub e Obra com a mesma chave, famílias por cabeça, renomear Obra, migração 8;
-- `crates/elzevir-web/tests/staff_catalog.rs`: sessão, páginas, linhas para o HTMX, busca e cursor malformado.
+- `crates/elzevir-web/tests/staff_catalog.rs`: sessão, páginas, linhas para o HTMX, busca, cursor malformado, linha compacta e foco.
 
 ## 4. Fora desta parte
 

@@ -106,6 +106,15 @@ staff-cord-edition = edition
 staff-cord-items = items
 staff-column-hub = Hub
 staff-catalog-columns = Columns shown
+staff-row-shape = { $works ->
+    [one] One work
+   *[other] { $works } works
+}, { $instances ->
+    [one] one instance
+   *[other] { $instances } instances
+}
+staff-row-available = { $available } of { $items } available
+staff-catalog-focus-label = Family in focus
 staff-column-authorities = Authorities
 staff-column-work = Work
 staff-column-instance = Instance

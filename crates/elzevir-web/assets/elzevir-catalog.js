@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Cords of the staff catalog listing (docs/specs/catalogo/listagem.md, sketch v9): one
+// Cords and focus of the staff catalog listing (docs/specs/catalogo/listagem.md, sketch v9): one
 // Bezier curve from each parent block to each child block, with the label the server wrote
 // in Fluent. A block may have several parents: `data-parent` lists them separated by
 // spaces and `data-cord-label` lists their labels, in the same order, separated by `|`.
@@ -139,14 +139,14 @@ const observer = new ResizeObserver((entries) => {
 });
 
 function watch() {
-  for (const family of document.querySelectorAll("li.family:not([data-cords])")) {
-    family.dataset.cords = "";
-    observer.observe(family);
+  for (const grid of document.querySelectorAll(".family-grid:not([data-cords])")) {
+    grid.dataset.cords = "";
+    observer.observe(grid);
   }
 }
 
 function redrawAll() {
-  const families = [...document.querySelectorAll("li.family")];
+  const families = [...document.querySelectorAll(".family-focus[open] > .family-grid")];
   const measured = families.map((family) => [family, measure(family)]);
   for (const [family, geometry] of measured) draw(family, geometry);
 }
@@ -184,6 +184,87 @@ function toggles() {
   }
 }
 
+// Focus (listagem.md, items 28 to 32): one family open at a time, kept in the URL fragment,
+// with the trail naming it. The <details> works without this module; this only adds the rules.
+function trail(details) {
+  const nav = document.querySelector(".trail");
+  if (!nav) return;
+  const family = details?.open ? details.closest("li.family") : null;
+  nav.hidden = !family;
+  const name = nav.querySelector(".trail-family");
+  if (name) name.textContent = family?.querySelector(".row-title strong")?.textContent ?? "";
+}
+
+function focused(details) {
+  for (const other of document.querySelectorAll(".family-focus[open]")) {
+    if (other !== details) other.open = false;
+  }
+  const head = details.closest("li.family")?.dataset.head;
+  if (head) history.replaceState(null, "", `#f-${head}`);
+  trail(details);
+}
+
+function unfocused(details) {
+  if (document.querySelector(".family-focus[open]")) return;
+  history.replaceState(null, "", location.pathname + location.search);
+  trail(details);
+}
+
+document.addEventListener(
+  "toggle",
+  (event) => {
+    const details = event.target;
+    if (!(details instanceof HTMLDetailsElement) || !details.classList.contains("family-focus")) return;
+    if (details.open) focused(details);
+    else unfocused(details);
+  },
+  true, // toggle does not bubble
+);
+
+function typing(target) {
+  return target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || typing(event.target)) return;
+  if (event.key === "/") {
+    event.preventDefault();
+    document.getElementById("q")?.focus();
+    return;
+  }
+  if (event.key === "Escape") {
+    const open = document.querySelector(".family-focus[open]");
+    if (!open) return;
+    open.open = false;
+    open.querySelector(":scope > summary")?.focus();
+    return;
+  }
+  if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+  const rows = [...document.querySelectorAll("summary.family-row")];
+  if (rows.length === 0) return;
+  const current = document.activeElement?.closest?.("li.family")?.querySelector("summary.family-row");
+  const at = rows.indexOf(current);
+  const next = event.key === "ArrowDown" ? Math.min(at + 1, rows.length - 1) : Math.max(at - 1, 0);
+  event.preventDefault();
+  rows[at === -1 ? 0 : next].focus();
+});
+
+// A link with a family's fragment opens it, when it is on the page.
+function openFromFragment() {
+  const id = decodeURIComponent(location.hash.slice(1));
+  if (!id.startsWith("f-")) return;
+  const details = document.getElementById(id)?.querySelector(".family-focus");
+  if (!details) return;
+  details.open = true;
+  details.scrollIntoView({ block: "start" });
+}
+
 toggles();
 watch();
-document.addEventListener("htmx:afterSettle", watch);
+openFromFragment();
+window.addEventListener("hashchange", openFromFragment);
+trail(document.querySelector(".family-focus[open]"));
+document.addEventListener("htmx:afterSettle", () => {
+  watch();
+  trail(document.querySelector(".family-focus[open]"));
+});
