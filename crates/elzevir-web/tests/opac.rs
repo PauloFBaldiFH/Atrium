@@ -120,6 +120,7 @@ fn app(catalog: Arc<Catalog>, hits: Vec<SearchHit>) -> Router {
             listing: Arc::new(common::Families::default()),
             records: Arc::new(common::Records(Vec::new())),
             editor: Arc::new(common::Editor::default()),
+            suggestions: Arc::new(common::Suggestions),
         },
         I18n::english().unwrap(),
         WebConfig::default(),

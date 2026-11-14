@@ -224,3 +224,4 @@ edit-column-thesaurus = Thesaurus
 edit-column-value = Value
 edit-column-qualifier = Qualifier
 edit-column-text = Text
+edit-new-entity = new

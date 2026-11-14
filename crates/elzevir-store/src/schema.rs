@@ -216,6 +216,9 @@ const MIGRATIONS: &[&str] = &[
     // 9: the staff account a command comes from (docs/specs/catalogo/edicao.md, item 18).
     // No foreign key: the log keeps who did what after the account is gone.
     "ALTER TABLE audit_log ADD COLUMN actor INTEGER;",
+    // 10: name lookups for the cataloguing suggestions (docs/specs/catalogo/edicao.md, item 37).
+    "CREATE INDEX agents_by_heading ON agents (heading COLLATE NOCASE);
+     CREATE INDEX subjects_by_heading ON subjects (heading COLLATE NOCASE);",
 ];
 
 /// The migration that creates `match_keys`.
@@ -451,7 +454,7 @@ mod catalog_tests {
         connection
             .execute_batch(
                 "DROP TABLE instance_notes; ALTER TABLE works DROP COLUMN audience;
-                 DROP INDEX works_in_listing; DROP INDEX hubs_in_listing; ALTER TABLE works DROP COLUMN sort_key; ALTER TABLE hubs DROP COLUMN sort_key; ALTER TABLE audit_log DROP COLUMN actor; PRAGMA user_version = 5;",
+                 DROP INDEX works_in_listing; DROP INDEX hubs_in_listing; ALTER TABLE works DROP COLUMN sort_key; ALTER TABLE hubs DROP COLUMN sort_key; ALTER TABLE audit_log DROP COLUMN actor; DROP INDEX agents_by_heading; DROP INDEX subjects_by_heading; PRAGMA user_version = 5;",
             )
             .unwrap();
         migrate(&mut connection).unwrap();

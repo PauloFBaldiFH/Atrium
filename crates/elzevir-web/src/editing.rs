@@ -5,9 +5,10 @@
 use std::sync::Arc;
 
 use axum::Json;
-use axum::extract::{Path, State};
+use axum::extract::{Path, Query, State};
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::{IntoResponse, Response};
+use elzevir_app::catalog::CatalogReadError;
 use elzevir_app::catalog::{
     CatalogOutput, CatalogRefusal, InstanceChange, InstanceUpdate, WorkChange, WorkUpdate,
 };
@@ -15,10 +16,12 @@ use elzevir_app::editing::{
     Edit, EditFailed, FieldError, validate_instance_changes, validate_work_changes,
 };
 use elzevir_app::staff::Permission;
+use elzevir_app::suggestions::{AuthoritySuggestions, SUGGESTION_LIMIT, lookup_prefix};
 use elzevir_domain::catalog::{InstanceId, WorkId};
 use serde::{Deserialize, Serialize};
 
 use crate::AppState;
+use crate::record_form::{agent_name, subject_name};
 use crate::security::tokens_match;
 use crate::session::ActiveSession;
 use crate::staff::current_session;
@@ -164,5 +167,79 @@ async fn apply(state: &AppState, session: &ActiveSession, edit: Edit) -> Respons
         Ok(Err(EditFailed::Unavailable(_))) | Err(_) => {
             StatusCode::SERVICE_UNAVAILABLE.into_response()
         }
+    }
+}
+
+/// Query string of a suggestion lookup.
+#[derive(Deserialize)]
+pub(crate) struct SuggestParams {
+    #[serde(default)]
+    q: String,
+}
+
+/// One suggested agent or subject, as the form's row wants it.
+#[derive(Serialize)]
+struct Suggestion {
+    heading: String,
+    kind: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    thesaurus: Option<String>,
+}
+
+/// `GET /equipe/acervo/sugestoes/agentes?q=` (docs/specs/catalogo/edicao.md, item 33).
+pub(crate) async fn suggest_agents(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Query(params): Query<SuggestParams>,
+) -> Response {
+    suggest(&state, &headers, params.q, |port, prefix| {
+        port.agents(prefix, SUGGESTION_LIMIT).map(|agents| {
+            agents
+                .into_iter()
+                .map(|agent| Suggestion {
+                    heading: agent.heading,
+                    kind: agent_name(agent.kind),
+                    thesaurus: None,
+                })
+                .collect()
+        })
+    })
+    .await
+}
+
+/// `GET /equipe/acervo/sugestoes/assuntos?q=`.
+pub(crate) async fn suggest_subjects(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Query(params): Query<SuggestParams>,
+) -> Response {
+    suggest(&state, &headers, params.q, |port, prefix| {
+        port.subjects(prefix, SUGGESTION_LIMIT).map(|subjects| {
+            subjects
+                .into_iter()
+                .map(|subject| Suggestion {
+                    heading: subject.heading,
+                    kind: subject_name(subject.kind),
+                    thesaurus: subject.thesaurus,
+                })
+                .collect()
+        })
+    })
+    .await
+}
+
+type Lookup = fn(&dyn AuthoritySuggestions, &str) -> Result<Vec<Suggestion>, CatalogReadError>;
+
+async fn suggest(state: &AppState, headers: &HeaderMap, typed: String, lookup: Lookup) -> Response {
+    if current_session(state, headers).is_none() {
+        return StatusCode::UNAUTHORIZED.into_response();
+    }
+    let Some(prefix) = lookup_prefix(&typed).map(str::to_owned) else {
+        return Json(Vec::<Suggestion>::new()).into_response();
+    };
+    let port = Arc::clone(&state.inner.staff_ports.suggestions);
+    match tokio::task::spawn_blocking(move || lookup(&*port, &prefix)).await {
+        Ok(Ok(found)) => Json(found).into_response(),
+        Ok(Err(_)) | Err(_) => StatusCode::SERVICE_UNAVAILABLE.into_response(),
     }
 }

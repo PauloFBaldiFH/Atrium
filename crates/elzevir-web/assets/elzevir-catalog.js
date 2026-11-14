@@ -632,8 +632,160 @@ document.addEventListener("keydown", (event) => {
     event.preventDefault();
     submitForm(form);
   } else if (event.key === "Escape") {
+    // An open suggestion list closes first (handled below).
+    if (event.target.closest(".form-row")?.querySelector(":scope > .suggestions")) return;
     event.preventDefault();
     if (dirty(form)) askDiscard(form);
     else form.closest(".card")?.focus();
+  }
+}, true);
+
+// Suggestions of existing agents and subjects (edicao.md, items 33 to 35).
+const SUGGEST_URL = {
+  Contributions: "/equipe/acervo/sugestoes/agentes",
+  Subjects: "/equipe/acervo/sugestoes/assuntos",
+};
+let suggestTimer = 0;
+let suggestRound = 0;
+
+function suggestInput(target) {
+  if (!(target instanceof HTMLInputElement) || !target.matches('.cell[data-name="heading"]')) return null;
+  const change = target.closest(".form-field")?.dataset.change;
+  return change && SUGGEST_URL[change] ? target : null;
+}
+
+function closeSuggestions(row) {
+  row?.querySelector(":scope > .suggestions")?.remove();
+}
+
+function markNew(input, isNew) {
+  const row = input.closest(".form-row");
+  let mark = row?.querySelector(":scope > .new-mark");
+  if (!isNew) return mark?.remove();
+  if (!mark && row) {
+    mark = document.createElement("span");
+    mark.className = "new-mark";
+    mark.textContent = input.closest(".record-form")?.dataset.newEntity ?? "";
+    input.after(mark);
+  }
+}
+
+function pick(input, option) {
+  const row = input.closest(".form-row");
+  input.value = option.dataset.heading;
+  const kind = row?.querySelector('[data-name="kind"]');
+  if (kind) kind.value = option.dataset.kind;
+  const thesaurus = row?.querySelector('[data-name="thesaurus"]');
+  if (thesaurus) thesaurus.value = option.dataset.thesaurus ?? "";
+  markNew(input, false);
+  closeSuggestions(row);
+  input.focus();
+}
+
+function showSuggestions(input, found) {
+  const row = input.closest(".form-row");
+  closeSuggestions(row);
+  const typed = input.value.trim();
+  markNew(input, typed.length > 0 && !found.some((entry) => entry.heading === typed));
+  if (!row || found.length === 0) return;
+  const kinds = row.querySelector('[data-name="kind"]');
+  const list = document.createElement("ul");
+  list.className = "suggestions";
+  list.setAttribute("role", "listbox");
+  for (const entry of found) {
+    const option = document.createElement("li");
+    option.setAttribute("role", "option");
+    option.dataset.heading = entry.heading;
+    option.dataset.kind = entry.kind;
+    if (entry.thesaurus) option.dataset.thesaurus = entry.thesaurus;
+    option.textContent = entry.heading;
+    const kind = [...(kinds?.options ?? [])].find((choice) => choice.value === entry.kind)?.textContent;
+    if (kind || entry.thesaurus) {
+      const detail = document.createElement("span");
+      detail.className = "suggestion-detail";
+      detail.textContent = [kind, entry.thesaurus].filter(Boolean).join(" · ");
+      option.append(" ", detail);
+    }
+    option.addEventListener("mousedown", (event) => {
+      event.preventDefault(); // keep the focus in the input
+      pick(input, option);
+    });
+    list.append(option);
+  }
+  row.append(list);
+}
+
+async function lookup(input) {
+  const round = ++suggestRound;
+  const change = input.closest(".form-field")?.dataset.change;
+  const typed = input.value.trim();
+  if (typed.length < 2) {
+    closeSuggestions(input.closest(".form-row"));
+    markNew(input, false);
+    return;
+  }
+  try {
+    const response = await fetch(`${SUGGEST_URL[change]}?q=${encodeURIComponent(typed)}`, { credentials: "same-origin" });
+    if (!response.ok || round !== suggestRound) return;
+    showSuggestions(input, await response.json());
+  } catch {
+    // No suggestions this time; typing still works and the next key tries again.
+  }
+}
+
+document.addEventListener("input", (event) => {
+  const input = suggestInput(event.target);
+  if (!input) return;
+  clearTimeout(suggestTimer);
+  suggestTimer = setTimeout(() => lookup(input), 150);
+});
+
+document.addEventListener("focusout", (event) => {
+  const input = suggestInput(event.target);
+  if (input) setTimeout(() => closeSuggestions(input.closest(".form-row")), 150);
+});
+
+document.addEventListener("keydown", (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLElement) || !target.closest(".record-form")) return;
+  const row = target.closest(".form-row");
+  // Alt+↑ and Alt+↓ move the row (item 36).
+  if (event.altKey && (event.key === "ArrowUp" || event.key === "ArrowDown") && row?.parentElement?.classList.contains("form-rows")) {
+    event.preventDefault();
+    const other = event.key === "ArrowUp" ? row.previousElementSibling : row.nextElementSibling;
+    if (other) {
+      if (event.key === "ArrowUp") other.before(row);
+      else other.after(row);
+      target.focus();
+    }
+    return;
+  }
+  const list = row?.querySelector(":scope > .suggestions");
+  if (list && suggestInput(target)) {
+    const options = [...list.children];
+    const at = options.findIndex((option) => option.classList.contains("active"));
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      options[at]?.classList.remove("active");
+      const next = event.key === "ArrowDown" ? Math.min(at + 1, options.length - 1) : Math.max(at - 1, 0);
+      options[next]?.classList.add("active");
+      return;
+    }
+    if (event.key === "Enter" && !event.ctrlKey && !event.metaKey && at >= 0) {
+      event.preventDefault();
+      event.stopPropagation();
+      pick(target, options[at]);
+      return;
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopPropagation();
+      closeSuggestions(row);
+      return;
+    }
+  }
+  // A plain Enter in a one-line field does not send the form: Ctrl+Enter does (item 29).
+  if (event.key === "Enter" && !event.ctrlKey && !event.metaKey && target instanceof HTMLInputElement) {
+    event.preventDefault();
   }
 }, true);
