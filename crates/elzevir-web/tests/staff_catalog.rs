@@ -12,7 +12,9 @@ use std::sync::Arc;
 use axum::Router;
 use axum::body::Body;
 use axum::http::{Request, Response, StatusCode, header};
-use elzevir_app::catalog::{ItemStatus, ItemView, NewInstance, NewRecord};
+use elzevir_app::catalog::{
+    ItemData, ItemStatus, ItemView, NewContribution, NewIdentifier, NewInstance, NewNote, NewRecord,
+};
 use elzevir_app::export::StoredRecord;
 use elzevir_app::listing::{Family, FamilyCursor, FamilyHead, FamilyInstance, FamilyWork};
 use elzevir_app::memory::{MemoryProbe, MemoryReport};
@@ -20,7 +22,9 @@ use elzevir_app::search::SearchHit;
 use elzevir_app::staff::{
     Permission, StaffAccount, StaffDirectory, StaffDirectoryError, StaffId, hash_password,
 };
-use elzevir_domain::catalog::{InstanceId, ItemId, MaterialType, WorkId};
+use elzevir_domain::catalog::{
+    AgentKind, IdentifierKind, InstanceId, ItemId, MaterialType, NoteKind, WorkId,
+};
 use elzevir_web::{AppState, OpacPorts, StaffPorts, WebConfig, router};
 use elzevir_web_templates::I18n;
 use http_body_util::BodyExt;
@@ -98,16 +102,45 @@ fn stored(instance: i64) -> StoredRecord {
             relations: Vec::new(),
             classification: Some("869.3".to_owned()),
             classification_scheme: Some("ddc".to_owned()),
-            summary: None,
+            summary: Some("Bentinho recorda Capitu.".to_owned()),
             audience: None,
             languages: vec!["por".to_owned()],
-            contributions: Vec::new(),
+            contributions: vec![NewContribution {
+                kind: AgentKind::Person,
+                heading: "Assis, Machado de, 1839-1908".to_owned(),
+                role: Some("author".to_owned()),
+                primary: true,
+            }],
             subjects: Vec::new(),
             instance: NewInstance {
                 title: "Dom Casmurro".to_owned(),
+                extent: Some("256 p.".to_owned()),
+                identifiers: vec![NewIdentifier {
+                    kind: IdentifierKind::Isbn,
+                    value: "9788535910663".to_owned(),
+                    qualifier: None,
+                }],
+                notes: vec![NewNote {
+                    kind: NoteKind::Local,
+                    text: "Doação da família Silva.".to_owned(),
+                }],
                 ..NewInstance::default()
             },
-            items: Vec::new(),
+            items: vec![ItemData {
+                barcode: Some("000123".to_owned()),
+                inventory_number: Some("T-77".to_owned()),
+                home_branch: "MAIN".to_owned(),
+                holding_branch: "MAIN".to_owned(),
+                item_type: "BK".to_owned(),
+                call_number: Some("869.3 A848d".to_owned()),
+                location: None,
+                collection: None,
+                price: None,
+                replacement_price: None,
+                copy_number: None,
+                status: ItemStatus::default(),
+                acquired_on: None,
+            }],
             source: None,
         },
     }
@@ -244,11 +277,13 @@ async fn the_first_page_shows_families_with_pills_and_a_loader_for_the_next() {
     assert!(html.contains(r#"hx-get="/equipe/acervo?after=w30.030""#));
     // Blocks name their parent, for the cords drawn by the page's script.
     assert!(html.contains(r#"<script type="module" src="/static/elzevir-catalog.js"></script>"#));
-    assert!(html.contains(r#"data-node="i10""#));
+    assert!(html.contains(r#"data-level="instance" tabindex="0" data-node="i10""#));
     assert!(html.contains(r#"data-parent="w1" data-cord-label="edition""#));
     assert!(html.contains(r#"data-parent="i10" data-cord-label="items""#));
     // The main contributor is an authority block, parent of its Work with a dashed cord.
-    assert!(html.contains(r#"<article class="card card-auth" data-node="a0">"#));
+    assert!(html.contains(
+        r#"<article class="card card-auth" data-level="auth" tabindex="0" data-node="a0">"#
+    ));
     assert!(html.contains(r#"data-parent="a0""#));
     assert!(html.contains(r#"data-cord-label="written by""#));
     // Toggles for the Hub and Authorities columns stay hidden until the script runs.
@@ -361,6 +396,76 @@ async fn one_record_is_exported_as_marc21_or_marcxml() {
         &app,
         get(
             "/equipe/acervo/instancia/10/marc?format=pdf",
+            Some(&session),
+            None,
+        ),
+    )
+    .await;
+    assert_eq!(unknown.status(), StatusCode::BAD_REQUEST);
+}
+
+#[tokio::test]
+async fn a_focused_block_loads_every_filled_field() {
+    let app = app();
+    let refused = send(&app, get("/equipe/acervo/instancia/10/campos", None, None)).await;
+    assert_eq!(refused.status(), StatusCode::SEE_OTHER);
+
+    let session = signed_in(&app).await;
+    let page = body(send(&app, get("/equipe/acervo", Some(&session), None)).await).await;
+    assert!(page.contains(r#"data-fields="/equipe/acervo/instancia/10/campos?level=work""#));
+    assert!(page.contains(r#"data-fields="/equipe/acervo/instancia/10/campos?level=instance""#));
+
+    let work = body(
+        send(
+            &app,
+            get(
+                "/equipe/acervo/instancia/10/campos?level=work",
+                Some(&session),
+                None,
+            ),
+        )
+        .await,
+    )
+    .await;
+    assert!(work.contains("Assis, Machado de, 1839-1908"));
+    assert!(work.contains("person · author · main entry"));
+    assert!(work.contains("Bentinho recorda Capitu."));
+    assert!(work.contains("869.3"));
+    // Only what is filled: the record has no audience.
+    assert!(!work.contains("Intended audience"));
+    assert!(!work.contains("<table>"), "items belong to the Instance");
+
+    let instance = body(
+        send(
+            &app,
+            get(
+                "/equipe/acervo/instancia/10/campos?level=instance",
+                Some(&session),
+                None,
+            ),
+        )
+        .await,
+    )
+    .await;
+    assert!(instance.contains("256 p."));
+    assert!(instance.contains("9788535910663"));
+    assert!(instance.contains("Local note"));
+    assert!(instance.contains("Doação da família Silva."));
+    assert!(instance.contains("000123"));
+    assert!(instance.contains("T-77"));
+    assert!(instance.contains("869.3 A848d"));
+    assert!(!instance.contains("Edition"));
+
+    let missing = send(
+        &app,
+        get("/equipe/acervo/instancia/20/campos", Some(&session), None),
+    )
+    .await;
+    assert_eq!(missing.status(), StatusCode::NOT_FOUND);
+    let unknown = send(
+        &app,
+        get(
+            "/equipe/acervo/instancia/10/campos?level=hub",
             Some(&session),
             None,
         ),

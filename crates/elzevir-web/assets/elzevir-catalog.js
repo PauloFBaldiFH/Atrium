@@ -179,6 +179,7 @@ function toggles() {
     button.hidden = false;
     button.addEventListener("click", () => {
       setHidden(catalog, button, button.getAttribute("aria-pressed") === "true");
+      for (const grid of catalog.querySelectorAll(".family-grid[data-focus]")) layout(grid);
       redrawAll();
     });
   }
@@ -193,6 +194,145 @@ function trail(details) {
   nav.hidden = !family;
   const name = nav.querySelector(".trail-family");
   if (name) name.textContent = family?.querySelector(".row-title strong")?.textContent ?? "";
+  // The level in focus, named as its column header names it.
+  const level = nav.querySelector(".trail-level");
+  const grid = family?.querySelector(".family-grid");
+  const header = grid?.dataset.focus ? grid.querySelector(`.track-${grid.dataset.focus === "instance" ? "editions" : grid.dataset.focus} > .col-header`) : null;
+  if (level) {
+    level.hidden = !header;
+    level.textContent = header ? `› ${header.textContent}` : "";
+  }
+}
+
+// Focus on one level of the open family (listagem.md, items 37 to 41).
+function clearLevel(grid) {
+  delete grid.dataset.focus;
+  for (const node of grid.querySelectorAll(".focused, .dimmed, [inert]")) {
+    node.classList.remove("focused", "dimmed");
+    node.inert = false;
+  }
+  layout(grid);
+}
+
+// Level focus layout (listagem.md, item 38): the focused column takes what is left, the
+// columns beside it show a glance, and the far ones fold into a rail.
+const LEVELS = ["auth", "hub", "work", "instance", "items"];
+const WIDTHS = { glance: "8.5rem", rail: "2.5rem" };
+
+function shownLevels(grid) {
+  const catalog = grid.closest(".catalog");
+  return LEVELS.filter((level) => {
+    if (level === "auth") return !catalog?.classList.contains("hide-auth");
+    if (level === "hub") return !grid.classList.contains("no-hub") && !catalog?.classList.contains("hide-hub");
+    return true;
+  });
+}
+
+function levelParts(grid, level) {
+  const headers = grid.querySelectorAll(".track-editions > .col-header");
+  if (level === "instance") return [headers[0], ...grid.querySelectorAll(".card-instance")];
+  if (level === "items") return [headers[1], ...grid.querySelectorAll(".items-stack")];
+  return [...grid.querySelectorAll(`.track-${level} > .col-header, .track-${level} .card`)];
+}
+
+function layout(grid) {
+  for (const node of grid.querySelectorAll(".glance, .rail")) node.classList.remove("glance", "rail");
+  const focus = grid.dataset.focus;
+  // On a narrow screen the columns stack, so there is no width to share.
+  if (!focus || matchMedia("(max-width: 60rem)").matches) {
+    grid.style.removeProperty("grid-template-columns");
+    return;
+  }
+  const levels = shownLevels(grid);
+  const at = levels.indexOf(focus);
+  // Items belong to their Instance: in Instance focus they stay a glance, never a rail.
+  const view = (index) => (index === at ? "focus" : Math.abs(index - at) === 1 || (focus === "instance" && levels[index] === "items") ? "glance" : "rail");
+  const tracks = levels.map((level, index) => {
+    const kind = view(index);
+    if (kind !== "focus") for (const node of levelParts(grid, level)) node?.classList.add(kind);
+    return kind === "focus" ? "minmax(0, 1fr)" : WIDTHS[kind];
+  });
+  grid.style.setProperty("grid-template-columns", tracks.join(" "));
+}
+
+function focusLevel(card) {
+  const grid = card.closest(".family-grid");
+  if (!grid) return;
+  const again = card.classList.contains("focused");
+  clearLevel(grid);
+  if (!again) {
+    grid.dataset.focus = card.dataset.level;
+    card.classList.add("focused");
+    if (card.dataset.level === "instance") {
+      // The other Instances and their items step back, so nobody touches the wrong item.
+      const own = card.dataset.node;
+      for (const other of grid.querySelectorAll('.card[data-level="instance"]')) {
+        if (other === card) continue;
+        other.classList.add("dimmed");
+        other.inert = true;
+      }
+      for (const stack of grid.querySelectorAll(".items-stack")) {
+        if (stack.querySelector(`[data-parent="${own}"]`)) continue;
+        stack.classList.add("dimmed");
+        stack.inert = true;
+      }
+    }
+    layout(grid);
+    loadFields(card);
+  }
+  follow(grid);
+  trail(grid.closest(".family-focus"));
+}
+
+// Every filled field of a focused Work or Instance (listagem.md, items 42 to 45), fetched
+// once and kept in the block.
+async function loadFields(card) {
+  const url = card.dataset.fields;
+  if (!url || card.dataset.fieldsState) return;
+  card.dataset.fieldsState = "loading";
+  try {
+    const response = await fetch(url, { credentials: "same-origin", headers: { Accept: "text/html" } });
+    if (!response.ok) throw new Error(String(response.status));
+    const box = document.createElement("div");
+    box.className = "all-fields-box";
+    // Server-rendered by Askama, which escapes every value.
+    box.innerHTML = await response.text();
+    card.append(box);
+    card.dataset.fieldsState = "loaded";
+    const grid = card.closest(".family-grid");
+    if (grid) follow(grid);
+  } catch {
+    // The short fields stay; focusing the block again tries once more.
+    delete card.dataset.fieldsState;
+  }
+}
+
+// Cords follow the columns while they animate.
+function follow(grid) {
+  const until = performance.now() + 400;
+  const step = () => {
+    draw(grid, measure(grid));
+    if (performance.now() < until) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+document.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof Element) || target.closest("a, button, summary, details.export-menu, input, select, textarea, .all-fields")) return;
+  const card = target.closest(".family-grid .card[data-level]");
+  if (card) focusLevel(card);
+});
+
+// ← and → move to the first card of the column before or after.
+function neighbour(card, step) {
+  const grid = card.closest(".family-grid");
+  const columns = ["auth", "hub", "work", "instance"].filter((level) =>
+    grid?.querySelector(`.card[data-level="${level}"]:not([inert])`)?.getBoundingClientRect().width,
+  );
+  const at = columns.indexOf(card.dataset.level);
+  const level = columns[at + step];
+  return level ? grid.querySelector(`.card[data-level="${level}"]:not([inert])`) : null;
 }
 
 function focused(details) {
@@ -232,9 +372,22 @@ document.addEventListener("keydown", (event) => {
     document.getElementById("q")?.focus();
     return;
   }
+  const card = event.target instanceof Element ? event.target.closest(".card[data-level]") : null;
+  if (card && event.key === "Enter") {
+    event.preventDefault();
+    focusLevel(card);
+    return;
+  }
+  if (card && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+    event.preventDefault();
+    neighbour(card, event.key === "ArrowLeft" ? -1 : 1)?.focus();
+    return;
+  }
   if (event.key === "Escape") {
     const open = document.querySelector(".family-focus[open]");
     if (!open) return;
+    const grid = open.querySelector(".family-grid");
+    if (grid) clearLevel(grid);
     open.open = false;
     open.querySelector(":scope > summary")?.focus();
     return;

@@ -1,0 +1,52 @@
+<section class="all-fields">
+  {% for group in groups %}
+  <h3 class="all-fields-heading">{{ t.get(group.heading_key) }}</h3>
+  <dl class="all-fields-list">
+    {% for field in group.fields %}
+    <div class="all-fields-row">
+      <dt>{{ t.get(field.label_key) }}</dt>
+      {% for value in field.values %}
+      <dd>{{ value.text }}{% if let Some(qualifier) = value.qualifier %} <span class="all-fields-qualifier">{{ qualifier }}</span>{% endif %}</dd>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </dl>
+  {% endfor %}
+  {% if !items.is_empty() %}
+  <h3 class="all-fields-heading">{{ t.get("staff-fields-items") }}</h3>
+  <div class="all-fields-items">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">{{ t.get("staff-fields-item-status") }}</th>
+          <th scope="col">{{ t.get("staff-fields-barcode") }}</th>
+          <th scope="col">{{ t.get("staff-fields-inventory-number") }}</th>
+          <th scope="col">{{ t.get("staff-fields-call-number") }}</th>
+          <th scope="col">{{ t.get("staff-fields-branch") }}</th>
+          <th scope="col">{{ t.get("staff-fields-location") }}</th>
+          <th scope="col">{{ t.get("staff-fields-collection") }}</th>
+          <th scope="col">{{ t.get("staff-fields-item-type") }}</th>
+          <th scope="col">{{ t.get("staff-fields-copy") }}</th>
+          <th scope="col">{{ t.get("staff-fields-acquired") }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td><span class="item-status {{ item.signal_class }}">{{ t.get(item.signal_key) }}</span></td>
+          <td>{% if let Some(barcode) = item.barcode %}{{ barcode }}{% endif %}</td>
+          <td>{% if let Some(inventory) = item.inventory_number %}{{ inventory }}{% endif %}</td>
+          <td class="call-number">{% if let Some(call_number) = item.call_number %}{{ call_number }}{% endif %}</td>
+          <td>{{ item.home_branch }}{% if let Some(holding) = item.holding_branch %} → {{ holding }}{% endif %}</td>
+          <td>{% if let Some(location) = item.location %}{{ location }}{% endif %}</td>
+          <td>{% if let Some(collection) = item.collection %}{{ collection }}{% endif %}</td>
+          <td>{{ item.item_type }}</td>
+          <td>{% if let Some(copy) = item.copy_number %}{{ copy }}{% endif %}</td>
+          <td>{% if let Some(acquired) = item.acquired_on %}{{ acquired }}{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</section>

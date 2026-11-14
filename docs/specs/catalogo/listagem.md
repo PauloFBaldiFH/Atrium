@@ -1,6 +1,6 @@
 # Listagem da equipe (v0)
 
-> Status: v1. Tarefa 2.3; lista compacta e foco (itens 27 a 32) e exportação do registro (itens 33 a 36) são da tarefa 2.4, partes 1 e 2. Antes: v0, tarefa 2.3 (parte 1: leitura das famílias; parte 2: tela da equipe e busca). Base: [spec de interação](../../UI_BIBFRAME_INTERACTION_SPEC.md) §2, §8 e §11 e [modelo bibliográfico](modelo-bibliografico.md). A medição com 1 milhão de registros (parte 3) vem depois.
+> Status: v1. Tarefa 2.3; lista compacta e foco (itens 27 a 32) exportação do registro (itens 33 a 36) e foco 80/20 (itens 37 a 41) são da tarefa 2.4, partes 1 a 3. Antes: v0, tarefa 2.3 (parte 1: leitura das famílias; parte 2: tela da equipe e busca). Base: [spec de interação](../../UI_BIBFRAME_INTERACTION_SPEC.md) §2, §8 e §11 e [modelo bibliográfico](modelo-bibliografico.md). A medição com 1 milhão de registros (parte 3) vem depois.
 
 ## 1. Comportamento
 
@@ -75,6 +75,21 @@
 34. `GET /equipe/acervo/instancia/{id}/marc?format=marc21|marcxml` exige sessão da equipe e devolve o registro como anexo: `elzevir-{id}.mrc` (`application/marc`) ou `elzevir-{id}.xml` (`application/marcxml+xml`). Sem `format`, é MARC21. Formato desconhecido é 400; Instância que não existe é 404.
 35. O registro sai pela mesma regra da exportação em lote (`docs/specs/catalogo/linha-de-comando.md`): registro que ninguém editou sai com os bytes guardados, e editado sai por `bibframe_to_marc` a partir do original. O MARCXML é esse mesmo registro escrito como documento MARCXML, igual ao do Koha (`MARC::File::XML::record`).
 36. Registro que não cabe em ISO 2709, ou fonte guardada ilegível, é 500 com o motivo no corpo da resposta (a rota é só da equipe, e o motivo diz o que corrigir no registro).
+
+### Foco 80/20 dentro da família (tarefa 2.4, parte 3)
+
+37. Na família aberta, cada cartão pode receber o foco (`tabindex="0"`) e diz o seu nível (`data-level`: `auth`, `hub`, `work`, `instance`). Clicar num cartão, ou `Enter` com o cursor nele, **foca o nível**: a coluna dele fica com a maior parte da largura (cerca de 80 % do espaço das colunas) e as outras continuam visíveis e ligadas (spec de UI §3). Clicar de novo no mesmo cartão volta à divisão normal.
+38. As outras colunas mudam de forma conforme a distância. A coluna **vizinha** do nível focado vira um **relance** de 8,5 rem: o selo e o primeiro campo do cartão (o título ou o nome), em até três linhas, e nos exemplares o ícone e o sinal. As colunas **distantes** viram **faixas** de 2,5 rem com o selo na vertical e, nos exemplares, só o ícone. No foco de Instância, os exemplares ficam sempre em relance, porque pertencem a ela. Clicar num relance ou numa faixa foca aquela coluna; os links dele só valem depois do foco. Colunas ocultas pelos botões não contam. O vão entre colunas cai de 56 px para 40 px. A mudança é animada (`grid-template-columns`, 0,3 s; nada com `prefers-reduced-motion`), e as cordas acompanham. Em tela estreita (até 60 rem), as colunas já ficam empilhadas, e o foco não muda a largura.
+39. No foco de Instância, as outras Instâncias da família e os exemplares delas ficam esmaecidos (opacidade 0,35) e `inert`, para ninguém mexer no exemplar errado.
+40. A trilha acrescenta o nível focado ("Catalog › título › Work"). `←` e `→` levam o cursor ao primeiro cartão da coluna anterior ou seguinte. `Esc` volta direto à visão geral: fecha a família e desfaz o foco de nível (spec de UI §3, "`Esc` em camadas").
+41. O foco de nível vive só na página: não muda a URL, e recarregar abre a família na divisão normal.
+
+### Todos os campos do bloco focado (tarefa 2.4, parte 3)
+
+42. Ao receber o foco, um cartão de Obra ou de Instância carrega **todos os campos preenchidos** do registro, só para leitura, por `GET /equipe/acervo/instancia/{id}/campos?level=work|instance` (fragmento HTML, só com sessão da equipe; a Obra usa a primeira Instância dela). Carrega uma vez e fica no cartão; os campos curtos da listagem, fora o título, saem enquanto o cartão está focado.
+43. Obra: título preferido, categoria de material, contribuições (nome, tipo de agente, papel e "entrada principal"), classificação com o esquema, assuntos com o tipo e o tesauro, idiomas, resumo, público-alvo e obras relacionadas com o tipo de relação. Instância: título, edição, local, editora, data, extensão, série, categoria de material, identificadores com o tipo e o qualificador, e notas por tipo (geral, conteúdo, local).
+44. A Instância mostra também a **tabela de exemplares**: situação (o mesmo sinal da pílula), código de barras, tombo, número de chamada, biblioteca (com a de posse quando difere), localização, coleção, tipo de item, exemplar e data de aquisição. Preço fica para a aquisição.
+45. Campo vazio não aparece. Um tipo de valor que esta versão não conhece (código guardado por outra versão) recusa a leitura com 503, como o resto do acervo; Instância inexistente dá 404 e `level` desconhecido, 400. A edição desses campos no próprio bloco é a tarefa 2.5.
 
 ## 2. Origem no Koha
 

@@ -166,14 +166,7 @@ pub fn export_record<S: RecordSource + ?Sized>(
     format: RecordFormat,
     limits: &Limits,
 ) -> Result<Option<Vec<u8>>, RecordExportError> {
-    // Records are read in Instance order, so the one after the id just below is this one,
-    // when it exists.
-    let after = instance.0.checked_sub(1).map(InstanceId);
-    let Some(stored) = source
-        .records_after(after, NonZeroUsize::MIN)?
-        .into_iter()
-        .find(|stored| stored.instance == instance)
-    else {
+    let Some(stored) = stored_record(source, instance)? else {
         return Ok(None);
     };
     let mut marc21 = Vec::new();
@@ -189,6 +182,24 @@ pub fn export_record<S: RecordSource + ?Sized>(
             Ok(Some(xml.into_bytes()))
         }
     }
+}
+
+/// One stored record; `None` when the Instance does not exist.
+///
+/// # Errors
+///
+/// When storage fails or holds a value this build does not understand.
+pub fn stored_record<S: RecordSource + ?Sized>(
+    source: &S,
+    instance: InstanceId,
+) -> Result<Option<StoredRecord>, CatalogReadError> {
+    // Records are read in Instance order, so the one after the id just below is this one,
+    // when it exists.
+    let after = instance.0.checked_sub(1).map(InstanceId);
+    Ok(source
+        .records_after(after, NonZeroUsize::MIN)?
+        .into_iter()
+        .find(|stored| stored.instance == instance))
 }
 
 fn to_marc(record: &NewRecord, limits: &Limits, out: &mut Vec<u8>) -> Result<(), ExportFailure> {
