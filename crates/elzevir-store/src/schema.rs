@@ -9,6 +9,7 @@
 use std::path::Path;
 use std::time::Duration;
 
+use elzevir_app::listing::sort_key;
 use elzevir_app::marc_mapping::{source_audience, source_notes};
 use elzevir_app::matching::{identifier_key, koha_biblionumber_key};
 use elzevir_domain::catalog::IdentifierKind;
@@ -207,6 +208,11 @@ const MIGRATIONS: &[&str] = &[
      ) STRICT, WITHOUT ROWID;",
     // 7: target audience of a Work (MARC21 521), task 2.1.
     "ALTER TABLE works ADD COLUMN audience TEXT;",
+    // 8: listing order of families (Hubs and Works outside a Hub), task 2.3.
+    "ALTER TABLE works ADD COLUMN sort_key TEXT NOT NULL DEFAULT '';
+     ALTER TABLE hubs ADD COLUMN sort_key TEXT NOT NULL DEFAULT '';
+     CREATE INDEX works_in_listing ON works (sort_key, id) WHERE hub_id IS NULL;
+     CREATE INDEX hubs_in_listing ON hubs (sort_key, id);",
 ];
 
 /// The migration that creates `match_keys`.
@@ -217,6 +223,9 @@ const NOTES_VERSION: i64 = 6;
 
 /// The migration that adds `works.audience`.
 const AUDIENCE_VERSION: i64 = 7;
+
+/// The migration that adds the listing `sort_key` of Works and Hubs.
+const SORT_KEY_VERSION: i64 = 8;
 
 /// How long a connection waits on a lock before failing. With a single writer this only
 /// covers checkpoints and external tools; it is not part of normal operation.
@@ -273,6 +282,9 @@ fn migrate(connection: &mut Connection) -> Result<(), StoreError> {
             }
             if version == AUDIENCE_VERSION {
                 backfill_audience(&tx)?;
+            }
+            if version == SORT_KEY_VERSION {
+                backfill_sort_keys(&tx)?;
             }
             tx.pragma_update(None, "user_version", version)?;
         }
@@ -334,6 +346,29 @@ fn backfill_audience(connection: &Connection) -> Result<(), StoreError> {
         let record: Vec<u8> = row.get(1)?;
         if let Some(audience) = source_audience(&record) {
             update.execute(params![row.get::<_, i64>(0)?, audience])?;
+        }
+    }
+    Ok(())
+}
+
+/// Computes the listing key of every Work and Hub already stored.
+fn backfill_sort_keys(connection: &Connection) -> Result<(), StoreError> {
+    for (select, update) in [
+        (
+            "SELECT id, title FROM works",
+            "UPDATE works SET sort_key = ?2 WHERE id = ?1",
+        ),
+        (
+            "SELECT id, title FROM hubs",
+            "UPDATE hubs SET sort_key = ?2 WHERE id = ?1",
+        ),
+    ] {
+        let mut rows_statement = connection.prepare(select)?;
+        let mut update = connection.prepare(update)?;
+        let mut rows = rows_statement.query([])?;
+        while let Some(row) = rows.next()? {
+            let title: String = row.get(1)?;
+            update.execute(params![row.get::<_, i64>(0)?, sort_key(&title)])?;
         }
     }
     Ok(())
@@ -413,7 +448,7 @@ mod catalog_tests {
         connection
             .execute_batch(
                 "DROP TABLE instance_notes; ALTER TABLE works DROP COLUMN audience;
-                 PRAGMA user_version = 5;",
+                 DROP INDEX works_in_listing; DROP INDEX hubs_in_listing; ALTER TABLE works DROP COLUMN sort_key; ALTER TABLE hubs DROP COLUMN sort_key; PRAGMA user_version = 5;",
             )
             .unwrap();
         migrate(&mut connection).unwrap();

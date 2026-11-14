@@ -9,6 +9,7 @@ use elzevir_app::catalog::{
     CatalogOutput, CatalogRefusal, InstanceChange, InstanceUpdate, WorkChange, WorkUpdate,
 };
 use elzevir_app::commands::WriteRefusal;
+use elzevir_app::listing::sort_key;
 use elzevir_app::matching::identifier_key;
 use elzevir_domain::catalog::{InstanceId, MatchRule, Vocabulary, WorkId};
 use rusqlite::{Connection, OptionalExtension, ToSql, params};
@@ -119,12 +120,12 @@ fn apply_work_change(
     let id = work.0;
     match change {
         WorkChange::Title(title) => {
-            set(
-                connection,
-                "UPDATE works SET title = ?2 WHERE id = ?1",
-                id,
-                title,
-            )?;
+            connection
+                .execute(
+                    "UPDATE works SET title = ?2, sort_key = ?3 WHERE id = ?1",
+                    params![id, title, sort_key(title)],
+                )
+                .map_err(StoreError::from)?;
         }
         WorkChange::MaterialType(kind) => set(
             connection,

@@ -222,7 +222,7 @@ pub(crate) fn replace_description(
     connection
         .execute(
             "UPDATE works SET title = ?2, material_type = ?3, classification = ?4,
-                 classification_scheme = ?5, summary = ?6, audience = ?7,
+                 classification_scheme = ?5, summary = ?6, audience = ?7, sort_key = ?8,
                  row_version = row_version + 1
              WHERE id = ?1",
             params![
@@ -232,7 +232,8 @@ pub(crate) fn replace_description(
                 record.classification,
                 scheme,
                 record.summary,
-                record.audience
+                record.audience,
+                elzevir_app::listing::sort_key(&record.work_title)
             ],
         )
         .map_err(StoreError::from)?;
