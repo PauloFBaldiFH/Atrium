@@ -144,7 +144,7 @@ fn login_page(
     response
 }
 
-fn current_session(state: &AppState, headers: &HeaderMap) -> Option<ActiveSession> {
+pub(crate) fn current_session(state: &AppState, headers: &HeaderMap) -> Option<ActiveSession> {
     let id = cookie(headers, SESSION_COOKIE)?;
     state.inner.sessions.touch(&id)
 }

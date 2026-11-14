@@ -19,7 +19,7 @@ use elzevir_app::memory::{MemoryProbe, MemoryReport};
 use elzevir_app::search::SearchHit;
 use elzevir_app::staff::{StaffAccount, StaffDirectory, StaffDirectoryError};
 use elzevir_domain::catalog::{InstanceId, ItemId, MaterialType, NoteKind, WorkId};
-use elzevir_web::{AppState, OpacPorts, WebConfig, router};
+use elzevir_web::{AppState, OpacPorts, StaffPorts, WebConfig, router};
 use elzevir_web_templates::I18n;
 use http_body_util::BodyExt;
 use tower::ServiceExt;
@@ -115,6 +115,9 @@ fn app(catalog: Arc<Catalog>, hits: Vec<SearchHit>) -> Router {
         OpacPorts {
             catalog,
             index: Arc::new(Index(hits)),
+        },
+        StaffPorts {
+            listing: Arc::new(common::Families::default()),
         },
         I18n::english().unwrap(),
         WebConfig::default(),

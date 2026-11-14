@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}{{ t.get("staff-catalog-title") }}{% endblock %}
+{% block head %}<script type="module" src="/static/elzevir-catalog.js"></script>{% endblock %}
+{% block content %}
+<div class="wide catalog">
+<div class="catalog-bar">
+  <form class="search catalog-search" action="/equipe/acervo" method="get" role="search"
+        hx-get="/equipe/acervo" hx-target="#families" hx-select="#families" hx-swap="outerHTML" hx-push-url="true">
+    <label class="visually-hidden" for="q">{{ t.get("staff-catalog-search-label") }}</label>
+    <input id="q" name="q" type="search" value="{{ query }}" maxlength="256" autofocus
+           placeholder="{{ t.get("staff-catalog-search-placeholder") }}">
+    <button type="submit">{{ t.get("staff-catalog-search-button") }}</button>
+  </form>
+  <div class="column-toggles" role="group" aria-label="{{ t.get("staff-catalog-columns") }}">
+    <button type="button" class="toggle" data-toggle="auth" aria-pressed="true" hidden>{{ t.get("staff-column-authorities") }}</button>
+    <button type="button" class="toggle" data-toggle="hub" aria-pressed="true" hidden>{{ t.get("staff-column-hub") }}</button>
+  </div>
+</div>
+<section id="families" aria-live="polite">
+  {% if let Some(text) = count_text() %}<p class="muted count">{{ text }}</p>{% endif %}
+  <ol class="families">
+  {% block rows %}
+  {% for family in rows %}
+    <li class="family{% if family.hub.is_none() %} no-hub{% endif %}">
+      <div class="track track-auth">
+        <div class="col-header">{{ t.get("staff-column-authorities") }}</div>
+        {% for authority in family.authorities %}
+        <article class="card card-auth" data-node="a{{ authority.key }}">
+          <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-agent") }}</span></div>
+          <div class="field-row">
+            <span class="field-label">{{ t.get("staff-field-authorized-name") }}</span>
+            <span class="field-value">{{ authority.name }}</span>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+      <div class="track track-hub">
+        <div class="col-header">{{ t.get("staff-column-hub") }}</div>
+        {% if let Some(hub) = family.hub %}
+        <article class="card card-hub" data-node="h{{ hub.id }}">
+          <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-hub") }}</span></div>
+          <div class="field-row">
+            <span class="field-label">{{ t.get("staff-field-uniform-title") }}</span>
+            <span class="field-value title-main">{{ hub.title }}</span>
+          </div>
+        </article>
+        {% endif %}
+      </div>
+      <div class="track track-work">
+        <div class="col-header">{{ t.get("staff-column-work") }}</div>
+        {% for work in family.works %}
+        <article class="card card-work" data-node="w{{ work.id }}"
+                 data-parent="{% if let Some(hub) = family.hub %}h{{ hub.id }} {% endif %}{% if let Some(key) = work.authority %}a{{ key }}{% endif %}"
+                 data-cord-label="{% if family.hub.is_some() %}{{ t.get("staff-cord-work") }}|{% endif %}{% if work.authority.is_some() %}{{ t.get("staff-cord-written-by") }}{% endif %}">
+          <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-work") }}{% for language in work.languages %} • {{ language }}{% endfor %}</span></div>
+          <div class="field-row">
+            <span class="field-label">{{ t.get("staff-field-work-title") }}</span>
+            <span class="field-value title-main">{{ work.title }}</span>
+          </div>
+          {% if let Some(contributor) = work.contributor %}
+          <div class="field-row">
+            <span class="field-label">{{ t.get("staff-field-agents") }}</span>
+            <span class="field-value">{{ contributor }}</span>
+          </div>
+          {% endif %}
+          {% if let Some(classification) = work.classification %}
+          <div class="field-row">
+            <span class="field-label">{{ t.get("staff-field-classification") }}</span>
+            <span class="field-value call-number">{{ classification }}</span>
+          </div>
+          {% endif %}
+          {% if !work.subjects.is_empty() %}
+          <div class="field-row">
+            <span class="field-label">{{ t.get("staff-field-subjects") }}</span>
+            <span class="field-value chips">
+              {% for subject in work.subjects %}<span class="chip">{{ subject }}</span>{% endfor %}
+              {% if work.more_subjects > 0 %}<span class="chip more">+{{ work.more_subjects }}</span>{% endif %}
+            </span>
+          </div>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+      <div class="track track-editions">
+        <div class="col-header">{{ t.get("staff-column-instance") }}</div>
+        <div class="col-header">{{ t.get("staff-column-items") }}</div>
+        {% for work in family.works %}{% for instance in work.instances %}
+        <article class="card card-instance{% if instance.found %} found{% endif %}" data-node="i{{ instance.id }}"
+                 data-parent="w{{ work.id }}" data-cord-label="{{ t.get("staff-cord-edition") }}">
+          <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-instance") }}{% if let Some(edition) = instance.edition %} • {{ edition }}{% endif %}</span></div>
+          <div class="instance-body">
+            <div class="book-cover cover-{{ instance.cover }}" aria-hidden="true">
+              <span>{{ instance.title }}</span>
+              {% if let Some(isbn) = instance.isbn %}<span class="isbn-tag">ISBN<br>{{ isbn }}</span>{% endif %}
+            </div>
+            <div class="field-list">
+              <div class="field-row">
+                <span class="field-label">{{ t.get("staff-field-title") }}</span>
+                <a class="field-value title-main" href="/record/{{ instance.id }}">{{ instance.title }}</a>
+              </div>
+              {% if let Some(imprint) = instance.imprint %}
+              <div class="field-row">
+                <span class="field-label">{{ t.get("staff-field-imprint") }}</span>
+                <span class="field-value">{{ imprint }}</span>
+              </div>
+              {% endif %}
+              {% if let Some(isbn) = instance.isbn %}
+              <div class="field-row">
+                <span class="field-label">{{ t.get("staff-field-isbn") }}</span>
+                <span class="field-value isbn">{{ isbn }}</span>
+              </div>
+              {% endif %}
+              {% if let Some(material) = instance.material %}
+              <div class="field-row">
+                <span class="field-label">{{ t.get("staff-field-material") }}</span>
+                <span class="field-value">{{ t.get(material) }}</span>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+        <ul class="items-stack">
+          {% for pill in instance.pills %}
+          <li class="item-pill {{ pill.signal_class }}" data-parent="i{{ instance.id }}"{% if loop.first %} data-cord-label="{{ t.get("staff-cord-items") }}"{% endif %}><svg class="item-icon" aria-hidden="true" focusable="false"><use href="/static/elzevir-icons.svg#{{ instance.icon }}"></use></svg><span class="item-signal">{{ t.get(pill.signal_key) }}</span> <span class="item-pill-text">{{ pill.text }}</span></li>
+          {% endfor %}
+          {% if instance.more_items > 0 %}
+          <li class="item-pill more-items" data-parent="i{{ instance.id }}"><a href="/record/{{ instance.id }}">{{ instance.more_items_text(t) }}</a></li>
+          {% endif %}
+          {% if instance.items == 0 %}
+          <li class="item-pill item-none" data-parent="i{{ instance.id }}">{{ t.get("opac-availability-no-items") }}</li>
+          {% endif %}
+        </ul>
+        {% endfor %}{% endfor %}
+      </div>
+    </li>
+  {% endfor %}
+  {% if let Some(url) = next_url %}
+    <li class="next-page" hx-get="{{ url }}" hx-trigger="intersect once" hx-swap="outerHTML">
+      <a href="{{ url }}">{{ t.get("staff-catalog-next") }}</a>
+    </li>
+  {% endif %}
+  {% endblock %}
+  </ol>
+  {% if rows.is_empty() %}<p class="muted">{{ t.get("staff-catalog-empty") }}</p>{% endif %}
+</section>
+</div>
+{% endblock %}

@@ -81,3 +81,47 @@ material-video = Video
 material-digital = Digital resource
 material-visual-material = Visual material
 material-mixed = Mixed materials
+
+# Staff catalog listing
+staff-home-catalog = Catalog
+staff-catalog-title = Catalog
+staff-catalog-search-label = Search the catalog
+staff-catalog-search-placeholder = Title, author, subject, ISBN, call number, barcode
+staff-catalog-search-button = Search
+staff-catalog-next = More records
+staff-catalog-empty = Nothing to show.
+staff-catalog-count = { $count ->
+    [one] One record found
+   *[other] { $count } records found
+}
+staff-catalog-more-items = { $count ->
+    [one] +1 item — see all
+   *[other] +{ $count } items — see all
+}
+shelf-signal-available = Available
+shelf-signal-not-for-loan = Not for loan
+shelf-signal-out-of-circulation = Out of circulation
+staff-cord-work = work
+staff-cord-edition = edition
+staff-cord-items = items
+staff-column-hub = Hub
+staff-catalog-columns = Columns shown
+staff-column-authorities = Authorities
+staff-column-work = Work
+staff-column-instance = Instance
+staff-column-items = Items
+staff-badge-hub = Hub
+staff-badge-agent = Agent
+staff-field-authorized-name = Authorized name
+staff-cord-written-by = written by
+staff-badge-work = Work
+staff-badge-instance = Instance
+staff-field-uniform-title = Uniform title
+staff-field-work-title = Work title
+staff-field-agents = Agents
+staff-field-classification = Classification
+staff-field-subjects = Subjects
+staff-field-title = Title
+staff-field-imprint = Imprint
+staff-field-isbn = ISBN
+staff-field-material = Material

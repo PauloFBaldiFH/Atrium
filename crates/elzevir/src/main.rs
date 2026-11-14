@@ -24,7 +24,7 @@ use elzevir_app::search::{IndexOptions, index_pending};
 use elzevir_app::staff::{Permission, hash_password};
 use elzevir_search::TantivyIndex;
 use elzevir_store::{ElzevirHandler, ElzevirStore, StoreConfig};
-use elzevir_web::{AppState, OpacPorts, WebConfig};
+use elzevir_web::{AppState, OpacPorts, StaffPorts, WebConfig};
 use elzevir_web_templates::I18n;
 
 /// Elzevir library system.
@@ -196,10 +196,14 @@ fn serve(data_dir: &Path, listen: SocketAddr, insecure_cookies: bool) -> Result<
         catalog: Arc::clone(&store) as _,
         index,
     };
+    let staff_ports = StaffPorts {
+        listing: Arc::clone(&store) as _,
+    };
     let app = elzevir_web::router(AppState::new(
         store,
         Arc::new(memory::AllocatorProbe),
         opac,
+        staff_ports,
         i18n,
         config,
     ));
