@@ -10,6 +10,10 @@
   --elzevir-color-error: #a1261f;
   --elzevir-color-available: #1d7a46;
   --elzevir-color-border: #d5dae3;
+  --elzevir-color-signal-available: #1d7a46;
+  --elzevir-color-signal-not-for-loan: #6b7280;
+  --elzevir-color-signal-out: #b42318;
+  --elzevir-color-found: #fff6d6;
   --elzevir-radius: 6px;
   --elzevir-space: 1rem;
   --elzevir-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -26,6 +30,10 @@
     --elzevir-color-error: #f08c84;
     --elzevir-color-available: #6fcf97;
     --elzevir-color-border: #2c3445;
+    --elzevir-color-signal-available: #6fcf97;
+    --elzevir-color-signal-not-for-loan: #a3abba;
+    --elzevir-color-signal-out: #f08c84;
+    --elzevir-color-found: #3a3216;
   }
 }
 
@@ -90,3 +98,38 @@ button {
 .items { width: 100%; border-collapse: collapse; }
 .items th, .items td { text-align: left; padding: 0.25rem 0.5rem; border-bottom: 1px solid var(--elzevir-color-border); }
 @media (max-width: 30rem) { .record-fields { grid-template-columns: 1fr; } }
+
+/* Staff catalog listing: one row per family (docs/specs/catalogo/listagem.md). */
+main:has(.wide) { max-width: none; }
+.families { list-style: none; padding: 0; margin: 0; }
+.family {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--elzevir-color-border);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 8rem;
+}
+.family-hub { font-weight: 600; margin-bottom: 0.25rem; }
+.family-hub .label { color: var(--elzevir-color-muted); font-weight: 400; }
+.family-work { display: grid; grid-template-columns: minmax(12rem, 1fr) 2fr; gap: var(--elzevir-space); }
+.family-work .muted span + span::before { content: " · "; }
+.instance { padding: 0.25rem 0.5rem; border-radius: var(--elzevir-radius); }
+.instance.found { background: var(--elzevir-color-found); }
+.instance .muted span + span::before { content: " · "; }
+.pills { list-style: none; display: flex; flex-wrap: wrap; gap: 0.25rem; padding: 0; margin: 0.25rem 0 0; }
+.pill {
+  padding: 0 0.5rem;
+  border: 1px solid var(--elzevir-color-border);
+  border-left: 0.35rem solid var(--elzevir-color-border);
+  border-radius: var(--elzevir-radius);
+  font-size: 0.9em;
+  font-variant-numeric: tabular-nums;
+}
+.pill .signal { font-weight: 600; }
+.signal-available { border-left-color: var(--elzevir-color-signal-available); }
+.signal-available .signal { color: var(--elzevir-color-signal-available); }
+.signal-not-for-loan { border-left-color: var(--elzevir-color-signal-not-for-loan); }
+.signal-not-for-loan .signal { color: var(--elzevir-color-signal-not-for-loan); }
+.signal-out-of-circulation { border-left-color: var(--elzevir-color-signal-out); }
+.signal-out-of-circulation .signal { color: var(--elzevir-color-signal-out); }
+.next-page { padding: var(--elzevir-space) 0; text-align: center; }
+@media (max-width: 40rem) { .family-work { grid-template-columns: 1fr; } }

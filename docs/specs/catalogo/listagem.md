@@ -1,6 +1,6 @@
 # Listagem da equipe (v0)
 
-> Status: v0, tarefa 2.3 (parte 1: leitura das famílias). Base: [spec de interação](../../UI_BIBFRAME_INTERACTION_SPEC.md) §2, §8 e §11 e [modelo bibliográfico](modelo-bibliografico.md). A tela (parte 2) e a medição com 1 milhão de registros (parte 3) vêm depois.
+> Status: v0, tarefa 2.3 (parte 1: leitura das famílias; parte 2: tela da equipe e busca). Base: [spec de interação](../../UI_BIBFRAME_INTERACTION_SPEC.md) §2, §8 e §11 e [modelo bibliográfico](modelo-bibliografico.md). A medição com 1 milhão de registros (parte 3) vem depois.
 
 ## 1. Comportamento
 
@@ -31,6 +31,21 @@
 10. A chave fica em `works.sort_key` e `hubs.sort_key` (migração 8, com índices parciais por chave e id). É recalculada ao criar Hub, acrescentar registro, substituir a descrição e editar o título da Obra. Bancos anteriores são preenchidos na migração.
 11. Cada página é lida num número fixo de consultas ao pool de leitura: uma para as famílias e uma para cada parte (títulos de Hub, Obras, idiomas, assuntos, Instâncias e Itens), qualquer que seja o tamanho da página.
 
+### Busca na mesma tela
+
+12. A busca filtra a mesma lista: com texto, as famílias saem das Instâncias que o índice encontrou (busca de texto, ISBN, CDD, número de chamada, código de barras e tombo, como no OPAC). Sem texto, é a listagem por título.
+13. Os resultados são agrupados por família (o Hub, quando a Obra tem um; senão a Obra) e as famílias saem na ordem do seu melhor resultado. Na família, as Instâncias encontradas vêm primeiro na sua Obra e com destaque.
+14. A página da busca lê 60 resultados e termina antes do resultado que abriria a 31ª família. A próxima página começa nesse resultado (`from`), então nenhum resultado é pulado. Uma família cujos resultados caem em duas páginas aparece nas duas.
+15. A busca usa no máximo 256 caracteres. `from` acima de 10.000 é lido como 10.000.
+
+### Tela
+
+16. `GET /equipe/acervo` exige sessão da equipe. A página inicial da equipe tem o link.
+17. Parâmetros: `q` (busca), `after` (cursor da listagem) e `from` (resultado inicial da busca). Cursor malformado ou com mais de 2.048 caracteres é lido como a primeira página.
+18. A última linha da página carrega a próxima com HTMX quando aparece na tela (`hx-trigger="revealed"`), e o servidor devolve só as linhas. Sem JavaScript, a mesma linha é um link para a próxima página.
+19. O formulário de busca troca a lista inteira com HTMX e muda a URL; sem JavaScript, é um GET comum.
+20. A pílula escreve o sinal por extenso, além da cor. Linhas fora da tela não são desenhadas (`content-visibility: auto`).
+
 ## 2. Origem no Koha
 
 Não há equivalente direto. A lista de resultados da equipe do Koha (`catalogue/search.pl`) é por registro (`biblio`), não por família, e não tem listagem sem busca.
@@ -41,9 +56,11 @@ Não há equivalente direto. A lista de resultados da equipe do Koha (`catalogue
 
 Testes:
 - `crates/elzevir-app/src/listing.rs`: chave de ordenação, sinal, pílulas e páginas;
-- `crates/elzevir-store/tests/listing.rs`: 200 registros do oráculo em ordem, Hub e Obra com a mesma chave, renomear Obra, migração 8.
+- `crates/elzevir-store/tests/listing.rs`: 200 registros do oráculo em ordem, Hub e Obra com a mesma chave, famílias por cabeça, renomear Obra, migração 8;
+- `crates/elzevir-web/tests/staff_catalog.rs`: sessão, páginas, linhas para o HTMX, busca e cursor malformado.
 
 ## 4. Fora desta parte
 
-- Outras ordens (CDD, número de chamada, mais recentes) e busca agrupada por família: parte 2.
+- Outras ordens (CDD, número de chamada, mais recentes).
+- O bipe de código de barras abrindo a grade daquele exemplar: tarefa 2.7.
 - Artigos iniciais ("O", "A", "The") ainda contam na ordenação. O MARC indica quantos caracteres pular (segundo indicador do 245), mas o modelo ainda não guarda isso.

@@ -24,17 +24,64 @@ impl CatalogListing for ElzevirStore {
         limit: NonZeroUsize,
     ) -> Result<Vec<Family>, CatalogReadError> {
         self.readers()
-            .read(|c| families_after(c, after, limit))
+            .read(|c| load(c, heads_after(c, after, limit)?))
+            .map_err(|e| CatalogReadError(e.to_string()))
+    }
+
+    fn families(&self, heads: &[FamilyHead]) -> Result<Vec<Family>, CatalogReadError> {
+        self.readers()
+            .read(|c| load(c, cursors_of(c, heads)?))
             .map_err(|e| CatalogReadError(e.to_string()))
     }
 }
 
-fn families_after(
-    c: &Connection,
-    after: Option<&FamilyCursor>,
-    limit: NonZeroUsize,
-) -> Result<Vec<Family>, ReadFailure> {
-    let heads = heads_after(c, after, limit)?;
+/// The cursors of these heads, in the given order; heads that do not exist, and Works
+/// that belong to a Hub, are left out.
+fn cursors_of(c: &Connection, heads: &[FamilyHead]) -> Result<Vec<FamilyCursor>, ReadFailure> {
+    let mut hubs = Vec::new();
+    let mut works = Vec::new();
+    for head in heads {
+        match head {
+            FamilyHead::Hub(hub) => hubs.push(hub.0),
+            FamilyHead::Work(work) => works.push(work.0),
+        }
+    }
+    let mut keys: BTreeMap<FamilyHead, String> = BTreeMap::new();
+    for (sql, ids, head) in [
+        (
+            "SELECT id, sort_key FROM hubs WHERE id IN ({})",
+            &hubs,
+            (|id| FamilyHead::Hub(HubId(id))) as fn(i64) -> FamilyHead,
+        ),
+        (
+            "SELECT id, sort_key FROM works WHERE hub_id IS NULL AND id IN ({})",
+            &works,
+            |id| FamilyHead::Work(WorkId(id)),
+        ),
+    ] {
+        if ids.is_empty() {
+            continue;
+        }
+        let sql = sql.replace("{}", &placeholders(ids.len()));
+        let mut statement = c.prepare(&sql)?;
+        let mut rows = statement.query(params_from_iter(ids.iter()))?;
+        while let Some(row) = rows.next()? {
+            keys.insert(head(row.get(0)?), row.get(1)?);
+        }
+    }
+    Ok(heads
+        .iter()
+        .filter_map(|head| {
+            keys.get(head).map(|key| FamilyCursor {
+                sort_key: key.clone(),
+                head: *head,
+            })
+        })
+        .collect())
+}
+
+/// The families of these heads, complete, in the given order.
+fn load(c: &Connection, heads: Vec<FamilyCursor>) -> Result<Vec<Family>, ReadFailure> {
     let hub_ids: Vec<i64> = heads
         .iter()
         .filter_map(|cursor| match cursor.head {

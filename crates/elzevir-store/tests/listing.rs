@@ -234,6 +234,21 @@ fn a_hub_is_one_family_with_all_its_works_before_a_work_of_the_same_title() {
         Some("9788535910667")
     );
 
+    // By head, in the given order; a Work of a Hub and a missing Work are left out.
+    let asked = [
+        FamilyHead::Work(lone),
+        FamilyHead::Work(portuguese),
+        FamilyHead::Hub(hub),
+        FamilyHead::Work(WorkId(9999)),
+    ];
+    let found: Vec<FamilyHead> = store
+        .families(&asked)
+        .unwrap()
+        .into_iter()
+        .map(|family| family.cursor.head)
+        .collect();
+    assert_eq!(found, [FamilyHead::Work(lone), FamilyHead::Hub(hub)]);
+
     // One family at a time crosses the Hub/Work boundary on the same key.
     let mut after: Option<FamilyCursor> = None;
     let mut one_by_one = Vec::new();

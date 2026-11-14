@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}{{ t.get("staff-catalog-title") }}{% endblock %}
+{% block content %}
+<div class="wide">
+<h1>{{ t.get("staff-catalog-title") }}</h1>
+<form class="search" action="/equipe/acervo" method="get" role="search"
+      hx-get="/equipe/acervo" hx-target="#families" hx-select="#families" hx-swap="outerHTML" hx-push-url="true">
+  <label for="q">{{ t.get("staff-catalog-search-label") }}</label>
+  <input id="q" name="q" type="search" value="{{ query }}" maxlength="256" autofocus
+         placeholder="{{ t.get("staff-catalog-search-placeholder") }}">
+  <button type="submit">{{ t.get("staff-catalog-search-button") }}</button>
+</form>
+<section id="families" aria-live="polite">
+  {% if let Some(text) = count_text() %}<p class="muted">{{ text }}</p>{% endif %}
+  <ol class="families">
+  {% block rows %}
+  {% for family in rows %}
+    <li class="family">
+      {% if let Some(hub) = family.hub_title %}
+      <div class="family-hub"><span class="label">{{ t.get("staff-catalog-hub") }}</span> {{ hub }}</div>
+      {% endif %}
+      {% for work in family.works %}
+      <div class="family-work">
+        <div class="work">
+          <strong>{{ work.title }}</strong>
+          {% if let Some(contributor) = work.contributor %}<div>{{ contributor }}</div>{% endif %}
+          <div class="muted">
+            {% if let Some(classification) = work.classification %}<span class="call-number">{{ classification }}</span>{% endif %}
+            {% for language in work.languages %}<span>{{ language }}</span>{% endfor %}
+          </div>
+          <div>
+            {% for subject in work.subjects %}<span class="chip">{{ subject }}</span>{% endfor %}
+            {% if work.more_subjects > 0 %}<span class="muted">+{{ work.more_subjects }}</span>{% endif %}
+          </div>
+        </div>
+        <div class="instances">
+          {% for instance in work.instances %}
+          <div class="instance{% if instance.found %} found{% endif %}">
+            <div class="instance-title">
+              <a href="/record/{{ instance.id }}">{{ instance.title }}</a>
+              {% if let Some(material) = instance.material %}<span class="muted">{{ t.get(material) }}</span>{% endif %}
+            </div>
+            <div class="muted">
+              {% if let Some(edition) = instance.edition %}<span>{{ edition }}</span>{% endif %}
+              {% if let Some(imprint) = instance.imprint %}<span>{{ imprint }}</span>{% endif %}
+              {% if let Some(isbn) = instance.isbn %}<span class="isbn">{{ isbn }}</span>{% endif %}
+            </div>
+            <ul class="pills">
+              {% for pill in instance.pills %}
+              <li class="pill {{ pill.signal_class }}"><span class="signal">{{ t.get(pill.signal_key) }}</span> {{ pill.text }}</li>
+              {% endfor %}
+              {% if instance.more_items > 0 %}
+              <li class="pill more">{{ instance.more_items_text(t) }}</li>
+              {% endif %}
+              {% if instance.items == 0 %}
+              <li class="muted">{{ t.get("opac-availability-no-items") }}</li>
+              {% endif %}
+            </ul>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </li>
+  {% endfor %}
+  {% if let Some(url) = next_url %}
+    <li class="next-page" hx-get="{{ url }}" hx-trigger="revealed" hx-swap="outerHTML">
+      <a href="{{ url }}">{{ t.get("staff-catalog-next") }}</a>
+    </li>
+  {% endif %}
+  {% endblock %}
+  </ol>
+  {% if rows.is_empty() %}<p class="muted">{{ t.get("staff-catalog-empty") }}</p>{% endif %}
+</section>
+</div>
+{% endblock %}

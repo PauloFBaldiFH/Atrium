@@ -4,6 +4,10 @@
 //! Templates never contain interface text: every string comes from Fluent through [`I18n`]
 //! (English first, then Brazilian Portuguese; docs/arquitetura/04-decisoes.md, §1 item 7).
 
+mod staff_catalog;
+
+pub use staff_catalog::{FamilyLine, InstanceLine, PillLine, StaffCatalog, WorkLine};
+
 use askama::Template;
 use fluent_bundle::concurrent::FluentBundle;
 use fluent_bundle::{FluentResource, FluentValue};
@@ -335,6 +339,7 @@ mod tests {
             include_str!("../templates/opac_not_found.html"),
             include_str!("../templates/staff_login.html"),
             include_str!("../templates/staff_home.html"),
+            include_str!("../templates/staff_catalog.html"),
         ];
         let mut missing = Vec::new();
         for source in templates {

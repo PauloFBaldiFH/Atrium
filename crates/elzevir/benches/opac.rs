@@ -33,7 +33,7 @@ use elzevir_app::search::{IndexOptions, index_pending};
 use elzevir_marc::{Field, Limits, MarcReader, Record};
 use elzevir_search::TantivyIndex;
 use elzevir_store::{ElzevirHandler, ElzevirStore, StoreConfig};
-use elzevir_web::{AppState, OpacPorts, WebConfig, router};
+use elzevir_web::{AppState, OpacPorts, StaffPorts, WebConfig, router};
 use elzevir_web_templates::{I18n, url_encode};
 use http_body_util::BodyExt;
 use tower::ServiceExt;
@@ -73,6 +73,9 @@ fn main() {
         OpacPorts {
             catalog: Arc::clone(&store) as _,
             index: Arc::clone(&index) as _,
+        },
+        StaffPorts {
+            listing: Arc::clone(&store) as _,
         },
         I18n::english().unwrap(),
         WebConfig::default(),

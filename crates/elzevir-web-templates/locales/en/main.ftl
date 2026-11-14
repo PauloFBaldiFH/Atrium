@@ -81,3 +81,24 @@ material-video = Video
 material-digital = Digital resource
 material-visual-material = Visual material
 material-mixed = Mixed materials
+
+# Staff catalog listing
+staff-home-catalog = Catalog
+staff-catalog-title = Catalog
+staff-catalog-search-label = Search the catalog
+staff-catalog-search-placeholder = Title, author, subject, ISBN, call number, barcode
+staff-catalog-search-button = Search
+staff-catalog-hub = Hub
+staff-catalog-next = More records
+staff-catalog-empty = Nothing to show.
+staff-catalog-count = { $count ->
+    [one] One record found
+   *[other] { $count } records found
+}
+staff-catalog-more-items = { $count ->
+    [one] +1 item
+   *[other] +{ $count } items
+}
+shelf-signal-available = Available
+shelf-signal-not-for-loan = Not for loan
+shelf-signal-out-of-circulation = Out of circulation
