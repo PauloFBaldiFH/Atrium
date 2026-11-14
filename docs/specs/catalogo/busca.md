@@ -7,7 +7,7 @@
 ### Documento
 
 1. **Um documento por Instância**, montado do modelo (`document_of`), nunca do MARC (visão A.1). O doc 03 pedia extração gerada do `mappings.yaml` do Koha; esse arquivo descreve etiquetas MARC, e a visão aprovada depois tirou o MARC do núcleo. Os nomes e o papel dos campos seguem os do Koha, mas a extração lê `InstanceView` e `ItemView`.
-2. Campos de palavras: título da Instância, título da Obra, contribuidores, assuntos, editora e resumo da Obra. Título conta o dobro. As palavras perdem maiúsculas e acentos e passam pelo radicalizador de português (Snowball), nessa ordem: `coração` acha `Coracao`, e `anuários` acha `Anuário`. Tirar o acento antes de radicalizar faz a palavra digitada sem acento ter o mesmo radical da acentuada.
+2. Campos de palavras: título da Instância, título da Obra, contribuidores, assuntos, editora, resumo da Obra e notas da Instância (geral, de conteúdo e local; tarefa 2.1). Título conta o dobro. As palavras perdem maiúsculas e acentos e passam pelo radicalizador de português (Snowball), nessa ordem: `coração` acha `Coracao`, e `anuários` acha `Anuário`. Tirar o acento antes de radicalizar faz a palavra digitada sem acento ter o mesmo radical da acentuada.
 3. Campos de código, comparados inteiros: identificadores (ISBN e ISSN sem hífen nem espaço, `X` maiúsculo), código de barras, tombo, número de chamada (sem diferença de maiúsculas), classificação, localização e idioma.
 4. Campos guardados para montar a lista sem ir ao SQLite (B.5): Instância, Obra, Hub, título, autor principal (o primeiro contribuidor), data, categoria (a da Instância, senão a da Obra), classificação e números de chamada. A disponibilidade não entra no índice: vem do SQLite numa consulta por página (tarefa 1.9).
 
@@ -25,7 +25,8 @@
 8. Cada lote é confirmado no Tantivy **junto com o cursor** (carga útil do commit): depois de uma queda, o índice tem o lote e o cursor, ou nenhum dos dois. Rodar de novo não refaz nada.
 9. O índice tem um único escritor (`IndexWriter` atrás de um `Mutex`) e um único leitor compartilhado (`IndexReader`), recarregado depois de cada commit.
 10. **`ELZEVIR_SERIAL=index`**: os documentos do lote são montados numa thread só, e o escritor do Tantivy usa uma thread de indexação (até 8 sem o interruptor).
-11. `stored_documents()` devolve todos os documentos guardados, em JSON, ordenados: duas bases indexadas a partir dos mesmos efeitos têm a mesma lista, em série ou em paralelo.
+11. Um índice em disco criado com outro esquema (campos diferentes) é apagado e criado de novo ao abrir; sem cursor, o indexador relê a outbox inteira. O índice é derivado do banco, então nada se perde.
+12. `stored_documents()` devolve todos os documentos guardados, em JSON, ordenados: duas bases indexadas a partir dos mesmos efeitos têm a mesma lista, em série ou em paralelo.
 
 ## 2. Origem no Koha
 
@@ -48,17 +49,15 @@ O Koha indexa com Zebra ou Elasticsearch a partir do MARC (`Koha::SearchEngine::
 
 `tools/opac-search-recorder/record.pl` grava o que o OPAC do Koha acha para cada consulta de `queries.txt` (25 de título, 13 de autor, 8 de assunto, 4 de ISBN), página a página, guardando só os biblionumbers de 1 a 200, que são os registros da base de testes. Usa só o OPAC público: sem login e sem dados de leitores. Gravação: 2026-11-13, Koha 26.05.05, em `crates/elzevir/tests/data/koha-opac-search.tsv` (consulta, total no catálogo inteiro, biblionumbers até 200).
 
-O teste `reference_queries_find_what_koha_finds` compara os conjuntos. **45 das 50 consultas acham exatamente o mesmo** que o Koha. As 5 diferenças ficam listadas no teste:
+O teste `reference_queries_find_what_koha_finds` compara os conjuntos. **47 das 50 consultas acham exatamente o mesmo** que o Koha (eram 45 antes das notas, tarefa 2.1). As 3 diferenças ficam listadas no teste:
 
 | Consulta | Só o Koha acha | Só o Elzevir acha | Por quê |
 |---|---|---|---|
-| `karl marx` | 147 | | nota de conteúdo (`505`) |
-| `discurso do rei` | 187 | | nota local (`590`) "reimpressão"; o Koha também trunca `rei` |
-| `gramatica` | 179, 188 | | resumo com "gramatical" (o Koha corta em `gramat`) e nota de conteúdo (`505`) |
+| `discurso do rei` | 187 | | nota local (`590`) "reimpressão": o Koha trunca `rei` e acha o prefixo; o Elzevir compara radicais |
+| `gramatica` | 179 | | resumo com "gramatical" (o Koha corta em `gramat`) |
 | `historia da arte` | | 146 | resumo com "histórica", mesmo radical de "história" |
-| `analise do discurso` | 12 | | nota geral (`500`) |
 
-Quatro das cinco vêm de **notas (`500`, `505`, `590`), que o modelo ainda não tem** (lacuna já listada na [especificação da interface](../../UI_BIBFRAME_INTERACTION_SPEC.md), §10). Quando as notas entrarem no modelo, entram no índice e saem desta tabela. A outra é o radicalizador, que junta "histórica" a "história"; o resultado é pertinente, então fica.
+As três vêm da forma de comparar palavras: o Koha trunca, o Elzevir radicaliza. O resultado a mais é pertinente, então fica.
 
 Sem o radicalizador e sem o resumo, eram 6 diferenças. Radicalizar depois de tirar o acento é o que funciona: na ordem inversa, `populacao` e `População` ganham radicais diferentes, e três consultas de título deixam de achar o livro.
 
@@ -68,6 +67,7 @@ Sem o radicalizador e sem o resumo, eram 6 diferenças. Radicalizar depois de ti
 2. Índice novo: cursor 0.
 3. Cursor salvo que não é número (índice corrompido): erro, não volta a 0 em silêncio.
 4. Dois indexadores no mesmo diretório: o segundo não abre (trava do Tantivy).
+5. Índice criado antes de um campo novo: é refeito do zero ao abrir.
 
 ## 6. Desvios
 
@@ -75,6 +75,5 @@ Nenhum (área livre).
 
 ## 7. Fora do escopo
 
-- Notas (`500`, `505`, `590`) no modelo e no índice: quando o modelo ganhar notas.
 - Rodar o indexador sozinho no `elzevir serve` / `elzevir worker`: tarefas 1.9 e 1.11.
 - Agrupar resultados por família (Hub ou Obra), facetas e paginação por cursor: tarefa 1.9 e Onda 1a.

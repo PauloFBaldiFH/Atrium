@@ -308,7 +308,7 @@ fn migration_5_computes_the_keys_of_older_databases() {
     // Back to schema 4, as a database created before matching existed.
     let connection = rusqlite::Connection::open(dir.path().join("elzevir.db")).unwrap();
     connection
-        .execute_batch("DROP TABLE match_keys; PRAGMA user_version = 4;")
+        .execute_batch("DROP TABLE match_keys; DROP TABLE instance_notes; PRAGMA user_version = 4;")
         .unwrap();
     drop(connection);
 

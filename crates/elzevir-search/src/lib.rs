@@ -22,7 +22,9 @@ use tantivy::collector::{Count, TopDocs};
 use tantivy::directory::MmapDirectory;
 use tantivy::query::{BooleanQuery, BoostQuery, Occur, Query, QueryParser, RegexQuery, TermQuery};
 use tantivy::schema::{IndexRecordOption, Value};
-use tantivy::{Document, Index, IndexReader, IndexWriter, ReloadPolicy, TantivyDocument, Term};
+use tantivy::{
+    Document, Index, IndexReader, IndexSettings, IndexWriter, ReloadPolicy, TantivyDocument, Term,
+};
 
 use crate::schema::Fields;
 
@@ -46,12 +48,27 @@ impl TantivyIndex {
     ///
     /// # Errors
     ///
-    /// When the directory cannot be opened, holds an index with another schema, or is
-    /// already locked by another writer.
+    /// When the directory cannot be opened or emptied, or is already locked by another
+    /// writer.
     pub fn open(directory: &Path, parallelism: Parallelism) -> Result<Self, SearchError> {
         let (schema, fields) = schema::build();
-        let directory = MmapDirectory::open(directory).map_err(error)?;
-        let index = Index::open_or_create(directory, schema).map_err(error)?;
+        let opened = MmapDirectory::open(directory).map_err(error)?;
+        if Index::exists(&opened).map_err(error)?
+            && Index::open(opened.clone()).map_err(error)?.schema() != schema
+        {
+            // The index is derived data: an index built with another schema is dropped,
+            // and with no cursor the indexer replays the whole outbox into the new one.
+            drop(opened);
+            std::fs::remove_dir_all(directory).map_err(error)?;
+            std::fs::create_dir_all(directory).map_err(error)?;
+            let fresh = MmapDirectory::open(directory).map_err(error)?;
+            return Self::start(
+                Index::create(fresh, schema, IndexSettings::default()).map_err(error)?,
+                fields,
+                parallelism,
+            );
+        }
+        let index = Index::open_or_create(opened, schema).map_err(error)?;
         Self::start(index, fields, parallelism)
     }
 
@@ -124,6 +141,7 @@ impl TantivyIndex {
         let texts = [
             (f.contributor, &source.contributors),
             (f.subject, &source.subjects),
+            (f.note, &source.notes),
             (f.identifier, &source.identifiers),
             (f.barcode, &source.barcodes),
             (f.inventory_number, &source.inventory_numbers),
@@ -170,6 +188,7 @@ impl TantivyIndex {
                 f.subject,
                 f.publisher,
                 f.summary,
+                f.note,
             ],
         );
         parser.set_conjunction_by_default();
@@ -343,5 +362,17 @@ mod tests {
         assert_eq!(classification_prefix("82"), None);
         assert_eq!(classification_prefix("*"), None);
         assert_eq!(classification_prefix("dom*"), None);
+    }
+
+    #[test]
+    fn an_index_with_another_schema_is_rebuilt() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut old = tantivy::schema::Schema::builder();
+        old.add_text_field("title", tantivy::schema::STORED);
+        let directory = MmapDirectory::open(dir.path()).unwrap();
+        drop(Index::create(directory, old.build(), IndexSettings::default()).unwrap());
+        let index = TantivyIndex::open(dir.path(), Parallelism::Serial).unwrap();
+        assert_eq!(index.cursor().unwrap(), 0);
+        assert_eq!(index.index.schema(), schema::build().0);
     }
 }

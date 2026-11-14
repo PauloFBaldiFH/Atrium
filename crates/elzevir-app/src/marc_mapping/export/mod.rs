@@ -5,14 +5,14 @@
 //! what the original maps to are rewritten, and a rewritten list reuses every original field
 //! whose mapping did not change. An unedited record therefore comes back byte for byte.
 
-use elzevir_domain::catalog::{AgentKind, IdentifierKind, MaterialType, SubjectKind};
+use elzevir_domain::catalog::{AgentKind, IdentifierKind, MaterialType, NoteKind, SubjectKind};
 use elzevir_marc::{Field, Record, Subfield, Tag};
 
-use super::instance::{IDENTIFIER_TAGS, identifier_of};
+use super::instance::{IDENTIFIER_TAGS, NOTE_TAGS, identifier_of, note_of};
 use super::items::{defaults, item_of};
 use super::work::{CONTRIBUTION_TAGS, SUBJECT_TAGS, contribution_of, subject_of};
 use super::{DataField, Marc, marc_to_bibframe};
-use crate::catalog::{ItemData, NewContribution, NewIdentifier, NewRecord, NewSubject};
+use crate::catalog::{ItemData, NewContribution, NewIdentifier, NewNote, NewRecord, NewSubject};
 
 mod fields;
 
@@ -194,6 +194,12 @@ fn write_lists(out: &mut Record, model: &NewRecord, before: Option<&NewRecord>) 
             identifier_field,
             |_, _| None,
         );
+    }
+    if before.is_none_or(|b| b.instance.notes != model.instance.notes) {
+        let current = mapped(out, &NOTE_TAGS, note_of);
+        rebuild(out, &current, &model.instance.notes, note_field, |_, _| {
+            None
+        });
     }
     if before.is_none_or(|b| b.items != model.items) {
         let defaults = defaults(&Marc(out));
@@ -389,6 +395,16 @@ fn identifier_field(identifier: &NewIdentifier) -> Field {
     subfields.extend(identifier.qualifier.as_deref().map(|q| (b'q', q)));
     subfields.extend(source.map(|s| (b'2', s)));
     data_field(tag, indicators, &subfields)
+}
+
+fn note_field(note: &NewNote) -> Field {
+    let (tag, indicators) = match note.kind {
+        NoteKind::General => (*b"500", *b"  "),
+        // First indicator 0: the contents are complete.
+        NoteKind::Contents => (*b"505", *b"0 "),
+        NoteKind::Local => (*b"590", *b"  "),
+    };
+    data_field(tag, indicators, &[(b'a', note.text.as_str())])
 }
 
 /// A `952` for `item`: the mapped subfields set on `base` (or on a new field).

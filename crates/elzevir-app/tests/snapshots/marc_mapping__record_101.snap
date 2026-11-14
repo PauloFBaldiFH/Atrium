@@ -36,6 +36,9 @@ instance:
     - kind: system_control_number
       value: 2003071718541389med
       qualifier: ~
+  notes:
+    - kind: general
+      text: "Tradução de: Stories for the heart."
 items:
   - barcode: "16756"
     inventory_number: ~

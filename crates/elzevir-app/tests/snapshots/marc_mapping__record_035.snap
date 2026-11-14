@@ -40,6 +40,7 @@ instance:
     - kind: system_control_number
       value: 2011071117274039med
       qualifier: ~
+  notes: []
 items:
   - barcode: "14576"
     inventory_number: ~

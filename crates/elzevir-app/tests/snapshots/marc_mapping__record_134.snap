@@ -39,6 +39,17 @@ instance:
     - kind: issn
       value: 1413-8050
       qualifier: ~
+  notes:
+    - kind: general
+      text: Trimestral
+    - kind: general
+      text: Alguns artigos em ingles
+    - kind: general
+      text: Resumos em portugues e ingles
+    - kind: general
+      text: "Jan./mar.2000-    titulo tambem em ingles: Brazilian journal of applied economics"
+    - kind: general
+      text: Formato varia.
 items:
   - barcode: "16273"
     inventory_number: ~

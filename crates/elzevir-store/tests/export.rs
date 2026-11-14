@@ -120,3 +120,38 @@ fn an_unchanged_record_goes_out_as_stored_even_when_it_could_not_be_rewritten() 
     assert_eq!(report.written, 1);
     assert_eq!(out, lc);
 }
+
+#[test]
+fn migration_6_reads_the_notes_of_older_databases() {
+    let dir = tempfile::tempdir().unwrap();
+    let store = imported(&dir);
+    let notes = |store: &ElzevirStore| {
+        store
+            .readers()
+            .read(|c| {
+                c.query_row("SELECT count(*) FROM instance_notes", [], |row| {
+                    row.get::<_, i64>(0)
+                })
+            })
+            .unwrap()
+    };
+    let before = notes(&store);
+    assert!(before > 0);
+    drop(store);
+    // Back to schema 5, as a database created before notes existed.
+    let connection = rusqlite::Connection::open(dir.path().join("elzevir.db")).unwrap();
+    connection
+        .execute_batch("DROP TABLE instance_notes; PRAGMA user_version = 5;")
+        .unwrap();
+    drop(connection);
+
+    let store = ElzevirStore::open(
+        &dir.path().join("elzevir.db"),
+        &StoreConfig::default(),
+        ElzevirHandler,
+    )
+    .unwrap();
+    assert_eq!(notes(&store), before);
+    // Without the notes, the export would drop the 500, 505 and 590 of every record.
+    assert_eq!(export(&store, 1024), STAFF_EXPORT);
+}

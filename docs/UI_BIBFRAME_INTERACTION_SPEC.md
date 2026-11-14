@@ -250,7 +250,8 @@ O esboço mostra coisas que o esquema de hoje (migração 4) ainda não guarda. 
 |---|---|---|
 | Contribuidores da edição (ilustrador, tradutor) | `instance_contributions` (como `contributions`, ligada à Instância) | 700/710 com `$4`, separados dos da Obra por regra de papel na 1.6 |
 | Etiquetas ("adulto", "ficção") | vocabulário `Tag` em `terms` + `work_tags` | 690 local ou só no Elzevir (decidir com Paulo) |
-| Público-alvo, notas | colunas em `works`/`instances` ou chaves tipadas em `extra` | 521, 500 |
+| Público-alvo | coluna em `works` ou chave tipada em `extra` | 521 |
+| Notas | **feito** (tarefa 2.1): `instance_notes` (geral, conteúdo, local), no índice e no OPAC | 500, 505, 590 |
 | Quarentena | `quarantined_at TEXT` em `hubs`, `works`, `instances`, `agents` | não exportado |
 | Formas variantes de agente (após mesclagem) | `agent_variants (agent_id, heading)` | 400 nas autoridades (fase de autoridades) |
 | Capa | arquivo em cache por Instância, fora do SQLite | — |

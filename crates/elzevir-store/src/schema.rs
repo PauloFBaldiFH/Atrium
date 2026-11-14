@@ -9,11 +9,13 @@
 use std::path::Path;
 use std::time::Duration;
 
+use elzevir_app::marc_mapping::source_notes;
 use elzevir_app::matching::{identifier_key, koha_biblionumber_key};
 use elzevir_domain::catalog::IdentifierKind;
 use rusqlite::{Connection, OpenFlags, params};
 
 use crate::StoreError;
+use crate::catalog::insert_notes;
 
 /// Ordered migrations; migration `n` (1-based) moves `user_version` from `n - 1` to `n`.
 const MIGRATIONS: &[&str] = &[
@@ -195,10 +197,21 @@ const MIGRATIONS: &[&str] = &[
          PRIMARY KEY (rule, key, instance_id)
      ) STRICT, WITHOUT ROWID;
      CREATE INDEX match_keys_by_instance ON match_keys (instance_id);",
+    // 6: notes of an Instance (MARC21 500, 505, 590), task 2.1.
+    "CREATE TABLE instance_notes (
+         instance_id INTEGER NOT NULL REFERENCES instances (id) ON DELETE CASCADE,
+         position    INTEGER NOT NULL,
+         kind        INTEGER NOT NULL CHECK (kind BETWEEN 1 AND 255),
+         text        TEXT NOT NULL,
+         PRIMARY KEY (instance_id, position)
+     ) STRICT, WITHOUT ROWID;",
 ];
 
 /// The migration that creates `match_keys`.
 const MATCH_KEYS_VERSION: i64 = 5;
+
+/// The migration that creates `instance_notes`.
+const NOTES_VERSION: i64 = 6;
 
 /// How long a connection waits on a lock before failing. With a single writer this only
 /// covers checkpoints and external tools; it is not part of normal operation.
@@ -250,6 +263,9 @@ fn migrate(connection: &mut Connection) -> Result<(), StoreError> {
             if version == MATCH_KEYS_VERSION {
                 backfill_match_keys(&tx)?;
             }
+            if version == NOTES_VERSION {
+                backfill_notes(&tx)?;
+            }
             tx.pragma_update(None, "user_version", version)?;
         }
     }
@@ -279,6 +295,18 @@ fn backfill_match_keys(connection: &Connection) -> Result<(), StoreError> {
         if let Some(key) = koha_biblionumber_key(&record) {
             insert.execute(params![key.rule.code(), key.key, row.get::<_, i64>(0)?])?;
         }
+    }
+    Ok(())
+}
+
+/// Reads the notes of every record already stored when `instance_notes` is created. Without
+/// them, the export would see the notes of the original as removed and drop them.
+fn backfill_notes(connection: &Connection) -> Result<(), StoreError> {
+    let mut sources = connection.prepare("SELECT instance_id, record FROM source_records")?;
+    let mut rows = sources.query([])?;
+    while let Some(row) = rows.next()? {
+        let record: Vec<u8> = row.get(1)?;
+        insert_notes(connection, row.get(0)?, &source_notes(&record))?;
     }
     Ok(())
 }

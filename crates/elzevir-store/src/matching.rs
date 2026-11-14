@@ -13,8 +13,9 @@ use elzevir_domain::catalog::{InstanceId, ItemId, MaterialType, Vocabulary};
 use rusqlite::{Connection, OptionalExtension, params};
 
 use crate::catalog::{
-    ItemCodes, add_item, add_work_and_instance, insert_identifiers, item_codes, link_contributions,
-    link_languages, link_subjects, optional_term, record_changed, reindex, store_source_and_keys,
+    ItemCodes, add_item, add_work_and_instance, insert_identifiers, insert_notes, item_codes,
+    link_contributions, link_languages, link_subjects, optional_term, record_changed, reindex,
+    store_source_and_keys,
 };
 use crate::{CommandFailed, StoreError, WriteTx};
 
@@ -242,6 +243,10 @@ pub(crate) fn replace_description(
             instance.0,
         ),
         (
+            "DELETE FROM instance_notes WHERE instance_id = ?1",
+            instance.0,
+        ),
+        (
             "DELETE FROM source_records WHERE instance_id = ?1",
             instance.0,
         ),
@@ -275,6 +280,7 @@ pub(crate) fn replace_description(
         )
         .map_err(StoreError::from)?;
     insert_identifiers(connection, instance.0, &description.identifiers)?;
+    insert_notes(connection, instance.0, &description.notes)?;
     store_source_and_keys(connection, instance, record)?;
     let mut siblings = connection
         .prepare_cached("SELECT id FROM instances WHERE work_id = ?1 ORDER BY id")

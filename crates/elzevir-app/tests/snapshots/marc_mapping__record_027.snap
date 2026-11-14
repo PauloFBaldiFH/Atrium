@@ -48,6 +48,7 @@ instance:
     - kind: system_control_number
       value: (BIBLIODATA)SC000016285
       qualifier: ~
+  notes: []
 items:
   - barcode: "4148"
     inventory_number: ~

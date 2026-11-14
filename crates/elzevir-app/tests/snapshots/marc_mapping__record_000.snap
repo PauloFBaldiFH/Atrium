@@ -33,6 +33,7 @@ instance:
   extent: 178 p
   series: Parana
   identifiers: []
+  notes: []
 items:
   - barcode: "1511"
     inventory_number: ~
