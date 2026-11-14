@@ -227,6 +227,7 @@ fn app() -> Router {
             records: Arc::new(common::Records(vec![stored(10)])),
             editor: Arc::new(common::Editor::default()),
             suggestions: Arc::new(common::Suggestions),
+            items: Arc::new(common::ItemGrid),
         },
         I18n::english().unwrap(),
         WebConfig {
@@ -839,4 +840,83 @@ async fn the_new_record_forms_start_blank_or_carry_over_the_previous_record() {
     );
     assert!(instance.contains(r#"value="Dom Casmurro""#));
     assert!(!instance.contains("9788535910667"));
+}
+
+#[tokio::test]
+async fn a_batch_of_items_is_refused_cell_by_cell_or_saved_whole() {
+    let app = app();
+    let uri = "/equipe/acervo/instancia/10/exemplares";
+    let batch = r#"{"version": 1, "rows": [{"id": 3, "barcode": "0001", "home_branch": "MAIN", "item_type": "BK"}, {"barcode": "0002", "home_branch": "MAIN", "item_type": "BK", "price": "12,50"}]}"#;
+    let anonymous = send(&app, post_json(uri, None, None, batch)).await;
+    assert_eq!(anonymous.status(), StatusCode::UNAUTHORIZED);
+    let bia = signed_in_as(&app, "bia").await;
+    let bia_token = page_token(&app, &bia).await;
+    let reader = send(&app, post_json(uri, Some(&bia), Some(&bia_token), batch)).await;
+    assert_eq!(reader.status(), StatusCode::FORBIDDEN);
+
+    let ana = signed_in(&app).await;
+    let token = page_token(&app, &ana).await;
+    let saved = send(&app, post_json(uri, Some(&ana), Some(&token), batch)).await;
+    assert_eq!(saved.status(), StatusCode::OK);
+    assert_eq!(body(saved).await, r#"{"version":2,"ids":[3,501]}"#);
+
+    let bad = r#"{"version": 1, "rows": [{"barcode": "0001", "home_branch": "MAIN", "item_type": "BK"}, {"barcode": "0001", "home_branch": "", "item_type": "BK", "price": "doação"}]}"#;
+    let refused = send(&app, post_json(uri, Some(&ana), Some(&token), bad)).await;
+    assert_eq!(refused.status(), StatusCode::UNPROCESSABLE_ENTITY);
+    let refused = body(refused).await;
+    assert!(refused.contains(r#"{"row":0,"field":"barcode","key":"items-error-barcode-taken""#));
+    assert!(refused.contains(r#"{"row":1,"field":"home_branch","key":"items-error-required""#));
+    assert!(refused.contains(r#"{"row":1,"field":"price","key":"items-error-price""#));
+    assert!(refused.contains("Another item already has this barcode."));
+
+    let stale = send(
+        &app,
+        post_json(
+            uri,
+            Some(&ana),
+            Some(&token),
+            &batch.replace(r#""version": 1"#, r#""version": 4"#),
+        ),
+    )
+    .await;
+    assert_eq!(stale.status(), StatusCode::CONFLICT);
+}
+
+#[tokio::test]
+async fn a_cataloguer_gets_the_item_grid_with_its_rows_and_lists() {
+    let app = app();
+    let bia = signed_in_as(&app, "bia").await;
+    let refused = send(
+        &app,
+        get("/equipe/acervo/instancia/10/exemplares", Some(&bia), None),
+    )
+    .await;
+    assert_eq!(refused.status(), StatusCode::FORBIDDEN);
+    let listing = body(send(&app, get("/equipe/acervo", Some(&bia), None)).await).await;
+    assert!(!listing.contains(r#"data-action="edit-items""#));
+
+    let ana = signed_in(&app).await;
+    let listing = body(send(&app, get("/equipe/acervo", Some(&ana), None)).await).await;
+    assert!(listing.contains(r#"data-action="edit-items" data-from="10""#));
+    let grid = body(
+        send(
+            &app,
+            get("/equipe/acervo/instancia/10/exemplares", Some(&ana), None),
+        )
+        .await,
+    )
+    .await;
+    assert!(
+        grid.contains(r#"data-endpoint="/equipe/acervo/instancia/10/exemplares" data-version="1""#)
+    );
+    assert!(grid.contains(r#"<tr data-id="3">"#));
+    for cell in ["000123", "T-77", "869.3 A848d", "45,90"] {
+        assert!(
+            grid.contains(&format!(r#"<td role="gridcell" tabindex="-1">{cell}</td>"#)),
+            "{cell}"
+        );
+    }
+    assert!(grid.contains(r#"<i data-col="home_branch" data-list="branches" data-inherited></i>"#));
+    assert!(grid.contains(r#"<i data-col="barcode"></i>"#));
+    assert!(grid.contains(r#"<datalist id="grid-list-branches"><option value="MAIN"></option><option value="PAL"></option></datalist>"#));
 }

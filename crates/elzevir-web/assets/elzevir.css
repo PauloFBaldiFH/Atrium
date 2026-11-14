@@ -460,3 +460,38 @@ a.field-value:hover { text-decoration: underline; }
 .form-field { position: relative; }
 .form-field[data-inherited] input, .form-field[data-inherited] select, .form-field[data-inherited] textarea { border-style: dashed; background: var(--elzevir-color-hub-bg); }
 .inherited-mark { position: absolute; right: 0; top: 0; font-size: 0.66rem; font-style: italic; color: var(--text-muted); }
+
+/* Item grid (docs/specs/catalogo/exemplares.md, items 17 to 28). */
+.items-stack.editing > .item-pill { display: none; }
+.grid-slot { list-style: none; min-width: 0; }
+.item-grid {
+  display: block; --card-border: var(--inst-border); --pill-text: var(--inst-accent);
+  border: 2px solid var(--inst-border); border-radius: 12px; background: var(--card-bg); padding: 10px 12px;
+}
+.grid-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 8px; font-size: 0.8rem; }
+.grid-tools label { display: flex; align-items: center; gap: 4px; color: var(--text-muted); }
+.grid-tools input { font: inherit; width: 5rem; border: 1px solid var(--card-border); border-radius: 6px; padding: 3px 6px; background: var(--card-bg); color: var(--text-main); }
+.grid-tools .grid-add-inventory { width: 8rem; }
+.grid-tools button { font: inherit; border: 1px solid var(--card-border); border-radius: 6px; padding: 4px 10px; background: transparent; color: var(--text-main); cursor: pointer; }
+.grid-tools .grid-save { border: 0; background: var(--inst-accent); color: #fff; font-weight: 700; }
+.grid-title { font-size: 0.85rem; }
+.grid-spacer { flex: 1; }
+.item-grid .grid-alert, .item-grid .form-discard { margin: 0 0 8px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--card-border); font-size: 0.85rem; }
+.item-grid .form-discard { display: flex; gap: 10px; align-items: center; border-color: var(--elzevir-color-signal-out); background: var(--elzevir-color-out-bg); color: var(--elzevir-color-out-text); }
+.item-grid .form-discard[hidden], .item-grid .grid-alert[hidden] { display: none; }
+.item-grid .form-discard button { font: inherit; border-radius: 6px; padding: 3px 10px; cursor: pointer; border: 1px solid currentColor; background: transparent; color: inherit; }
+.grid-scroll { overflow-x: auto; max-height: 60vh; overflow-y: auto; }
+.item-grid table { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
+.item-grid th { position: sticky; top: 0; background: var(--card-bg); text-align: left; font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); padding: 4px 6px; border-bottom: 1px solid var(--card-border); white-space: nowrap; }
+.item-grid td { border-bottom: 1px solid var(--elzevir-color-border); padding: 4px 6px; min-width: 4.5rem; height: 1.6rem; white-space: nowrap; }
+.item-grid td[role=gridcell]:focus { outline: 2px solid var(--inst-accent); outline-offset: -2px; }
+.item-grid td.editing { padding: 0; }
+.item-grid td.editing input { font: inherit; width: 100%; box-sizing: border-box; border: 2px solid var(--inst-accent); padding: 3px 5px; background: var(--card-bg); color: var(--text-main); }
+.item-grid td.invalid { background: var(--elzevir-color-out-bg); color: var(--elzevir-color-out-text); box-shadow: inset 0 0 0 1px var(--elzevir-color-signal-out); }
+.item-grid tr.invalid td { background: var(--elzevir-color-out-bg); }
+.item-grid tr.row-new td:first-child, .item-grid tr.row-changed td:first-child { box-shadow: inset 3px 0 0 var(--elzevir-color-work); }
+.item-grid tr.row-new { background: color-mix(in srgb, var(--elzevir-color-work-bg) 60%, transparent); }
+.item-grid .grid-signal { min-width: 0; width: 1.2rem; }
+.item-grid .grid-signal::before { content: ""; display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--signal-border, var(--elzevir-color-border)); }
+.item-grid .grid-signal-head { width: 1.2rem; }
+.item-grid .grid-keys { margin: 6px 0 0; font-size: 0.72rem; color: var(--text-muted); }

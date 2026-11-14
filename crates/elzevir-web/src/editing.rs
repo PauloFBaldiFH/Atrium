@@ -15,6 +15,7 @@ use elzevir_app::catalog::{
 use elzevir_app::editing::{
     Edit, EditFailed, FieldError, validate_instance_changes, validate_work_changes,
 };
+use elzevir_app::items::RowRefusal;
 use elzevir_app::listing::{FamilyCursor, FamilyHead, sort_key};
 use elzevir_app::staff::Permission;
 use elzevir_app::suggestions::{AuthoritySuggestions, SUGGESTION_LIMIT, lookup_prefix};
@@ -75,6 +76,47 @@ fn family_page(title: &str, work: WorkId) -> String {
         url_encode(&before.token()),
         work.0
     )
+}
+
+/// The answer to a saved batch of Items (docs/specs/catalogo/exemplares.md, item 14).
+#[derive(Serialize)]
+struct SavedItems {
+    version: i64,
+    ids: Vec<i64>,
+}
+
+/// One refused cell of a batch of Items, with its message in the interface language.
+#[derive(Serialize)]
+struct CellMessage {
+    row: usize,
+    field: &'static str,
+    key: &'static str,
+    message: String,
+}
+
+/// The answer to a batch of Items with refused cells.
+#[derive(Serialize)]
+struct InvalidCells {
+    errors: Vec<CellMessage>,
+}
+
+/// 422 with every refused cell of a batch of Items (exemplares.md, item 14).
+pub(crate) fn invalid_cells(state: &AppState, refusals: &[RowRefusal]) -> Response {
+    let t = &state.inner.i18n;
+    let errors = refusals
+        .iter()
+        .map(|refusal| CellMessage {
+            row: refusal.row,
+            field: refusal.column.name(),
+            key: refusal.problem.message_key(),
+            message: t.get(refusal.problem.message_key()),
+        })
+        .collect();
+    (
+        StatusCode::UNPROCESSABLE_ENTITY,
+        Json(InvalidCells { errors }),
+    )
+        .into_response()
 }
 
 /// The answer to a stale edit: the version stored now.
@@ -190,6 +232,13 @@ pub(crate) async fn apply(state: &AppState, session: &ActiveSession, edit: Edit)
             }),
         )
             .into_response(),
+        Ok(Ok(CatalogOutput::ItemsSaved {
+            row_version, items, ..
+        })) => Json(SavedItems {
+            version: row_version,
+            ids: items.into_iter().map(|item| item.0).collect(),
+        })
+        .into_response(),
         Ok(Ok(CatalogOutput::InstanceAdded { instance, .. })) => (
             StatusCode::CREATED,
             Json(Created {
@@ -201,6 +250,9 @@ pub(crate) async fn apply(state: &AppState, session: &ActiveSession, edit: Edit)
         Ok(Ok(_)) => (StatusCode::INTERNAL_SERVER_ERROR, "unexpected answer").into_response(),
         Ok(Err(EditFailed::Refused(CatalogRefusal::Stale { current, .. }))) => {
             (StatusCode::CONFLICT, Json(Conflict { current })).into_response()
+        }
+        Ok(Err(EditFailed::Refused(CatalogRefusal::ItemRows(refusals)))) => {
+            invalid_cells(state, &refusals)
         }
         Ok(Err(EditFailed::Refused(
             CatalogRefusal::UnknownWork(_) | CatalogRefusal::UnknownInstance(_),

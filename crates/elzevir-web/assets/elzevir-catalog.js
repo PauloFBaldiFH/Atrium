@@ -265,6 +265,7 @@ function focusLevel(card) {
     askDiscard(pending);
     return;
   }
+  closeItemGrids(grid);
   clearLevel(grid);
   if (!again) {
     grid.dataset.focus = card.dataset.level;
@@ -326,7 +327,7 @@ function follow(grid) {
 
 document.addEventListener("click", (event) => {
   const target = event.target;
-  if (!(target instanceof Element) || target.closest("a, button, summary, details.export-menu, input, select, textarea, .all-fields, .record-form")) return;
+  if (!(target instanceof Element) || target.closest("a, button, summary, details.export-menu, input, select, textarea, .all-fields, .record-form, elz-item-grid")) return;
   const card = target.closest(".family-grid .card[data-level]");
   if (card) focusLevel(card);
 });
@@ -418,7 +419,10 @@ document.addEventListener("keydown", (event) => {
       return;
     }
     const grid = open.querySelector(".family-grid");
-    if (grid) clearLevel(grid);
+    if (grid) {
+      closeItemGrids(grid);
+      clearLevel(grid);
+    }
     open.open = false;
     open.querySelector(":scope > summary")?.focus();
     return;
@@ -532,8 +536,9 @@ function createBody(form) {
 
 const dirty = (form) => changes(form).length > 0;
 
+// A form or an item grid with something not sent yet.
 function dirtyForm(scope) {
-  return [...scope.querySelectorAll(".record-form")].find(dirty) ?? null;
+  return [...scope.querySelectorAll(".record-form, elz-item-grid")].find((editor) => (editor.localName === "elz-item-grid" ? editor.dirty : dirty(editor))) ?? null;
 }
 
 function askDiscard(form) {
@@ -541,7 +546,7 @@ function askDiscard(form) {
   if (!prompt) return;
   prompt.hidden = false;
   form.closest(".card")?.scrollIntoView({ block: "nearest" });
-  prompt.querySelector('[data-action="keep"]')?.focus();
+  prompt.querySelector('[data-action="keep"], [data-grid="keep"]')?.focus();
 }
 
 function startForm(card) {
@@ -767,9 +772,10 @@ document.addEventListener("click", (event) => {
   const action = target.closest("[data-action]");
   const form = target.closest(".record-form");
   if (action && !form) {
+    if (action.dataset.action === "edit-items" && action.dataset.from) openItemGrid(action);
     if (action.dataset.action === "new-family") newFamily();
     else if (action.dataset.action === "new-instance" && action.dataset.from) newInstance(action.dataset.from);
-    if (action.dataset.action.startsWith("new-")) return;
+    if (action.dataset.action.startsWith("new-") || action.dataset.action === "edit-items") return;
   }
   if (action && form) {
     const fieldset = action.closest("fieldset");
@@ -983,3 +989,466 @@ document.addEventListener("keydown", (event) => {
     event.preventDefault();
   }
 }, true);
+
+// The grid of an Instance's Items (exemplares.md, items 17 to 28): a spreadsheet in the
+// Items column, saved as one batch. The server writes the rows; this element edits them
+// and sends the new and changed ones.
+function nextInventory(start, step) {
+  // The last number of the text grows, keeping its zeros: 2026/0009 + 1 = 2026/0010.
+  const match = /(\d+)(?!.*\d)/.exec(start);
+  if (!match) return start;
+  const grown = String(Number(match[1]) + step).padStart(match[1].length, "0");
+  return start.slice(0, match.index) + grown + start.slice(match.index + match[1].length);
+}
+
+class ItemGridElement extends HTMLElement {
+  connectedCallback() {
+    if (this.ready) return;
+    this.ready = true;
+    const template = this.querySelector("template.grid-columns");
+    this.columns = [...(template?.content.children ?? [])].map((marker) => ({
+      name: marker.dataset.col,
+      list: marker.dataset.list,
+      inherited: marker.hasAttribute("data-inherited"),
+    }));
+    this.body = this.querySelector("tbody");
+    for (const cell of this.querySelectorAll("tbody td[role=gridcell]")) cell.dataset.orig = cell.textContent;
+    this.saved = false;
+    this.addEventListener("keydown", (event) => this.key(event));
+    this.addEventListener("click", (event) => this.click(event));
+    this.addEventListener("dblclick", (event) => {
+      const cell = event.target instanceof Element ? event.target.closest("td[role=gridcell]") : null;
+      if (cell && !this.input) this.edit(cell);
+    });
+    const first = this.querySelector("tbody td[role=gridcell]");
+    if (first) first.tabIndex = 0;
+    else this.addRows(1);
+  }
+
+  cells(row) {
+    return [...row.querySelectorAll("td[role=gridcell]")];
+  }
+
+  get active() {
+    return this.querySelector("tbody td[role=gridcell][tabindex='0']") ?? this.querySelector("tbody td[role=gridcell]");
+  }
+
+  get dirty() {
+    return Boolean(this.querySelector("tr.row-new, tr.row-changed")) || (this.input !== undefined && this.input.value !== this.input.dataset.before);
+  }
+
+  place(cell) {
+    for (const other of this.querySelectorAll("tbody td[tabindex='0']")) other.tabIndex = -1;
+    cell.tabIndex = 0;
+    cell.focus();
+  }
+
+  at(cell) {
+    const row = cell.parentElement;
+    return { row, rows: [...this.body.rows], column: this.cells(row).indexOf(cell) };
+  }
+
+  move(cell, down, right) {
+    const { row, rows, column } = this.at(cell);
+    const target = rows[Math.min(Math.max(rows.indexOf(row) + down, 0), rows.length - 1)];
+    const cells = this.cells(target);
+    this.place(cells[Math.min(Math.max(column + right, 0), cells.length - 1)]);
+  }
+
+  edit(cell, typed) {
+    const column = this.columns[this.at(cell).column];
+    const input = document.createElement("input");
+    input.type = "text";
+    input.maxLength = 256;
+    input.dataset.before = cell.textContent;
+    input.value = typed ?? cell.textContent;
+    input.setAttribute("aria-label", this.querySelector(`th[data-col="${column?.name}"]`)?.textContent ?? "");
+    if (column?.list) input.setAttribute("list", `grid-list-${column.list}`);
+    cell.textContent = "";
+    cell.classList.add("editing");
+    cell.append(input);
+    this.input = input;
+    input.focus();
+    if (typed === undefined) input.select();
+  }
+
+  commit() {
+    const input = this.input;
+    if (!input) return null;
+    const cell = input.parentElement;
+    this.input = undefined;
+    input.remove();
+    cell.textContent = input.value.trim();
+    cell.classList.remove("editing");
+    if (cell.textContent) delete cell.parentElement.dataset.auto;
+    this.mark(cell.parentElement);
+    return cell;
+  }
+
+  cancel() {
+    const input = this.input;
+    if (!input) return null;
+    const cell = input.parentElement;
+    this.input = undefined;
+    input.remove();
+    cell.textContent = input.dataset.before ?? "";
+    cell.classList.remove("editing");
+    return cell;
+  }
+
+  mark(row) {
+    if (!row.dataset.id) {
+      row.classList.add("row-new");
+      return;
+    }
+    row.classList.toggle("row-changed", this.cells(row).some((cell) => cell.textContent !== cell.dataset.orig));
+  }
+
+  // A new row copies the inherited columns of `from` (item 19).
+  newRow(from) {
+    const row = document.createElement("tr");
+    row.className = "row-new";
+    const signal = document.createElement("td");
+    signal.className = "grid-signal";
+    row.append(signal);
+    const above = from ? this.cells(from) : [];
+    this.columns.forEach((column, index) => {
+      const cell = document.createElement("td");
+      cell.setAttribute("role", "gridcell");
+      cell.tabIndex = -1;
+      cell.textContent = column.inherited ? (above[index]?.textContent ?? "") : "";
+      row.append(cell);
+    });
+    this.body.append(row);
+    return row;
+  }
+
+  addRows(count, start, step) {
+    let last = this.body.rows[this.body.rows.length - 1] ?? null;
+    let first = null;
+    const inventory = this.columns.findIndex((column) => column.name === "inventory_number");
+    for (let index = 0; index < count; index += 1) {
+      last = this.newRow(last);
+      if (start && inventory >= 0) this.cells(last)[inventory].textContent = nextInventory(start, index * step);
+      first ??= last;
+    }
+    if (first) this.place(this.cells(first)[0]);
+  }
+
+  key(event) {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    // The tools (rows to add, first inventory number) are ordinary fields.
+    if (target.closest(".grid-tools") && !(event.key === "Enter" && (event.ctrlKey || event.metaKey))) {
+      if (event.key === "Escape") this.close();
+      event.stopPropagation();
+      return;
+    }
+    const cell = target.closest("td[role=gridcell]") ?? this.active;
+    if (!cell) return;
+    event.stopPropagation(); // the listing's own keys stay out of the grid
+    const ctrl = event.ctrlKey || event.metaKey;
+    if (ctrl && event.key === "Enter") {
+      event.preventDefault();
+      this.commit();
+      this.save();
+      return;
+    }
+    if (ctrl && event.key.toLowerCase() === "d") {
+      // Copy the cell above (item 21).
+      event.preventDefault();
+      const { row, rows, column } = this.at(this.input?.parentElement ?? cell);
+      const above = rows[rows.indexOf(row) - 1];
+      const value = above ? this.cells(above)[column].textContent : "";
+      if (this.input) this.input.value = value;
+      else {
+        cell.textContent = value;
+        this.mark(row);
+      }
+      return;
+    }
+    if (this.input) {
+      this.editing(event);
+      return;
+    }
+    switch (event.key) {
+      case "ArrowUp":
+      case "ArrowDown":
+      case "ArrowLeft":
+      case "ArrowRight": {
+        event.preventDefault();
+        const [down, right] = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[event.key];
+        this.move(cell, down, right);
+        return;
+      }
+      case "Tab":
+        event.preventDefault();
+        this.move(cell, 0, event.shiftKey ? -1 : 1);
+        return;
+      case "Enter":
+      case "F2":
+        event.preventDefault();
+        this.edit(cell);
+        return;
+      case "Escape":
+        event.preventDefault();
+        this.close();
+        return;
+      case "Delete":
+      case "Backspace":
+        event.preventDefault();
+        cell.textContent = "";
+        this.mark(cell.parentElement);
+        return;
+      default:
+        if (event.key.length === 1 && !ctrl && !event.altKey) {
+          // Typing (or a scanner) starts editing with that character.
+          event.preventDefault();
+          this.edit(cell, event.key);
+        }
+    }
+  }
+
+  editing(event) {
+    switch (event.key) {
+      case "Enter": {
+        // Enter confirms and goes down; a barcode on the last row adds a row (item 19).
+        event.preventDefault();
+        const cell = this.commit();
+        const { row, rows, column } = this.at(cell);
+        const last = rows.indexOf(row) === rows.length - 1;
+        if (last && this.columns[column]?.name === "barcode" && cell.textContent) {
+          const next = this.newRow(row);
+          // Waiting for the next scan: left untouched, it is not an Item.
+          next.dataset.auto = "";
+          const target = this.cells(next)[column];
+          this.place(target);
+          this.edit(target, "");
+        } else {
+          this.move(cell, 1, 0);
+        }
+        return;
+      }
+      case "Escape": {
+        event.preventDefault();
+        const cell = this.cancel();
+        const row = cell.parentElement;
+        // Esc after the last scan drops the row that waited for another one.
+        if (row.hasAttribute("data-auto") && row.previousElementSibling) {
+          const { column } = this.at(cell);
+          const previous = row.previousElementSibling;
+          row.remove();
+          this.place(this.cells(previous)[column]);
+          return;
+        }
+        this.place(cell);
+        return;
+      }
+      case "Tab": {
+        event.preventDefault();
+        this.move(this.commit(), 0, event.shiftKey ? -1 : 1);
+        return;
+      }
+      case "ArrowUp":
+      case "ArrowDown": {
+        event.preventDefault();
+        this.move(this.commit(), event.key === "ArrowUp" ? -1 : 1, 0);
+        return;
+      }
+      default:
+    }
+  }
+
+  click(event) {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const action = target.closest("[data-grid]")?.dataset.grid;
+    if (action === "save") {
+      this.commit();
+      this.save();
+    } else if (action === "add") {
+      this.commit();
+      const count = Math.min(Math.max(Number(this.querySelector(".grid-add-count")?.value) || 1, 1), 500);
+      const start = this.querySelector(".grid-add-inventory")?.value.trim() ?? "";
+      const step = Math.max(Number(this.querySelector(".grid-add-step")?.value) || 1, 1);
+      this.addRows(count, start, step);
+    } else if (action === "close") {
+      this.close();
+    } else if (action === "discard") {
+      this.finish();
+    } else if (action === "keep") {
+      this.querySelector(".form-discard").hidden = true;
+      this.active?.focus();
+    } else {
+      const cell = target.closest("td[role=gridcell]");
+      if (cell && cell !== this.input?.parentElement) {
+        this.commit();
+        this.place(cell);
+      }
+    }
+  }
+
+  close() {
+    this.commit();
+    if (this.dirty) {
+      askDiscard(this);
+      return;
+    }
+    this.finish();
+  }
+
+  finish() {
+    this.dispatchEvent(new CustomEvent("grid-close", { bubbles: true }));
+  }
+
+  alert(text) {
+    const alert = this.querySelector(".grid-alert");
+    if (!alert) return;
+    alert.textContent = text;
+    alert.hidden = false;
+  }
+
+  async save() {
+    // A row still waiting for a scan is not sent.
+    for (const row of this.body.querySelectorAll("tr[data-auto]")) {
+      if (row.previousElementSibling) row.remove();
+    }
+    const sent = [...this.body.rows].filter((row) => row.classList.contains("row-new") || row.classList.contains("row-changed"));
+    for (const cell of this.querySelectorAll("td.invalid")) {
+      cell.classList.remove("invalid");
+      cell.removeAttribute("title");
+      cell.removeAttribute("aria-invalid");
+    }
+    for (const row of this.querySelectorAll("tr.invalid")) row.classList.remove("invalid");
+    this.querySelector(".grid-alert").hidden = true;
+    if (sent.length === 0) return;
+    const rows = sent.map((row) => {
+      const object = { id: row.dataset.id ? Number(row.dataset.id) : null };
+      this.cells(row).forEach((cell, index) => {
+        object[this.columns[index].name] = cell.textContent;
+      });
+      return object;
+    });
+    const token = document.querySelector(".catalog")?.dataset.csrf ?? "";
+    let response;
+    try {
+      response = await fetch(this.dataset.endpoint, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "X-Elzevir-Csrf": token },
+        body: JSON.stringify({ version: Number(this.dataset.version), rows }),
+      });
+    } catch {
+      this.alert(this.dataset.failed);
+      return;
+    }
+    if (response.ok) {
+      const answer = await response.json();
+      this.dataset.version = String(answer.version);
+      sent.forEach((row, index) => {
+        row.dataset.id = String(answer.ids[index]);
+        row.classList.remove("row-new", "row-changed");
+        for (const cell of this.cells(row)) cell.dataset.orig = cell.textContent;
+      });
+      this.saved = true;
+      this.alert(this.dataset.saved);
+      return;
+    }
+    if (response.status === 409) {
+      this.alert(this.dataset.stale);
+      return;
+    }
+    const answer = response.status === 422 ? await response.json().catch(() => null) : null;
+    if (!answer?.errors) {
+      this.alert(this.dataset.failed);
+      return;
+    }
+    // Each refusal names its row in the batch and its column (item 23).
+    for (const error of answer.errors) {
+      const row = sent[error.row];
+      if (!row) continue;
+      const index = this.columns.findIndex((column) => column.name === error.field);
+      const cell = index >= 0 ? this.cells(row)[index] : null;
+      if (!cell) {
+        row.classList.add("invalid");
+        row.title = error.message;
+        continue;
+      }
+      cell.classList.add("invalid");
+      cell.title = error.message;
+      cell.setAttribute("aria-invalid", "true");
+    }
+    this.alert(this.dataset.refused);
+    const first = this.querySelector("td.invalid");
+    if (first) this.place(first);
+  }
+}
+
+customElements.define("elz-item-grid", ItemGridElement);
+
+function closeItemGrids(scope) {
+  for (const slot of scope.querySelectorAll(".grid-slot")) {
+    slot.closest(".items-stack")?.classList.remove("editing");
+    slot.remove();
+  }
+}
+
+// "Edit items" on a focused Instance opens its grid in the Items column, which takes the
+// width while the Instance stays a glance at its left (item 17).
+async function openItemGrid(button) {
+  const instance = button.closest(".card-instance");
+  const grid = button.closest(".family-grid");
+  const stack = instance?.nextElementSibling;
+  if (!instance || !grid || !stack?.classList.contains("items-stack")) return;
+  const pending = dirtyForm(grid);
+  if (pending) return askDiscard(pending);
+  let html;
+  try {
+    const response = await fetch(`/equipe/acervo/instancia/${encodeURIComponent(button.dataset.from)}/exemplares`, { credentials: "same-origin", headers: { Accept: "text/html" } });
+    if (!response.ok) return;
+    html = await response.text();
+  } catch {
+    return; // nothing opened; the button tries again
+  }
+  closeItemGrids(grid);
+  clearLevel(grid);
+  grid.dataset.focus = "items";
+  for (const other of grid.querySelectorAll('.card[data-level="instance"]')) {
+    if (other === instance) continue;
+    other.classList.add("dimmed");
+    other.inert = true;
+  }
+  for (const other of grid.querySelectorAll(".items-stack")) {
+    if (other === stack) continue;
+    other.classList.add("dimmed");
+    other.inert = true;
+  }
+  const slot = document.createElement("li");
+  slot.className = "grid-slot";
+  slot.dataset.parent = instance.dataset.node;
+  // Server-rendered by Askama, which escapes every value.
+  slot.innerHTML = html;
+  stack.classList.add("editing");
+  stack.append(slot);
+  layout(grid);
+  follow(grid);
+  trail(grid.closest(".family-focus"));
+  slot.querySelector("elz-item-grid")?.active?.focus();
+}
+
+document.addEventListener("grid-close", (event) => {
+  const element = event.target;
+  if (!(element instanceof HTMLElement)) return;
+  const grid = element.closest(".family-grid");
+  const instance = grid?.querySelector(`[data-node="${element.closest(".grid-slot")?.dataset.parent}"]`);
+  if (element.saved) {
+    // The pills show the saved Items after the family is read again (item 24).
+    location.reload();
+    return;
+  }
+  if (!grid) return;
+  closeItemGrids(grid);
+  clearLevel(grid);
+  follow(grid);
+  if (instance instanceof HTMLElement) instance.focus();
+});

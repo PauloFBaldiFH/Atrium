@@ -81,7 +81,7 @@ fn status(field: DataField<'_>) -> ItemStatus {
 }
 
 /// `45.90`, `45,90` or `45` → cents; anything else (`doação`) → `None` (spec §4, case 4).
-fn cents(price: &str) -> Option<Money> {
+pub(crate) fn cents(price: &str) -> Option<Money> {
     let price = price.replace(',', ".");
     let (whole, fraction) = price.split_once('.').unwrap_or((&price, ""));
     if whole.is_empty() || !whole.bytes().all(|b| b.is_ascii_digit()) {

@@ -156,6 +156,7 @@ impl elzevir_app::editing::CatalogEditor for Editor {
         let read = match &edit {
             Edit::Work(update) => update.row_version,
             Edit::Instance(update) => update.row_version,
+            Edit::Items(update) => update.row_version,
             Edit::NewInstance(new) if new.work.0 == 404 => {
                 return Err(EditFailed::Refused(CatalogRefusal::UnknownWork(new.work)));
             }
@@ -180,6 +181,14 @@ impl elzevir_app::editing::CatalogEditor for Editor {
                 work: WorkId(900),
                 instance: InstanceId(901),
                 items: Vec::new(),
+            },
+            Edit::Items(update) => CatalogOutput::ItemsSaved {
+                instance: update.instance,
+                row_version: 2,
+                items: (500..)
+                    .zip(&update.rows)
+                    .map(|(new, row)| row.id.unwrap_or(elzevir_domain::catalog::ItemId(new)))
+                    .collect(),
             },
             Edit::NewInstance(new) => CatalogOutput::InstanceAdded {
                 work: new.work,
@@ -226,5 +235,42 @@ impl elzevir_app::suggestions::AuthoritySuggestions for Suggestions {
                 thesaurus: Some("larpcal".to_owned()),
             })
             .collect())
+    }
+}
+
+/// The grid of Instance 10: one Item, and the codes the cells choose from.
+pub(crate) struct ItemGrid;
+
+impl elzevir_app::items::ItemGridSource for ItemGrid {
+    fn grid_items(
+        &self,
+        instance: InstanceId,
+    ) -> Result<Vec<elzevir_app::items::GridItem>, CatalogReadError> {
+        if instance != InstanceId(10) {
+            return Ok(Vec::new());
+        }
+        Ok(vec![elzevir_app::items::GridItem {
+            id: elzevir_domain::catalog::ItemId(3),
+            fields: elzevir_app::items::ItemFields {
+                barcode: Some("000123".to_owned()),
+                inventory_number: Some("T-77".to_owned()),
+                home_branch: "MAIN".to_owned(),
+                holding_branch: "MAIN".to_owned(),
+                item_type: "BK".to_owned(),
+                call_number: Some("869.3 A848d".to_owned()),
+                price: Some(elzevir_domain::catalog::Money(4590)),
+                ..elzevir_app::items::ItemFields::default()
+            },
+            status: ItemStatus::default(),
+        }])
+    }
+
+    fn code_lists(&self) -> Result<elzevir_app::items::CodeLists, CatalogReadError> {
+        Ok(elzevir_app::items::CodeLists {
+            branches: vec!["MAIN".to_owned(), "PAL".to_owned()],
+            item_types: vec!["BK".to_owned()],
+            locations: vec!["GEN".to_owned()],
+            collections: Vec::new(),
+        })
     }
 }

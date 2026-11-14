@@ -6,7 +6,7 @@
 
 mod export;
 mod instance;
-mod items;
+pub(crate) mod items;
 mod text;
 mod work;
 

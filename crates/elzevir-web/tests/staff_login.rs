@@ -71,6 +71,7 @@ fn app() -> Router {
             records: Arc::new(common::Records(Vec::new())),
             editor: Arc::new(common::Editor::default()),
             suggestions: Arc::new(common::Suggestions),
+            items: Arc::new(common::ItemGrid),
         },
         I18n::english().unwrap(),
         config,

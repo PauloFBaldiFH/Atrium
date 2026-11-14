@@ -100,6 +100,7 @@
         <article class="card card-instance{% if instance.found %} found{% endif %}" data-level="instance" tabindex="0" data-node="i{{ instance.id }}" data-fields="/equipe/acervo/instancia/{{ instance.id }}/campos?level=instance"
                  data-parent="w{{ work.id }}" data-cord-label="{{ t.get("staff-cord-edition") }}">
           <div class="card-top"><span class="entity-pill">{{ t.get("staff-badge-instance") }}{% if let Some(edition) = instance.edition %} • {{ edition }}{% endif %}</span>
+            {% if can_catalogue %}<button type="button" class="card-add" data-action="edit-items" data-from="{{ instance.id }}" title="{{ t.get("items-edit") }}">{{ t.get("items-edit") }}</button>{% endif %}
             <details class="export-menu">
               <summary>{{ t.get("staff-export") }}</summary>
               <ul>
