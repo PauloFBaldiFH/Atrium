@@ -25,6 +25,7 @@
 17. [Estações de captura no bloco: Z39.50/SRU e IA](#17-estações-de-captura-no-bloco-z3950sru-e-ia)
 18. [Muro Acervo ↔ Leitores e empréstimo](#18-muro-acervo--leitores-e-empréstimo)
 19. [Decisões do esboço v9](#19-decisões-do-esboço-v9)
+20. [Mecânicas pelo olhar do catalogador](#20-mecânicas-pelo-olhar-do-catalogador)
 
 ## 1. Princípios
 
@@ -473,3 +474,30 @@ Aprovadas por Paulo em 2026-11-13, a partir da análise do esboço `elzevir-esbo
 10. **Ficha do leitor**: CPF mascarado, sem perfil de leitura, histórico só com consentimento (§18.4).
 11. **`Esc` em camadas**: fecha o passageiro primeiro e depois volta direto à visão geral; edição pendente nunca é descartada em silêncio (§3).
 12. **Desempenho**: animação só na família focada, autocomplete pelo índice, cordinhas só dentro da família com contagem para autoridades muito ligadas, sem JS inline (§11).
+
+## 20. Mecânicas pelo olhar do catalogador
+
+Aprovadas por Paulo em 2026-11-14, com o rascunho `elzevir-rascunho-v10.html` como referência visual. Valem sobre o que estiver em conflito nas seções anteriores. O critério é o trabalho do dia a dia, nesta ordem de frequência: acrescentar exemplar a uma Instância que já existe, catalogar nova edição de uma Obra que já existe e, por último, criar um registro novo.
+
+1. **Um campo para tudo.** A busca da barra aceita bipe de ISBN, código de barras ou texto e decide sozinha: código de barras conhecido abre a grade daquele exemplar; ISBN conhecido abre a grade da Instância; ISBN desconhecido abre "+ Nova" já com o rascunho (§6.3); o resto é busca. A regra fica no servidor, numa função só.
+2. **Lista compacta, blocos no foco.** Fora do foco, cada família é uma linha compacta (título, contribuidor principal, classificação, edições e exemplares com o sinal), de modo que caibam umas 15 por tela. A família focada abre os blocos com cordas (§2, §3). A grade de cinco trilhas e as cordas valem só para a família focada.
+3. **Cordas para entender, teclado para ligar.** Ligar agente, assunto, Hub ou série é digitar no campo com autocompletar (§4.1 item 6). Arrastar fica só para mover exemplar e mesclar (§7), sempre com "Desfazer".
+4. **O bloco é a unidade de salvar.** Não existe "salvar registro". Cada bloco salva sozinho com `row_version` (§9). Depois de salvar aparece um aviso com "Desfazer", que grava os valores anteriores como uma nova versão. Diálogo de confirmação só na mesclagem (§7.2).
+5. **Hub sugerido, não exigido.** Ninguém cria Hub ao catalogar. Quando uma segunda Obra recebe o mesmo título uniforme de outra, o bloco sugere "Agrupar num Hub", e aceitar cria o Hub e as duas ligações num comando.
+6. **Autoridades como chips fora do foco.** Na linha compacta, autor e assuntos são chips dentro da Obra. Os cartões de autoridade e as cordas tracejadas aparecem só na família focada.
+7. **Catalogação em série herda o anterior.** No `Ctrl+N` (§6.2), editora, local, ano, idioma e assuntos vêm do registro anterior, marcados como "herdado" até serem confirmados ou trocados.
+8. **Listas de trabalho e facetas numa faixa horizontal.** Logo abaixo da busca, uma faixa compacta tem os filtros salvos ("todo o acervo", "meus recentes", "incompletos para o perfil", "importados hoje", "em quarentena") como botões segmentados, as facetas (material, unidade, idioma, ano) como menus com contagem, os filtros ativos como chips removíveis e a ordem. Não há barra lateral: a largura inteira fica para os blocos. O catalogador trabalha em lote.
+12. **Largura das colunas.** Obra e Instância são as colunas mais largas, porque têm os campos que o catalogador lê; Autoridades e Hub são as mais estreitas (proporção de referência 0,8 : 0,7 : 1,55 : 1,7 : 1,35). Ocultar uma coluna devolve a largura dela às outras.
+9. **Validar sem travar.** Campo opcional vazio nunca impede salvar. Faltar campo obrigatório do perfil marca o registro como "incompleto", que entra na lista de trabalho; só o mínimo para existir (título da Obra, título da Instância, tipo de material) é recusa no comando.
+10. **Todos os campos BIBFRAME.** O bloco focado tem "Todos os campos", que mostra, além do perfil da categoria (§4.2), todas as propriedades que o modelo guarda para aquela entidade, agrupadas (títulos variantes, identificadores, notas, relações, papéis, datas, público), ainda sem etiqueta MARC. Propriedade do BIBFRAME que o modelo não guarda entra pela lista de lacunas (§10), com migração e mapeamento antes da tela.
+11. **Exportar o registro.** O bloco focado da Instância exporta o registro em MARC21 (ISO 2709) e MARCXML, pela mesma `bibframe_to_marc` da exportação em lote, e em BIBFRAME 2.0 RDF/XML, no vocabulário da Library of Congress. Formatos de citação e intercâmbio (RIS, BibTeX, MODS, Dublin Core) vêm com a interoperabilidade (Fase 4). A seleção de várias famílias exporta em lote no mesmo formato.
+
+| Mecânica | Tarefa |
+|---|---|
+| 2, 6 (lista compacta, chips) | 2.4, com o foco 80/20 |
+| 3, 4, 9, 10 (ligar digitando, salvar por bloco com desfazer, incompleto, todos os campos) | 2.5 |
+| 5, 7 (Hub sugerido, herança no `Ctrl+N`) | 2.6 |
+| 1 (um campo para tudo) | 2.7 (código de barras) e 2.8 (ISBN) |
+| 8 (listas de trabalho e facetas na faixa horizontal) | 2.10 (nova) |
+| 12 (largura das colunas) | 2.3 (feito) |
+| 11 (exportar o registro) | MARC21 e MARCXML na 2.4; BIBFRAME RDF/XML na 2.11 (nova); citação e intercâmbio na Fase 4 |

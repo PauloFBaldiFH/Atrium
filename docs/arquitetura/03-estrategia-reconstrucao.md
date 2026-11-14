@@ -354,6 +354,8 @@ A tarefa 1.12 adianta um pedaço da Fase 3 de propósito: ela valida, cedo e de 
 | 2.7 | Onda 1c: grade de exemplares `<elz-item-grid>` e `catalog.save_items` em lote | Spec de UI §5 | 50 exemplares bipados seguidos sem perder leitura; recusa por célula |
 | 2.8 | Onda 1d: rascunho por ISBN da própria base | Spec de UI §6.3; 1.10 | ISBN bipado de livro já existente leva à grade dele |
 | 2.9 | Onda 1e: autoridades básicas (`agent_identifiers`, `catalog.update_agent`, coluna de Autoridades, ligação por papel, aviso de alcance ao renomear) | Spec de UI §16 | Renomear um agente sobe o `row_version` das Instâncias ligadas e aparece no OPAC e no MARC exportado |
+| 2.10 | Listas de trabalho e facetas: filtros salvos ("meus recentes", "incompletos", "importados hoje", "em quarentena") e refino por unidade, tipo de exemplar, material, idioma, assunto e ano | Spec de UI §20 item 8 | Cada lista e faceta conta famílias, não registros, e continua com p95 < 50 ms em 1 milhão de registros |
+| 2.11 | Exportação do registro em BIBFRAME 2.0 RDF/XML (vocabulário da Library of Congress), por registro e por seleção | Spec de UI §20 item 11 | O RDF/XML de 200 registros do oráculo valida contra a ontologia BIBFRAME 2.0 e não perde nenhum campo que o MARC exportado tem |
 
 Fica para depois da Fase 2: Z39.50/SRU (Fase 4), estação de IA, circulação no muro (Fase 3) e a Onda 2 (mesclagem e quarentena pela tela).
 
