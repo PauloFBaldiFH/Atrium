@@ -17,6 +17,7 @@ mod catalog;
 mod config;
 mod digest;
 mod editing;
+mod editor;
 mod effects;
 mod elzevir;
 mod error;
@@ -67,7 +68,17 @@ impl<H: CommandHandler> Store<H> {
     /// [`SubmitError::Busy`] when the queue is full (answer 503 with `Retry-After`), and
     /// [`SubmitError::Closed`] when the writer has stopped. Never blocks.
     pub fn submit(&self, command: H::Command) -> Result<Pending<H>, SubmitError> {
-        self.writer.submit(command)
+        self.writer.submit(None, command)
+    }
+
+    /// Queues `command` on behalf of a staff account, which the audit log records
+    /// (docs/specs/catalogo/edicao.md, item 18).
+    ///
+    /// # Errors
+    ///
+    /// As [`Self::submit`].
+    pub fn submit_as(&self, actor: i64, command: H::Command) -> Result<Pending<H>, SubmitError> {
+        self.writer.submit(Some(actor), command)
     }
 
     /// Queues `command`, waiting while the queue is full. For batch work (an import) that

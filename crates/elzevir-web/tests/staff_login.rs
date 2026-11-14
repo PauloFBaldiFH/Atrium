@@ -69,6 +69,7 @@ fn app() -> Router {
         StaffPorts {
             listing: Arc::new(common::Families::default()),
             records: Arc::new(common::Records(Vec::new())),
+            editor: Arc::new(common::Editor::default()),
         },
         I18n::english().unwrap(),
         config,

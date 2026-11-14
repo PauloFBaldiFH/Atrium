@@ -326,7 +326,7 @@ fn migration_8_computes_the_keys_of_older_databases() {
     connection
         .execute_batch(
             "DROP INDEX works_in_listing; DROP INDEX hubs_in_listing;
-             ALTER TABLE works DROP COLUMN sort_key; ALTER TABLE hubs DROP COLUMN sort_key;
+             ALTER TABLE works DROP COLUMN sort_key; ALTER TABLE hubs DROP COLUMN sort_key; ALTER TABLE audit_log DROP COLUMN actor;
              PRAGMA user_version = 7;",
         )
         .unwrap();

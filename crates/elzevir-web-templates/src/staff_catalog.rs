@@ -11,6 +11,8 @@ use crate::I18n;
 pub struct StaffCatalog<'a> {
     /// Interface texts.
     pub t: &'a I18n,
+    /// The session's CSRF token, which the page's script sends with an edit.
+    pub csrf: &'a str,
     /// The query, empty when browsing.
     pub query: &'a str,
     /// Records found, for a search.

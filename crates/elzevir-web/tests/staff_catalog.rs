@@ -117,7 +117,7 @@ fn stored(instance: i64) -> StoredRecord {
                 extent: Some("256 p.".to_owned()),
                 identifiers: vec![NewIdentifier {
                     kind: IdentifierKind::Isbn,
-                    value: "9788535910663".to_owned(),
+                    value: "9788535910667".to_owned(),
                     qualifier: None,
                 }],
                 notes: vec![NewNote {
@@ -161,12 +161,20 @@ fn hit(n: i64) -> SearchHit {
 }
 
 fn app() -> Router {
-    let accounts = Accounts(vec![StaffAccount {
-        id: StaffId(1),
-        login: "ana".to_owned(),
-        password_hash: hash_password("s3cret").unwrap(),
-        permissions: [Permission::StaffInterface].into(),
-    }]);
+    let accounts = Accounts(vec![
+        StaffAccount {
+            id: StaffId(1),
+            login: "ana".to_owned(),
+            password_hash: hash_password("s3cret").unwrap(),
+            permissions: [Permission::StaffInterface, Permission::Cataloguing].into(),
+        },
+        StaffAccount {
+            id: StaffId(2),
+            login: "bia".to_owned(),
+            password_hash: hash_password("s3cret").unwrap(),
+            permissions: [Permission::StaffInterface].into(),
+        },
+    ]);
     let families: Vec<Family> = (1..=35)
         .map(|n| match n {
             1 => family(1, "Dom Casmurro", true),
@@ -183,6 +191,7 @@ fn app() -> Router {
         StaffPorts {
             listing: Arc::new(common::Families(families)),
             records: Arc::new(common::Records(vec![stored(10)])),
+            editor: Arc::new(common::Editor::default()),
         },
         I18n::english().unwrap(),
         WebConfig {
@@ -228,6 +237,10 @@ fn set_cookie(response: &Response<Body>, name: &str) -> String {
 }
 
 async fn signed_in(app: &Router) -> String {
+    signed_in_as(app, "ana").await
+}
+
+async fn signed_in_as(app: &Router, login: &str) -> String {
     let form = send(app, get("/equipe/login", None, None)).await;
     let login_cookie = set_cookie(&form, "elzevir_login_csrf");
     let html = body(form).await;
@@ -240,7 +253,9 @@ async fn signed_in(app: &Router) -> String {
     let request = Request::post("/equipe/login")
         .header(header::COOKIE, login_cookie)
         .header(header::CONTENT_TYPE, "application/x-www-form-urlencoded")
-        .body(Body::from(format!("login=ana&password=s3cret&csrf={csrf}")))
+        .body(Body::from(format!(
+            "login={login}&password=s3cret&csrf={csrf}"
+        )))
         .unwrap();
     let ok = send(app, request).await;
     assert_eq!(ok.status(), StatusCode::SEE_OTHER);
@@ -448,7 +463,7 @@ async fn a_focused_block_loads_every_filled_field() {
     )
     .await;
     assert!(instance.contains("256 p."));
-    assert!(instance.contains("9788535910663"));
+    assert!(instance.contains("9788535910667"));
     assert!(instance.contains("Local note"));
     assert!(instance.contains("Doação da família Silva."));
     assert!(instance.contains("000123"));
@@ -472,4 +487,99 @@ async fn a_focused_block_loads_every_filled_field() {
     )
     .await;
     assert_eq!(unknown.status(), StatusCode::BAD_REQUEST);
+}
+
+/// The CSRF token the catalog page hands to its script.
+async fn page_token(app: &Router, session: &str) -> String {
+    let page = body(send(app, get("/equipe/acervo", Some(session), None)).await).await;
+    page.split(r#"data-csrf=""#)
+        .nth(1)
+        .and_then(|rest| rest.split('"').next())
+        .unwrap()
+        .to_owned()
+}
+
+fn post_json(uri: &str, session: Option<&str>, token: Option<&str>, json: &str) -> Request<Body> {
+    let mut builder = Request::post(uri).header(header::CONTENT_TYPE, "application/json");
+    if let Some(session) = session {
+        builder = builder.header(header::COOKIE, session);
+    }
+    if let Some(token) = token {
+        builder = builder.header("x-elzevir-csrf", token);
+    }
+    builder.body(Body::from(json.to_owned())).unwrap()
+}
+
+#[tokio::test]
+async fn an_edit_needs_a_session_its_token_and_the_cataloguing_permission() {
+    let app = app();
+    let edit = r#"{"version": 1, "changes": [{"Summary": "Novo."}]}"#;
+    let anonymous = send(&app, post_json("/equipe/acervo/obra/1", None, None, edit)).await;
+    assert_eq!(anonymous.status(), StatusCode::UNAUTHORIZED);
+
+    let ana = signed_in(&app).await;
+    let token = page_token(&app, &ana).await;
+    let no_token = send(
+        &app,
+        post_json("/equipe/acervo/obra/1", Some(&ana), None, edit),
+    )
+    .await;
+    assert_eq!(no_token.status(), StatusCode::FORBIDDEN);
+    let wrong = send(
+        &app,
+        post_json("/equipe/acervo/obra/1", Some(&ana), Some("x"), edit),
+    )
+    .await;
+    assert_eq!(wrong.status(), StatusCode::FORBIDDEN);
+
+    let bia = signed_in_as(&app, "bia").await;
+    let bia_token = page_token(&app, &bia).await;
+    let reader = send(
+        &app,
+        post_json("/equipe/acervo/obra/1", Some(&bia), Some(&bia_token), edit),
+    )
+    .await;
+    assert_eq!(reader.status(), StatusCode::FORBIDDEN);
+
+    let accepted = send(
+        &app,
+        post_json("/equipe/acervo/obra/1", Some(&ana), Some(&token), edit),
+    )
+    .await;
+    assert_eq!(accepted.status(), StatusCode::OK);
+    assert_eq!(body(accepted).await, r#"{"version":2}"#);
+}
+
+#[tokio::test]
+async fn an_invalid_or_stale_edit_is_refused_field_by_field() {
+    let app = app();
+    let ana = signed_in(&app).await;
+    let token = page_token(&app, &ana).await;
+    let invalid = send(
+        &app,
+        post_json(
+            "/equipe/acervo/instancia/10",
+            Some(&ana),
+            Some(&token),
+            r#"{"version": 1, "changes": [{"Title": "  "}, {"Identifiers": [{"kind": "isbn", "value": "9788535910668", "qualifier": null}]}]}"#,
+        ),
+    )
+    .await;
+    assert_eq!(invalid.status(), StatusCode::UNPROCESSABLE_ENTITY);
+    let invalid = body(invalid).await;
+    assert!(invalid.contains(r#""field":"title","key":"edit-error-title-empty""#));
+    assert!(invalid.contains("This ISBN is not valid"));
+
+    let stale = send(
+        &app,
+        post_json(
+            "/equipe/acervo/instancia/10",
+            Some(&ana),
+            Some(&token),
+            r#"{"version": 5, "changes": [{"Edition": "2. ed."}]}"#,
+        ),
+    )
+    .await;
+    assert_eq!(stale.status(), StatusCode::CONFLICT);
+    assert_eq!(body(stale).await, r#"{"current":2}"#);
 }

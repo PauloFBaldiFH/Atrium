@@ -307,3 +307,34 @@ fn editing_what_does_not_exist_is_refused() {
         )))
     );
 }
+
+#[test]
+fn an_edit_from_the_screen_records_who_made_it() {
+    use elzevir_app::editing::{CatalogEditor, Edit, EditFailed};
+    use elzevir_app::staff::StaffId;
+
+    let dir = tempfile::tempdir().unwrap();
+    let store = imported(&dir);
+    let first = view(&store, 1);
+    let edit = Edit::Work(WorkUpdate {
+        work: first.work,
+        row_version: first.work_version,
+        changes: vec![WorkChange::Summary(Some("Resumo novo.".to_owned()))],
+    });
+    let output = store.apply(StaffId(7), edit.clone()).unwrap();
+    assert!(matches!(output, CatalogOutput::WorkUpdated { .. }));
+    assert_eq!(
+        count(
+            &store,
+            "SELECT actor FROM audit_log WHERE kind = 'catalog.update_work'"
+        ),
+        7
+    );
+    // Imports have no actor.
+    assert!(count(&store, "SELECT count(*) FROM audit_log WHERE actor IS NULL") > 0);
+    // The same edit again was read at the old version.
+    assert!(matches!(
+        store.apply(StaffId(7), edit),
+        Err(EditFailed::Refused(CatalogRefusal::Stale { .. }))
+    ));
+}

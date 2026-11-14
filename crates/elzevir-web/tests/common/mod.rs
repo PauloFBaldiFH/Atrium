@@ -136,3 +136,43 @@ impl elzevir_app::export::RecordSource for Records {
             .collect())
     }
 }
+
+/// Records edits from the screen. An edit read at version 1 is accepted and moves to 2;
+/// any other version is stale, as if someone else had edited first.
+#[derive(Default)]
+pub(crate) struct Editor(
+    pub(crate) Mutex<Vec<(elzevir_app::staff::StaffId, elzevir_app::editing::Edit)>>,
+);
+
+impl elzevir_app::editing::CatalogEditor for Editor {
+    fn apply(
+        &self,
+        actor: elzevir_app::staff::StaffId,
+        edit: elzevir_app::editing::Edit,
+    ) -> Result<elzevir_app::catalog::CatalogOutput, elzevir_app::editing::EditFailed> {
+        use elzevir_app::catalog::{CatalogOutput, CatalogRefusal};
+        use elzevir_app::editing::{Edit, EditFailed};
+        let read = match &edit {
+            Edit::Work(update) => update.row_version,
+            Edit::Instance(update) => update.row_version,
+        };
+        if read != 1 {
+            return Err(EditFailed::Refused(CatalogRefusal::Stale {
+                read,
+                current: 2,
+            }));
+        }
+        let output = match &edit {
+            Edit::Work(update) => CatalogOutput::WorkUpdated {
+                work: update.work,
+                row_version: 2,
+            },
+            Edit::Instance(update) => CatalogOutput::InstanceUpdated {
+                instance: update.instance,
+                row_version: 2,
+            },
+        };
+        self.0.lock().unwrap().push((actor, edit));
+        Ok(output)
+    }
+}
