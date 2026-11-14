@@ -402,6 +402,7 @@ mod tests {
                 date: None,
                 classification: None,
                 summary: None,
+                audience: None,
                 contributors: Vec::new(),
                 subjects: Vec::new(),
                 identifiers: Vec::new(),

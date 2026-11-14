@@ -45,6 +45,14 @@ pub fn source_notes(source: &[u8]) -> Vec<NewNote> {
         .unwrap_or_default()
 }
 
+/// The target audience (`521$a`) of a stored source record, for records stored before
+/// the model had it.
+#[must_use]
+pub fn source_audience(source: &[u8]) -> Option<String> {
+    let parsed = RecordRef::parse(source, &Limits::default()).ok()?;
+    Marc(&Record::from_ref(&parsed)).first_text(b"521", b'a')
+}
+
 /// Maps one MARC21 record, already in UTF-8, to a Work, its Instance and its Items.
 ///
 /// `source` is the record as it arrived, kept byte for byte in `source_records`.
@@ -68,6 +76,7 @@ pub fn marc_to_bibframe(
         classification: work.classification,
         classification_scheme: work.classification_scheme,
         summary: work.summary,
+        audience: work.audience,
         languages: work.languages,
         contributions: work.contributions,
         subjects: work.subjects,

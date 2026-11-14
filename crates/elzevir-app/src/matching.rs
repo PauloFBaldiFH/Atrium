@@ -209,6 +209,7 @@ mod tests {
             classification: None,
             classification_scheme: None,
             summary: None,
+            audience: None,
             languages: Vec::new(),
             contributions: Vec::new(),
             subjects: Vec::new(),

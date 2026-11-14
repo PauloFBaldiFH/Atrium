@@ -38,6 +38,7 @@ A **Instância** recebe `Digital` quando a Obra não é `Digital` e o registro d
 | título | `130$a`, senão `240$a`, senão `245$a` |
 | classificação e esquema | `082$a` (`ddc`), senão `080$a` (`udc`), senão `050$a` (`lcc`) |
 | resumo | `520$a` |
+| público-alvo | `521$a` |
 | idiomas | cada código de 3 letras em cada `041$a` (o Koha às vezes junta `porfre` num subcampo); sem `041`, `008/35-37` quando não é branco nem `|||` |
 | contribuição principal | `100` (pessoa; família quando o 1º indicador é `3`), `110` (entidade), `111` (evento) |
 | outras contribuições | `700`, `710`, `711`, na ordem |

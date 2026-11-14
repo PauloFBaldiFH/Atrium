@@ -46,6 +46,7 @@ struct Head {
     classification: Option<String>,
     classification_scheme: Option<String>,
     summary: Option<String>,
+    audience: Option<String>,
 }
 
 impl Head {
@@ -67,6 +68,7 @@ impl Head {
             classification: row.get(13)?,
             classification_scheme: row.get(14)?,
             summary: row.get(15)?,
+            audience: row.get(16)?,
         })
     }
 }
@@ -79,7 +81,7 @@ fn records_after(
     let mut statement = c.prepare_cached(
         "SELECT instances.id, works.id, instances.title, instances.material_type, edition,
                 place, publisher, date, extent, series, works.title, works.material_type,
-                works.hub_id, works.classification, terms.code, works.summary
+                works.hub_id, works.classification, terms.code, works.summary, works.audience
          FROM instances
          JOIN works ON works.id = instances.work_id
          LEFT JOIN terms ON terms.id = works.classification_scheme
@@ -116,6 +118,7 @@ fn stored(c: &Connection, head: Head) -> Result<StoredRecord, ReadFailure> {
         classification: head.classification,
         classification_scheme: head.classification_scheme,
         summary: head.summary,
+        audience: head.audience,
         languages: languages(c, head.work)?,
         contributions: contributions(c, head.work)?,
         subjects: subjects(c, head.work)?,

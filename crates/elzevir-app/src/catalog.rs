@@ -130,6 +130,9 @@ pub struct NewRecord {
     pub classification_scheme: Option<String>,
     /// Summary.
     pub summary: Option<String>,
+    /// Target audience, as written (`521`).
+    #[serde(default)]
+    pub audience: Option<String>,
     /// Language codes, in order.
     pub languages: Vec<String>,
     /// Contributors, in order.
@@ -375,6 +378,8 @@ pub struct InstanceView {
     pub classification: Option<String>,
     /// The Work's summary.
     pub summary: Option<String>,
+    /// The Work's target audience.
+    pub audience: Option<String>,
     /// Contributor headings with their kind, in order.
     pub contributors: Vec<(AgentKind, String)>,
     /// Subject headings with their kind, in order.

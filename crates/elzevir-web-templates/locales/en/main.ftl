@@ -51,6 +51,7 @@ opac-record-subjects = Subjects
 opac-record-identifiers = Identifiers
 opac-record-languages = Languages
 opac-record-summary = Summary
+opac-record-audience = Audience
 opac-record-contents = Contents
 opac-record-notes = Notes
 opac-record-items = Copies

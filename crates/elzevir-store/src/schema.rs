@@ -9,7 +9,7 @@
 use std::path::Path;
 use std::time::Duration;
 
-use elzevir_app::marc_mapping::source_notes;
+use elzevir_app::marc_mapping::{source_audience, source_notes};
 use elzevir_app::matching::{identifier_key, koha_biblionumber_key};
 use elzevir_domain::catalog::IdentifierKind;
 use rusqlite::{Connection, OpenFlags, params};
@@ -205,6 +205,8 @@ const MIGRATIONS: &[&str] = &[
          text        TEXT NOT NULL,
          PRIMARY KEY (instance_id, position)
      ) STRICT, WITHOUT ROWID;",
+    // 7: target audience of a Work (MARC21 521), task 2.1.
+    "ALTER TABLE works ADD COLUMN audience TEXT;",
 ];
 
 /// The migration that creates `match_keys`.
@@ -212,6 +214,9 @@ const MATCH_KEYS_VERSION: i64 = 5;
 
 /// The migration that creates `instance_notes`.
 const NOTES_VERSION: i64 = 6;
+
+/// The migration that adds `works.audience`.
+const AUDIENCE_VERSION: i64 = 7;
 
 /// How long a connection waits on a lock before failing. With a single writer this only
 /// covers checkpoints and external tools; it is not part of normal operation.
@@ -266,6 +271,9 @@ fn migrate(connection: &mut Connection) -> Result<(), StoreError> {
             if version == NOTES_VERSION {
                 backfill_notes(&tx)?;
             }
+            if version == AUDIENCE_VERSION {
+                backfill_audience(&tx)?;
+            }
             tx.pragma_update(None, "user_version", version)?;
         }
     }
@@ -311,6 +319,26 @@ fn backfill_notes(connection: &Connection) -> Result<(), StoreError> {
     Ok(())
 }
 
+/// Reads the target audience of every Work already stored when `works.audience` is
+/// added, from the source record of its first Instance, for the same reason as the notes.
+fn backfill_audience(connection: &Connection) -> Result<(), StoreError> {
+    let mut sources = connection.prepare(
+        "SELECT instances.work_id, source_records.record FROM source_records
+         JOIN instances ON instances.id = source_records.instance_id
+         ORDER BY instances.id",
+    )?;
+    let mut update =
+        connection.prepare("UPDATE works SET audience = ?2 WHERE id = ?1 AND audience IS NULL")?;
+    let mut rows = sources.query([])?;
+    while let Some(row) = rows.next()? {
+        let record: Vec<u8> = row.get(1)?;
+        if let Some(audience) = source_audience(&record) {
+            update.execute(params![row.get::<_, i64>(0)?, audience])?;
+        }
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -352,6 +380,48 @@ mod catalog_tests {
     use rusqlite::{Connection, params};
 
     use super::*;
+
+    #[test]
+    fn migrations_6_and_7_read_notes_and_audience_from_the_source_record() {
+        use elzevir_marc::{Field, Record, Subfield, Tag};
+        let field = |tag: &[u8; 3], text: &str| Field::Data {
+            tag: Tag::new(*tag),
+            indicators: *b"  ",
+            subfields: vec![Subfield {
+                code: b'a',
+                value: text.as_bytes().to_vec(),
+            }],
+        };
+        let mut source = Vec::new();
+        Record {
+            leader: *b"00000nam a2200000 a 4500",
+            fields: vec![
+                field(b"245", "Dom Casmurro"),
+                field(b"500", "Inclui índice."),
+                field(b"521", "Ensino médio."),
+            ],
+        }
+        .write_iso2709(&mut source)
+        .unwrap();
+        let (_dir, mut connection) = catalog();
+        connection
+            .execute(
+                "UPDATE source_records SET record = ?1 WHERE instance_id = 1",
+                params![source],
+            )
+            .unwrap();
+        connection
+            .execute_batch(
+                "DROP TABLE instance_notes; ALTER TABLE works DROP COLUMN audience;
+                 PRAGMA user_version = 5;",
+            )
+            .unwrap();
+        migrate(&mut connection).unwrap();
+        let read =
+            |sql: &str| -> String { connection.query_row(sql, [], |row| row.get(0)).unwrap() };
+        assert_eq!(read("SELECT text FROM instance_notes"), "Inclui índice.");
+        assert_eq!(read("SELECT audience FROM works"), "Ensino médio");
+    }
 
     fn catalog() -> (tempfile::TempDir, Connection) {
         let dir = tempfile::tempdir().unwrap();

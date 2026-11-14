@@ -4,7 +4,7 @@
 
 ## 1. Comportamento
 
-1. **Obra** (`works`) é o conteúdo intelectual: título preferido (título uniforme), idiomas, contribuições (autores e colaboradores), assuntos, classificação e resumo.
+1. **Obra** (`works`) é o conteúdo intelectual: título preferido (título uniforme), idiomas, contribuições (autores e colaboradores), assuntos, classificação, resumo e público-alvo (`521`, tarefa 2.1).
 2. **Instância** (`instances`) é uma edição publicada de uma Obra: título como está na publicação, edição, local, editora, data, descrição física, série, identificadores (ISBN, ISSN, LCCN, EAN) e notas (`instance_notes`: geral, de conteúdo e local, tarefa 2.1). Toda Instância pertence a exatamente uma Obra.
 3. Na v1, cada registro importado cria **uma Obra e uma Instância**. O esquema já aceita várias Instâncias por Obra, mas nada as funde automaticamente.
 4. **Item** (`items`) é o exemplar físico de uma Instância: código de barras, unidade de origem e unidade atual, tipo de item, número de chamada, localização, coleção, situação e preços. É o que a circulação empresta.

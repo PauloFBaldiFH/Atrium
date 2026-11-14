@@ -203,6 +203,7 @@ fn record_body<'a>(state: &'a AppState, page: &'a RecordPage) -> OpacRecordBody<
             .collect(),
         languages: instance.languages.iter().map(String::as_str).collect(),
         summary: instance.summary.as_deref(),
+        audience: instance.audience.as_deref(),
         notes: notes(&instance.notes, |kind| kind != NoteKind::Contents),
         contents: notes(&instance.notes, |kind| kind == NoteKind::Contents),
         items: page.items.iter().map(item_line).collect(),
