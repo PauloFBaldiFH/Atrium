@@ -48,7 +48,9 @@ impl MemoryProbe for NoCounters {
 fn view(id: i64, title: &str) -> InstanceView {
     InstanceView {
         id: InstanceId(id),
+        version: 1,
         work: WorkId(id),
+        work_version: 1,
         work_title: title.to_owned(),
         hub: None,
         work_material_type: Some(MaterialType::Book),

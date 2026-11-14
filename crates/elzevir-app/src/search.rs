@@ -391,7 +391,9 @@ mod tests {
         fn instance(&self, id: InstanceId) -> Result<Option<InstanceView>, CatalogReadError> {
             Ok(self.existing.contains(&id).then(|| InstanceView {
                 id,
+                version: 1,
                 work: WorkId(id.0),
+                work_version: 1,
                 work_title: format!("Work {}", id.0),
                 hub: None,
                 work_material_type: Some(MaterialType::Book),

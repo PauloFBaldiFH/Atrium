@@ -72,6 +72,9 @@ enum StaffAction {
         /// Also grant administration.
         #[arg(long)]
         admin: bool,
+        /// Also grant cataloguing: adding and editing records and Items.
+        #[arg(long)]
+        cataloguing: bool,
     },
 }
 
@@ -86,7 +89,8 @@ fn main() -> ExitCode {
             data_dir,
             login,
             admin,
-        }) => add_staff(&data_dir, &login, admin),
+            cataloguing,
+        }) => add_staff(&data_dir, &login, admin, cataloguing),
         Command::Import(args) => catalog_cli::import(&args),
         Command::Export(args) => catalog_cli::export(&args),
     };
@@ -218,7 +222,7 @@ fn serve(data_dir: &Path, listen: SocketAddr, insecure_cookies: bool) -> Result<
     })
 }
 
-fn add_staff(data_dir: &Path, login: &str, admin: bool) -> Result<(), String> {
+fn add_staff(data_dir: &Path, login: &str, admin: bool, cataloguing: bool) -> Result<(), String> {
     let password = if let Ok(password) = std::env::var("ELZEVIR_STAFF_PASSWORD") {
         password
     } else {
@@ -237,6 +241,9 @@ fn add_staff(data_dir: &Path, login: &str, admin: bool) -> Result<(), String> {
         .collect::<std::collections::BTreeSet<_>>();
     if admin {
         permissions.insert(Permission::Administration);
+    }
+    if cataloguing {
+        permissions.insert(Permission::Cataloguing);
     }
     let password_hash = hash_password(&password).map_err(|e| e.to_string())?;
     let data = open_store(data_dir)?;

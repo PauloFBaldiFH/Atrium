@@ -68,6 +68,8 @@ pub(crate) fn apply(tx: &WriteTx<'_>, command: &CatalogCommand) -> Applied {
             crate::matching::replace_description(tx, *instance, record)?;
             CatalogOutput::Replaced(*instance)
         }
+        CatalogCommand::UpdateWork(update) => crate::editing::update_work(tx, update)?,
+        CatalogCommand::UpdateInstance(update) => crate::editing::update_instance(tx, update)?,
         CatalogCommand::AddItem(new) => {
             if !exists(
                 connection,
@@ -619,7 +621,7 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
         .query_row(
             "SELECT works.id, works.title, instances.title, publisher, date, works.hub_id,
                     works.material_type, instances.material_type, works.classification,
-                    works.summary, works.audience
+                    works.summary, works.audience, instances.row_version, works.row_version
              FROM instances JOIN works ON works.id = instances.work_id
              WHERE instances.id = ?1",
             params![id.0],
@@ -636,6 +638,8 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
                     classification: row.get(8)?,
                     summary: row.get(9)?,
                     audience: row.get(10)?,
+                    version: row.get(11)?,
+                    work_version: row.get(12)?,
                 })
             },
         )
@@ -686,7 +690,9 @@ fn read_instance(c: &Connection, id: InstanceId) -> Result<Option<InstanceView>,
         .collect::<Result<Vec<String>, _>>()?;
     Ok(Some(InstanceView {
         id,
+        version: row.version,
         work: WorkId(work),
+        work_version: row.work_version,
         work_title: row.work_title,
         hub: row.hub.map(HubId),
         work_material_type: material_type(row.work_material_type)?,
@@ -719,6 +725,8 @@ struct InstanceRow {
     classification: Option<String>,
     summary: Option<String>,
     audience: Option<String>,
+    version: i64,
+    work_version: i64,
 }
 
 fn material_type(code: Option<u8>) -> Result<Option<MaterialType>, ReadFailure> {

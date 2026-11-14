@@ -52,6 +52,86 @@ pub enum CatalogCommand {
         /// The new description.
         record: Box<NewRecord>,
     },
+    /// Changes parts of a Work, if it is still at `row_version`
+    /// (docs/specs/catalogo/edicao.md).
+    UpdateWork(Box<WorkUpdate>),
+    /// Changes parts of an Instance, if its record is still at `row_version`
+    /// (docs/specs/catalogo/edicao.md).
+    UpdateInstance(Box<InstanceUpdate>),
+}
+
+/// An edit of a Work, read at `row_version`.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct WorkUpdate {
+    /// The Work.
+    pub work: WorkId,
+    /// The Work's version when the editor read it ([`InstanceView::work_version`]).
+    pub row_version: i64,
+    /// What changes, in order; a later change of the same part wins.
+    pub changes: Vec<WorkChange>,
+}
+
+/// One part of a Work that an edit replaces. Lists are replaced whole, in the new order.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum WorkChange {
+    /// Preferred title.
+    Title(String),
+    /// Category of material.
+    MaterialType(MaterialType),
+    /// Classification number and its scheme code.
+    Classification {
+        /// The number, such as a DDC number.
+        number: Option<String>,
+        /// The scheme code, such as `ddc`.
+        scheme: Option<String>,
+    },
+    /// Summary.
+    Summary(Option<String>),
+    /// Target audience.
+    Audience(Option<String>),
+    /// Language codes.
+    Languages(Vec<String>),
+    /// Contributors.
+    Contributions(Vec<NewContribution>),
+    /// Subjects.
+    Subjects(Vec<NewSubject>),
+}
+
+/// An edit of an Instance, read at `row_version`.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct InstanceUpdate {
+    /// The Instance.
+    pub instance: InstanceId,
+    /// The record's version when the editor read it ([`InstanceView::version`]).
+    pub row_version: i64,
+    /// What changes, in order; a later change of the same part wins.
+    pub changes: Vec<InstanceChange>,
+}
+
+/// One part of an Instance that an edit replaces. Lists are replaced whole, in the new
+/// order.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum InstanceChange {
+    /// Title as on the publication.
+    Title(String),
+    /// Category of material.
+    MaterialType(MaterialType),
+    /// Edition statement.
+    Edition(Option<String>),
+    /// Place of publication.
+    Place(Option<String>),
+    /// Publisher.
+    Publisher(Option<String>),
+    /// Date of publication, as written.
+    Date(Option<String>),
+    /// Physical description.
+    Extent(Option<String>),
+    /// Series statement.
+    Series(Option<String>),
+    /// Identifiers.
+    Identifiers(Vec<NewIdentifier>),
+    /// Notes.
+    Notes(Vec<NewNote>),
 }
 
 /// A record to import with a matching rule.
@@ -323,6 +403,20 @@ pub enum CatalogOutput {
     Imported(ImportOutcome),
     /// A record's description was replaced.
     Replaced(InstanceId),
+    /// A Work was edited; it is now at `row_version`.
+    WorkUpdated {
+        /// The Work.
+        work: WorkId,
+        /// Its new version.
+        row_version: i64,
+    },
+    /// An Instance was edited; its record is now at `row_version`.
+    InstanceUpdated {
+        /// The Instance.
+        instance: InstanceId,
+        /// Its record's new version.
+        row_version: i64,
+    },
 }
 
 /// Why a catalog command was refused.
@@ -349,6 +443,14 @@ pub enum CatalogRefusal {
     /// Another Item has this barcode.
     #[error("barcode `{0}` is already in use")]
     BarcodeTaken(String),
+    /// Someone changed the row after the editor read it.
+    #[error("changed by someone else (version {current}, edit read {read}); reload")]
+    Stale {
+        /// The version the edit was read at.
+        read: i64,
+        /// The version stored now.
+        current: i64,
+    },
 }
 
 /// An Instance as the catalog shows it.
@@ -356,8 +458,13 @@ pub enum CatalogRefusal {
 pub struct InstanceView {
     /// The Instance.
     pub id: InstanceId,
+    /// The record's version: it grows whenever the Instance, its Work or its Items
+    /// change. An Instance edit names it.
+    pub version: i64,
     /// Its Work.
     pub work: WorkId,
+    /// The Work's version: it grows whenever the Work changes. A Work edit names it.
+    pub work_version: i64,
     /// The Work's preferred title.
     pub work_title: String,
     /// The Work's Hub, if any.
