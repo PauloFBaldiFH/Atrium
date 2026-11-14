@@ -323,7 +323,7 @@ async fn the_first_page_shows_families_with_pills_and_a_loader_for_the_next() {
     assert!(html.contains(r#"<span class="chip chip-agent">Assis, Machado de</span>"#));
     assert!(!html.contains("<details class=\"family-focus\" open>"));
     assert!(html.contains(
-        r#"<use href="/static/elzevir-icons.svg#book"></use></svg><span class="item-signal">Out of circulation</span> <span class="item-pill-text">MAIN | 869.3 A848d | T1</span></li>"#
+        r#"<use href="/static/elzevir-icons.svg#book"></use></svg><span class="item-signal">Out of circulation</span> <span class="item-pill-text">Main Library | 869.3 A848d | T1</span></li>"#
     ));
     assert!(html.contains(r#"hx-get="/equipe/acervo?after=w30.030""#));
     // Blocks name their parent, for the cords drawn by the page's script.
@@ -506,6 +506,9 @@ async fn a_focused_block_loads_every_filled_field() {
     assert!(instance.contains("000123"));
     assert!(instance.contains("T-77"));
     assert!(instance.contains("869.3 A848d"));
+    // Names in place of codes (exemplares.md, item 29).
+    assert!(instance.contains("<td>Main Library</td>"));
+    assert!(instance.contains("<td>Book</td>"));
     assert!(!instance.contains("Edition"));
 
     let missing = send(
@@ -918,5 +921,10 @@ async fn a_cataloguer_gets_the_item_grid_with_its_rows_and_lists() {
     }
     assert!(grid.contains(r#"<i data-col="home_branch" data-list="branches" data-inherited></i>"#));
     assert!(grid.contains(r#"<i data-col="barcode"></i>"#));
-    assert!(grid.contains(r#"<datalist id="grid-list-branches"><option value="MAIN"></option><option value="PAL"></option></datalist>"#));
+    // A coded cell shows the name and keeps the code (item 29).
+    assert!(
+        grid.contains(r#"<td role="gridcell" tabindex="-1" data-value="MAIN">Main Library</td>"#)
+    );
+    assert!(grid.contains(r#"<td role="gridcell" tabindex="-1" data-value="BK">Book</td>"#));
+    assert!(grid.contains(r#"<datalist id="grid-list-branches"><option value="Main Library" data-code="MAIN"></option><option value="PAL" data-code="PAL"></option></datalist>"#));
 }

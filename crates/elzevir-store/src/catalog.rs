@@ -2,9 +2,9 @@
 //! Catalog commands and reads on SQLite (docs/specs/catalogo/modelo-bibliografico.md).
 
 use elzevir_app::catalog::{
-    CatalogCommand, CatalogOutput, CatalogReadError, CatalogReader, CatalogRefusal, InstanceView,
-    ItemData, ItemStatus, ItemView, NewContribution, NewIdentifier, NewInstance, NewInstanceOfWork,
-    NewNote, NewRecord, NewSubject, NewWorkRelation,
+    CatalogCommand, CatalogOutput, CatalogReadError, CatalogReader, CatalogRefusal, CodeLists,
+    InstanceView, ItemData, ItemStatus, ItemView, NewContribution, NewIdentifier, NewInstance,
+    NewInstanceOfWork, NewNote, NewRecord, NewSubject, NewWorkRelation,
 };
 use elzevir_app::commands::{WriteOutput, WriteRefusal};
 use elzevir_app::listing::sort_key;
@@ -652,6 +652,12 @@ impl CatalogReader for ElzevirStore {
                     .collect::<Result<Vec<_>, _>>()
             })
             .map_err(|e: rusqlite::Error| CatalogReadError(e.to_string()))
+    }
+
+    fn codes(&self) -> Result<CodeLists, CatalogReadError> {
+        self.readers()
+            .read(crate::items::code_lists)
+            .map_err(|e| CatalogReadError(e.to_string()))
     }
 }
 

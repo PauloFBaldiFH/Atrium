@@ -8,7 +8,7 @@ use askama::Template;
 use axum::extract::{Path, Query, State};
 use axum::http::{HeaderMap, StatusCode, header};
 use axum::response::{Html, IntoResponse, Redirect, Response};
-use elzevir_app::catalog::ShelfSignal;
+use elzevir_app::catalog::{CodeLists, ShelfSignal};
 use elzevir_app::editing::CatalogEditor;
 use elzevir_app::export::{
     ExportOptions, RecordExportError, RecordFormat, RecordSource, export_record,
@@ -74,8 +74,10 @@ pub(crate) async fn catalog(
     };
     let listing = Arc::clone(&state.inner.staff_ports.listing);
     let index = Arc::clone(&state.inner.opac.index);
+    let catalog = Arc::clone(&state.inner.opac.catalog);
     let read = tokio::task::spawn_blocking(move || {
-        if params.q.trim().is_empty() {
+        let codes = catalog.codes().map_err(drop)?;
+        let page = if params.q.trim().is_empty() {
             // A malformed cursor is read as the first page.
             let after = params.after.as_deref().and_then(FamilyCursor::from_token);
             listing::browse(&*listing, after.as_ref())
@@ -89,10 +91,11 @@ pub(crate) async fn catalog(
             listing::search(&*index, &*listing, &params.q, from)
                 .map(Page::Search)
                 .map_err(drop)
-        }
+        }?;
+        Ok::<_, ()>((page, codes))
     })
     .await;
-    let Ok(Ok(page)) = read else {
+    let Ok(Ok((page, codes))) = read else {
         return (StatusCode::SERVICE_UNAVAILABLE, "catalog unavailable").into_response();
     };
     let can_catalogue = session.identity.can(Permission::Cataloguing);
@@ -103,7 +106,11 @@ pub(crate) async fn catalog(
             can_catalogue,
             query: "",
             total: None,
-            rows: page.rows.iter().map(family_line).collect(),
+            rows: page
+                .rows
+                .iter()
+                .map(|row| family_line(row, &codes))
+                .collect(),
             next_url: page
                 .next
                 .as_ref()
@@ -115,7 +122,12 @@ pub(crate) async fn catalog(
             can_catalogue,
             query: &page.query,
             total: Some(page.total),
-            rows: opened(page.rows.iter().map(family_line).collect()),
+            rows: opened(
+                page.rows
+                    .iter()
+                    .map(|row| family_line(row, &codes))
+                    .collect(),
+            ),
             next_url: page
                 .next
                 .map(|from| format!("/equipe/acervo?q={}&from={from}", url_encode(&page.query))),
@@ -209,7 +221,7 @@ pub(crate) async fn export_marc(
     }
 }
 
-fn family_line(row: &FamilyRow) -> FamilyLine {
+fn family_line(row: &FamilyRow, codes: &CodeLists) -> FamilyLine {
     let hub = match (row.cursor.head, &row.hub_title) {
         (FamilyHead::Hub(id), Some(title)) => Some(HubLine {
             id: id.0,
@@ -234,7 +246,7 @@ fn family_line(row: &FamilyRow) -> FamilyLine {
                     key
                 }
             });
-            work_line(work, authority)
+            work_line(work, authority, codes)
         })
         .collect();
     let instances = || row.works.iter().flat_map(|work| work.instances.iter());
@@ -266,7 +278,7 @@ fn family_line(row: &FamilyRow) -> FamilyLine {
     }
 }
 
-fn work_line(work: &WorkRow, authority: Option<usize>) -> WorkLine {
+fn work_line(work: &WorkRow, authority: Option<usize>, codes: &CodeLists) -> WorkLine {
     WorkLine {
         authority,
         id: work.id.0,
@@ -276,11 +288,15 @@ fn work_line(work: &WorkRow, authority: Option<usize>) -> WorkLine {
         languages: work.languages.clone(),
         subjects: work.subjects.clone(),
         more_subjects: work.more_subjects,
-        instances: work.instances.iter().map(instance_line).collect(),
+        instances: work
+            .instances
+            .iter()
+            .map(|instance| instance_line(instance, codes))
+            .collect(),
     }
 }
 
-fn instance_line(instance: &InstanceRow) -> InstanceLine {
+fn instance_line(instance: &InstanceRow, codes: &CodeLists) -> InstanceLine {
     let imprint = match (&instance.publisher, &instance.date) {
         (Some(publisher), Some(date)) => Some(format!("{publisher}, {date}")),
         (Some(only), None) | (None, Some(only)) => Some(only.clone()),
@@ -299,15 +315,20 @@ fn instance_line(instance: &InstanceRow) -> InstanceLine {
         // until real covers arrive (UI spec §6.4).
         cover: u8::try_from(instance.id.0.rem_euclid(4)).unwrap_or(0),
         items: instance.items,
-        pills: instance.pills.iter().map(pill_line).collect(),
+        pills: instance
+            .pills
+            .iter()
+            .map(|pill| pill_line(pill, codes))
+            .collect(),
         more_items: instance.more_items,
     }
 }
 
-fn pill_line(pill: &ItemPill) -> PillLine {
+/// One Item in a line, with names in place of codes (exemplares.md, item 29).
+fn pill_line(pill: &ItemPill, codes: &CodeLists) -> PillLine {
     let parts = [
-        Some(pill.home_branch.as_str()),
-        pill.location.as_deref(),
+        Some(codes.branch(&pill.home_branch)),
+        pill.location.as_deref().map(|code| codes.location(code)),
         pill.call_number.as_deref(),
         pill.inventory_number.as_deref(),
     ];

@@ -78,10 +78,10 @@ fn item(id: i64, status: ItemStatus) -> ItemView {
         id: ItemId(id),
         barcode: Some(format!("B{id}")),
         inventory_number: None,
-        home_branch: "CPL".to_owned(),
+        home_branch: "MAIN".to_owned(),
         item_type: "BK".to_owned(),
         call_number: Some("310.62 P94".to_owned()),
-        location: None,
+        location: Some("GEN".to_owned()),
         status,
     }
 }
@@ -224,6 +224,10 @@ async fn a_record_shows_its_items_and_is_rendered_once_per_version() {
     assert!(html.contains("Editora, 1995"));
     assert!(html.contains("Available"));
     assert!(html.contains("Lost"));
+    // Names in place of codes (docs/specs/catalogo/exemplares.md, item 29).
+    assert!(html.contains("<td>Main Library</td>"));
+    assert!(html.contains("General stacks"));
+    assert!(!html.contains(">MAIN<"));
     assert!(html.contains("<dt>Contents</dt>\n    <dd>Parte 1 -- Parte 2.</dd>"));
     assert!(html.contains("<dt>Audience</dt><dd>Ensino médio.</dd>"));
     assert!(html.contains("<dt>Notes</dt>\n    <dd>Inclui índice.</dd>"));

@@ -271,19 +271,6 @@ pub struct GridItem {
     pub status: ItemStatus,
 }
 
-/// The codes a grid cell may choose from (item 26).
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct CodeLists {
-    /// Branch codes, in order.
-    pub branches: Vec<String>,
-    /// Item type codes, in order.
-    pub item_types: Vec<String>,
-    /// Location codes already used, in order.
-    pub locations: Vec<String>,
-    /// Collection codes already used, in order.
-    pub collections: Vec<String>,
-}
-
 /// Port: what the grid reads.
 pub trait ItemGridSource: Send + Sync {
     /// The Items of `instance`, in creation order.
@@ -292,13 +279,6 @@ pub trait ItemGridSource: Send + Sync {
     ///
     /// When storage fails.
     fn grid_items(&self, instance: InstanceId) -> Result<Vec<GridItem>, CatalogReadError>;
-
-    /// The codes the grid's cells choose from.
-    ///
-    /// # Errors
-    ///
-    /// When storage fails.
-    fn code_lists(&self) -> Result<CodeLists, CatalogReadError>;
 }
 
 fn optional(text: &str) -> Option<String> {

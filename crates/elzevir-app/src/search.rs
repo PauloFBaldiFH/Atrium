@@ -427,6 +427,10 @@ mod tests {
         ) -> Result<Vec<(InstanceId, crate::catalog::ItemStatus)>, CatalogReadError> {
             Ok(Vec::new())
         }
+
+        fn codes(&self) -> Result<crate::catalog::CodeLists, CatalogReadError> {
+            Ok(crate::catalog::CodeLists::default())
+        }
     }
 
     impl SearchIndex for Fake {

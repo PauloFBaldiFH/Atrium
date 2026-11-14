@@ -5,7 +5,7 @@
 A tarefa 2.7 tem duas partes, cada uma num PR:
 
 - **2.7a, escrita:** o comando `catalog.save_items`, a validação por linha e a rota que grava o lote (itens 1 a 11 e 13 a 16).
-- **2.7b, tela:** a leitura da grade (item 12) e a grade `<elz-item-grid>` na coluna de exemplares, com teclado, bipe, `Ctrl+D` e "+N linhas" (itens 17 a 28).
+- **2.7b, tela:** a leitura da grade (item 12) e a grade `<elz-item-grid>` na coluna de exemplares, com teclado, bipe, `Ctrl+D` e "+N linhas" (itens 17 a 29).
 
 Ficam para depois: filtrar e ordenar dentro da grade, desenhar só as linhas visíveis (item 27), colunas visíveis e largura salvas por usuário (§5), a circulação rápida (Fase 3) e apagar exemplar (que no Koha tem regras próprias: empréstimo, reserva, último exemplar).
 
@@ -58,9 +58,10 @@ Ficam para depois: filtrar e ordenar dentro da grade, desenhar só as linhas vis
 23. Linha nova ou alterada fica marcada até ser gravada. Recusa aparece na célula (item 5), com a mensagem, e o foco vai para a primeira.
 24. Gravar com sucesso atualiza a versão e os ids e tira as marcas; a família é relida para as pílulas mostrarem os exemplares.
 25. Sair da grade, trocar o foco ou fechar a família com mudança não gravada pergunta antes ([edição](edicao.md), item 32).
-26. Unidade e tipo de item são escolhidos numa lista com os códigos cadastrados; localização e coleção são texto livre com sugestões dos códigos já usados.
+26. Unidade e tipo de item são escolhidos numa lista com os nomes cadastrados; localização e coleção são texto livre com sugestões dos nomes já usados. Digitar o nome ou o código (sem diferença de maiúsculas) escolhe o código; outro texto fica como digitado e o comando o confere (item 5).
 27. A grade desenha todas as linhas. Desenhar só as visíveis acima de 200 linhas (§11) fica para quando uma medição mostrar a necessidade. Medido no Chromium (servidor local, 2026-11-14): acrescentar 250 linhas leva 89 ms, gravá-las 113 ms, reabrir a grade com 252 linhas 128 ms, e 100 setas seguidas 614 ms (cerca de 6 ms por tecla, contando o próprio Playwright).
 28. A grade é um *Web Component* (`<elz-item-grid>`) em JavaScript sem dependências, no mesmo módulo da listagem.
+29. **Nomes, não códigos.** Unidade, tipo de item, localização e coleção são gravados como código, mas toda tela mostra o nome da tabela correspondente (`branches.name`, `item_types.description`, `terms.label`): a grade, as pílulas da listagem, a ficha de campos e o OPAC. Código sem nome na tabela aparece como está. Na grade, a célula mostra o nome e guarda o código, que é o que o lote leva. Os nomes vêm do Koha e se editam numa tela própria (tarefa seguinte); como o OPAC guarda a página por versão do registro, renomear um código terá de invalidar essas páginas.
 
 ## 2. Origem no Koha
 

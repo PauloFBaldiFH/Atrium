@@ -7,7 +7,7 @@ use std::sync::Arc;
 use axum::extract::{Path, Query, State};
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::{IntoResponse, Redirect, Response};
-use elzevir_app::catalog::{ItemData, NewRecord};
+use elzevir_app::catalog::{CodeLists, ItemData, NewRecord};
 use elzevir_app::export::stored_record;
 use elzevir_app::staff::Permission;
 use elzevir_domain::catalog::{
@@ -52,11 +52,17 @@ pub(crate) async fn record_fields(
         Some(_) => return (StatusCode::BAD_REQUEST, "unknown level").into_response(),
     };
     let records = Arc::clone(&state.inner.staff_ports.records);
-    let read = tokio::task::spawn_blocking(move || stored_record(&*records, InstanceId(id))).await;
-    let record = match read {
-        Ok(Ok(Some(stored))) => stored.record,
+    let catalog = Arc::clone(&state.inner.opac.catalog);
+    let read = tokio::task::spawn_blocking(move || {
+        let stored = stored_record(&*records, InstanceId(id)).map_err(drop)?;
+        let codes = catalog.codes().map_err(drop)?;
+        Ok::<_, ()>(stored.map(|stored| (stored.record, codes)))
+    })
+    .await;
+    let (record, codes) = match read {
+        Ok(Ok(Some(read))) => read,
         Ok(Ok(None)) => return (StatusCode::NOT_FOUND, "no such record").into_response(),
-        Ok(Err(_)) | Err(_) => {
+        Ok(Err(())) | Err(_) => {
             return (StatusCode::SERVICE_UNAVAILABLE, "catalog unavailable").into_response();
         }
     };
@@ -73,7 +79,11 @@ pub(crate) async fn record_fields(
         Level::Instance => RecordFields {
             t,
             groups: vec![instance_group(t, &record)],
-            items: record.items.iter().map(item_fields).collect(),
+            items: record
+                .items
+                .iter()
+                .map(|item| item_fields(item, &codes))
+                .collect(),
         },
     };
     render(&page)
@@ -272,18 +282,25 @@ fn instance_group(t: &I18n, record: &NewRecord) -> FieldGroup {
     }
 }
 
-fn item_fields(item: &ItemData) -> ItemFields {
+/// One Item, with names in place of codes (exemplares.md, item 29).
+fn item_fields(item: &ItemData, codes: &CodeLists) -> ItemFields {
     let (signal_class, signal_key) = signal(item.status.signal());
     ItemFields {
         barcode: item.barcode.clone(),
         inventory_number: item.inventory_number.clone(),
-        home_branch: item.home_branch.clone(),
+        home_branch: codes.branch(&item.home_branch).to_owned(),
         holding_branch: (item.holding_branch != item.home_branch)
-            .then(|| item.holding_branch.clone()),
-        item_type: item.item_type.clone(),
+            .then(|| codes.branch(&item.holding_branch).to_owned()),
+        item_type: codes.item_type(&item.item_type).to_owned(),
         call_number: item.call_number.clone(),
-        location: item.location.clone(),
-        collection: item.collection.clone(),
+        location: item
+            .location
+            .as_deref()
+            .map(|code| codes.location(code).to_owned()),
+        collection: item
+            .collection
+            .as_deref()
+            .map(|code| codes.collection(code).to_owned()),
         copy_number: item.copy_number.clone(),
         acquired_on: item.acquired_on.clone(),
         signal_class,

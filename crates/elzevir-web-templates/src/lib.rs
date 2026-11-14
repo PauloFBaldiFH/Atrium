@@ -12,7 +12,7 @@ mod staff_record_form;
 pub use staff_catalog::{
     AuthorityLine, FamilyLine, HubLine, InstanceLine, PillLine, StaffCatalog, WorkLine,
 };
-pub use staff_item_grid::{GridColumn, GridList, GridRow, ItemGrid};
+pub use staff_item_grid::{GridCell, GridColumn, GridList, GridRow, ItemGrid};
 pub use staff_record_fields::{FieldEntry, FieldGroup, FieldValue, ItemFields, RecordFields};
 pub use staff_record_form::{
     ColumnKind, FormCell, FormColumn, FormField, FormInput, FormOption, FormPart, NewRecordForm,

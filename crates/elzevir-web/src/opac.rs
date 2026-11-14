@@ -8,7 +8,7 @@ use askama::Template;
 use axum::extract::{Path, Query, State};
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::{Html, IntoResponse, Response};
-use elzevir_app::catalog::{CatalogReader, ItemStatus, ItemView};
+use elzevir_app::catalog::{CatalogReader, CodeLists, ItemStatus, ItemView};
 use elzevir_app::opac::{self, RecordPage, ResultsPage};
 use elzevir_app::search::SearchIndex;
 use elzevir_domain::catalog::{InstanceId, MaterialType, NoteKind};
@@ -164,7 +164,8 @@ fn rendered_record(state: &AppState, id: InstanceId) -> Result<Option<Arc<Render
     let Some(page) = opac::record(catalog, id).map_err(drop)? else {
         return Ok(None);
     };
-    let body = record_body(state, &page).render().map_err(drop)?;
+    let codes = catalog.codes().map_err(drop)?;
+    let body = record_body(state, &page, &codes).render().map_err(drop)?;
     let record = Arc::new(RenderedRecord {
         title: page.instance.title,
         body,
@@ -173,7 +174,11 @@ fn rendered_record(state: &AppState, id: InstanceId) -> Result<Option<Arc<Render
     Ok(Some(record))
 }
 
-fn record_body<'a>(state: &'a AppState, page: &'a RecordPage) -> OpacRecordBody<'a> {
+fn record_body<'a>(
+    state: &'a AppState,
+    page: &'a RecordPage,
+    codes: &CodeLists,
+) -> OpacRecordBody<'a> {
     let instance = &page.instance;
     let publication = match (&instance.publisher, &instance.date) {
         (Some(publisher), Some(date)) => Some(format!("{publisher}, {date}")),
@@ -206,7 +211,11 @@ fn record_body<'a>(state: &'a AppState, page: &'a RecordPage) -> OpacRecordBody<
         audience: instance.audience.as_deref(),
         notes: notes(&instance.notes, |kind| kind != NoteKind::Contents),
         contents: notes(&instance.notes, |kind| kind == NoteKind::Contents),
-        items: page.items.iter().map(item_line).collect(),
+        items: page
+            .items
+            .iter()
+            .map(|item| item_line(item, codes))
+            .collect(),
     }
 }
 
@@ -219,10 +228,14 @@ fn notes(notes: &[(NoteKind, String)], keep: impl Fn(NoteKind) -> bool) -> Vec<&
         .collect()
 }
 
-fn item_line(item: &ItemView) -> ItemLine {
+/// One Item, with names in place of codes (exemplares.md, item 29).
+fn item_line(item: &ItemView, codes: &CodeLists) -> ItemLine {
     ItemLine {
-        branch: item.home_branch.clone(),
-        location: item.location.clone(),
+        branch: codes.branch(&item.home_branch).to_owned(),
+        location: item
+            .location
+            .as_deref()
+            .map(|code| codes.location(code).to_owned()),
         call_number: item.call_number.clone(),
         available: item.status.is_available(),
         status: status_key(item.status),

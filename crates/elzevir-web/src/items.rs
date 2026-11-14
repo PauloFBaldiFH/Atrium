@@ -8,11 +8,12 @@ use axum::Json;
 use axum::extract::{Path, State};
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::{IntoResponse, Redirect, Response};
+use elzevir_app::catalog::{CodeLists, CodeName};
 use elzevir_app::editing::Edit;
 use elzevir_app::items::{GridItem, ItemFields, ItemsUpdate, MAX_ROWS, TypedRow, item_rows};
 use elzevir_app::staff::Permission;
 use elzevir_domain::catalog::{InstanceId, Money};
-use elzevir_web_templates::{GridColumn, GridList, GridRow, ItemGrid};
+use elzevir_web_templates::{GridCell, GridColumn, GridList, GridRow, ItemGrid};
 use serde::Deserialize;
 
 use crate::catalog::signal;
@@ -69,8 +70,9 @@ const COLUMNS: &[GridColumn] = &[
     column("price", "items-column-price", None, false),
 ];
 
-/// The cells of one Item, in [`COLUMNS`] order.
-fn cells(fields: ItemFields) -> Vec<String> {
+/// The cells of one Item, in [`COLUMNS`] order: a coded cell shows its name and keeps
+/// its code (item 29).
+fn cells(fields: ItemFields, codes: &CodeLists) -> Vec<GridCell> {
     let price = fields
         .price
         .map(|Money(cents)| format!("{},{:02}", cents / 100, cents % 100));
@@ -87,17 +89,45 @@ fn cells(fields: ItemFields) -> Vec<String> {
         price,
     ]
     .into_iter()
-    .map(Option::unwrap_or_default)
+    .zip(COLUMNS)
+    .map(|(value, column)| {
+        let value = value.unwrap_or_default();
+        let name = column
+            .list
+            .map(|list| name_in(codes, list, &value).to_owned());
+        GridCell { value, name }
+    })
     .collect()
 }
 
-fn grid_row(item: GridItem) -> GridRow {
+/// The name of `code` in the list a column chooses from.
+fn name_in<'a>(codes: &'a CodeLists, list: &str, code: &'a str) -> &'a str {
+    match list {
+        "branches" => codes.branch(code),
+        "item-types" => codes.item_type(code),
+        "locations" => codes.location(code),
+        "collections" => codes.collection(code),
+        _ => code,
+    }
+}
+
+fn grid_row(item: GridItem, codes: &CodeLists) -> GridRow {
     let (signal_class, signal_key) = signal(item.status.signal());
     GridRow {
         id: item.id.0,
         signal_class,
         signal_key,
-        cells: cells(item.fields),
+        cells: cells(item.fields, codes),
+    }
+}
+
+fn grid_list(name: &'static str, table: &[CodeName]) -> GridList {
+    GridList {
+        name,
+        options: table
+            .iter()
+            .map(|entry| (entry.code.clone(), entry.name.clone()))
+            .collect(),
     }
 }
 
@@ -119,7 +149,7 @@ pub(crate) async fn item_grid(
     let read = tokio::task::spawn_blocking(move || {
         let view = catalog.instance(instance).map_err(drop)?;
         let rows = items.grid_items(instance).map_err(drop)?;
-        let codes = items.code_lists().map_err(drop)?;
+        let codes = catalog.codes().map_err(drop)?;
         Ok::<_, ()>((view, rows, codes))
     })
     .await;
@@ -135,24 +165,12 @@ pub(crate) async fn item_grid(
         endpoint: format!("/equipe/acervo/instancia/{id}/exemplares"),
         version: view.version,
         columns: COLUMNS,
-        rows: rows.into_iter().map(grid_row).collect(),
+        rows: rows.into_iter().map(|row| grid_row(row, &codes)).collect(),
         lists: vec![
-            GridList {
-                name: "branches",
-                codes: codes.branches,
-            },
-            GridList {
-                name: "item-types",
-                codes: codes.item_types,
-            },
-            GridList {
-                name: "locations",
-                codes: codes.locations,
-            },
-            GridList {
-                name: "collections",
-                codes: codes.collections,
-            },
+            grid_list("branches", &codes.branches),
+            grid_list("item-types", &codes.item_types),
+            grid_list("locations", &codes.locations),
+            grid_list("collections", &codes.collections),
         ],
     })
 }

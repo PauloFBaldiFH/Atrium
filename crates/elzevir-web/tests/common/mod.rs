@@ -6,7 +6,9 @@ use std::num::NonZeroUsize;
 use std::sync::Mutex;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
-use elzevir_app::catalog::{CatalogReadError, CatalogReader, InstanceView, ItemStatus, ItemView};
+use elzevir_app::catalog::{
+    CatalogReadError, CatalogReader, CodeLists, CodeName, InstanceView, ItemStatus, ItemView,
+};
 use elzevir_app::listing::{CatalogListing, Family, FamilyCursor, FamilyHead};
 use elzevir_app::search::{IndexBatch, SearchError, SearchHit, SearchIndex, SearchResults};
 use elzevir_domain::catalog::{InstanceId, WorkId};
@@ -66,6 +68,19 @@ impl CatalogReader for Catalog {
                     .map(move |item| (*id, item.status))
             })
             .collect())
+    }
+
+    fn codes(&self) -> Result<CodeLists, CatalogReadError> {
+        let entry = |code: &str, name: &str| CodeName {
+            code: code.to_owned(),
+            name: name.to_owned(),
+        };
+        Ok(CodeLists {
+            branches: vec![entry("MAIN", "Main Library"), entry("PAL", "PAL")],
+            item_types: vec![entry("BK", "Book")],
+            locations: vec![entry("GEN", "General stacks")],
+            collections: Vec::new(),
+        })
     }
 }
 
@@ -263,14 +278,5 @@ impl elzevir_app::items::ItemGridSource for ItemGrid {
             },
             status: ItemStatus::default(),
         }])
-    }
-
-    fn code_lists(&self) -> Result<elzevir_app::items::CodeLists, CatalogReadError> {
-        Ok(elzevir_app::items::CodeLists {
-            branches: vec!["MAIN".to_owned(), "PAL".to_owned()],
-            item_types: vec!["BK".to_owned()],
-            locations: vec!["GEN".to_owned()],
-            collections: Vec::new(),
-        })
     }
 }

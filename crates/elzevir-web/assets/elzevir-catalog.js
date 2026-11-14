@@ -1012,7 +1012,20 @@ class ItemGridElement extends HTMLElement {
       inherited: marker.hasAttribute("data-inherited"),
     }));
     this.body = this.querySelector("tbody");
-    for (const cell of this.querySelectorAll("tbody td[role=gridcell]")) cell.dataset.orig = cell.textContent;
+    // Each list: code → name and name or code → code (item 29).
+    this.lists = {};
+    for (const datalist of this.querySelectorAll("datalist")) {
+      const names = new Map();
+      const codes = new Map();
+      for (const option of datalist.options) {
+        const code = option.dataset.code ?? option.value;
+        names.set(code, option.value);
+        codes.set(code.toLowerCase(), code);
+        if (!codes.has(option.value.toLowerCase())) codes.set(option.value.toLowerCase(), code);
+      }
+      this.lists[datalist.id.replace(/^grid-list-/, "")] = { names, codes };
+    }
+    for (const cell of this.querySelectorAll("tbody td[role=gridcell]")) cell.dataset.orig = this.value(cell);
     this.saved = false;
     this.addEventListener("keydown", (event) => this.key(event));
     this.addEventListener("click", (event) => this.click(event));
@@ -1027,6 +1040,27 @@ class ItemGridElement extends HTMLElement {
 
   cells(row) {
     return [...row.querySelectorAll("td[role=gridcell]")];
+  }
+
+  // What the batch carries: the code of a coded cell, which shows the name (item 29).
+  value(cell) {
+    return cell.dataset.value ?? cell.textContent;
+  }
+
+  setValue(cell, value) {
+    const list = this.lists[this.columns[this.cells(cell.parentElement).indexOf(cell)]?.list ?? ""];
+    if (list) {
+      cell.dataset.value = value;
+      cell.textContent = list.names.get(value) ?? value;
+    } else {
+      cell.textContent = value;
+    }
+  }
+
+  // A typed name or code becomes the code; anything else stays as typed.
+  resolve(cell, typed) {
+    const list = this.lists[this.columns[this.cells(cell.parentElement).indexOf(cell)]?.list ?? ""];
+    return list?.codes.get(typed.toLowerCase()) ?? typed;
   }
 
   get active() {
@@ -1078,8 +1112,8 @@ class ItemGridElement extends HTMLElement {
     const cell = input.parentElement;
     this.input = undefined;
     input.remove();
-    cell.textContent = input.value.trim();
     cell.classList.remove("editing");
+    this.setValue(cell, this.resolve(cell, input.value.trim()));
     if (cell.textContent) delete cell.parentElement.dataset.auto;
     this.mark(cell.parentElement);
     return cell;
@@ -1101,7 +1135,7 @@ class ItemGridElement extends HTMLElement {
       row.classList.add("row-new");
       return;
     }
-    row.classList.toggle("row-changed", this.cells(row).some((cell) => cell.textContent !== cell.dataset.orig));
+    row.classList.toggle("row-changed", this.cells(row).some((cell) => this.value(cell) !== cell.dataset.orig));
   }
 
   // A new row copies the inherited columns of `from` (item 19).
@@ -1116,8 +1150,8 @@ class ItemGridElement extends HTMLElement {
       const cell = document.createElement("td");
       cell.setAttribute("role", "gridcell");
       cell.tabIndex = -1;
-      cell.textContent = column.inherited ? (above[index]?.textContent ?? "") : "";
       row.append(cell);
+      this.setValue(cell, column.inherited && above[index] ? this.value(above[index]) : "");
     });
     this.body.append(row);
     return row;
@@ -1159,10 +1193,10 @@ class ItemGridElement extends HTMLElement {
       event.preventDefault();
       const { row, rows, column } = this.at(this.input?.parentElement ?? cell);
       const above = rows[rows.indexOf(row) - 1];
-      const value = above ? this.cells(above)[column].textContent : "";
-      if (this.input) this.input.value = value;
+      const source = above ? this.cells(above)[column] : null;
+      if (this.input) this.input.value = source?.textContent ?? "";
       else {
-        cell.textContent = value;
+        this.setValue(cell, source ? this.value(source) : "");
         this.mark(row);
       }
       return;
@@ -1197,7 +1231,7 @@ class ItemGridElement extends HTMLElement {
       case "Delete":
       case "Backspace":
         event.preventDefault();
-        cell.textContent = "";
+        this.setValue(cell, "");
         this.mark(cell.parentElement);
         return;
       default:
@@ -1325,7 +1359,7 @@ class ItemGridElement extends HTMLElement {
     const rows = sent.map((row) => {
       const object = { id: row.dataset.id ? Number(row.dataset.id) : null };
       this.cells(row).forEach((cell, index) => {
-        object[this.columns[index].name] = cell.textContent;
+        object[this.columns[index].name] = this.value(cell);
       });
       return object;
     });
@@ -1348,7 +1382,7 @@ class ItemGridElement extends HTMLElement {
       sent.forEach((row, index) => {
         row.dataset.id = String(answer.ids[index]);
         row.classList.remove("row-new", "row-changed");
-        for (const cell of this.cells(row)) cell.dataset.orig = cell.textContent;
+        for (const cell of this.cells(row)) cell.dataset.orig = this.value(cell);
       });
       this.saved = true;
       this.alert(this.dataset.saved);

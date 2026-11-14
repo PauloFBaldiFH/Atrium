@@ -46,15 +46,24 @@ pub struct GridRow {
     pub signal_class: &'static str,
     /// Message key of its circulation signal.
     pub signal_key: &'static str,
-    /// The cells' values, in column order.
-    pub cells: Vec<String>,
+    /// The cells, in column order.
+    pub cells: Vec<GridCell>,
 }
 
-/// The codes of one list.
+/// One cell of a stored Item.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct GridCell {
+    /// The value the batch carries: a code in a coded column.
+    pub value: String,
+    /// In a coded column, the name shown in place of the code.
+    pub name: Option<String>,
+}
+
+/// The codes of one list, with their names.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GridList {
     /// Its name, as columns refer to it.
     pub name: &'static str,
-    /// The codes.
-    pub codes: Vec<String>,
+    /// Each code and its name, in code order.
+    pub options: Vec<(String, String)>,
 }

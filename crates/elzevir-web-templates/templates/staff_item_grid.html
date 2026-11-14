@@ -21,12 +21,12 @@
   <table role="grid" aria-label="{{ t.get("items-grid-title") }}">
     <thead><tr><th scope="col" class="grid-signal-head">{{ t.get("items-column-status") }}</th>{% for column in columns %}<th scope="col" data-col="{{ column.name }}">{{ t.get(column.label_key) }}</th>{% endfor %}</tr></thead>
     <tbody>
-      {% for row in rows %}<tr data-id="{{ row.id }}"><td class="grid-signal {{ row.signal_class }}" title="{{ t.get(row.signal_key) }}"><span class="visually-hidden">{{ t.get(row.signal_key) }}</span></td>{% for value in row.cells %}<td role="gridcell" tabindex="-1">{{ value }}</td>{% endfor %}</tr>
+      {% for row in rows %}<tr data-id="{{ row.id }}"><td class="grid-signal {{ row.signal_class }}" title="{{ t.get(row.signal_key) }}"><span class="visually-hidden">{{ t.get(row.signal_key) }}</span></td>{% for cell in row.cells %}{% if let Some(name) = cell.name %}<td role="gridcell" tabindex="-1" data-value="{{ cell.value }}">{{ name }}</td>{% else %}<td role="gridcell" tabindex="-1">{{ cell.value }}</td>{% endif %}{% endfor %}</tr>
       {% endfor %}
     </tbody>
   </table>
   </div>
   <template class="grid-columns">{% for column in columns %}<i data-col="{{ column.name }}"{% if let Some(list) = column.list %} data-list="{{ list }}"{% endif %}{% if column.inherited %} data-inherited{% endif %}></i>{% endfor %}</template>
-  {% for list in lists %}<datalist id="grid-list-{{ list.name }}">{% for code in list.codes %}<option value="{{ code }}"></option>{% endfor %}</datalist>{% endfor %}
+  {% for list in lists %}<datalist id="grid-list-{{ list.name }}">{% for (code, name) in list.options %}<option value="{{ name }}" data-code="{{ code }}"></option>{% endfor %}</datalist>{% endfor %}
   <p class="form-hint grid-keys">{{ t.get("items-keys-hint") }}</p>
 </elz-item-grid>

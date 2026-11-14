@@ -4,11 +4,13 @@
 
 use std::collections::HashMap;
 
-use elzevir_app::catalog::{CatalogOutput, CatalogReadError, CatalogRefusal, ItemData, ItemStatus};
+use elzevir_app::catalog::{
+    CatalogOutput, CatalogReadError, CatalogRefusal, CodeLists, CodeName, ItemData, ItemStatus,
+};
 use elzevir_app::commands::WriteRefusal;
 use elzevir_app::items::{
-    CodeLists, GridItem, ItemColumn, ItemFields, ItemGridSource, ItemRow, ItemsUpdate, RowProblem,
-    RowRefusal, repeated_barcodes,
+    GridItem, ItemColumn, ItemFields, ItemGridSource, ItemRow, ItemsUpdate, RowProblem, RowRefusal,
+    repeated_barcodes,
 };
 use elzevir_domain::catalog::{InstanceId, ItemId, Money, Vocabulary};
 use rusqlite::{Connection, OptionalExtension, params};
@@ -263,29 +265,35 @@ impl ItemGridSource for ElzevirStore {
             })
             .map_err(|e| CatalogReadError(e.to_string()))
     }
+}
 
-    fn code_lists(&self) -> Result<CodeLists, CatalogReadError> {
-        self.readers()
-            .read(|c| {
-                let codes = |sql: &str, vocabulary: Option<Vocabulary>| {
-                    let mut statement = c.prepare(sql)?;
-                    match vocabulary {
-                        Some(vocabulary) => statement
-                            .query_map(params![vocabulary.code()], |row| row.get(0))?
-                            .collect::<Result<Vec<String>, _>>(),
-                        None => statement
-                            .query_map([], |row| row.get(0))?
-                            .collect::<Result<Vec<String>, _>>(),
-                    }
-                };
-                let terms = "SELECT code FROM terms WHERE vocabulary = ?1 ORDER BY code";
-                Ok::<_, rusqlite::Error>(CodeLists {
-                    branches: codes("SELECT code FROM branches ORDER BY code", None)?,
-                    item_types: codes("SELECT code FROM item_types ORDER BY code", None)?,
-                    locations: codes(terms, Some(Vocabulary::Location))?,
-                    collections: codes(terms, Some(Vocabulary::Collection))?,
-                })
+/// The code tables with their names, in code order (item 29).
+pub(crate) fn code_lists(c: &Connection) -> Result<CodeLists, rusqlite::Error> {
+    let table = |sql: &str, vocabulary: Option<Vocabulary>| {
+        let mut statement = c.prepare(sql)?;
+        let entry = |row: &rusqlite::Row<'_>| {
+            Ok(CodeName {
+                code: row.get(0)?,
+                name: row.get(1)?,
             })
-            .map_err(|e| CatalogReadError(e.to_string()))
-    }
+        };
+        match vocabulary {
+            Some(vocabulary) => statement
+                .query_map(params![vocabulary.code()], entry)?
+                .collect::<Result<Vec<_>, _>>(),
+            None => statement
+                .query_map([], entry)?
+                .collect::<Result<Vec<_>, _>>(),
+        }
+    };
+    let terms = "SELECT code, label FROM terms WHERE vocabulary = ?1 ORDER BY code";
+    Ok(CodeLists {
+        branches: table("SELECT code, name FROM branches ORDER BY code", None)?,
+        item_types: table(
+            "SELECT code, description FROM item_types ORDER BY code",
+            None,
+        )?,
+        locations: table(terms, Some(Vocabulary::Location))?,
+        collections: table(terms, Some(Vocabulary::Collection))?,
+    })
 }
