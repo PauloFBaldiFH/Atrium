@@ -200,3 +200,27 @@ edit-error-title-empty = The title cannot be empty.
 edit-error-language-code = Use three-letter language codes, such as por or eng.
 edit-error-isbn = This ISBN is not valid: check the digits.
 edit-error-issn = This ISSN is not valid: check the digits.
+
+## Editing in the focused block
+edit-empty-fields = Fields not filled in yet
+edit-done = Done
+edit-done-hint = Ctrl+Enter
+edit-saved = Saved
+edit-add-row = Add
+edit-remove-row = Remove
+edit-discard-question = Discard your changes?
+edit-discard = Discard
+edit-keep = Keep editing
+edit-stale = Someone else changed this record. Reload to see their changes before editing.
+edit-failed = The edit could not be saved. Try again.
+edit-field-notes = Notes
+edit-column-name = Name
+edit-column-kind = Type
+edit-column-role = Role
+edit-column-number = Number
+edit-column-scheme = Scheme
+edit-column-heading = Heading
+edit-column-thesaurus = Thesaurus
+edit-column-value = Value
+edit-column-qualifier = Qualifier
+edit-column-text = Text

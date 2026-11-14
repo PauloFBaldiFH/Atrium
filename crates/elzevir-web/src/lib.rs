@@ -10,6 +10,7 @@ mod catalog;
 mod editing;
 mod opac;
 mod record_fields;
+mod record_form;
 mod security;
 mod session;
 mod staff;

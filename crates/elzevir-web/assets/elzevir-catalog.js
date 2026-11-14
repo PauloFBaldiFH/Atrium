@@ -259,6 +259,12 @@ function focusLevel(card) {
   const grid = card.closest(".family-grid");
   if (!grid) return;
   const again = card.classList.contains("focused");
+  // Leaving a block with an edit not sent asks first (edicao.md, item 32).
+  const pending = dirtyForm(grid);
+  if (pending && (again || !card.contains(pending))) {
+    askDiscard(pending);
+    return;
+  }
   clearLevel(grid);
   if (!again) {
     grid.dataset.focus = card.dataset.level;
@@ -299,6 +305,7 @@ async function loadFields(card) {
     box.innerHTML = await response.text();
     card.append(box);
     card.dataset.fieldsState = "loaded";
+    startForm(card);
     const grid = card.closest(".family-grid");
     if (grid) follow(grid);
   } catch {
@@ -319,7 +326,7 @@ function follow(grid) {
 
 document.addEventListener("click", (event) => {
   const target = event.target;
-  if (!(target instanceof Element) || target.closest("a, button, summary, details.export-menu, input, select, textarea, .all-fields")) return;
+  if (!(target instanceof Element) || target.closest("a, button, summary, details.export-menu, input, select, textarea, .all-fields, .record-form")) return;
   const card = target.closest(".family-grid .card[data-level]");
   if (card) focusLevel(card);
 });
@@ -386,6 +393,11 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     const open = document.querySelector(".family-focus[open]");
     if (!open) return;
+    const pending = dirtyForm(open);
+    if (pending) {
+      askDiscard(pending);
+      return;
+    }
     const grid = open.querySelector(".family-grid");
     if (grid) clearLevel(grid);
     open.open = false;
@@ -421,3 +433,207 @@ document.addEventListener("htmx:afterSettle", () => {
   watch();
   trail(document.querySelector(".family-focus[open]"));
 });
+
+// Editing in the focused block (edicao.md, items 25 to 32). The form's field names are the
+// edit's own JSON names, so the value of each field goes into the edit as it is.
+function rowObject(row) {
+  const object = {};
+  for (const cell of row.querySelectorAll("[data-name]")) {
+    if (cell.dataset.type === "bool") object[cell.dataset.name] = cell.checked;
+    else object[cell.dataset.name] = cell.hasAttribute("data-optional") && !cell.value.trim() ? null : cell.value;
+  }
+  return object;
+}
+
+function fieldValue(field) {
+  const part = field.querySelector("[data-shape]");
+  if (!part) return null;
+  switch (part.dataset.shape) {
+    case "text": {
+      const value = part.querySelector("input, textarea").value;
+      return part.hasAttribute("data-required") || value.trim() ? value : null;
+    }
+    case "select":
+      return part.querySelector("select").value || null;
+    case "values":
+      return [...part.querySelectorAll(".form-rows input")].map((input) => input.value).filter((value) => value.trim());
+    case "rows":
+      return [...part.querySelectorAll(".form-rows > .form-row")].map(rowObject);
+    case "group":
+      return rowObject(part.querySelector(".form-row"));
+    default:
+      return null;
+  }
+}
+
+function snapshot(form) {
+  const values = {};
+  for (const field of form.querySelectorAll(".form-field[data-change]")) {
+    values[field.dataset.change] = JSON.stringify(fieldValue(field));
+  }
+  return values;
+}
+
+function changes(form) {
+  const before = JSON.parse(form.dataset.initial || "{}");
+  const now = snapshot(form);
+  const list = [];
+  for (const [change, value] of Object.entries(now)) {
+    // A select left empty has no value to send (a category cannot be cleared).
+    if (value === before[change] || (value === "null" && form.querySelector(`[data-change="${change}"] select:not(.cell)`))) continue;
+    list.push({ [change]: JSON.parse(value) });
+  }
+  return list;
+}
+
+const dirty = (form) => changes(form).length > 0;
+
+function dirtyForm(scope) {
+  return [...scope.querySelectorAll(".record-form")].find(dirty) ?? null;
+}
+
+function askDiscard(form) {
+  const prompt = form.querySelector(".form-discard");
+  if (!prompt) return;
+  prompt.hidden = false;
+  form.closest(".card")?.scrollIntoView({ block: "nearest" });
+  prompt.querySelector('[data-action="keep"]')?.focus();
+}
+
+function startForm(card) {
+  const form = card.querySelector(".record-form");
+  if (!form) return;
+  form.dataset.initial = JSON.stringify(snapshot(form));
+}
+
+function clearErrors(form) {
+  const alert = form.querySelector(".form-alert");
+  if (alert) alert.hidden = true;
+  for (const error of form.querySelectorAll(".field-error")) error.hidden = true;
+  for (const field of form.querySelectorAll(".form-field.invalid")) field.classList.remove("invalid");
+}
+
+function showAlert(form, text) {
+  const alert = form.querySelector(".form-alert");
+  if (!alert) return;
+  alert.textContent = text;
+  alert.hidden = false;
+}
+
+async function reloadFields(card) {
+  card.querySelector(".all-fields-box")?.remove();
+  delete card.dataset.fieldsState;
+  await loadFields(card);
+}
+
+async function submitForm(form) {
+  const card = form.closest(".card");
+  const list = changes(form);
+  clearErrors(form);
+  if (!card || list.length === 0) return;
+  const token = document.querySelector(".catalog")?.dataset.csrf ?? "";
+  let response;
+  try {
+    response = await fetch(form.dataset.endpoint, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json", "X-Elzevir-Csrf": token },
+      body: JSON.stringify({ version: Number(form.dataset.version), changes: list }),
+    });
+  } catch {
+    showAlert(form, form.dataset.failed);
+    return;
+  }
+  if (response.ok) {
+    const title = list.find((change) => "Title" in change)?.Title;
+    if (title !== undefined) {
+      const shown = card.querySelector(".title-main");
+      if (shown) shown.textContent = title.trim();
+    }
+    await reloadFields(card);
+    const saved = card.querySelector(".form-saved");
+    if (saved) saved.hidden = false;
+    return;
+  }
+  if (response.status === 409) return showAlert(form, form.dataset.stale);
+  if (response.status === 422) {
+    const answer = await response.json().catch(() => null);
+    if (answer?.errors) {
+      for (const error of answer.errors) {
+        const field = form.querySelector(`.form-field[data-error="${error.field}"]`);
+        const line = field?.querySelector(".field-error");
+        if (!field || !line) continue;
+        field.classList.add("invalid");
+        line.textContent = error.message;
+        line.hidden = false;
+      }
+      form.querySelector(".form-field.invalid input, .form-field.invalid textarea")?.focus();
+      return;
+    }
+  }
+  showAlert(form, form.dataset.failed);
+}
+
+document.addEventListener("submit", (event) => {
+  const form = event.target;
+  if (!(form instanceof HTMLFormElement) || !form.classList.contains("record-form")) return;
+  event.preventDefault();
+  submitForm(form);
+});
+
+document.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  const action = target.closest("[data-action]");
+  const form = target.closest(".record-form");
+  if (action && form) {
+    const fieldset = action.closest("fieldset");
+    switch (action.dataset.action) {
+      case "add-row": {
+        const template = fieldset?.querySelector(":scope > template");
+        const rows = fieldset?.querySelector(":scope > .form-rows");
+        if (template && rows) {
+          rows.append(template.content.cloneNode(true));
+          rows.lastElementChild?.querySelector("input, select")?.focus();
+        }
+        break;
+      }
+      case "remove-row":
+        action.closest(".form-row")?.remove();
+        break;
+      case "discard": {
+        const card = form.closest(".card");
+        if (card) reloadFields(card);
+        break;
+      }
+      case "keep":
+        form.querySelector(".form-discard").hidden = true;
+        form.querySelector("input, textarea, select")?.focus();
+        break;
+      default:
+        break;
+    }
+    return;
+  }
+  // A pending edit is never dropped in silence: closing or switching the family asks first.
+  const summary = target.closest("summary.family-row");
+  if (!summary) return;
+  const pending = dirtyForm(document);
+  if (pending) {
+    event.preventDefault();
+    askDiscard(pending);
+  }
+}, true);
+
+document.addEventListener("keydown", (event) => {
+  const form = event.target instanceof Element ? event.target.closest(".record-form") : null;
+  if (!form) return;
+  if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+    event.preventDefault();
+    submitForm(form);
+  } else if (event.key === "Escape") {
+    event.preventDefault();
+    if (dirty(form)) askDiscard(form);
+    else form.closest(".card")?.focus();
+  }
+}, true);

@@ -1,0 +1,5 @@
+{% match cell.column.kind %}
+{% when ColumnKind::Text %}<input type="text" class="cell cell-{{ cell.column.name }}" data-name="{{ cell.column.name }}"{% if cell.column.optional %} data-optional{% endif %} value="{{ cell.value }}" aria-label="{{ t.get(cell.column.label_key) }}" placeholder="{{ t.get(cell.column.label_key) }}" maxlength="2000">
+{% when ColumnKind::Select(options) %}<select class="cell cell-{{ cell.column.name }}" data-name="{{ cell.column.name }}" aria-label="{{ t.get(cell.column.label_key) }}">{% for option in options %}<option value="{{ option.value }}"{% if option.value == cell.value.as_str() %} selected{% endif %}>{{ option.label }}</option>{% endfor %}</select>
+{% when ColumnKind::Check %}<label class="cell cell-check"><input type="checkbox" data-name="{{ cell.column.name }}" data-type="bool"{% if cell.value == "true" %} checked{% endif %}> {{ t.get(cell.column.label_key) }}</label>
+{% endmatch %}

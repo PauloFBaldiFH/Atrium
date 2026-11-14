@@ -56,6 +56,20 @@ A tarefa 2.5 tem três partes, cada uma num PR:
 23. A validação é uma função pura da camada app (`validate_work_changes`, `validate_instance_changes`), testada sozinha; a rota só a chama.
 24. Edição da mesma parte duas vezes na mesma lista segue o item 4: vale a última.
 
+#### Formulário no bloco focado (2.5b)
+
+25. Para quem tem a permissão `cataloguing`, o bloco de Obra ou de Instância focado mostra os campos já como **formulário no lugar**, na ordem do perfil. Para quem não tem, continua a leitura só dos campos preenchidos (listagem, item 42).
+26. O perfil vem da categoria de material: a da Instância, ou a da Obra quando a Instância não diz. Nesta parte há dois perfis, **livro** e **periódico**, que são dados tipados da camada app (`profiles.rs`): cada campo aponta para uma parte do modelo (`WorkField`, `InstanceField`), nunca para uma etiqueta MARC. As outras categorias usam o perfil livro até ganharem o seu.
+    - Obra, nos dois perfis: título, categoria, contribuições, classificação com esquema, idiomas, assuntos, resumo e público-alvo.
+    - Instância, livro: título, edição, local, editora, data, descrição física, série, identificadores (novo identificador começa como ISBN), notas e categoria.
+    - Instância, periódico: o mesmo, com o novo identificador começando como ISSN. Periodicidade (310) e numeração (362) ainda não existem no modelo e por isso não entram no perfil (spec de UI §4.2).
+27. Os campos preenchidos aparecem primeiro; os vazios do perfil ficam numa seção recolhível "Campos ainda não preenchidos", na ordem do perfil.
+28. Listas (contribuições, assuntos, identificadores, notas, idiomas) são linhas com "+" para acrescentar e "×" para tirar. Os *chips* com autocompletar são a parte 2.5c.
+29. **Concluir** (botão ou `Ctrl+Enter`) envia só as partes que mudaram, numa edição, com a versão lida quando o formulário abriu. Sem mudança, nada é enviado.
+30. A recusa aparece junto do campo (item 19) ou no topo do bloco ("alterado por outra pessoa; recarregar", item 20), e o formulário continua aberto com o que a pessoa digitou.
+31. Edição aceita volta o bloco para os valores gravados (relidos do servidor) e atualiza o título do cartão.
+32. Edição pendente nunca é descartada em silêncio: `Esc`, clicar em outro bloco ou fechar a família com mudança não enviada mostra no bloco "Descartar as alterações?" com **Descartar** e **Continuar editando**. Nada some sem essa escolha.
+
 ## 2. Origem no Koha
 
 - Edição: `C4::Biblio::ModBiblio` (chamada pelo editor `cataloguing/addbiblio.pl`), que regrava o registro MARC inteiro a partir do formulário.

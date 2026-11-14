@@ -6,11 +6,15 @@
 
 mod staff_catalog;
 mod staff_record_fields;
+mod staff_record_form;
 
 pub use staff_catalog::{
     AuthorityLine, FamilyLine, HubLine, InstanceLine, PillLine, StaffCatalog, WorkLine,
 };
 pub use staff_record_fields::{FieldEntry, FieldGroup, FieldValue, ItemFields, RecordFields};
+pub use staff_record_form::{
+    ColumnKind, FormCell, FormColumn, FormField, FormInput, FormOption, RecordForm,
+};
 
 use askama::Template;
 use fluent_bundle::concurrent::FluentBundle;
@@ -344,6 +348,9 @@ mod tests {
             include_str!("../templates/staff_login.html"),
             include_str!("../templates/staff_home.html"),
             include_str!("../templates/staff_catalog.html"),
+            include_str!("../templates/staff_record_fields.html"),
+            include_str!("../templates/staff_record_form.html"),
+            include_str!("../templates/staff_form_field.html"),
         ];
         let mut missing = Vec::new();
         for source in templates {

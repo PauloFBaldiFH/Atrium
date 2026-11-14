@@ -1,0 +1,25 @@
+<form class="record-form" data-endpoint="{{ endpoint }}" data-version="{{ version }}"
+      data-stale="{{ t.get("edit-stale") }}" data-failed="{{ t.get("edit-failed") }}" novalidate>
+  <p class="form-alert" role="alert" hidden></p>
+  <div class="form-fields">
+    {% for field in filled %}{% include "staff_form_field.html" %}{% endfor %}
+  </div>
+  {% if !empty.is_empty() %}
+  <details class="form-empty">
+    <summary>{{ t.get("edit-empty-fields") }}</summary>
+    <div class="form-fields">
+      {% for field in empty %}{% include "staff_form_field.html" %}{% endfor %}
+    </div>
+  </details>
+  {% endif %}
+  <div class="form-discard" role="alertdialog" hidden>
+    <span>{{ t.get("edit-discard-question") }}</span>
+    <button type="button" data-action="discard">{{ t.get("edit-discard") }}</button>
+    <button type="button" data-action="keep">{{ t.get("edit-keep") }}</button>
+  </div>
+  <div class="form-actions">
+    <button type="submit">{{ t.get("edit-done") }}</button>
+    <span class="form-hint">{{ t.get("edit-done-hint") }}</span>
+    <span class="form-saved" role="status" hidden>{{ t.get("edit-saved") }}</span>
+  </div>
+</form>
