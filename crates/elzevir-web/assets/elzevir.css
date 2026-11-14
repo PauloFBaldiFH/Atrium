@@ -423,6 +423,12 @@ a.field-value:hover { text-decoration: underline; }
 .record-form .form-discard button { font: inherit; border-radius: 6px; padding: 3px 10px; cursor: pointer; border: 1px solid currentColor; background: transparent; color: inherit; }
 .record-form .field-error { margin: 2px 0 0; font-size: 0.8rem; color: var(--elzevir-color-out-text); }
 .record-form .form-field.invalid input, .record-form .form-field.invalid textarea { border-color: var(--elzevir-color-signal-out); }
+.record-form .form-row { position: relative; }
+.record-form .suggestions { position: absolute; top: 100%; left: 0; z-index: 8; margin: 2px 0 0; padding: 4px; list-style: none; min-width: 18rem; max-width: 100%; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; box-shadow: var(--shadow-card); }
+.record-form .suggestions li { padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 0.88rem; }
+.record-form .suggestions li:hover, .record-form .suggestions li.active { background: color-mix(in srgb, var(--pill-text) 12%, transparent); }
+.record-form .suggestion-detail { font-size: 0.75rem; color: var(--text-muted); }
+.record-form .new-mark { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--elzevir-color-out-text); background: var(--elzevir-color-out-bg); border-radius: 999px; padding: 1px 7px; white-space: nowrap; }
 .card[data-level] { cursor: pointer; }
 .card[data-level]:focus-visible { outline: 3px solid var(--work-accent); outline-offset: 2px; }
 .card.focused { border-color: var(--pill-text); box-shadow: 0 26px 52px -12px rgba(15, 23, 42, 0.24), 0 0 0 2.5px color-mix(in srgb, var(--pill-text) 32%, transparent); }

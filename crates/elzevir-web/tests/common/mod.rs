@@ -176,3 +176,41 @@ impl elzevir_app::editing::CatalogEditor for Editor {
         Ok(output)
     }
 }
+
+/// Suggests from a fixed list of agents and subjects.
+pub(crate) struct Suggestions;
+
+impl elzevir_app::suggestions::AuthoritySuggestions for Suggestions {
+    fn agents(
+        &self,
+        prefix: &str,
+        limit: usize,
+    ) -> Result<Vec<elzevir_app::suggestions::AgentSuggestion>, CatalogReadError> {
+        Ok(["Assis, Machado de, 1839-1908", "Assunção, Maria"]
+            .into_iter()
+            .filter(|heading| heading.to_lowercase().starts_with(&prefix.to_lowercase()))
+            .take(limit)
+            .map(|heading| elzevir_app::suggestions::AgentSuggestion {
+                heading: heading.to_owned(),
+                kind: elzevir_domain::catalog::AgentKind::Person,
+            })
+            .collect())
+    }
+
+    fn subjects(
+        &self,
+        prefix: &str,
+        limit: usize,
+    ) -> Result<Vec<elzevir_app::suggestions::SubjectSuggestion>, CatalogReadError> {
+        Ok(["Romance brasileiro"]
+            .into_iter()
+            .filter(|heading| heading.to_lowercase().starts_with(&prefix.to_lowercase()))
+            .take(limit)
+            .map(|heading| elzevir_app::suggestions::SubjectSuggestion {
+                heading: heading.to_owned(),
+                kind: elzevir_domain::catalog::SubjectKind::Topic,
+                thesaurus: Some("larpcal".to_owned()),
+            })
+            .collect())
+    }
+}

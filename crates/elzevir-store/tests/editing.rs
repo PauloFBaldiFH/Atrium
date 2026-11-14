@@ -338,3 +338,41 @@ fn an_edit_from_the_screen_records_who_made_it() {
         Err(EditFailed::Refused(CatalogRefusal::Stale { .. }))
     ));
 }
+
+#[test]
+fn suggestions_find_existing_agents_and_subjects_by_the_start_of_their_name() {
+    use elzevir_app::suggestions::AuthoritySuggestions;
+
+    let dir = tempfile::tempdir().unwrap();
+    let store = imported(&dir);
+    let agents = store.agents("oliveira, c", 10).unwrap();
+    assert!(!agents.is_empty());
+    assert!(
+        agents
+            .iter()
+            .all(|agent| agent.heading.to_lowercase().starts_with("oliveira, c"))
+    );
+    let subjects = store.subjects("Exporta", 10).unwrap();
+    assert!(
+        subjects
+            .iter()
+            .any(|subject| subject.heading == "Exportação")
+    );
+    assert!(store.agents("o", 3).unwrap().len() <= 3);
+    // LIKE wildcards in what was typed match only themselves.
+    assert!(store.agents("%", 10).unwrap().is_empty());
+    assert!(store.subjects("_x", 10).unwrap().is_empty());
+    // The lookup uses the index of migration 10 instead of reading the whole table.
+    let plan: String = store
+        .readers()
+        .read(|c| {
+            c.query_row(
+                "EXPLAIN QUERY PLAN SELECT heading, kind FROM agents
+                 WHERE heading LIKE 'Oli%' ESCAPE '\\' ORDER BY heading COLLATE NOCASE, kind",
+                [],
+                |row| row.get::<_, String>(3),
+            )
+        })
+        .unwrap();
+    assert!(plan.contains("agents_by_heading"), "{plan}");
+}

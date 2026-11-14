@@ -27,6 +27,7 @@ mod listing;
 mod matching;
 mod readers;
 mod schema;
+mod suggestions;
 mod writer;
 
 pub use config::StoreConfig;

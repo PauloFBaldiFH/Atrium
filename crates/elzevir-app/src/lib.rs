@@ -15,3 +15,4 @@ pub mod parallelism;
 pub mod profiles;
 pub mod search;
 pub mod staff;
+pub mod suggestions;

@@ -17,6 +17,7 @@ use elzevir_app::listing::{
     self, CatalogListing, FamilyCursor, FamilyHead, FamilyRow, InstanceRow, ItemPill, Match,
     WorkRow,
 };
+use elzevir_app::suggestions::AuthoritySuggestions;
 use elzevir_domain::catalog::{InstanceId, MaterialType};
 use elzevir_web_templates::{
     AuthorityLine, FamilyLine, HubLine, InstanceLine, PillLine, StaffCatalog, WorkLine, url_encode,
@@ -36,6 +37,8 @@ pub struct StaffPorts {
     pub records: Arc<dyn RecordSource + Send + Sync>,
     /// Edits from the screen (docs/specs/catalogo/edicao.md, items 16 to 24).
     pub editor: Arc<dyn CatalogEditor + Send + Sync>,
+    /// Existing agents and subjects suggested while cataloguing.
+    pub suggestions: Arc<dyn AuthoritySuggestions + Send + Sync>,
 }
 
 /// Query string of `/equipe/acervo`.

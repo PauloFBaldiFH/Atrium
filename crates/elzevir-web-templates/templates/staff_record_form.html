@@ -1,5 +1,5 @@
 <form class="record-form" data-endpoint="{{ endpoint }}" data-version="{{ version }}"
-      data-stale="{{ t.get("edit-stale") }}" data-failed="{{ t.get("edit-failed") }}" novalidate>
+      data-stale="{{ t.get("edit-stale") }}" data-failed="{{ t.get("edit-failed") }}" data-new-entity="{{ t.get("edit-new-entity") }}" novalidate>
   <p class="form-alert" role="alert" hidden></p>
   <div class="form-fields">
     {% for field in filled %}{% include "staff_form_field.html" %}{% endfor %}

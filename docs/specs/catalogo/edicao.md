@@ -70,6 +70,14 @@ A tarefa 2.5 tem três partes, cada uma num PR:
 31. Edição aceita volta o bloco para os valores gravados (relidos do servidor) e atualiza o título do cartão.
 32. Edição pendente nunca é descartada em silêncio: `Esc`, clicar em outro bloco ou fechar a família com mudança não enviada mostra no bloco "Descartar as alterações?" com **Descartar** e **Continuar editando**. Nada some sem essa escolha.
 
+#### Listas com autocompletar (2.5c)
+
+33. Ao digitar o nome de um agente (contribuições) ou de um assunto, depois de dois caracteres a tela sugere até 10 **entidades existentes** cujo nome começa com o que foi digitado, sem diferença entre maiúsculas e minúsculas (só ASCII; acentos contam como digitados). Fonte: `GET /equipe/acervo/sugestoes/agentes?q=` e `.../assuntos?q=`, só com sessão da equipe, em ordem alfabética.
+34. Escolher uma sugestão (clique, ou `↓`/`↑` e `Enter`) preenche o nome e o tipo (e o tesauro, no assunto), e o comando liga a linha à entidade existente (item 3).
+35. Um nome que não bate com nenhuma entidade existente ganha a marca **"novo"** ao lado do campo, para que criar um agente ou assunto seja visível e não um acaso de digitação (spec de UI §4.1, item 6).
+36. `Alt+↑` e `Alt+↓` movem a linha em que está o cursor; a ordem da lista é a ordem gravada (item 3).
+37. Uma migração (10) cria índices `NOCASE` nos nomes de agentes e assuntos, para a sugestão não varrer a tabela.
+
 ## 2. Origem no Koha
 
 - Edição: `C4::Biblio::ModBiblio` (chamada pelo editor `cataloguing/addbiblio.pl`), que regrava o registro MARC inteiro a partir do formulário.

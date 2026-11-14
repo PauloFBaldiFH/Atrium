@@ -70,6 +70,16 @@ const NOTES: &[(NoteKind, &str, &str)] = &[
     (NoteKind::Local, "local", "staff-fields-note-local"),
 ];
 
+/// The serde name of an agent kind.
+pub(crate) fn agent_name(kind: AgentKind) -> &'static str {
+    name_of(AGENTS, kind)
+}
+
+/// The serde name of a subject kind.
+pub(crate) fn subject_name(kind: SubjectKind) -> &'static str {
+    name_of(SUBJECTS, kind)
+}
+
 fn name_of<T: PartialEq + Copy>(
     table: &[(T, &'static str, &'static str)],
     value: T,

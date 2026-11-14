@@ -226,6 +226,7 @@ fn app() -> Router {
             listing: Arc::new(common::Families(families)),
             records: Arc::new(common::Records(vec![stored(10)])),
             editor: Arc::new(common::Editor::default()),
+            suggestions: Arc::new(common::Suggestions),
         },
         I18n::english().unwrap(),
         WebConfig {
@@ -666,4 +667,58 @@ async fn a_cataloguer_gets_the_focused_block_as_a_form_in_profile_order() {
     let blank = identifiers.split("<template>").nth(1).unwrap();
     let blank = blank.split("</template>").next().unwrap();
     assert!(blank.contains(r#"<option value="isbn" selected>"#));
+}
+
+#[tokio::test]
+async fn suggestions_list_existing_agents_and_subjects_by_prefix() {
+    let app = app();
+    let anonymous = send(
+        &app,
+        get("/equipe/acervo/sugestoes/agentes?q=as", None, None),
+    )
+    .await;
+    assert_eq!(anonymous.status(), StatusCode::UNAUTHORIZED);
+
+    let session = signed_in(&app).await;
+    let short = body(
+        send(
+            &app,
+            get("/equipe/acervo/sugestoes/agentes?q=a", Some(&session), None),
+        )
+        .await,
+    )
+    .await;
+    assert_eq!(short, "[]");
+    let agents = body(
+        send(
+            &app,
+            get(
+                "/equipe/acervo/sugestoes/agentes?q=%20ass",
+                Some(&session),
+                None,
+            ),
+        )
+        .await,
+    )
+    .await;
+    assert_eq!(
+        agents,
+        r#"[{"heading":"Assis, Machado de, 1839-1908","kind":"person"},{"heading":"Assunção, Maria","kind":"person"}]"#
+    );
+    let subjects = body(
+        send(
+            &app,
+            get(
+                "/equipe/acervo/sugestoes/assuntos?q=rom",
+                Some(&session),
+                None,
+            ),
+        )
+        .await,
+    )
+    .await;
+    assert_eq!(
+        subjects,
+        r#"[{"heading":"Romance brasileiro","kind":"topic","thesaurus":"larpcal"}]"#
+    );
 }

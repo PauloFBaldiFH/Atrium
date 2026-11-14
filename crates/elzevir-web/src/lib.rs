@@ -109,6 +109,14 @@ pub fn router(state: AppState) -> Router {
             "/equipe/acervo/instancia/{id}/marc",
             get(catalog::export_marc),
         )
+        .route(
+            "/equipe/acervo/sugestoes/agentes",
+            get(editing::suggest_agents),
+        )
+        .route(
+            "/equipe/acervo/sugestoes/assuntos",
+            get(editing::suggest_subjects),
+        )
         .route("/equipe/acervo/obra/{id}", post(editing::edit_work))
         .route(
             "/equipe/acervo/instancia/{id}",
