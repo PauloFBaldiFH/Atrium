@@ -117,3 +117,22 @@ impl CatalogListing for Families {
             .collect())
     }
 }
+
+/// Stored records held in memory, in Instance order.
+pub(crate) struct Records(pub(crate) Vec<elzevir_app::export::StoredRecord>);
+
+impl elzevir_app::export::RecordSource for Records {
+    fn records_after(
+        &self,
+        after: Option<InstanceId>,
+        limit: NonZeroUsize,
+    ) -> Result<Vec<elzevir_app::export::StoredRecord>, CatalogReadError> {
+        Ok(self
+            .0
+            .iter()
+            .filter(|stored| after.is_none_or(|after| stored.instance > after))
+            .take(limit.get())
+            .cloned()
+            .collect())
+    }
+}

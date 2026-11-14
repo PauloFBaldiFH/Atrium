@@ -79,6 +79,7 @@ fn main() {
         },
         StaffPorts {
             listing: Arc::clone(&store) as _,
+            records: Arc::clone(&store) as _,
         },
         I18n::english().unwrap(),
         WebConfig::default(),

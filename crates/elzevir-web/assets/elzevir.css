@@ -340,3 +340,22 @@ a.field-value:hover { text-decoration: underline; }
 /* Trail of the focused family (listagem.md, item 29). */
 .trail { padding: 12px 2px 0; font-size: 0.85rem; color: var(--text-muted); }
 .trail strong { color: var(--text-main); }
+/* Export menu of an Instance (listagem.md, item 33): a <details>, so it needs no script. */
+.export-menu { position: relative; }
+.export-menu > summary {
+  list-style: none; cursor: pointer;
+  padding: 2px 8px; border: 1px solid #cbd5e1; border-radius: 6px; background: var(--card-bg);
+  font-size: 0.7rem; font-weight: 700; color: var(--text-muted);
+}
+.export-menu > summary::-webkit-details-marker { display: none; }
+.export-menu > summary::after { content: " ▾"; }
+.export-menu[open] > summary { background: var(--text-main); color: var(--card-bg); }
+.export-menu ul {
+  position: absolute; right: 0; top: calc(100% + 4px); z-index: 10;
+  list-style: none; margin: 0; padding: 4px; min-width: 9rem;
+  background: var(--card-bg); border: 1px solid #cbd5e1; border-radius: 10px;
+  box-shadow: 0 18px 40px -12px rgba(15, 23, 42, 0.3);
+}
+.export-menu a { display: block; padding: 5px 8px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 600; }
+.export-menu a:hover { background: var(--work-bg); }
+.card:has(.export-menu[open]) { z-index: 6; }

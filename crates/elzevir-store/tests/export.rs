@@ -162,3 +162,45 @@ fn migrations_6_and_7_read_the_notes_and_audience_of_older_databases() {
     // Without them, the export would drop the 500, 505, 590 and 521 of every record.
     assert_eq!(export(&store, 1024), STAFF_EXPORT);
 }
+
+#[test]
+fn one_record_exports_as_the_batch_does_in_marc21_and_marcxml() {
+    use elzevir_app::export::{RecordFormat, export_record};
+    use elzevir_marc::{Record, RecordRef};
+
+    let dir = tempfile::tempdir().unwrap();
+    let store = imported(&dir);
+    let first = store
+        .readers()
+        .read(|c| c.query_row("SELECT MIN(id) FROM instances", [], |row| row.get(0)))
+        .unwrap();
+    let instance = InstanceId(first);
+    let marc21 = export_record(&store, instance, RecordFormat::Marc21, &Limits::default())
+        .unwrap()
+        .unwrap();
+    // The first record of the batch export, byte for byte.
+    let batch = export(&store, 7);
+    assert!(batch.starts_with(&marc21));
+
+    let xml = export_record(&store, instance, RecordFormat::MarcXml, &Limits::default())
+        .unwrap()
+        .unwrap();
+    let xml = String::from_utf8(xml).unwrap();
+    let mut expected = String::new();
+    let record = RecordRef::parse(&marc21, &Limits::default()).unwrap();
+    Record::from_ref(&record)
+        .write_marcxml_document(&mut expected)
+        .unwrap();
+    assert_eq!(xml, expected);
+
+    assert!(
+        export_record(
+            &store,
+            InstanceId(i64::MAX),
+            RecordFormat::Marc21,
+            &Limits::default()
+        )
+        .unwrap()
+        .is_none()
+    );
+}

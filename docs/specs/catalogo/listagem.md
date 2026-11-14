@@ -1,6 +1,6 @@
 # Listagem da equipe (v0)
 
-> Status: v1. Tarefa 2.3; a §1.1 (lista compacta e foco) é da tarefa 2.4, parte 1. Antes: v0, tarefa 2.3 (parte 1: leitura das famílias; parte 2: tela da equipe e busca). Base: [spec de interação](../../UI_BIBFRAME_INTERACTION_SPEC.md) §2, §8 e §11 e [modelo bibliográfico](modelo-bibliografico.md). A medição com 1 milhão de registros (parte 3) vem depois.
+> Status: v1. Tarefa 2.3; lista compacta e foco (itens 27 a 32) e exportação do registro (itens 33 a 36) são da tarefa 2.4, partes 1 e 2. Antes: v0, tarefa 2.3 (parte 1: leitura das famílias; parte 2: tela da equipe e busca). Base: [spec de interação](../../UI_BIBFRAME_INTERACTION_SPEC.md) §2, §8 e §11 e [modelo bibliográfico](modelo-bibliografico.md). A medição com 1 milhão de registros (parte 3) vem depois.
 
 ## 1. Comportamento
 
@@ -68,6 +68,13 @@
 30. Teclado, fora de campos de texto: `↑` e `↓` passam de linha em linha; `Enter` abre ou fecha; `Esc` fecha a família em foco e devolve o cursor à linha dela; `/` vai para a busca.
 31. As cordas são desenhadas quando a família abre e refeitas quando ela muda de tamanho; família fechada não tem cordas.
 32. A busca abre sozinha a primeira família que tem uma Instância encontrada.
+
+### Exportar o registro (tarefa 2.4, parte 2)
+
+33. O cartão da Instância tem "Export", um menu (`<details>`, sem JavaScript) com MARC21 e MARCXML (spec de UI §20 item 11).
+34. `GET /equipe/acervo/instancia/{id}/marc?format=marc21|marcxml` exige sessão da equipe e devolve o registro como anexo: `elzevir-{id}.mrc` (`application/marc`) ou `elzevir-{id}.xml` (`application/marcxml+xml`). Sem `format`, é MARC21. Formato desconhecido é 400; Instância que não existe é 404.
+35. O registro sai pela mesma regra da exportação em lote (`docs/specs/catalogo/linha-de-comando.md`): registro que ninguém editou sai com os bytes guardados, e editado sai por `bibframe_to_marc` a partir do original. O MARCXML é esse mesmo registro escrito como documento MARCXML, igual ao do Koha (`MARC::File::XML::record`).
+36. Registro que não cabe em ISO 2709, ou fonte guardada ilegível, é 500 com o motivo no corpo da resposta (a rota é só da equipe, e o motivo diz o que corrigir no registro).
 
 ## 2. Origem no Koha
 

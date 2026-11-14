@@ -12,7 +12,8 @@ use std::sync::Arc;
 use axum::Router;
 use axum::body::Body;
 use axum::http::{Request, Response, StatusCode, header};
-use elzevir_app::catalog::{ItemStatus, ItemView};
+use elzevir_app::catalog::{ItemStatus, ItemView, NewInstance, NewRecord};
+use elzevir_app::export::StoredRecord;
 use elzevir_app::listing::{Family, FamilyCursor, FamilyHead, FamilyInstance, FamilyWork};
 use elzevir_app::memory::{MemoryProbe, MemoryReport};
 use elzevir_app::search::SearchHit;
@@ -86,6 +87,32 @@ fn family(n: i64, title: &str, lost: bool) -> Family {
     }
 }
 
+/// A record nobody imported: it is written from the model.
+fn stored(instance: i64) -> StoredRecord {
+    StoredRecord {
+        instance: InstanceId(instance),
+        record: NewRecord {
+            work_title: "Dom Casmurro".to_owned(),
+            material_type: MaterialType::Book,
+            hub: None,
+            relations: Vec::new(),
+            classification: Some("869.3".to_owned()),
+            classification_scheme: Some("ddc".to_owned()),
+            summary: None,
+            audience: None,
+            languages: vec!["por".to_owned()],
+            contributions: Vec::new(),
+            subjects: Vec::new(),
+            instance: NewInstance {
+                title: "Dom Casmurro".to_owned(),
+                ..NewInstance::default()
+            },
+            items: Vec::new(),
+            source: None,
+        },
+    }
+}
+
 fn hit(n: i64) -> SearchHit {
     SearchHit {
         instance: InstanceId(n * 10),
@@ -122,6 +149,7 @@ fn app() -> Router {
         },
         StaffPorts {
             listing: Arc::new(common::Families(families)),
+            records: Arc::new(common::Records(vec![stored(10)])),
         },
         I18n::english().unwrap(),
         WebConfig {
@@ -276,4 +304,67 @@ async fn a_malformed_cursor_starts_from_the_first_page() {
     .await;
     assert_eq!(response.status(), StatusCode::OK);
     assert!(body(response).await.contains("Dom Casmurro"));
+}
+
+#[tokio::test]
+async fn one_record_is_exported_as_marc21_or_marcxml() {
+    let app = app();
+    let refused = send(&app, get("/equipe/acervo/instancia/10/marc", None, None)).await;
+    assert_eq!(refused.status(), StatusCode::SEE_OTHER);
+
+    let session = signed_in(&app).await;
+    let page = body(send(&app, get("/equipe/acervo", Some(&session), None)).await).await;
+    assert!(page.contains(r#"href="/equipe/acervo/instancia/10/marc?format=marcxml""#));
+
+    let marc21 = send(
+        &app,
+        get("/equipe/acervo/instancia/10/marc", Some(&session), None),
+    )
+    .await;
+    assert_eq!(marc21.status(), StatusCode::OK);
+    assert_eq!(marc21.headers()[header::CONTENT_TYPE], "application/marc");
+    assert_eq!(
+        marc21.headers()[header::CONTENT_DISPOSITION],
+        r#"attachment; filename="elzevir-10.mrc""#
+    );
+    let bytes = body(marc21).await;
+    assert!(bytes.contains("Dom Casmurro"));
+    assert!(
+        bytes.ends_with('\u{1d}'),
+        "an ISO 2709 record ends with its terminator"
+    );
+
+    let xml = send(
+        &app,
+        get(
+            "/equipe/acervo/instancia/10/marc?format=marcxml",
+            Some(&session),
+            None,
+        ),
+    )
+    .await;
+    assert_eq!(
+        xml.headers()[header::CONTENT_DISPOSITION],
+        r#"attachment; filename="elzevir-10.xml""#
+    );
+    let xml = body(xml).await;
+    assert!(xml.starts_with("<?xml"));
+    assert!(xml.contains("Dom Casmurro"));
+
+    let missing = send(
+        &app,
+        get("/equipe/acervo/instancia/20/marc", Some(&session), None),
+    )
+    .await;
+    assert_eq!(missing.status(), StatusCode::NOT_FOUND);
+    let unknown = send(
+        &app,
+        get(
+            "/equipe/acervo/instancia/10/marc?format=pdf",
+            Some(&session),
+            None,
+        ),
+    )
+    .await;
+    assert_eq!(unknown.status(), StatusCode::BAD_REQUEST);
 }
